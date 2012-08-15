@@ -8,4 +8,5 @@ setup(name='WebElements',
       author='Timothy Crosley',
       author_email='timothy.crosley@gmail.com',
       url='http://www.webelements.in/',
+      download_url='https://github.com/timothycrosley/webelements/blob/master/dist/WebElements-0.1.tar.gz?raw=true',
       packages=['WebElements',],)
