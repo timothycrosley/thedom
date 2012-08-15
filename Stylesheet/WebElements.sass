@@ -1,0 +1,380 @@
+div
+    &.WebElementSelectedMultiOption
+        border: 1px gray solid
+        background-color: lightgray
+        padding: 2px
+        margin-left: 2px
+        color: black
+        .valueSelected
+            width: 100px
+        img
+            width: 1em
+    &.WebElementRemoved
+        background-color: #ffcccc
+        border: 1px #910000 solid
+        width: 48%
+        float: left
+        margin: 3px
+    &.WebElementAdded
+        background-color: #e0ff97
+        border: 1px #268c18 solid
+        width: 48%
+        float: right
+        margin: 3px
+    &.WebElementTripDiff
+        width: 510px
+        background-color: white
+        border: 1px #7c7c7c solid
+        padding: 5px
+    &.WebElementLegDiff
+        margin-top: 40px
+        background-color: #f3f3f3
+        border: 1px #bdbdbd solid
+    &.WebElementCheckboxTabsModelDiff
+        margin: 5px
+        margin-top: 10px
+        background-color: #eeeeee
+        border: 1px #bdbdbd solid
+    &.WebElementStatusIndicator
+        border: 1px gray solid
+        margin-top: 10px
+        margin-bottom: 10px
+        margin-left: 5px
+        height: 100px
+        width: 4px
+    &.StatusComplete
+        background-color: green
+    &.StatusPartial
+        background-color: yellow
+    &.StatusIncomplete
+        background-color: red
+
+.DiffRemovedSymbol
+    color: #6f0000
+    font-size: 200%
+
+.DiffAddedSymbol
+    color: #056a00
+    font-size: 200%
+
+.LegDiffHeader
+    font-size: 175%
+    display: block
+    margin-bottom: 20px
+    background-color: #d7d7d7
+    border-bottom: 1px #bdbdbd solid
+
+.ModelDiffHeader
+    display: block
+    font-size: 140%
+    margin-bottom: 5px
+    background-color: #cacaca
+    border-bottom: 1px #bdbdbd solid
+
+input.ToggledOn
+    background-color: #77b2e0
+
+a
+    &.Toggle
+        &:visited, &:link
+            font-weight: normal
+            text-decoration: none
+    &.ToggledOn
+        &:visited, &:link
+            font-weight: bold
+            text-decoration: none
+
+input.AddFilterButton
+    width: 80px
+
+.AddFilter
+    padding-top: 5px
+    width: 160px
+    margin-left: auto
+    margin-right: auto
+
+.Filter
+    margin: 2px
+    padding: 4px
+    border: 1px #e5e5e5 solid
+
+.FilterHighlight
+    background-color: #dedede
+    border: 1px #bcbbbb solid
+
+.WebElementCheckboxField
+    margin-bottom: 4px
+    margin-top: 7px
+    clear: both
+
+input.WebElementCheckbox
+    margin-right: 3px
+
+.OptionalCheckboxField
+    width: 96%
+    margin: 1px
+
+textarea.WebElementTextArea
+    border-width: 1px
+    font-size: 12px
+    font-family: Arial, Helvetica, sans-serif
+
+input
+    &.WebElementTextBox
+        &[readonly]
+            color: gray
+        margin-left: 2px
+        margin-right: 2px
+        border-width: 1px
+        font-size: 12px
+        font-family: Arial, Helvetica, sans-serif
+    &.WebElementIntegerTextBox
+        padding: 0px
+        margin: 0px
+        height: 22px
+        font-size: 12px
+        font-family: Arial, Helvetica, sans-serif
+
+.Clickable
+    cursor: pointer
+    cursor: hand
+
+.WebElementDocument
+    margin: 4px
+    padding: 3px
+    background-color: #ededed
+    border: 1px #e0e0e0 solid
+
+.SelectedDocument, .DeletedDocument
+    background-color: #d9d7d7
+    border: 1px #a7a7a7 solid
+
+.DocumentHeader
+    margin-bottom: 10px
+    font-weight: bold
+
+.WebElementUndoDelete
+    margin: 3px
+    padding: 3px
+
+.WebElementStoredValue
+    margin-right: 4px
+
+.FieldLabel
+    font-weight: bold
+
+.WebElementMenu
+    color: black
+    position: absolute
+    z-index: 900
+    background-color: #e1e1e0
+    padding: 2px
+    border: 1px #5a5a5a solid
+
+.SpacedWord
+    margin-left: 3px
+    margin-right: 3px
+
+.WebElementAccordion
+    width: 100%
+
+.AccordionToggle
+    width: 100%
+    background-color: #FFFFBB
+    cursor: pointer
+    cursor: hand
+    border-bottom: 1px solid #CCCC88
+    img
+        padding: 4px
+
+.AccordionLabel
+    margin-left: 3px
+    padding: 3px
+    display: block
+
+.WebElementVerticalRule
+    border-left: 1px gray solid
+    height: 100%
+    width: 0%
+
+.WebElementJumpToLetter
+    background-color: #0066CC
+    padding-bottom: 10px
+    padding-top: 10px
+
+.WebElementLetterSelected
+    font-family: monospace
+    color: black
+    background-color: white
+    border-top: 1px #C1E3FF solid
+    border-bottom: 1px #C1E3FF solid
+    font-weight: bold
+    padding-left: 5px
+    padding-right: 5px
+
+.WebElementLetter
+    &:link, &:active, &:visited
+        font-family: monospace
+        color: #DADADA
+        text-decoration: underline
+        padding-left: 5px
+        padding-right: 5px
+    &:hover
+        font-family: monospace
+        color: white
+        font-size: 200%
+        text-decoration: none
+        padding-left: 0px
+        padding-right: 0px
+        width: 100%
+
+div.WebElementBreadCrumb
+    border: 1px #868686 solid
+    color: black
+    background-color: #000000
+    background-image: url("breadcrumb_backdrop.png")
+    background-repeat: repeat-x
+    padding: 5px
+
+a.BreadCrumbLink
+    font-weight: bold
+    cursor: pointer
+    cursor: hand
+    font-weight: bold
+    cursor: pointer
+    cursor: hand
+    &:hover
+        color: white
+        background-color: gray
+
+.WebElementTimeFrame
+    margin-top: 2px
+    a
+        &.selected
+            font-weight: bold
+            text-decoration: none
+        cursor: pointer
+        cursor: hand
+
+.TimeFrameLabel
+    margin-left: 5px
+
+.WebElementBlock
+    display: block
+
+.StaticFieldDisplay
+    input
+        border: none
+        margin-right: 0px
+        margin-left: 4px
+        border-color: transparent
+        background-color: #E7E7E7
+        font-size: 12px
+    select
+        border: none
+        margin-right: 0px
+        margin-left: 4px
+        border-color: transparent
+        background-color: #E7E7E7
+        font-size: 12px
+        &.WebElementMultiSelect
+            border: none
+            margin-right: 0px
+            margin-left: 4px
+            border-color: transparent
+            background-color: #E7E7E7
+            font-size: 12px
+    input.WebElementTextBox
+        border: none
+        margin-right: 0px
+        margin-left: 4px
+        border-color: transparent
+        background-color: #E7E7E7
+        font-size: 12px
+    textarea
+        border: none
+        margin-right: 0px
+        margin-left: 4px
+        border-color: transparent
+        background-color: #E7E7E7
+        font-size: 12px
+        &.WebElementTextArea
+            border: none
+            margin-right: 0px
+            margin-left: 4px
+            border-color: transparent
+            background-color: #E7E7E7
+            font-size: 12px
+    input.WebElementCheckBox
+        border: none
+        margin-right: 0px
+        margin-left: 4px
+        border-color: transparent
+        background-color: #E7E7E7
+        font-size: 12px
+
+.WebElementLabeledData
+    color: rgb(119, 85, 68)
+
+.WebElementDataLabeled
+    margin-left: 5px
+    color: rgb(119, 51, 0)
+    font-weight: bold
+
+.WebElementActionBox
+    background-color: #E7E7E7
+    border: 1px solid #CCCCCC
+    color: #777777
+    margin-left: 10px
+    padding: 5px
+    width: 130px
+
+.WebElementActionBoxHeader
+    font-size: 14px
+
+.WebElementActionBox ul
+    margin: 0
+    color: #ccc
+    padding-left: 1.5em !important
+    li
+        margin: 0
+
+.WebElementUnrolledSelect
+    margin: 0
+    padding: 0 !important
+    display: block
+    list-style: none
+    list-position: 0
+    width: 75px
+    li
+        list-style: none
+        display: inline
+        margin: 0
+        padding: 0
+        a
+            text-decoration: none
+            display: block
+            background-color: #69c
+            color: #fff
+            padding-left: 18px
+            border: 1px solid #d0d0d0
+            border-width: 0 1px 0 1px
+            &:hover
+                background: url("tail_li_hover.gif") 5px 0 no-repeat #6699cc
+                color: #333
+                border-right: 1px solid #ffb
+            &.selected
+                background: url("tail_li_selected.gif") 5px 0 no-repeat #6699cc
+                color: #000
+                border-right: 1px solid #eef0f4
+        span
+            &.first
+                display: block
+                background-color: transparent
+                background-image: url("tail_li_first.gif")
+                height: 14px
+            &.last
+                display: block
+                background-color: transparent
+                background-image: url("tail_li_last.gif")
+                height: 14px
