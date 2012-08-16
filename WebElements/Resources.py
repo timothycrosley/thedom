@@ -66,6 +66,13 @@ class ResourceFile(Base.WebElement):
             self.attributes['href'] = fileName
             self.resourceType = "css"
             self.tagSelfCloses = True
+        elif extension == "png":
+            self.tagName = "link"
+            self.attributes['rel'] = "icon"
+            self.attributes['type'] = "image/png"
+            self.attributes['href'] = fileName
+            self.resourceType = "css"
+            self.tagSelfCloses = True
         else:
             self.tagName = "h2"
             self.textBeforeChildren = "Invalid Resource: %s" % fileName
