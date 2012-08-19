@@ -46,7 +46,7 @@ class CodeSnippet(Base.WebElement):
         self.connect("beforeToHtml", None, self, "_render")
 
     def _getCode(self):
-        return self.code
+        return self.code.replace("\\n", "\n")
 
     def _getLexer(self):
         return get_lexer_by_name(self.lexer)
