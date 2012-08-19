@@ -31,6 +31,7 @@ class CodeSnippet(Base.WebElement):
         Enables adding a snippet of code directly to a page.
     """
     tagName = "pre"
+    allowsChildren = False
     properties = Base.WebElement.properties.copy()
     properties['code'] = {'action':'classAttribute'}
     properties['lexer'] = {'action':'classAttribute'}
@@ -59,7 +60,7 @@ class CodeSnippet(Base.WebElement):
             self.textBeforeChildren = self.code
             return
 
-        self.tagName = ""
+        self.tagName = "span"
         formatter = HtmlFormatter(linenos=self.showLineNumbers)
         self.textBeforeChildren = highlight(self._getCode(), self._getLexer(), formatter)
 
