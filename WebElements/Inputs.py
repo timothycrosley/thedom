@@ -159,7 +159,7 @@ class CheckBox(InputElement):
 
     def __init__(self, id=None, name=None, parent=None, key=None):
         InputElement.__init__(self, id, name, parent, key=key)
-        self.addClass("WECheckBox")
+        self.addClass("WCheckBox")
 
         self._value = False
         self.attributes['value'] = None
@@ -260,7 +260,7 @@ class TextBox(InputElement):
         InputElement.__init__(self, id, name, parent, key)
         self.attributes['type'] = 'text'
         self.length = None
-        self.addClass("WETextBox")
+        self.addClass("WTextBox")
 
     def setIsPassword(self, isPassword):
         """
@@ -298,7 +298,7 @@ class IntegerTextBox(TextBox):
 
     def __init__(self, id, name=None, parent=None, key=None):
         TextBox.__init__(self, id, name, parent, key)
-        self.addClass("WEIntegerTextBox")
+        self.addClass("WIntegerTextBox")
         self.attributes['size'] = '4'
         self.setValue(0)
 
@@ -367,7 +367,7 @@ class TextArea(ValueElement):
 
     def __init__(self, id, name=None, parent=None, key=None):
         ValueElement.__init__(self, id, name, parent, key=key)
-        self.addClass("WETextArea")
+        self.addClass("WTextArea")
 
     def content(self, variableDict, formatted=False):
         return self.value() or ""
@@ -559,7 +559,7 @@ class MultiSelect(Select):
     """
     def __init__(self, id, name=None, parent=None):
         Select.__init__(self, id, name, parent)
-        self.addClass("WEMultiSelect")
+        self.addClass("WMultiSelect")
         self.attributes['multiple'] = True
 
     def selected(self):

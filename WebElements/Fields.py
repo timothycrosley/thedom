@@ -388,7 +388,7 @@ class MultiField(SelectField):
     properties['sortBy'] = {'action': 'classAttribute'}
     def __createNewSelection__(self, name):
         new = Layout.Horizontal()
-        new.addClass('WESelectedMultiOption')
+        new.addClass('WSelectedMultiOption')
         label = new.addChildElement(Display.Label())
         label.setText(name)
         label.style['overflow'] = 'hidden'
@@ -927,8 +927,8 @@ class Filter(Layout.Box):
     def javascriptAddFilter(element, filterType, toggledOn):
         return """
             if(toggledOn){
-                parentFilter = JUParentElement(element, 'WEFilter');
-                filter = JUGetElementByClassName('WEFilter', parentFilter);
+                parentFilter = JUParentElement(element, 'WFilter');
+                filter = JUGetElementByClassName('WFilter', parentFilter);
                 if(!filter){
                     filter = JUCopy(parentFilter,
                                     JUGetElementByClassName('subFilter',
@@ -944,21 +944,21 @@ class Filter(Layout.Box):
                 JUGetElementByClassName('filterType', filter).value = filterType;
             }
             else{
-                JURemoveElement(JUGetElementByClassName('WEFilter',
-                                        JUParentElement(element, 'WEFilter')));
+                JURemoveElement(JUGetElementByClassName('WFilter',
+                                        JUParentElement(element, 'WFilter')));
             }"""
 
     @staticmethod
     def javascriptRemoveFilter(element):
         return """
-                thisFilter = JUParentElement(element, 'WEFilter');
-                childFilter = JUGetElementByClassName('WEFilter', thisFilter);
+                thisFilter = JUParentElement(element, 'WFilter');
+                childFilter = JUGetElementByClassName('WFilter', thisFilter);
                 filterType = JUGetElementByClassName('filterType',
                                                      childFilter).value;
 
                 AndButton = JUGetElementByClassName('AddAndFilter', thisFilter);
                 OrButton = JUGetElementByClassName('AddOrFilter', thisFilter);
-                parentFilter = JUParentElement(thisFilter, 'WEFilter');
+                parentFilter = JUParentElement(thisFilter, 'WFilter');
 
                 parentAndButton = JUGetElementByClassName('AddAndFilter',
                                                           parentFilter);

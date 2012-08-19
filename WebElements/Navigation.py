@@ -184,14 +184,14 @@ class JumpToLetter(Layout.Vertical):
 
     def __init__(self, id, name=None, parent=None):
         Layout.Vertical.__init__(self, id, name, parent)
-        self.addClass("WEJumpToLetter")
+        self.addClass("WJumpToLetter")
         self.style['float'] = "left"
 
         self.__letterMap__ = {}
         self.selectedLetter = self.addChildElement(HiddenInputs.HiddenValue(self.id + "SelectedLetter"))
         for letter in self.letters:
             link = self.addChildElement(Buttons.Link())
-            link.addClass("WELetter")
+            link.addClass("WLetter")
             link.setText(letter)
 
             self.__letterMap__[letter] = link
@@ -219,7 +219,7 @@ class JumpToLetter(Layout.Vertical):
                         "}") % (functionName, self.selectedLetter.jsId(), "\n".join(self.emit("jsLetterClicked"))))
         for letter, link in self.__letterMap__.iteritems():
             if letter == self.selectedLetter.value():
-                link.addClass("WELetterSelected")
+                link.addClass("WLetterSelected")
             else:
                 link.setDestination("#" + letter)
                 if not link.javascriptEvent('onmouseover'):
@@ -258,7 +258,7 @@ class BreadCrumb(Layout.Box):
 
     def __init__(self, id, name=None, parent=None):
         Layout.Box.__init__(self, id, name, parent)
-        self.addClass("WEBreadCrumb")
+        self.addClass("WBreadCrumb")
 
         hiddenData = Inputs.TextBox(id + ':HiddenData')
         hiddenData.attributes['type'] = 'hidden'
@@ -408,7 +408,7 @@ class UnrolledSelect(Display.List):
     def __init__(self, id, name=None, parent=None):
         Display.List.__init__(self, None, None, parent)
         self.addChildElement(Display.Label()).addClass('first')
-        self.addClass('WEUnrolledSelect')
+        self.addClass('WUnrolledSelect')
         self.userInput = HiddenInputs.HiddenValue(id, parent=self)
         self.childElements.append(self.userInput)
         self.userInput.addClass("Value")
@@ -416,10 +416,10 @@ class UnrolledSelect(Display.List):
 
         self.addScript("function selectUnrolledOption(option)"
                        "{"
-                       "    var valueElement = JUFellowChild(option, 'WEUnrolledSelect', 'Value');"
+                       "    var valueElement = JUFellowChild(option, 'WUnrolledSelect', 'Value');"
                        "    valueElement.value = option.name;"
                        "    valueElement.onchange();"
-                       "    JUStealClassFromFellowChild(option, 'WEUnrolledSelect', 'selected');"
+                       "    JUStealClassFromFellowChild(option, 'WUnrolledSelect', 'selected');"
                        "}")
 
         self.connect('beforeToHtml', None, self, '__addLast__')
@@ -530,7 +530,7 @@ class TimeFrame(Layout.Horizontal):
     def __init__(self, id, name=None, parent=None):
         Layout.Horizontal.__init__(self, id, name, parent)
         self.style['margin-top'] = '2px'
-        self.addClass("WETimeFrame")
+        self.addClass("WTimeFrame")
 
         label = self.addChildElement(Display.Label())
         label.setText('Show Timeframe:')

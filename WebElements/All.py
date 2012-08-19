@@ -27,10 +27,11 @@ import Navigation
 import Printing
 import Resources
 import UITemplate
+import CodeDocumentation
 
 FactoryClasses = Factory
 Factory = Factory.Composite((Base.Factory, Future.Factory, Buttons.Factory, Ajax.Factory, DataViews.Factory,
                              Display.Factory, Fields.Factory, HiddenInputs.Factory, Inputs.Factory,
                              Layout.Factory, Navigation.Factory, Resources.Factory, Containers.Factory,
-                             Charts.Factory, Printing.Factory, Document.Factory),
+                             Charts.Factory, Printing.Factory, Document.Factory, CodeDocumentation.Factory),
                             Base.Invalid)

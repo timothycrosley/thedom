@@ -4,7 +4,7 @@
        Display
 
    Description:
-       Contains elements that are used soley to display information on the screen
+       Contains elements that are used solely to display information on the screen
 
 """
 
@@ -204,9 +204,9 @@ class LabeledData(Label):
         Label.__init__(self, id, name, parent=parent)
         self.style['vertical-align'] = "middle"
         self.__data__ = self.addChildElement(Label)
-        self.__data__.addClass('WEDataLabeled')
+        self.__data__.addClass('WDataLabeled')
         self.setText(label)
-        self.addClass("WELabeledData")
+        self.addClass("WLabeledData")
 
     def setData(self, data):
         """
@@ -338,7 +338,7 @@ class StatusIndicator(Base.WebElement):
         self.setStatus(StatusIndicator.Incomplete)
         self.style['height'] = "100%"
         self.addClass('hidePrint')
-        self.addClass('WEStatusIndicator')
+        self.addClass('WStatusIndicator')
 
     def setStatus(self, status):
         """

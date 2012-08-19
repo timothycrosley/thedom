@@ -1,5 +1,7 @@
+@import "CodeDocumentation"
+
 div
-    &.WebElementSelectedMultiOption
+    &.WSelectedMultiOption
         border: 1px gray solid
         background-color: lightgray
         padding: 2px
@@ -9,33 +11,33 @@ div
             width: 100px
         img
             width: 1em
-    &.WebElementRemoved
+    &.WRemoved
         background-color: #ffcccc
         border: 1px #910000 solid
         width: 48%
         float: left
         margin: 3px
-    &.WebElementAdded
+    &.WAdded
         background-color: #e0ff97
         border: 1px #268c18 solid
         width: 48%
         float: right
         margin: 3px
-    &.WebElementTripDiff
+    &.WTripDiff
         width: 510px
         background-color: white
         border: 1px #7c7c7c solid
         padding: 5px
-    &.WebElementLegDiff
+    &.WLegDiff
         margin-top: 40px
         background-color: #f3f3f3
         border: 1px #bdbdbd solid
-    &.WebElementCheckboxTabsModelDiff
+    &.WCheckboxTabsModelDiff
         margin: 5px
         margin-top: 10px
         background-color: #eeeeee
         border: 1px #bdbdbd solid
-    &.WebElementStatusIndicator
+    &.WStatusIndicator
         border: 1px gray solid
         margin-top: 10px
         margin-bottom: 10px
@@ -102,25 +104,25 @@ input.AddFilterButton
     background-color: #dedede
     border: 1px #bcbbbb solid
 
-.WebElementCheckboxField
+.WCheckboxField
     margin-bottom: 4px
     margin-top: 7px
     clear: both
 
-input.WebElementCheckbox
+input.WCheckbox
     margin-right: 3px
 
 .OptionalCheckboxField
     width: 96%
     margin: 1px
 
-textarea.WebElementTextArea
+textarea.WTextArea
     border-width: 1px
     font-size: 12px
     font-family: Arial, Helvetica, sans-serif
 
 input
-    &.WebElementTextBox
+    &.WTextBox
         &[readonly]
             color: gray
         margin-left: 2px
@@ -128,7 +130,7 @@ input
         border-width: 1px
         font-size: 12px
         font-family: Arial, Helvetica, sans-serif
-    &.WebElementIntegerTextBox
+    &.WIntegerTextBox
         padding: 0px
         margin: 0px
         height: 22px
@@ -139,7 +141,7 @@ input
     cursor: pointer
     cursor: hand
 
-.WebElementDocument
+.WDocument
     margin: 4px
     padding: 3px
     background-color: #ededed
@@ -153,17 +155,17 @@ input
     margin-bottom: 10px
     font-weight: bold
 
-.WebElementUndoDelete
+.WUndoDelete
     margin: 3px
     padding: 3px
 
-.WebElementStoredValue
+.WStoredValue
     margin-right: 4px
 
 .FieldLabel
     font-weight: bold
 
-.WebElementMenu
+.WMenu
     color: black
     position: absolute
     z-index: 900
@@ -175,7 +177,7 @@ input
     margin-left: 3px
     margin-right: 3px
 
-.WebElementAccordion
+.WAccordion
     width: 100%
 
 .AccordionToggle
@@ -192,17 +194,17 @@ input
     padding: 3px
     display: block
 
-.WebElementVerticalRule
+.WVerticalRule
     border-left: 1px gray solid
     height: 100%
     width: 0%
 
-.WebElementJumpToLetter
+.WJumpToLetter
     background-color: #0066CC
     padding-bottom: 10px
     padding-top: 10px
 
-.WebElementLetterSelected
+.WLetterSelected
     font-family: monospace
     color: black
     background-color: white
@@ -212,7 +214,7 @@ input
     padding-left: 5px
     padding-right: 5px
 
-.WebElementLetter
+.WLetter
     &:link, &:active, &:visited
         font-family: monospace
         color: #DADADA
@@ -228,7 +230,7 @@ input
         padding-right: 0px
         width: 100%
 
-div.WebElementBreadCrumb
+div.WBreadCrumb
     border: 1px #868686 solid
     color: black
     background-color: #000000
@@ -247,7 +249,7 @@ a.BreadCrumbLink
         color: white
         background-color: gray
 
-.WebElementTimeFrame
+.WTimeFrame
     margin-top: 2px
     a
         &.selected
@@ -259,7 +261,7 @@ a.BreadCrumbLink
 .TimeFrameLabel
     margin-left: 5px
 
-.WebElementBlock
+.WBlock
     display: block
 
 .StaticFieldDisplay
@@ -277,14 +279,14 @@ a.BreadCrumbLink
         border-color: transparent
         background-color: #E7E7E7
         font-size: 12px
-        &.WebElementMultiSelect
+        &.WMultiSelect
             border: none
             margin-right: 0px
             margin-left: 4px
             border-color: transparent
             background-color: #E7E7E7
             font-size: 12px
-    input.WebElementTextBox
+    input.WTextBox
         border: none
         margin-right: 0px
         margin-left: 4px
@@ -298,14 +300,14 @@ a.BreadCrumbLink
         border-color: transparent
         background-color: #E7E7E7
         font-size: 12px
-        &.WebElementTextArea
+        &.WTextArea
             border: none
             margin-right: 0px
             margin-left: 4px
             border-color: transparent
             background-color: #E7E7E7
             font-size: 12px
-    input.WebElementCheckBox
+    input.WCheckBox
         border: none
         margin-right: 0px
         margin-left: 4px
@@ -313,15 +315,15 @@ a.BreadCrumbLink
         background-color: #E7E7E7
         font-size: 12px
 
-.WebElementLabeledData
+.WLabeledData
     color: rgb(119, 85, 68)
 
-.WebElementDataLabeled
+.WDataLabeled
     margin-left: 5px
     color: rgb(119, 51, 0)
     font-weight: bold
 
-.WebElementActionBox
+.WActionBox
     background-color: #E7E7E7
     border: 1px solid #CCCCCC
     color: #777777
@@ -329,17 +331,17 @@ a.BreadCrumbLink
     padding: 5px
     width: 130px
 
-.WebElementActionBoxHeader
+.WActionBoxHeader
     font-size: 14px
 
-.WebElementActionBox ul
+.WActionBox ul
     margin: 0
     color: #ccc
     padding-left: 1.5em !important
     li
         margin: 0
 
-.WebElementUnrolledSelect
+.WUnrolledSelect
     margin: 0
     padding: 0 !important
     display: block

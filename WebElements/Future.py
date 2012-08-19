@@ -36,7 +36,7 @@ class Horizontal(Box):
             container.addChildElement(childElement)
         else:
             if not childElement.isBlockElement():
-                childElement.addClass("WEBlock")
+                childElement.addClass("WBlock")
             container = childElement
             self.childElements.append(childElement)
 
@@ -77,7 +77,7 @@ class Vertical(Box):
         else:
             childElement.style['clear'] = "both"
             if not childElement.isBlockElement():
-                childElement.addClass("WEBlock")
+                childElement.addClass("WBlock")
             self.childElements.append(childElement)
 
 

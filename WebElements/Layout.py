@@ -149,7 +149,7 @@ class Horizontal(Box):
             container.addChildElement(childElement)
         else:
             if not childElement.isBlockElement():
-                childElement.addClass("WEBlock")
+                childElement.addClass("WBlock")
             container = childElement
             self.childElements.append(childElement)
 
@@ -189,7 +189,7 @@ class Vertical(Box):
         elif childElement.tagName:
             childElement.style['clear'] = "both"
             if not childElement.isBlockElement():
-                childElement.addClass("WEBlock")
+                childElement.addClass("WBlock")
             self.childElements.append(childElement)
         else:
             container = Box()
@@ -378,6 +378,6 @@ class VerticalRule(Base.WebElement):
     def __init__(self, id=None, name=None, parent=None):
         Base.WebElement.__init__(self, id, name, parent)
         self.stylePreference = {'height':'100%'}
-        self.addClass("WEVerticalRule")
+        self.addClass("WVerticalRule")
 
 Factory.addProduct(VerticalRule)

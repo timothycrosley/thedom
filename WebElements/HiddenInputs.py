@@ -28,7 +28,7 @@ class HiddenValue(InputElement):
         self.attributes['type'] = "hidden"
         self.addClass((id or name or '') + "Value")
         self.addClass("Value")
-        self.addClass("WEHiddenInput")
+        self.addClass("WHiddenInput")
         self.addClass(id or name or '')
 
         self.width = "hidden"

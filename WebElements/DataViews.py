@@ -55,7 +55,7 @@ class Table(Base.WebElement):
         def __init__(self, id=None, name=None, parent=None):
             Base.WebElement.__init__(self, id, name, parent)
             self.addClass((id or "").replace(" ", "") + "Column")
-            self.addClass("WEColumn")
+            self.addClass("WColumn")
             self.element = self.addChildElement(Display.FreeText())
             if self.parent and self.parent.parent and getattr(self.parent.parent, 'uniformStyle', None):
                 self.setStyleFromString(self.parent.parent.uniformStyle)
@@ -126,7 +126,7 @@ class Table(Base.WebElement):
     def __init__(self, id=None, name=None, parent=None):
         Base.WebElement.__init__(self, id, name, parent)
 
-        header = self.Row('WETableHeader', parent=self)
+        header = self.Row('WTableHeader', parent=self)
         self.alignHeaders = ""
         self.header = self.addChildElement(header)
         self.rows = []
@@ -255,7 +255,7 @@ class StoredValue(Layout.Box):
     def __init__(self, id=None, name=None, parent=None):
         Layout.Box.__init__(self, name=name + "Container", parent=parent)
 
-        self.addClass("WEStoredValue")
+        self.addClass("WStoredValue")
         label = Display.Label()
         label.setText(id + ": ")
         value = Display.Label()
