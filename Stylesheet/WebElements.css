@@ -1,3 +1,6 @@
+.highlight {
+  overflow: auto; }
+
 .highlight .hll {
   background-color: #49483e; }
 
@@ -238,6 +241,9 @@
   color: #ae81ff; }
 
 /* Literal.Number.Integer.Long */
+.highlight pre {
+  padding: 10px; }
+
 div.WSelectedMultiOption {
   border: 1px gray solid;
   background-color: lightgray;
