@@ -85,4 +85,4 @@ class TestLineChart(ChartTester):
 
 if __name__ == "__main__":
     import subprocess
-    subprocess.Popen("GoodTests.py test_WebElement_Charts.py", shell=True).wait()
+    subprocess.Popen("py.test test_WebElement_Charts.py", shell=True).wait()

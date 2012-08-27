@@ -10,7 +10,7 @@ class TestWebElements_Benchmark(object):
             results = pickle.loads(resultFile.read())
         os.remove(".test_WebElements_Benchmark.results")
         return results
-        
+
     def test_benchmark(self):
         results = self.run_benchmark()
         assert(results['loopedCreate'] < 20.0)

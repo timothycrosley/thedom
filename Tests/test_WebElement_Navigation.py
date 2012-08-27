@@ -113,4 +113,4 @@ class TestBreadCrumb(ElementTester):
 
 if __name__ == "__main__":
     import subprocess
-    subprocess.Popen("GoodTests.py test_WebElement_Navigation.py", shell=True).wait()
+    subprocess.Popen("py.test test_WebElement_Navigation.py", shell=True).wait()

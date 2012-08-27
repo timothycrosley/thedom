@@ -249,8 +249,9 @@ class ElementTester(object):
             element.scriptContainer().toHtml()
 
         try:
-            root = etree.fromstring(element.toHtml().replace("&amp;", "&").replace("&", "&amp;") \
-                                     .replace("&nbsp;", " "), parser)
+            root = etree.fromstring(element.toHtml().replace("&amp;", "&").replace("&", "&amp;"). \
+                                                     replace("&nbsp;", " ").replace("form:error", "span").
+                                                     replace("error", "span"), parser)
         except Exception, e:
             print element.toHtml()
             raise e
@@ -272,4 +273,4 @@ class TestTemplateElement(ElementTester):
 
 if __name__ == "__main__":
     import subprocess
-    subprocess.Popen("GoodTests.py test_WebElement_Base.py", shell=True).wait()
+    subprocess.Popen("py.test test_WebElement_Base.py", shell=True).wait()
