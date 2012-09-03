@@ -9,6 +9,8 @@
 
 """
 
+from IteratorUtils import iterableLength
+
 class PositionController(object):
     """A simple way to control paging and positon within lists
 
@@ -36,7 +38,7 @@ class PositionController(object):
         """
         self.pagesShownAtOnce = pagesShownAtOnce
         self.allItems = items
-        self.length = len(self.allItems)
+        self.length = iterableLength(self.allItems)
         self.empty = not self.length
         self.itemsPerPage = itemsPerPage
 

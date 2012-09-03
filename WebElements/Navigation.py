@@ -17,6 +17,7 @@ import Inputs
 import Layout
 import UITemplate
 from Factory import Factory
+from IteratorUtils import iterableLength
 from MethodUtils import CallBack
 from PositionController import PositionController
 from StringUtils import interpretAsString
@@ -106,10 +107,10 @@ class ItemPager(Layout.Vertical):
             Set a list of items for the item pager to page-through
         """
         itemsPerPage = int(self.itemsPerPage)
-        if len(items) <= itemsPerPage:
+        if iterableLength(items) <= itemsPerPage:
             self.showAllButton.remove()
         elif self.showAllButton.toggled():
-            itemsPerPage = len(items)
+            itemsPerPage = iterableLength(items)
 
         self._pages_ = PositionController(items=items or [], startIndex=self._index_.value(),
                                           itemsPerPage=itemsPerPage,

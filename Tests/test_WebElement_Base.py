@@ -169,8 +169,6 @@ class TestWebElement(object):
         assert self.firstChild.prefix() == ""
         assert self.firstChild.fullId() == "2"
 
-
-
     def test_startTag(self):
         """Test to ensure startTag() works correctly"""
         assert self.container.startTag() == '<div name="1" id="1">'
