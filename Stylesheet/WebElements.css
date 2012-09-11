@@ -614,3 +614,151 @@ a.BreadCrumbLink {
       background-color: transparent;
       background-image: url("tail_li_last.gif");
       height: 14px; }
+
+td {
+  color: black; }
+
+table.table-background td {
+  border: 1px solid #eef0f4; }
+
+th {
+  background-color: #c4d0e4;
+  border-bottom-style: solid;
+  border-bottom-width: thin;
+  border-bottom-color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none; }
+
+.yellow {
+  background-color: #df8c42; }
+
+.rowlight {
+  background-color: #f0f0f0;
+  border: 1px solid black; }
+
+.rowdark {
+  background-color: #dadada;
+  border: 1px solid black; }
+
+table.GlobalTable {
+  border-spacing: 0; }
+  table.GlobalTable tr {
+    height: 25px;
+    color: black;
+    background: #f2faff; }
+    table.GlobalTable tr a {
+      text-decoration: underline;
+      color: #0963bd; }
+    table.GlobalTable tr a:hover {
+      color: #0051a3; }
+    table.GlobalTable tr.taskColorHigh {
+      background: #ff7777; }
+      table.GlobalTable tr.taskColorHigh td {
+        border-bottom: 1px solid #eeeeee; }
+    table.GlobalTable tr.taskColorMedium {
+      background: #ffff99; }
+    table.GlobalTable tr.taskColorLow {
+      background: #99ff99; }
+    table.GlobalTable tr.warning {
+      background: #ffdd77; }
+    table.GlobalTable tr.error {
+      background: #fc797b; }
+  table.GlobalTable tr:hover {
+    background: #fafacd; }
+    table.GlobalTable tr:hover.selected {
+      background: #315672; }
+  table.GlobalTable tr:nth-child(even) {
+    background: white; }
+    table.GlobalTable tr:nth-child(even).taskColorHigh {
+      background: #ff7777; }
+    table.GlobalTable tr:nth-child(even).taskColorMedium {
+      background: #ffff99; }
+    table.GlobalTable tr:nth-child(even).taskColorLow {
+      background: #99ff99; }
+    table.GlobalTable tr:nth-child(even).warning {
+      background: #ffdd77; }
+    table.GlobalTable tr:nth-child(even).error {
+      background: #fc797b; }
+    table.GlobalTable tr:nth-child(even).selected {
+      background: #548bb5;
+      color: white; }
+      table.GlobalTable tr:nth-child(even).selected a {
+        color: white; }
+  table.GlobalTable tr:nth-child(odd) {
+    background: #dedede; }
+    table.GlobalTable tr:nth-child(odd).taskColorHigh {
+      background: #ff7777; }
+    table.GlobalTable tr:nth-child(odd).taskColorMedium {
+      background: #ffff99; }
+    table.GlobalTable tr:nth-child(odd).taskColorLow {
+      background: #99ff99; }
+    table.GlobalTable tr:nth-child(odd).warning {
+      background: #ffdd77; }
+    table.GlobalTable tr:nth-child(odd).error {
+      background: #fc797b; }
+    table.GlobalTable tr:nth-child(odd).selected {
+      background: #548bb5;
+      color: white; }
+      table.GlobalTable tr:nth-child(odd).selected a {
+        color: white; }
+  table.GlobalTable tr:nth-child(even):hover {
+    background: #fafacd; }
+    table.GlobalTable tr:nth-child(even):hover.selected {
+      background: #315672; }
+  table.GlobalTable tr:nth-child(odd):hover {
+    background: #fafacd; }
+    table.GlobalTable tr:nth-child(odd):hover.selected {
+      background: #315672; }
+  table.GlobalTable th {
+    text-align: left;
+    border-right: 1px solid #5ea3ec;
+    border-bottom: none;
+    border-left: none;
+    border-top: none;
+    padding-left: 4px;
+    height: 30px;
+    background: #499bea;
+    background: -moz-linear-gradient(top, #499bea 0%, #207ce5 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #499bea), color-stop(100%, #207ce5));
+    background: -webkit-linear-gradient(top, #499bea 0%, #207ce5 100%);
+    background: -o-linear-gradient(top, #499bea 0%, #207ce5 100%);
+    background: -ms-linear-gradient(top, #499bea 0%, #207ce5 100%);
+    background: linear-gradient(top, #499bea 0%, #207ce5 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#499bea', endColorstr='#207ce5',GradientType=0 );
+    color: white;
+    white-space: nowrap; }
+    table.GlobalTable th a {
+      text-decoration: underline;
+      color: white; }
+    table.GlobalTable th a:hover {
+      color: #cccccc; }
+    table.GlobalTable th a:active {
+      color: #999999; }
+  table.GlobalTable td {
+    border-right: 1px solid #eeeeee;
+    border-left: none;
+    border-bottom: none;
+    border-top: none;
+    padding-left: 3px; }
+    table.GlobalTable td.TableViewSeparator {
+      background: gray;
+      color: white; }
+  table.GlobalTable .selected td {
+    background: #548bb5;
+    color: white; }
+    table.GlobalTable .selected td a {
+      color: white; }
+  table.GlobalTable .rowdark {
+    background: #dedede \9; }
+    table.GlobalTable .rowdark.selected {
+      background: #548bb5;
+      color: white; }
+      table.GlobalTable .rowdark.selected a {
+        color: white; }
+  table.GlobalTable .rowlight {
+    background: white \9; }
+    table.GlobalTable .rowlight.selected {
+      background: #548bb5;
+      color: white; }
+      table.GlobalTable .rowlight.selected a {
+        color: white; }

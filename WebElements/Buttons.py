@@ -29,6 +29,7 @@ class Link(Base.WebElement):
     properties['value'] = {'action':'setDestination'}
     properties['target'] = {'action':'attribute'}
     properties['onclick'] = {'action':'javascriptEvent'}
+    properties['href'] = {'action':'setDestination'}
     tagName = 'a'
 
     def __init__(self, id=None, name=None, parent=None):
