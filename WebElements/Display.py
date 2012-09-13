@@ -178,7 +178,7 @@ class HeaderLabel(Label):
     """
         Defined a heading (h1-h6) label
     """
-    properties = Base.WebElement.properties.copy()
+    properties = Label.properties.copy()
     properties['level'] = {'action':'classAttribute', 'type':'int'}
 
     def __init__(self, id=None, name=None, parent=None):
@@ -190,7 +190,7 @@ class HeaderLabel(Label):
             raise ValueError("Valid levels for headers are 1-6 (h1-6)")
 
         self.tagName = "h%d" % self.level
-        return Base.WebElement.toHtml(self, variableDict, formatted)
+        return Label.toHtml(self, variableDict, formatted)
 
 Factory.addProduct(HeaderLabel)
 

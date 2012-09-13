@@ -73,8 +73,9 @@ class SourceFile(CodeSnippet):
     """
 
     def _getCode(self):
-        with open(self.code, "r") as openFile:
-            return openFile.read()
+        if self.code:
+            with open(self.code, "r") as openFile:
+                return openFile.read()
         return ""
 
     def _getLexer(self):
