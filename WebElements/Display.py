@@ -186,6 +186,7 @@ class HeaderLabel(Label):
         self.level = 2
 
     def toHtml(self, variableDict=None, formatted=False):
+        self.level = int(self.level)
         if self.level > 6 or self.level < 1:
             raise ValueError("Valid levels for headers are 1-6 (h1-6)")
 
