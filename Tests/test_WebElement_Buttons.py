@@ -61,27 +61,27 @@ class TestToggleButton(ElementTester):
     def test_toggle(self):
         assert not self.element.toggled()
         assert self.element.toggledState.value() == 'off'
-        assert not "ToggledOn" in self.element.button.classes
+        assert not "Pushed" in self.element.button.classes
 
         self.element.toggle()
         assert self.element.toggled()
         assert self.element.toggledState.value() == 'on'
-        assert "ToggledOn" in self.element.button.classes
+        assert "Pushed" in self.element.button.classes
 
         self.element.toggle()
         assert not self.element.toggled()
         assert self.element.toggledState.value() == 'off'
-        assert not "ToggledOn" in self.element.button.classes
+        assert not "Pushed" in self.element.button.classes
 
         self.element.toggleOff()
         assert not self.element.toggled()
         assert self.element.toggledState.value() == 'off'
-        assert not "ToggledOn" in self.element.button.classes
+        assert not "Pushed" in self.element.button.classes
 
         self.element.toggleOn()
         assert self.element.toggled()
         assert self.element.toggledState.value() == 'on'
-        assert "ToggledOn" in self.element.button.classes
+        assert "Pushed" in self.element.button.classes
 
     def test_value(self):
         assert self.element.value() == ""
@@ -94,14 +94,14 @@ class TestToggleButton(ElementTester):
         self.element.insertVariables({'Test:Toggled':"on"})
         assert self.element.toggled()
         assert self.element.toggledState.value() == 'on'
-        assert "ToggledOn" in self.element.button.classes
+        assert "Pushed" in self.element.button.classes
 
 
     def test_insertVariablesToggledFalse(self):
         self.element.insertVariables({'Test:Toggled':"off"})
         assert not self.element.toggled()
         assert self.element.toggledState.value() == 'off'
-        assert not "ToggledOn" in self.element.button.classes
+        assert not "Pushed" in self.element.button.classes
 
 
 class TestToggleLink(ElementTester):

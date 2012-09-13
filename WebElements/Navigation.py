@@ -97,7 +97,7 @@ class ItemPager(Layout.Vertical):
         self._pages_ = None
 
         self.connect('beforeToHtml', None, self, '_updateUI_')
-        self.showAllButton.addJavascriptEvent('onclick', "JUReplaceElement(this, JUBuildThrobber());")
+        self.showAllButton.addJavascriptEvent('onclick', "WEReplaceElement(this, WEBuildThrobber());")
         self.showAllButton.connect('jsToggled', None, self, 'jsSetNavigationIndex', 0)
         self.showAllButton.connect('toggled', True, self.showAllButton, 'setValue', 'Show in Pages')
         self.showAllButton.connect('toggled', False, self.showAllButton, 'setValue', 'Show All')
@@ -128,7 +128,7 @@ class ItemPager(Layout.Vertical):
             Creates the javascript to switch to a different position within the items:
             index - the first item you want to appear in your pages results
         """
-        return ("JUGetElement('%(id)sIndex').value = '%(index)d';%(handlers)s;" %
+        return ("WEGetElement('%(id)sIndex').value = '%(index)d';%(handlers)s;" %
                 {'id':self.jsId(), 'index':index, 'handlers':"\n".join(self.emit('jsIndexChanged'))})
 
     def _updateUI_(self):
@@ -201,12 +201,12 @@ class JumpToLetter(Layout.Vertical):
 
         self.connect("beforeToHtml", None, self, "__highlightSelectedLetter__")
         self.addScript("function letterJumpHover(letterJump){"
-                       "    var letterJump = JUGetElement(letterJump);"
+                       "    var letterJump = WEGetElement(letterJump);"
                        "    letterJump.paddingBottom = '4px';"
                        "    letterJump.paggingTop = '3px';"
                        "}")
         self.addScript("function letterJumpLeave(letterJump){"
-                       "    var letterJump = JUGetElement(letterJump);"
+                       "    var letterJump = WEGetElement(letterJump);"
                        "    letterJump.paddingBottom = '10px';"
                        "    letterJump.paggingTop = '10px';"
                        "}")
@@ -215,7 +215,7 @@ class JumpToLetter(Layout.Vertical):
         jsId = self.jsId()
         functionName = jsId.replace(".", "").replace(":", "") + "SelectLetter"
         self.addScript(("function %s(letter){"
-                        "    JUGetElement('%s').value = letter;"
+                        "    WEGetElement('%s').value = letter;"
                         "    %s"
                         "}") % (functionName, self.selectedLetter.jsId(), "\n".join(self.emit("jsLetterClicked"))))
         for letter, link in self.__letterMap__.iteritems():
@@ -349,17 +349,17 @@ class BreadCrumb(Layout.Box):
         return """
                 function submitLink(label, view, key, index){
                     if(index != null){
-                        link = JUGetElement('""" + self.prevLinkClicked.id + """');
+                        link = WEGetElement('""" + self.prevLinkClicked.id + """');
                         link.value = index;
                     }
                     if(key == null){
                         key = label;
                     }
 
-                    JUGetElement('""" + self.label.id  + """').value = label;
-                    JUGetElement('""" + self.location.id + """').value = view;
-                    JUGetElement('""" + self.key.id + """').value = key;
-                    JUGetElement('""" + self.formName + """').submit();
+                    WEGetElement('""" + self.label.id  + """').value = label;
+                    WEGetElement('""" + self.location.id + """').value = view;
+                    WEGetElement('""" + self.key.id + """').value = key;
+                    WEGetElement('""" + self.formName + """').submit();
                 }
                """
 
@@ -417,10 +417,10 @@ class UnrolledSelect(Display.List):
 
         self.addScript("function selectUnrolledOption(option)"
                        "{"
-                       "    var valueElement = JUFellowChild(option, 'WUnrolledSelect', 'Value');"
+                       "    var valueElement = WEFellowChild(option, 'WUnrolledSelect', 'Value');"
                        "    valueElement.value = option.name;"
                        "    valueElement.onchange();"
-                       "    JUStealClassFromFellowChild(option, 'WUnrolledSelect', 'selected');"
+                       "    WEStealClassFromFellowChild(option, 'WUnrolledSelect', 'selected');"
                        "}")
 
         self.connect('beforeToHtml', None, self, '__addLast__')
@@ -573,7 +573,7 @@ class TimeFrame(Layout.Horizontal):
             self.days.setValue(1)
 
     def __addScripts__(self):
-        setTimeFrame = ("JUStealClassFromPeer(this, 'selected');JUPeer(this, 'Value').value = '%d';" +
+        setTimeFrame = ("WEStealClassFromPeer(this, 'selected');WEPeer(this, 'Value').value = '%d';" +
                         "".join(self.emit("jsTimeFrameChanged")))
         valueMap = {0:self.anyTime, 1:self.hours24, 7:self.days7, 14:self.days14}
         for value, element in valueMap.iteritems():

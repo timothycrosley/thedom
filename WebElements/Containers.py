@@ -33,17 +33,17 @@ class DropDownMenu(Layout.Box):
                         "{"
                         "   isPopupOpen = true;"
                         "   if(currentDropDown && currentDropDown != menu){"
-                        "       JUHideElement(currentDropDown);"
-                        "       JURemoveClass(currentButton, 'SelectedDropDown');"
+                        "       WEHideElement(currentDropDown);"
+                        "       WERemoveClass(currentButton, 'SelectedDropDown');"
                         "   }"
                         "   currentDropDown = menu;"
                         "   currentButton = button;"
-                        "   if(!openOnly || !JUElementShown(currentDropDown)){"
-                        "        if(JUToggleDropDown(currentDropDown, parentElement)){"
-                        "           JUAddClass(button, 'SelectedDropDown');"
+                        "   if(!openOnly || !WEElementShown(currentDropDown)){"
+                        "        if(WEToggleDropDown(currentDropDown, parentElement)){"
+                        "           WEAddClass(button, 'SelectedDropDown');"
                         "        }"
                         "        else{"
-                        "           JURemoveClass(button, 'SelectedDropDown');"
+                        "           WERemoveClass(button, 'SelectedDropDown');"
                         "       }"
                         "   }"
                         "   "
@@ -53,9 +53,9 @@ class DropDownMenu(Layout.Box):
                               "{"
                               "   try{ x = currentDropDown; }"
                               "   catch(e){ window.currentDropDown = null; }"
-                              "   JUHideElement(currentDropDown);"
+                              "   WEHideElement(currentDropDown);"
                               "   if(currentButton){"
-                              "     JURemoveClass(currentButton, 'SelectedDropDown');"
+                              "     WERemoveClass(currentButton, 'SelectedDropDown');"
                               "   }"
                               "}")
 
@@ -82,19 +82,19 @@ class DropDownMenu(Layout.Box):
         self.addScript(self.jsToggleDropDown)
         self.addScript(self.jsPopupOnClick)
 
-    def setToggleButton(self, toggleButton, relation="JUPeer"):
+    def setToggleButton(self, toggleButton, relation="WEPeer"):
         """
             Sets the button that controls the toggling of the menu
 
             toggleButton - the control button
-            relation - the relational javascript method to call to get the menu aka "JUPeer" or "JUChildElement"
+            relation - the relational javascript method to call to get the menu aka "WEPeer" or "WEChildElement"
         """
         self.toggle = toggleButton
         if self.id:
             self.toggle.id = self.id + ":Toggle"
         self.toggle.addJavascriptEvent('onclick', "toggleDropDown(%s(this, 'WebElementMenu'), %s, this, %s);" %
                                         (relation, ((self.openOnly and "true") or "false"),
-                                    (self.parentElement and "JUGetElement('%s')" % self.parentElement) or "null"))
+                                    (self.parentElement and "WEGetElement('%s')" % self.parentElement) or "null"))
         self.toggle.addClass("WebElementToggle")
         return toggleButton
 
@@ -141,8 +141,8 @@ class CollapsedText(DropDownMenu):
     def __updateUI__(self):
         text = self.text()
         if len(text or '') > int(self.lengthLimit or 0):
-            self.label.parent.addJavascriptEvent('onmouseover', "JUDisplayDropDown(JUPeer(this, 'WebElementMenu'));")
-            self.label.parent.addJavascriptEvent('onmouseout', "JUHideElement(JUPeer(this, 'WebElementMenu'));")
+            self.label.parent.addJavascriptEvent('onmouseover', "WEDisplayDropDown(WEPeer(this, 'WebElementMenu'));")
+            self.label.parent.addJavascriptEvent('onmouseout', "WEHideElement(WEPeer(this, 'WebElementMenu'));")
             self.label.setText(text[:int(self.lengthLimit) - 3] + "...")
             self.completeText = self.addChildElement(Display.Label())
             self.completeText.setText(text)
@@ -187,7 +187,7 @@ class Autocomplete(Layout.Box):
                             function CloseLastAutocompletePopup()
                             {
                                 if(AutoCompletePopup && !MenuClicked){
-                                    JUHideElement(AutoCompletePopup)
+                                    WEHideElement(AutoCompletePopup)
                                 }
                                 if(prevFunction)prevFunction();
                                 MenuClicked = false;
@@ -209,15 +209,15 @@ class Autocomplete(Layout.Box):
 
     def jsShowIfActive(self):
         return """if(event.keyCode != ENTER){
-                    var menu = JUPeer(this, 'WebElementMenu');
+                    var menu = WEPeer(this, 'WebElementMenu');
                     if(this.value""" + (self.blockTab and " && event.keyCode != TAB)" or ")") + """
                     {
-                        JUShowElement(menu);
+                        WEShowElement(menu);
                         AutoCompletePopup = menu;
                     }
                     else
                     {
-                        JUHideElement(menu);
+                        WEHideElement(menu);
                         AutoCompletePopup = null;
                     }
                   }
@@ -261,13 +261,13 @@ class Tab(Layout.Box):
 
         @staticmethod
         def jsSelect(tab):
-            return ("JURemoveClass(%(tab)s, 'UnselectedTabLabel');"
-                    "JUAddClass(%(tab)s, 'SelectedTabLabel');") % {'tab':tab}
+            return ("WERemoveClass(%(tab)s, 'UnselectedTabLabel');"
+                    "WEAddClass(%(tab)s, 'SelectedTabLabel');") % {'tab':tab}
 
         @staticmethod
         def jsUnselect(tab):
-            return ("JURemoveClass(%(tab)s, 'SelectedTabLabel');"
-                    "JUAddClass(%(tab)s, 'UnselectedTabLabel');") % {'tab':tab}
+            return ("WERemoveClass(%(tab)s, 'SelectedTabLabel');"
+                    "WEAddClass(%(tab)s, 'UnselectedTabLabel');") % {'tab':tab}
 
     def __init__(self, id, name=None, parent=None):
         Layout.Box.__init__(self, id=id, name=name, parent=parent)
@@ -341,10 +341,10 @@ class TabContainer(Base.WebElement):
         """
             Returns the javascript code to select an individual tab client side
         """
-        return (("JUHideElement(%(tabContainer)s_selectedTab);" +
+        return (("WEHideElement(%(tabContainer)s_selectedTab);" +
                  tab.TabLabel.jsUnselect("%s_selectedTab + 'Label'" % self.jsId()) +
                  "%(tabContainer)s_selectedTab = '%(tab)s';"
-                 "JUShowElement(%(tabContainer)s_selectedTab);" +
+                 "WEShowElement(%(tabContainer)s_selectedTab);" +
                  tab.TabLabel.jsSelect("'" + tab.jsId() + "Label'")) %
                     {'tab':tab.jsId(),
                      'tabContainer':self.jsId()})
@@ -429,10 +429,10 @@ class Accordion(Layout.Vertical):
         """
             Returns the javascript that will toggle the label on client side
         """
-        return """if (!JUElementShown('%s')){
-                     JUShowElement('%s');
-                     JUGetElement('%s').value = 'True';
-                     JUGetElement('%s').src = 'images/hide.gif'
+        return """if (!WEElementShown('%s')){
+                     WEShowElement('%s');
+                     WEGetElement('%s').value = 'True';
+                     WEGetElement('%s').src = 'images/hide.gif'
                    }
                 """ % (self.contentElement.jsId(), self.contentElement.jsId(),
                        self.isOpen.jsId(), self.toggleImage.jsId())
@@ -441,10 +441,10 @@ class Accordion(Layout.Vertical):
         """
             Returns the javascript that will toggle the label off client side
         """
-        return """if (JUElementShown('%s')){
-                     JUHideElement('%s');
-                     JUGetElement('%s').value = 'False';
-                     JUGetElement('%s').src = 'images/show.gif'
+        return """if (WEElementShown('%s')){
+                     WEHideElement('%s');
+                     WEGetElement('%s').value = 'False';
+                     WEGetElement('%s').src = 'images/show.gif'
                    }
                 """ % (self.contentElement.jsId(), self.contentElement.jsId(),
                        self.isOpen.jsId(), self.toggleImage.jsId())
@@ -457,14 +457,14 @@ class Accordion(Layout.Vertical):
                                                    self.isOpen.jsId())
     @staticmethod
     def toggleAccordion(elementContent, elementImage, elementValue):
-        return """if(!JUElementShown(elementContent)){
-                     JUShowElement(elementContent);
+        return """if(!WEElementShown(elementContent)){
+                     WEShowElement(elementContent);
                      elementValue.value = 'True';
                      elementImage.src = 'images/hide.gif'
                   }
                   else
                   {
-                     JUHideElement(elementContent);
+                     WEHideElement(elementContent);
                      elementValue.value = 'False';
                      elementImage.src = 'images/show.gif'
                   }"""

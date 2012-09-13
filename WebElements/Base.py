@@ -108,7 +108,7 @@ class WebElement(Connectable):
         Same as jsSetAttribute, but sets the attibute to
         the value of an expression instead of a string
         '''
-        return "JUSetAttribute('%s','%s',%s);" % (self.jsId(), attribute, expression)
+        return "WESetAttribute('%s','%s',%s);" % (self.jsId(), attribute, expression)
 
 
     def jsAttribute(self, attribute):
@@ -116,7 +116,7 @@ class WebElement(Connectable):
             Returns the value for an attribute client side:
                 attribute - the name of the attribute
         """
-        return ("JUAttribute('" + self.jsId() +  "', '" + attribute + "');")
+        return ("WEAttribute('" + self.jsId() +  "', '" + attribute + "');")
 
     def reset(self):
         """

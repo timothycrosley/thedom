@@ -156,7 +156,7 @@ class ScriptContainer(Base.WebElement):
 
         for var in attributes:
             if var.startswith("element"):
-                script.append('\tvar %s = JUGetElement(%s);' % (var, var))
+                script.append('\tvar %s = WEGetElement(%s);' % (var, var))
         script.append(interpretAsString(jsFunction(**attributeValues)))
         script.append("}\n")
 

@@ -146,7 +146,7 @@ class InputElement(ValueElement):
         '''
         Returns javascript to disable this input clientside
         '''
-        return 'JUGetElement(\'%s\').disabled = %s;' % (self.id, str(disabled))
+        return 'WEGetElement(\'%s\').disabled = %s;' % (self.id, str(disabled))
 
 
 class CheckBox(InputElement):
@@ -200,7 +200,7 @@ class CheckBox(InputElement):
         '''
         Return javascript to check/uncheck the checkbox.
         '''
-        return 'JUGetElement(\'%s\').checked = %s' % (self.id, str(checked))
+        return 'WEGetElement(\'%s\').checked = %s' % (self.id, str(checked))
 
     def setValueAttributeFromString(self, value):
         '''
@@ -279,7 +279,7 @@ class TextBox(InputElement):
         """
             Returns the javascript to select all the text in the textbox clientside
         """
-        return """textBox = JUGetElement('""" + (id or self.id) + """');
+        return """textBox = WEGetElement('""" + (id or self.id) + """');
                   textBox.focus();
                   textBox.select();"""
 

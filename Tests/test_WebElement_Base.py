@@ -172,7 +172,7 @@ class TestWebElement(object):
     def test_startTag(self):
         """Test to ensure startTag() works correctly"""
         assert self.container.startTag() == '<div name="1" id="1">'
-        assert self.firstChild.startTag() == '<input name="2" id="2" type="text" class="WETextBox" />'
+        assert self.firstChild.startTag() == '<input name="2" id="2" type="text" class="WTextBox" />'
 
     def test_endTag(self):
         """Test to ensure endTag() works correctly"""
@@ -182,14 +182,14 @@ class TestWebElement(object):
 
     def test_content(self):
         """Test to ensure content() works correctly"""
-        assert self.container.content() == '<input name="2" id="2" type="text" class="WETextBox" />'
+        assert self.container.content() == '<input name="2" id="2" type="text" class="WTextBox" />'
         assert self.firstChild.content() == ''
 
     def test_toHtml(self):
         """Test to ensure toHtml() works correctly"""
         assert self.container.toHtml() == '<div name="1" id="1"><input' + \
-                                          ' name="2" id="2" type="text" class="WETextBox" /></div>'
-        assert self.firstChild.toHtml({}) == '<input name="2" id="2" type="text" class="WETextBox" />'
+                                          ' name="2" id="2" type="text" class="WTextBox" /></div>'
+        assert self.firstChild.toHtml({}) == '<input name="2" id="2" type="text" class="WTextBox" />'
 
     def test_insertExportVariables(self):
         """Test to ensure inserting variables updates a webElement correctly,

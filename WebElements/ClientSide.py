@@ -50,8 +50,8 @@ def focus(elementId, selectText=False):
         Returns the javascript to focus on an input box based on id
     """
     if not selectText:
-        return "JUGetElement('%s').focus();" % elementId
-    return ("var inputElement = JUGetElement('%s');"
+        return "WEGetElement('%s').focus();" % elementId
+    return ("var inputElement = WEGetElement('%s');"
             "inputElement.focus();"
             "inputElement.select();") % elementId
 
@@ -70,7 +70,7 @@ def setValue(elementId, value):
     """
         Returns the javascript to set the value of an input element
     """
-    return "JUGetElement('%s').value = %s;" % (elementId, repr(value))
+    return "WEGetElement('%s').value = %s;" % (elementId, repr(value))
 
 def redirect(to):
     """
@@ -83,10 +83,10 @@ def showIfSelected(option, elementToShow):
         Returns the javascript to only show the selected if it is selected
     """
     return """if (this.value == '%s'){
-                        JUShowElement('%s');
+                        WEShowElement('%s');
                     }
                     else {
-                        JUHideElement('%s');
+                        WEHideElement('%s');
                     }
                 """ % (option, elementToShow, elementToShow)
 
@@ -95,9 +95,9 @@ def showIfChecked(elementToShow):
         Returns the javascript to only show an element if a certain checkbox is selected
     """
     return """if (this.checked){
-                   JUGetElement('%s').disabled = '';
+                   WEGetElement('%s').disabled = '';
                 }
                 else {
-                   JUGetElement('%s').disabled = 'true';
+                   WEGetElement('%s').disabled = 'true';
                 }
             """ % (elementToShow, elementToShow)

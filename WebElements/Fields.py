@@ -356,27 +356,27 @@ Factory.addProduct(SelectField)
 class MultiFieldClientSide(object):
 
     def removeSelectedOption(self, button, sortBy):
-        selectionBox = JUFellowChild(button, 'multiField', 'selectionBox')
-        hiddenMultiSelect = JUFellowChild(button, 'multiField', 'hiddenMultiSelectionField')
-        shownOption = JUGetElementByClassName('valueSelected', button.parentNode)
-        hiddenOption = JUGetElementByInnerHTML(hiddenMultiSelect, shownOption.innerHTML)
-        JUAddOption(selectionBox, hiddenOption.innerHTML, hiddenOption.value)
-        JURemoveElement(button.parentNode)
-        JURemoveElement(hiddenOption)
+        selectionBox = WEFellowChild(button, 'multiField', 'selectionBox')
+        hiddenMultiSelect = WEFellowChild(button, 'multiField', 'hiddenMultiSelectionField')
+        shownOption = WEGetElementByClassName('valueSelected', button.parentNode)
+        hiddenOption = WEGetElementByInnerHTML(hiddenMultiSelect, shownOption.innerHTML)
+        WEAddOption(selectionBox, hiddenOption.innerHTML, hiddenOption.value)
+        WERemoveElement(button.parentNode)
+        WERemoveElement(hiddenOption)
         if sortBy == "innerHTML":
-            JUSortSelect(selectionBox)
+            WESortSelect(selectionBox)
         elif sortBy == "value":
-            JUSortSelectByValue(selectionBox)
+            WESortSelectByValue(selectionBox)
 
     def addSelectedOption(self, selectBox):
-        shownSelection = JUFellowChild(selectBox, 'multiField', 'selectContainer')
-        hiddenMultiSelect = JUFellowChild(selectBox, 'multiField', 'hiddenMultiSelectionField')
-        selected = JUSelectedOption(selectBox)
-        shownSelection.innerHTML += JUUnserialize('%s')
-        JUAddOption(hiddenMultiSelect, selected.innerHTML, selected.value)
-        JUSelectOption(selectBox, ' ')
-        JURemoveElement(selected)
-        JUSelectAllOptions(hiddenMultiSelect)
+        shownSelection = WEFellowChild(selectBox, 'multiField', 'selectContainer')
+        hiddenMultiSelect = WEFellowChild(selectBox, 'multiField', 'hiddenMultiSelectionField')
+        selected = WESelectedOption(selectBox)
+        shownSelection.innerHTML += WEUnserialize('%s')
+        WEAddOption(hiddenMultiSelect, selected.innerHTML, selected.value)
+        WESelectOption(selectBox, ' ')
+        WERemoveElement(selected)
+        WESelectAllOptions(hiddenMultiSelect)
 
 class MultiField(SelectField):
     """
@@ -575,7 +575,7 @@ class CheckboxField(BaseField):
         """
             Returns javascript that will toggle the visibility of the checkbox field child elements clientside
         """
-        javascript = "JUToggleElement('" + self.childContainer.fullId() + "');"
+        javascript = "WEToggleElement('" + self.childContainer.fullId() + "');"
         return javascript
 
     def validators(self, useFullId=True):
@@ -634,9 +634,9 @@ class IntegerField(BaseField):
         maximum = self.userInput.maximum
         if maximum == None:
             maximum = "undefined"
-        self.up.addJavascriptEvent('onclick', "JUIncrement('%s', %s);" %
+        self.up.addJavascriptEvent('onclick', "WEIncrement('%s', %s);" %
                                  (self.userInput.jsId(), str(maximum)))
-        self.down.addJavascriptEvent('onclick', "JUDeincrement('%s', %s);" %
+        self.down.addJavascriptEvent('onclick', "WEDeincrement('%s', %s);" %
                                  (self.userInput.jsId(), str(minimum)))
 
     def __updateReadOnly__(self):
@@ -703,7 +703,7 @@ class DateField(TextField):
         else:
             calendarType = "lcl"
 
-        return ("%sCalendar.popUpCalendar(this, JUGetElement('%s'), '%s')" %
+        return ("%sCalendar.popUpCalendar(this, WEGetElement('%s'), '%s')" %
                 (calendarType, self.userInput.fullId(), self.dateFormat))
 
 Factory.addProduct(DateField)
@@ -860,11 +860,11 @@ class Filter(Layout.Box):
         removeButton.addClass('RemoveFilter')
         removeButton.addJavascriptEvent("onclick", CallBack(self, 'jsRemoveFilter'))
         removeButton.addJavascriptEvent("onmouseover",
-                                        """JUAddClass(JUParentElement(this,
+                                        """WEAddClass(WEParentElement(this,
                                                                       'Filter'),
                                                         'FilterHighlight');""")
         removeButton.addJavascriptEvent("onmouseout",
-                                        """JURemoveClass(JUParentElement(this,
+                                        """WERemoveClass(WEParentElement(this,
                                                                       'Filter'),
                                                         'FilterHighlight');""")
         self.removeButton = filterContainer.addChildElement(removeButton)
@@ -927,66 +927,66 @@ class Filter(Layout.Box):
     def javascriptAddFilter(element, filterType, toggledOn):
         return """
             if(toggledOn){
-                parentFilter = JUParentElement(element, 'WFilter');
-                filter = JUGetElementByClassName('WFilter', parentFilter);
+                parentFilter = WEParentElement(element, 'WFilter');
+                filter = WEGetElementByClassName('WFilter', parentFilter);
                 if(!filter){
-                    filter = JUCopy(parentFilter,
-                                    JUGetElementByClassName('subFilter',
+                    filter = WECopy(parentFilter,
+                                    WEGetElementByClassName('subFilter',
                                                             parentFilter));
-                    oldTerm = JUGetElementByClassName('FilterTerm',
+                    oldTerm = WEGetElementByClassName('FilterTerm',
                                                         parentFilter);
-                    newTerm = JUGetElementByClassName('FilterTerm', filter);
+                    newTerm = WEGetElementByClassName('FilterTerm', filter);
                     newTerm.value = oldTerm.value;
                     newTerm.focus();
                     newTerm.select();
-                    JUGetElementByClassName('RemoveFilter', filter).style.display = 'block';
+                    WEGetElementByClassName('RemoveFilter', filter).style.display = 'block';
                 }
-                JUGetElementByClassName('filterType', filter).value = filterType;
+                WEGetElementByClassName('filterType', filter).value = filterType;
             }
             else{
-                JURemoveElement(JUGetElementByClassName('WFilter',
-                                        JUParentElement(element, 'WFilter')));
+                WERemoveElement(WEGetElementByClassName('WFilter',
+                                        WEParentElement(element, 'WFilter')));
             }"""
 
     @staticmethod
     def javascriptRemoveFilter(element):
         return """
-                thisFilter = JUParentElement(element, 'WFilter');
-                childFilter = JUGetElementByClassName('WFilter', thisFilter);
-                filterType = JUGetElementByClassName('filterType',
+                thisFilter = WEParentElement(element, 'WFilter');
+                childFilter = WEGetElementByClassName('WFilter', thisFilter);
+                filterType = WEGetElementByClassName('filterType',
                                                      childFilter).value;
 
-                AndButton = JUGetElementByClassName('AddAndFilter', thisFilter);
-                OrButton = JUGetElementByClassName('AddOrFilter', thisFilter);
-                parentFilter = JUParentElement(thisFilter, 'WFilter');
+                AndButton = WEGetElementByClassName('AddAndFilter', thisFilter);
+                OrButton = WEGetElementByClassName('AddOrFilter', thisFilter);
+                parentFilter = WEParentElement(thisFilter, 'WFilter');
 
-                parentAndButton = JUGetElementByClassName('AddAndFilter',
+                parentAndButton = WEGetElementByClassName('AddAndFilter',
                                                           parentFilter);
-                parentOrButton = JUGetElementByClassName('AddOrFilter',
+                parentOrButton = WEGetElementByClassName('AddOrFilter',
                                                          parentFilter);
 
                 parentOrButton.className = OrButton.className;
                 parentAndButton.className = AndButton.className;
 
                 if(filterType == 'Or'){
-                    JUNextElement(parentOrButton).value = 'on';
-                    JUNextElement(parentAndButton).value = 'off';
+                    WENextElement(parentOrButton).value = 'on';
+                    WENextElement(parentAndButton).value = 'off';
                 }
                 else if(filterType == 'And'){
-                    JUNextElement(parentAndButton).value = 'on';
-                    JUNextElement(parentOrButton).value = 'off';
+                    WENextElement(parentAndButton).value = 'on';
+                    WENextElement(parentOrButton).value = 'off';
                 }
                 else{
-                    JUNextElement(parentAndButton).value = 'off';
-                    JUNextElement(parentOrButton).value = 'off';
+                    WENextElement(parentAndButton).value = 'off';
+                    WENextElement(parentOrButton).value = 'off';
                 }
 
                 if(childFilter)
                 {
-                    JUMove(childFilter,
-                        JUGetElementByClassName('subFilter', parentFilter));
+                    WEMove(childFilter,
+                        WEGetElementByClassName('subFilter', parentFilter));
                 }
-                JURemoveElement(thisFilter);
+                WERemoveElement(thisFilter);
                """
 
     def addSearchField(self, searchField):

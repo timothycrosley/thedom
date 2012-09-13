@@ -8,8 +8,10 @@ import types
 
 from DictUtils import OrderedDict
 
+ITERATOR_TYPES = (types.GeneratorType, types.ListType, types.TupleType, set)
+
 def iterableLength(iterable):
-    if getattr(iterable, 'count'):
+    if type(iterable) not in ITERATOR_TYPES and getattr(iterable, 'count'):
         return iterable.count()
     else:
         return len(iterable)

@@ -186,7 +186,7 @@ class AjaxController(Layout.Box):
     @staticmethod
     def _ajaxFields(view):
         return """
-                var pageControl = JUAttribute(view + "Controller", "serverController");
+                var pageControl = WEAttribute(view + "Controller", "serverController");
 
                 var fields = document.sharedFields;
                 fields = fields.concat(document['sharedWith' + pageControl]);
@@ -197,7 +197,7 @@ class AjaxController(Layout.Box):
     @staticmethod
     def _ajaxForms(view):
         return """
-                var pageControl = JUAttribute(view + "Controller", "serverController");
+                var pageControl = WEAttribute(view + "Controller", "serverController");
 
                 var forms = Array();
                 forms = forms.concat(document.sharedForms);
@@ -211,13 +211,13 @@ class AjaxController(Layout.Box):
         return """
                 var parameters = Array();
                 for(var currentField = 0; currentField < fields.length; currentField++){
-                    field = JUGetElement(fields[currentField]);
+                    field = WEGetElement(fields[currentField]);
                     if(field && field.name){
                         parameters.push(Form.Element.serialize(field));
                     }
                 }
                 for(var currentForm = 0; currentForm < forms.length; currentForm++){
-                    var form = JUGetElement(forms[currentForm]);
+                    var form = WEGetElement(forms[currentForm]);
                     if(form){
                         parameters = parameters.concat(Form.serialize(form).split("&"));
                     }
@@ -227,22 +227,22 @@ class AjaxController(Layout.Box):
                 }
 
                 if(typeof(views) == typeof("")){
-                    var controller = JUGetElement(views + "Controller");
-                    var pageControl = JUAttribute(controller, "serverController");
+                    var controller = WEGetElement(views + "Controller");
+                    var pageControl = WEAttribute(controller, "serverController");
                     parameters.push("pageControl=" + encodeURIComponent(pageControl));
                     parameters.push(Form.serialize(controller));
                 }
                 else if(typeof(views) == typeof([])){
                     for(currentView = 0; currentView < views.length; currentView++){
                         var view = views[currentView];
-                        var controller = JUGetElement(view + "Controller");
-                        var pageControl = JUAttribute(controller, "serverController");
+                        var controller = WEGetElement(view + "Controller");
+                        var pageControl = WEAttribute(controller, "serverController");
 
                         parameters.push("pageControls=" + encodeURIComponent(pageControl));
                         parameters.push("pageControlView=" + encodeURIComponent(view));
                         parameters.push(encodeURIComponent(view) + "Form=" +
-                                        JUReplaceAll(
-                                            JUReplaceAll(Form.serialize(controller), "&", "[-AND-]"),
+                                        WEReplaceAll(
+                                            WEReplaceAll(Form.serialize(controller), "&", "[-AND-]"),
                                             "=", "[-EQUALS-]"));
                     }
                     parameters.push("pageControl=UpdateMultiple");
@@ -258,8 +258,8 @@ class AjaxController(Layout.Box):
                 var forms = Array();
                 for(currentView = 0; currentView < views.length; currentView++){
                     var view = views[currentView];
-                    JUCombine(fields, _ajaxFields(view));
-                    JUCombine(forms, _ajaxForms(view));
+                    WECombine(fields, _ajaxFields(view));
+                    WECombine(forms, _ajaxForms(view));
                 }
 
                 return _ajaxSerialize(views, fields, forms, mode);
@@ -349,12 +349,12 @@ class AjaxController(Layout.Box):
     @staticmethod
     def _ajaxGetMultiple(views, mode, silent, parameters):
         return """
-                servlet = JUGetElement('servletName').value;
+                servlet = WEGetElement('servletName').value;
                 if(!silent){
                     for(currentView = 0; currentView < views.length; currentView++){
                         view = views[currentView];
-                        JUHideElement(view);
-                        JUShowElement(view + ':Loading');
+                        WEHideElement(view);
+                        WEShowElement(view + ':Loading');
                     }
                 }
 
@@ -387,10 +387,10 @@ class AjaxController(Layout.Box):
     @staticmethod
     def _ajaxGet(view, mode, silent, parameters):
         return """
-                servlet = JUGetElement('servletName').value;
+                servlet = WEGetElement('servletName').value;
                 if(!silent){
-                    JUHideElement(view);
-                    JUShowElement(view + ':Loading');
+                    WEHideElement(view);
+                    WEShowElement(view + ':Loading');
                 }
 
                 abortAjaxUpdate(view);
@@ -411,16 +411,16 @@ class AjaxController(Layout.Box):
     def applyAjaxUpdate(data, view, silent=False):
         return """
                 if(!silent){
-                    JUShowElement(view);
+                    WEShowElement(view);
                 }
                 loadingPageControls[view] = null;
-                JUHideElement(view + ':Loading');
-                var view = JUGetElement(view);
-                childElements = JUChildElements(view);
-                setTimeout("JUDoInPageJavascript('" + view.id + "');", 10);
+                WEHideElement(view + ':Loading');
+                var view = WEGetElement(view);
+                childElements = WEChildElements(view);
+                setTimeout("WEDoInPageJavascript('" + view.id + "');", 10);
                 defaults = document.getElementById(view.id + ":Defaults");
                 if(defaults){
-                    JURemoveElement(defaults);
+                    WERemoveElement(defaults);
                 }
                 //alert(document.activeElement.tagName);
                 if(document.activeElement && (document.activeElement.tagName.toLowerCase() == "input" ||
@@ -430,18 +430,18 @@ class AjaxController(Layout.Box):
                 {
                     var lastSelectedId = document.activeElement.id;
                     if(lastSelectedId){
-                        setTimeout("var element = JUGetElement('" + lastSelectedId + "'); element.focus();", 10);
+                        setTimeout("var element = WEGetElement('" + lastSelectedId + "'); element.focus();", 10);
                     }
                     if(document.activeElement.type == "text"){
                         var selectStart = document.activeElement.selectionStart;
                         var selectEnd = document.activeElement.selectionEnd;
                         if(selectStart != selectEnd){
-                            setTimeout("JUSelectText('" + lastSelectedId + "', " + selectStart + ", " + selectEnd + ");", 11);
+                            setTimeout("WESelectText('" + lastSelectedId + "', " + selectStart + ", " + selectEnd + ");", 11);
                         }
                    }
                 }
 
-                var callFunction = JUAttribute(view.id + "Controller", "callFunction");
+                var callFunction = WEAttribute(view.id + "Controller", "callFunction");
                 if(callFunction){
                     setTimeout(callFunction + "(document.JSONDATA);document.JSONDATA = null;", 11);
                 }

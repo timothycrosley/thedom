@@ -171,7 +171,7 @@ class Table(Base.WebElement):
         """
             Makes the table sortable client side
         """
-        self.addScript('ts_makeSortable(JUGetElement("%s"));' % self.jsId())
+        self.addScript('ts_makeSortable(WEGetElement("%s"));' % self.jsId())
 
     def addColumn(self, columnName, showName=True):
         """
@@ -262,7 +262,7 @@ class StoredValue(Layout.Box):
         value.strong = True
         hiddenValue = HiddenInputs.HiddenValue(name=name)
         hiddenValue.addJavascriptEvent('onchange',
-                                       "JUPrevElement(this).innerHTML = this.value;")
+                                       "WEPrevElement(this).innerHTML = this.value;")
 
         hiddenValue.connect('valueChanged', None, value, 'setText')
 
