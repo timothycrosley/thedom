@@ -190,7 +190,7 @@ class HeaderLabel(Label):
             raise ValueError("Valid levels for headers are 1-6 (h1-6)")
 
         self.tagName = "h%d" % self.level
-        Base.WebElement.toHtml(self, variableDict, formatted)
+        return Base.WebElement.toHtml(self, variableDict, formatted)
 
 Factory.addProduct(HeaderLabel)
 
