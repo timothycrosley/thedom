@@ -3,6 +3,15 @@
     pre
         padding: 10px
         overflow: auto
+
+.ClearFix
+    *zoom: 1
+    &:before, &:after
+        display: table
+        content: ""
+    &:after
+        clear: both
+
 div
     &.WSelectedMultiOption
         border: 1px gray solid

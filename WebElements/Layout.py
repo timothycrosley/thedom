@@ -124,6 +124,10 @@ class Horizontal(Box):
     """
         A container element that adds child elements horizontally.
     """
+    def __init__(self, id=None, name=None, parent=None):
+        Box.__init__(self, id, name, parent)
+        self.addClass("ClearFix")
+
     def addChildElement(self, childElement, align=None, width=None, style=None, ensureUnique=True):
         if width is not None:
             childElement.widthPreference = width
@@ -166,7 +170,6 @@ class Horizontal(Box):
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
-        lineBreak = Box.addChildElement(self, LineBreak())
         returnValue = Box.toHtml(self, valueDict, formatted=formatted)
         self.childElements = oldChildElements
         return returnValue
@@ -178,6 +181,10 @@ class Vertical(Box):
     """
         A container that encourage elements to be added vertically with minimum html
     """
+    def __init__(self, id=None, name=None, parent=None):
+        Box.__init__(self, id, name, parent)
+        self.addClass("ClearFix")
+
     def addChildElement(self, childElement, style=None, ensureUnique=True):
         if style:
             childElement.style.update(style)
@@ -202,7 +209,6 @@ class Vertical(Box):
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
-        lineBreak = Box.addChildElement(self, LineBreak())
         returnValue = Box.toHtml(self, valueDict, formatted=formatted)
         self.childElements = oldChildElements
         return returnValue

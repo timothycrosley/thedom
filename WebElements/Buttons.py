@@ -13,7 +13,8 @@ import ClientSide
 import Display
 import Factory
 import Layout
-from Inputs import InputElement, TextBox
+from Inputs import InputElement
+from HiddenInputs import HiddenValue
 from MethodUtils import CallBack
 
 Factory = Factory.Factory(Base.Invalid, name="Buttons")
@@ -235,11 +236,11 @@ class ToggleButton(Layout.Box):
 
         button = self.__createToggle__(id)
         button.addJavascriptEvent('onClick', CallBack(self, 'jsToggle'))
+        button.addClass("WToggleButton")
         self.button = self.addChildElement(button)
 
-        toggledState = TextBox(id + ":Toggled")
+        toggledState = HiddenValue(id + ":Toggled")
         toggledState.setValue('off')
-        toggledState.attributes['type'] = 'hidden'
         self.toggledState = self.addChildElement(toggledState)
 
     def __createToggle__(self, id):
@@ -258,8 +259,8 @@ class ToggleButton(Layout.Box):
         """
             Turns the toggle off
         """
-        if 'ToggledOn' in self.button.classes:
-            self.button.removeClass('ToggledOn')
+        if 'Pushed' in self.button.classes:
+            self.button.removeClass('Pushed')
             self.toggledState.setValue('off')
             self.emit('toggled', False)
 
@@ -267,7 +268,7 @@ class ToggleButton(Layout.Box):
         """
             Turns the toggle on
         """
-        self.button.addClass('ToggledOn')
+        self.button.addClass('Pushed')
         self.toggledState.setValue('on')
         self.emit('toggled', True)
 
@@ -288,7 +289,7 @@ class ToggleButton(Layout.Box):
         """
         return """
                 var element = JUGetElement('""" + self.button.jsId() + """');
-                JURemoveClass(element, 'ToggledOn');
+                JURemoveClass(element, 'Pushed');
                 JUNextElement(element).value = 'off';
                """
 
@@ -298,7 +299,7 @@ class ToggleButton(Layout.Box):
         """
         return """
                 var element = JUGetElement('""" + self.button.jsId() + """');
-                JUAddClass(element, 'ToggledOn');
+                JUAddClass(element, 'Pushed');
                 JUNextElement(element).value = 'on';
                """
 

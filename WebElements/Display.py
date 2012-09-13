@@ -176,9 +176,21 @@ Factory.addProduct(PreformattedText)
 
 class HeaderLabel(Label):
     """
-        Defined a header label
+        Defined a heading (h1-h6) label
     """
-    tagName = 'h2'
+    properties = Base.WebElement.properties.copy()
+    properties['level'] = {'action':'classAttribute', 'type':'int'}
+
+    def __init__(self, id=None, name=None, parent=None):
+        Label.__init__(self, id, name, parent=parent)
+        self.level = 2
+
+    def toHtml(self, variableDict=None, formatted=False):
+        if self.level > 6 or self.level < 1:
+            raise ValueError("Valid levels for headers are 1-6 (h1-6)")
+
+        self.tagName = "h%d" % self.level
+        Base.WebElement.toHtml(self, variableDict, formatted)
 
 Factory.addProduct(HeaderLabel)
 
