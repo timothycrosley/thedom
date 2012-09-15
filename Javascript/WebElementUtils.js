@@ -5,7 +5,6 @@
  *
  */
 
-
 var TAB = 9;
 var ENTER = 13;
 var DOWN_ARROW = 40;

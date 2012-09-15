@@ -164,6 +164,33 @@ class Label(Base.WebElement):
 Factory.addProduct(Label)
 
 
+class Paragraph(Label):
+    """
+        Defines a paragraph element
+    """
+    tagName = "p"
+
+Factory.addProduct(Paragraph)
+
+
+class Subscript(Label):
+    """
+        Defines a subscripted text element
+    """
+    tagName = "sub"
+
+Factory.addProduct(Subscript)
+
+
+class Superscript(Label):
+    """
+        Defines a superscripted text element
+    """
+    tagName = "sup"
+
+Factory.addProduct(Superscript)
+
+
 class PreformattedText(Label):
     """
         Defines a preformatted text label, where no forced format should be applied (such as single space)
