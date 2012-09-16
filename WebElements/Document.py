@@ -53,17 +53,17 @@ class MetaData(Base.WebElement):
         """
         self.attributes['content'] = value
 
-    def name(self):
+    def getName(self):
         """
             Returns the name of the meta tag
          """
-        return self.attributes.get('name')
+        return self.name
 
     def setName(self, name):
         """
             Sets the name of the meta tag
         """
-        self.attributes['name'] = name
+        self.name = name
 
     def shown(self):
         """
@@ -78,7 +78,7 @@ class HTTPHeader(MetaData):
     """
         A webelement that represents an http header meta tag
     """
-    def name(self):
+    def getName(self):
         """
             Returns the headers name
         """
