@@ -32,7 +32,3 @@ class TestControlInstance(ElementTester):
     def setup_class(self):
         control = AjaxController('control')
         self.element = ControlInstance(control)
-
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_Ajax.py", shell=True).wait()

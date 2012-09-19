@@ -14,6 +14,7 @@ import types
 import Base
 import Buttons
 import Display
+import DOM
 import Factory
 import HiddenInputs
 import Inputs
@@ -24,7 +25,7 @@ from Factory import Composite
 from MethodUtils import CallBack
 from StringUtils import interpretAsString, listReplace
 
-Factory = Factory.Factory(Base.Invalid, name="Fields")
+Factory = Factory.Factory("Fields")
 
 class BaseField(Layout.Box):
     """
@@ -426,8 +427,8 @@ class MultiField(SelectField):
         """
         self.userInput.childElements.sort(key=Inputs.Option.value)
 
-    def loadFromDictionary(self, valueDict):
-        SelectField.loadFromDictionary(self, valueDict)
+    def setProperties(self, valueDict):
+        SelectField.setProperties(self, valueDict)
 
         new = self.__createNewSelection__("' + selected.innerHTML + '")
         self.addScript(str(MultiFieldClientSide) % listReplace(new.toHtml(), ('"', '<', '>'), ('\\"', '&lt;', '&gt;')))
@@ -550,8 +551,8 @@ class CheckboxField(BaseField):
             hiddenValue.setValue('on')
             self.addChildElement(hiddenValue)
 
-    def loadFromDictionary(self, valueDict):
-        BaseField.loadFromDictionary(self, valueDict)
+    def setProperties(self, valueDict):
+        BaseField.setProperties(self, valueDict)
         if self.key:
             self.userInput.key = self.key
             self.key = None
@@ -855,7 +856,7 @@ class Filter(Layout.Box):
         removeButton.style['float'] = 'right'
         removeButton.style['display'] = 'none'
         removeButton.setText("")
-        removeButton.textBeforeChildren = "<img src='images/close.gif' />"
+        removeButton.addChildElement(DOM.Img()).setProperty("src", "images/close.gif")
         removeButton.addClass('Clickable')
         removeButton.addClass('RemoveFilter')
         removeButton.addJavascriptEvent("onclick", CallBack(self, 'jsRemoveFilter'))

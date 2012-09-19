@@ -2,7 +2,7 @@ import Base
 import Factory
 from Display import Image
 
-Factory = Factory.Factory(Base.Invalid, name="Charts")
+Factory = Factory.Factory("Charts")
 
 
 class GoogleChart(Image):

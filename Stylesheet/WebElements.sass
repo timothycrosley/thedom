@@ -11,7 +11,8 @@
         content: ""
     &:after
         clear: both
-
+.WActions
+    line-height: 40px
 div
     &.WSelectedMultiOption
         border: 1px gray solid
@@ -35,20 +36,6 @@ div
         width: 48%
         float: right
         margin: 3px
-    &.WTripDiff
-        width: 510px
-        background-color: white
-        border: 1px #7c7c7c solid
-        padding: 5px
-    &.WLegDiff
-        margin-top: 40px
-        background-color: #f3f3f3
-        border: 1px #bdbdbd solid
-    &.WCheckboxTabsModelDiff
-        margin: 5px
-        margin-top: 10px
-        background-color: #eeeeee
-        border: 1px #bdbdbd solid
     &.WStatusIndicator
         border: 1px gray solid
         margin-top: 10px
@@ -89,14 +76,14 @@ input.ToggledOn
     background-color: #77b2e0
 
 a
-    &.Toggle
+    &.WToggleLink
         &:visited, &:link
             font-weight: normal
             text-decoration: none
-    &.ToggledOn
-        &:visited, &:link
-            font-weight: bold
-            text-decoration: none
+        &.Pushed
+            &:visited, &:link
+                font-weight: bold
+                text-decoration: none
 
 input.AddFilterButton
     width: 80px
@@ -121,33 +108,9 @@ input.AddFilterButton
     margin-top: 7px
     clear: both
 
-input.WCheckbox
-    margin-right: 3px
-
 .OptionalCheckboxField
     width: 96%
     margin: 1px
-
-textarea.WTextArea
-    border-width: 1px
-    font-size: 12px
-    font-family: Arial, Helvetica, sans-serif
-
-input
-    &.WTextBox
-        &[readonly]
-            color: gray
-        margin-left: 2px
-        margin-right: 2px
-        border-width: 1px
-        font-size: 12px
-        font-family: Arial, Helvetica, sans-serif
-    &.WIntegerTextBox
-        padding: 0px
-        margin: 0px
-        height: 22px
-        font-size: 12px
-        font-family: Arial, Helvetica, sans-serif
 
 .Clickable
     cursor: pointer
@@ -186,8 +149,8 @@ input
     border: 1px #5a5a5a solid
 
 .SpacedWord
-    margin-left: 3px
-    margin-right: 3px
+    margin-left: .3em
+    margin-right: .3em
 
 .WAccordion
     width: 100%
@@ -275,57 +238,6 @@ a.BreadCrumbLink
 
 .WBlock
     display: block
-
-.StaticFieldDisplay
-    input
-        border: none
-        margin-right: 0px
-        margin-left: 4px
-        border-color: transparent
-        background-color: #E7E7E7
-        font-size: 12px
-    select
-        border: none
-        margin-right: 0px
-        margin-left: 4px
-        border-color: transparent
-        background-color: #E7E7E7
-        font-size: 12px
-        &.WMultiSelect
-            border: none
-            margin-right: 0px
-            margin-left: 4px
-            border-color: transparent
-            background-color: #E7E7E7
-            font-size: 12px
-    input.WTextBox
-        border: none
-        margin-right: 0px
-        margin-left: 4px
-        border-color: transparent
-        background-color: #E7E7E7
-        font-size: 12px
-    textarea
-        border: none
-        margin-right: 0px
-        margin-left: 4px
-        border-color: transparent
-        background-color: #E7E7E7
-        font-size: 12px
-        &.WTextArea
-            border: none
-            margin-right: 0px
-            margin-left: 4px
-            border-color: transparent
-            background-color: #E7E7E7
-            font-size: 12px
-    input.WCheckBox
-        border: none
-        margin-right: 0px
-        margin-left: 4px
-        border-color: transparent
-        background-color: #E7E7E7
-        font-size: 12px
 
 .WLabeledData
     color: rgb(119, 85, 68)

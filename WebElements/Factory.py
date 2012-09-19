@@ -8,10 +8,13 @@
 
 """
 
+import types
+
+from Base import Invalid, TextNode
+
 class Factory(object):
-    def __init__(self, defaultProduct=None, name=""):
+    def __init__(self, name=""):
         self.products = {}
-        self.defaultProduct = defaultProduct
         self.name = name
 
     def addProduct(self, productClass):
@@ -19,9 +22,6 @@ class Factory(object):
             Adds a WebElement to the list of products that can be built from the factory:
                 productClass - the WebElement's class
         """
-        if not self.defaultProduct:
-            self.defaultProduct = productClass
-
         self.products[productClass.__name__.lower()] = productClass
 
     def build(self, className, id=None, name=None, parent=None):
@@ -37,7 +37,7 @@ class Factory(object):
             return self.products[className](id, name, parent)
         else:
             print(self.name + " has no product " + className + " sorry :(")
-            return self.defaultProduct()
+            return Invalid()
 
     def buildFromDictionary(self, structureDict, variableDict=None, idPrefix=None, parent=None,
                             scriptContainer=None, accessors=None):
@@ -56,7 +56,10 @@ class Factory(object):
         if variableDict == None: variableDict = {}
 
         if not structureDict:
-            return self.defaultProduct()
+            return Invalid()
+
+        if type(structureDict) in types.StringTypes:
+            return TextNode(structureDict)
 
         elementType = structureDict.get('create', None)
         if elementType == None:
@@ -72,7 +75,7 @@ class Factory(object):
             if idPrefix and not elementObject._prefix:
                 elementObject.setPrefix(idPrefix)
             elementObject.setScriptContainer(scriptContainer)
-            elementObject.loadFromDictionary(structureDict)
+            elementObject.setProperties(structureDict)
             if accessors != None:
                 if accessor:
                     accessors[accessor] = elementObject
@@ -89,7 +92,7 @@ class Factory(object):
                 elementObject.insertVariables(variableDict)
             return elementObject
 
-        return self.defaultProduct
+        return Invalid()
 
 
 class Composite(Factory):
@@ -99,12 +102,10 @@ class Composite(Factory):
         If two or more elements identically named elements are contained within the factories --
         the last factory passed in will override the definition of the element.
     """
-    def __init__(self, factories, defaultProduct=None):
-        Factory.__init__(self, defaultProduct)
+    def __init__(self, factories):
+        Factory.__init__(self)
 
         for factory in factories:
-            if not self.defaultProduct:
-                self.defaultProduct = factory.defaultProduct
             self.products.update(factory.products)
             if factory.name:
                 for productName, product in factory.products.iteritems():

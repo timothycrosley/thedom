@@ -113,7 +113,7 @@ class TestTable(ElementTester):
         row.cell("Lied About Super Powers").setText("Ok Maybee a little bit...")
         assert row.cell("Lied About Super Powers").text() == "Ok Maybee a little bit..."
 
-    def test_loadFromDictionary(self):
+    def test_setProperties(self):
         data = {"columns":["Name", "Type", "Location"],
                 "rows":[{"Name":"start.bin",
                          "Type":"Binary",
@@ -122,7 +122,7 @@ class TestTable(ElementTester):
                          "Type":"Text File",
                          "Location":"~/documents"}]}
 
-        self.element.loadFromDictionary(data)
+        self.element.setProperties(data)
         assert len(self.element.rows) == 2
         assert self.element.columns == ["Name", "Type", "Location"]
         assert len(self.element.header.childElements) == 3
@@ -138,7 +138,3 @@ class TestStoredValue(ElementTester):
 
     def setup_class(self):
         self.element = Factory.build("storedValue", "Test", "Test")
-
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_DataViews.py", shell=True).wait()

@@ -33,9 +33,7 @@ class TestButton(ElementTester):
 
     def test_attributes(self):
         assert self.element.attributes['type'] == 'button'
-        assert 'button' in self.element.classes
         assert self.submitElement.attributes['type'] == 'submit'
-        assert 'button' in self.submitElement.classes
 
 
 class TestPrintButton(ElementTester):
@@ -96,7 +94,6 @@ class TestToggleButton(ElementTester):
         assert self.element.toggledState.value() == 'on'
         assert "Pushed" in self.element.button.classes
 
-
     def test_insertVariablesToggledFalse(self):
         self.element.insertVariables({'Test:Toggled':"off"})
         assert not self.element.toggled()
@@ -108,7 +105,3 @@ class TestToggleLink(ElementTester):
 
     def setup_class(self):
         self.element = Factory.build('ToggleLink', 'test')
-
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_Buttons.py", shell=True).wait()

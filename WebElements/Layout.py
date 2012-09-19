@@ -13,7 +13,7 @@ import Display
 import Factory
 from MethodUtils import CallBack
 
-Factory = Factory.Factory(Base.Invalid, name="Layout")
+Factory = Factory.Factory("Layout")
 
 class Center(Base.WebElement):
     """
@@ -64,12 +64,12 @@ class Stack(Base.WebElement):
             return self.stackElements[0]
         return None
 
-    def toHtml(self, valueDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         """
             Changes toHtml behavior to only generate the html for the visible element
         """
         if self.stackElements:
-            return self.visibleElement().toHtml(valueDict, formatted=formatted) or ""
+            return self.visibleElement().toHtml(formatted=formatted) or ""
         return ""
 
     def addChildElement(self, childElement, ensureUnique=True):
@@ -165,12 +165,12 @@ class Horizontal(Box):
         if style:
             container.style.update(style)
 
-    def toHtml(self, valueDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         oldChildElements = self.childElements
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
-        returnValue = Box.toHtml(self, valueDict, formatted=formatted)
+        returnValue = Box.toHtml(self, formatted=formatted)
         self.childElements = oldChildElements
         return returnValue
 
@@ -204,12 +204,12 @@ class Vertical(Box):
             container.addChildElement(childElement)
             return Box.addChildElement(self, container)
 
-    def toHtml(self, valueDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         oldChildElements = self.childElements
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
-        returnValue = Box.toHtml(self, valueDict, formatted=formatted)
+        returnValue = Box.toHtml(self, formatted=formatted)
         self.childElements = oldChildElements
         return returnValue
 
@@ -239,7 +239,7 @@ class FieldSet(Box):
         """
         self.addLegend()
         self.legend.tagName = 'legend'
-        self.legend.setInnerText(legend)
+        self.legend.addChildElement(Base.TextNode(legend))
 
 Factory.addProduct(FieldSet)
 
@@ -342,8 +342,8 @@ class Grid(Box):
         for column in columns:
             self.layout += column
 
-    def content(self, variableDict=False, formatted=False):
-        return self.layout.toHtml(variableDict, formatted=formatted)
+    def content(self, formatted=False):
+        return self.layout.toHtml(formatted=formatted)
 
 Factory.addProduct(Grid)
 
@@ -356,7 +356,7 @@ class LineBreak(Box):
     def __init__(self, name=None, id=None, parent=None):
         Box.__init__(self, '', None, parent)
         self.allowsChildren = False
-        self.textBeforeChildren = "&nbsp;"
+        self.addChildElement(Base.TextNode("&nbsp;"))
         self.style['clear'] = 'both'
         self.style['height'] = '0px'
 

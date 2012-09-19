@@ -1,9 +1,5 @@
-#!/usr/bin/python
 """
-    Name:
-        test_WebElements_Inputs.py
-    Description:
-        Test the functionality of the webelement Input classes
+    Test the functionality of the WebElement Input classes
 """
 
 from test_WebElement_Base import ElementTester
@@ -142,8 +138,8 @@ class TestTextBox(ElementTester):
         assert self.element.attributes['type'] == 'text'
         assert self.element.attributes.get('size', '0') == '0'
 
-    def test_loadFromDictionary(self):
-        self.element.loadFromDictionary({'size':'10'})
+    def test_setProperties(self):
+        self.element.setProperties({'size':'10'})
         assert self.element.attributes.get('size', '0') == '10'
 
 
@@ -185,15 +181,15 @@ class TestOption(ElementTester):
         assert self.element.text() == "My Option Text"
         assert "My Option Text" in self.element.toHtml()
 
-    def test_loadFromDictionary(self):
+    def test_setProperties(self):
         data = {'selected':True, 'text':"My Text"}
-        self.element.loadFromDictionary(data)
+        self.element.setProperties(data)
         assert self.element.text() == "My Text"
         assert "My Text" in self.element.toHtml()
         assert self.element.selected() == True
 
         newData = {'selected':False, 'text':"My New Text"}
-        self.element.loadFromDictionary(newData)
+        self.element.setProperties(newData)
         assert self.element.text() == "My New Text"
         assert "My New Text" in self.element.toHtml()
         assert self.element.selected() == False
@@ -336,8 +332,3 @@ class TestMulitSelect(ElementTester):
 
         self.element.setValue(["Value1", "Value2"])
         assert self.element.value() == ["Value1", "Value2"]
-
-
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen('py.test test_WebElement_Inputs.py', shell=True).wait()

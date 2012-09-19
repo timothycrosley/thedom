@@ -34,6 +34,9 @@ def __createDictionaryFromXML(xml):
         Parses an xml string converting it to an easily parseble dictionary representation:
             xml - a string containing an xml representation of the interface
     """
+    if isinstance(xml, minidom.Text):
+        return xml.nodeValue
+
     (name, attributes, children) = (xml.tagName, xml.attributes, xml.childNodes)
 
     dictionary = {'create':name}
@@ -43,7 +46,7 @@ def __createDictionaryFromXML(xml):
     if children:
         dictionary['childElements'] = []
         for childElement in children:
-            if childElement.__class__ == minidom.Element:
+            if childElement.__class__ in (minidom.Element, minidom.Text):
                 dictionary['childElements'].append(__createDictionaryFromXML(childElement))
 
     return dictionary

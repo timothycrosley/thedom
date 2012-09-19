@@ -12,7 +12,7 @@ import Base
 import Factory
 from Layout import Box, LineBreak
 
-Factory = Factory.Factory(Base.Invalid, name="Future")
+Factory = Factory.Factory("Future")
 
 class Horizontal(Box):
     """
@@ -45,13 +45,13 @@ class Horizontal(Box):
             container.style['vertical-align'] = 'middle'
             container.style['width'] = width
 
-    def toHtml(self, valueDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         oldChildElements = self.childElements
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
         lineBreak = Box.addChildElement(self, LineBreak())
-        returnValue = Box.toHtml(self, valueDict, formatted=formatted)
+        returnValue = Box.toHtml(self, formatted=formatted)
         self.childElements = oldChildElements
         return returnValue
 
@@ -81,13 +81,13 @@ class Vertical(Box):
             self.childElements.append(childElement)
 
 
-    def toHtml(self, valueDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         oldChildElements = self.childElements
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
         lineBreak = Box.addChildElement(self, LineBreak())
-        returnValue = Box.toHtml(self, valueDict, formatted=formatted)
+        returnValue = Box.toHtml(self, formatted=formatted)
         self.childElements = oldChildElements
         return returnValue
 

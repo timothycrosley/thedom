@@ -22,7 +22,7 @@ from MethodUtils import CallBack
 from PositionController import PositionController
 from StringUtils import interpretAsString
 
-Factory = Factory(Base.Invalid, name="Navigation")
+Factory = Factory("Navigation")
 
 
 class ItemPager(Layout.Vertical):
@@ -39,30 +39,31 @@ class ItemPager(Layout.Vertical):
         Layout.Vertical.__init__(self, id, name, parent)
 
         positionLayout = self.addChildElement(Layout.Horizontal())
+        positionLayout.addClass("WActions")
         label = positionLayout.addChildElement(Display.Label())
         label.setText('Showing Results')
-        label.addClass('Spaced Word')
+        label.addClass('SpacedWord')
 
         self.resultsStartAt = positionLayout.addChildElement(Display.Label())
-        self.resultsStartAt.strong = True
+        self.resultsStartAt.makeStrong()
         self.resultsStartAt.setText('1')
         self.resultsStartAt.addClass('SpacedWord')
 
         label = positionLayout.addChildElement(Display.Label())
         label.setText('-')
-        label.addClass('Spaced Word')
+        label.addClass('SpacedWord')
 
         self.resultsEndAt = positionLayout.addChildElement(Display.Label())
-        self.resultsEndAt.strong = True
+        self.resultsEndAt.makeStrong()
         self.resultsEndAt.setText('25')
         self.resultsEndAt.addClass('SpacedWord')
 
         label = positionLayout.addChildElement(Display.Label())
         label.setText('out of')
-        label.addClass('Spaced Word')
+        label.addClass('SpacedWord')
 
         self.numberOfResults = positionLayout.addChildElement(Display.Label())
-        self.numberOfResults.strong = True
+        self.numberOfResults.makeStrong()
         self.numberOfResults.setText('100')
         self.numberOfResults.addClass('SpacedWord')
 

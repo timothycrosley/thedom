@@ -15,7 +15,7 @@ import Factory
 from MethodUtils import CallBack
 from StringUtils import interpretAsString
 
-Factory = Factory.Factory(Base.Invalid, name="Resources")
+Factory = Factory.Factory("Resources")
 
 
 class ResourceFile(Base.WebElement):
@@ -44,7 +44,6 @@ class ResourceFile(Base.WebElement):
                 fileName - the disk name of the file.
         """
         self.fileName = fileName
-        self.textBeforeChildren = ""
 
         extension = fileName.split("?")[0][-3:]
         if ":" in fileName:
@@ -75,7 +74,7 @@ class ResourceFile(Base.WebElement):
             self.tagSelfCloses = True
         else:
             self.tagName = "h2"
-            self.textBeforeChildren = "Invalid Resource: %s" % fileName
+            self.addChildElement(Base.TextNode("Invalid Resource: %s" % fileName))
             self.resourceType = None
             self.tagSelfCloses = False
 
@@ -98,7 +97,7 @@ class ScriptContainer(Base.WebElement):
         self._scripts = []
         self.usedObjects = []
 
-    def content(self, variableDict=None, formatted=False):
+    def content(self, formatted=False):
         """
             Overrides the base content method to return the javascript associated with the scriptcontainer
         """

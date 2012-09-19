@@ -17,6 +17,7 @@ import Containers
 import DataViews
 import Display
 import Document
+import DOM
 import Factory
 import Fields
 import Future
@@ -30,8 +31,7 @@ import UITemplate
 import CodeDocumentation
 
 FactoryClasses = Factory
-Factory = Factory.Composite((Base.Factory, Future.Factory, Buttons.Factory, Ajax.Factory, DataViews.Factory,
+Factory = Factory.Composite((DOM.Factory, Future.Factory,Buttons.Factory, Ajax.Factory, DataViews.Factory,
                              Display.Factory, Fields.Factory, HiddenInputs.Factory, Inputs.Factory,
                              Layout.Factory, Navigation.Factory, Resources.Factory, Containers.Factory,
-                             Charts.Factory, Printing.Factory, Document.Factory, CodeDocumentation.Factory),
-                            Base.Invalid)
+                             Charts.Factory, Printing.Factory, Document.Factory, CodeDocumentation.Factory))

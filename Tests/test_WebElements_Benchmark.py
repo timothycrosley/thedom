@@ -17,5 +17,3 @@ class TestWebElements_Benchmark(object):
         assert(results['longestCreationTime'] < 0.010)
         assert(results['createAllOnce'] < 0.250)
 
-if __name__ == "__main__":
-    subprocess.Popen("py.test test_WebElements_Benchmark.py", shell=True).wait()

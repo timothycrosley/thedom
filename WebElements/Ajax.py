@@ -18,7 +18,7 @@ from MethodUtils import CallBack
 from Resources import ScriptContainer
 from StringUtils import interpretAsString
 
-Factory = Factory.Factory(Base.Invalid, name="AJAX")
+Factory = Factory.Factory("AJAX")
 
 
 class AJAXScriptContainer(ScriptContainer):
@@ -32,11 +32,11 @@ class AJAXScriptContainer(ScriptContainer):
         self.addClass("onLoadJavascript")
         self.hide()
 
-    def content(self, variableDict=None, formatted=False):
+    def content(self, formatted=False):
         """
             Overrides the base WebElement content method to replace non-safe characters
         """
-        script = ScriptContainer.content(self, variableDict, formatted=formatted)
+        script = ScriptContainer.content(self, formatted=formatted)
         script = script.replace("&", "&amp;")
         script = script.replace("<", "&lt;")
         script = script.replace(">", "&gt;")
@@ -78,10 +78,9 @@ class AjaxController(Layout.Box):
 
 
     def __init__(self, id, name=None, parent=None):
-        Layout.Box.__init__(self, id + "${suffix}", name, parent)
+        Layout.Box.__init__(self, id, name, parent)
 
         baseId = id
-        id += "${suffix}"
         self.index = 0
 
         self.id = id + "Controller"
@@ -134,13 +133,7 @@ class AjaxController(Layout.Box):
             Returns the javascript that can be used to access this JSController, with instanceId representing
             it's instance on the page
         """
-        useId = self.ajaxContent.fullId()
-        if instanceId:
-            useId = useId.replace("${suffix}", ":" + str(instanceId))
-        else:
-            useId = useId.replace("${suffix}", "")
-
-        return useId
+        return self.ajaxContent.fullId()
 
     @staticmethod
     def updateControls(controls, silent=True, parameters=None, timeout=0):
@@ -470,10 +463,10 @@ class ControlInstance(Base.WebElement):
         if self.initialContent:
             self.addChildElement(self.initialContent)
 
-    def toHtml(self, variableDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         if self.initialContent:
             self.control.ajaxContent.addChildElement(self.initialContent).parent = self
-        content = self.control.toHtml(self.defaultValues, formatted=formatted)
+        content = self.control.toHtml(formatted=formatted)
         self.control.ajaxContent.reset()
 
         return content

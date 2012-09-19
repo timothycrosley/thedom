@@ -7,7 +7,7 @@
 
 '''
 
-from Base import WebElement
+from Base import WebElement, TextNode
 from Layout import Flow
 
 TYPE_MAP = {str:'string', unicode:'string', int:'integer'}
@@ -33,9 +33,9 @@ def __parse__(data, parentElement):
             __parse__(value, newElement)
         elif type(value) in (list, tuple):
             for item in value:
-                newElement.addChildElement(__Tag__(TYPE_MAP[type(item)], newElement)).textBeforeChildren = item
+                newElement.addChildElement(__Tag__(TYPE_MAP[type(item)], newElement)).addChildElement(TextNode(item))
         elif value == None:
             newElement.tagSelfCloses = newElement.attributes['xsi:nil'] = True
         else:
-            newElement.textBeforeChildren = value
+            newElement.addChildElement(TextNode(value))
     return parentElement

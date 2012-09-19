@@ -8,9 +8,6 @@ class TestHiddenValue(ElementTester):
 
     def test_attributes(self):
         assert self.element.attributes['type'] == 'hidden'
-        assert "Value" in self.element.classes
-        assert "TestValue" in self.element.classes
-        assert "Test" in self.element.classes
 
     def test_text(self):
         assert not self.element.text()
@@ -65,6 +62,3 @@ class TestHiddenIntValue(ElementTester):
         assert self.element.text() == 0
         assert self.element.value() == 0
 
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_HiddenInputs.py", shell=True).wait()

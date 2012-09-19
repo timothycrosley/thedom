@@ -11,15 +11,17 @@ import re
 import types
 
 import DictUtils
-import Factory
 import ToClientSide
 from Connectable import Connectable
-from DictUtils import OrderedDict
 from IteratorUtils import Queryable
 from MethodUtils import acceptsArguments, CallBack
 from StringUtils import interpretAsString
 
-Factory = Factory.Factory(None, name="Base")
+try:
+    from collections import OrderedDict
+except ImportError:
+    from DictUtils import OrderedDict
+
 BLOCK_TAGS = ('address', 'blockquote', 'center', 'dir', 'div', 'dl', 'fieldset', 'form', 'h1',
               'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'isindex', 'menu', 'noframes', 'noscript', 'ol',
               'p', 'pre', 'table', 'ul', 'dd', 'dt', 'frameset', 'li', 'tbody', 'td', 'tfoot', 'th',
@@ -35,40 +37,27 @@ def addChildProperties(propertiesDict, classDefinition, accessor):
 
 class WebElement(Connectable):
     """
-        The base WebElement which all WebElements should extend.
+        The base WebElement which all custom WebElements should extend.
     """
     displayable = True
-    clearUnusedVariables = True
     tagSelfCloses = False
     tagName = ""
     allowsChildren = True
-    textBeforeChildren = ''
-    textAfterChildren = ''
     _prefix = None
-    __unusedVariabls = re.compile('\$\{[^}]*\}')
     signals = ['hidden', 'shown', 'beforeToHtml', 'childAdded', 'editableChanged']
-    regenerate = []
-    readPermissions = []
-    writePermissions = []
-    # Flag to turn on/off permissions checking for a controller
-    fineGrainedControl = False
     properties = OrderedDict()
     properties['style'] = {'action':'setStyleFromString'}
     properties['class'] = {'action':'addClassesFromString'}
     properties['javascriptEvents'] = {'action':'addJavascriptEventsFromDictionary'}
-    properties['innerText'] = {'action':'setInnerText'}
     properties['hide'] = {'action':'call', 'type':'bool'}
     properties['widthPreference'] = {'action':'classAttribute'}
     properties['alignPreference'] = {'action':'classAttribute'}
     properties['stylePreference'] = {'action':'setStylePreferenceFromString'}
-    properties['emphasis'] = {'action':'classAttribute', 'type':'bool'}
-    properties['strong'] = {'action':'classAttribute', 'type':'bool'}
     properties['title'] = {'action':'attribute'}
+    properties['lang'] = {'action':'attribute'}
     properties['key'] = {'action':'classAttribute'}
     properties['validator'] = {'action':'classAttribute'}
     properties['uneditable'] = {'action':'call', 'name':'__setUneditable__', 'type':'bool'}
-    properties['readPermissions'] = {'action':'setReadPermissionGroups'}
-    properties['writePermissions'] = {'action':'setWritePermissionGroups'}
 
     def __init__(self, id=None, name=None, parent=None):
         """
@@ -93,30 +82,6 @@ class WebElement(Connectable):
             Returns an id that can be used client side to access the object.
         """
         return self.fullId()
-
-    def jsSetAttribute(self, attribute, value):
-        """
-            Sets an attribute on the webElement client side:
-                attribute - the attribute to set
-                value - the value to set it to
-        """
-        valueStr = "'%s'" % str(value)
-        return jsSetAttributeExpr(self, attribute, valueStr)
-
-    def jsSetAttributeExpr(self, attribute, expression):
-        '''
-        Same as jsSetAttribute, but sets the attibute to
-        the value of an expression instead of a string
-        '''
-        return "WESetAttribute('%s','%s',%s);" % (self.jsId(), attribute, expression)
-
-
-    def jsAttribute(self, attribute):
-        """
-            Returns the value for an attribute client side:
-                attribute - the name of the attribute
-        """
-        return ("WEAttribute('" + self.jsId() +  "', '" + attribute + "');")
 
     def reset(self):
         """
@@ -191,7 +156,7 @@ class WebElement(Connectable):
 
     def query(self):
         """
-            Returns a queryable list of all children, allowing you to perform django type queries to find an element
+            Returns a queryable list of all children, allowing you to perform django style queries to find an element
         """
         return Queryable(self.allChildren())
 
@@ -333,9 +298,7 @@ class WebElement(Connectable):
             Deletes this element (requires a parent element)
         """
         if self.parent:
-            index = self.parent.childElements.index(self)
-            self.parent.childElements.pop(index)
-            self.parent = None
+            self.parent.removeChild(self)
             return True
         return False
 
@@ -423,16 +386,6 @@ class WebElement(Connectable):
 
     def __setUneditable__(self):
         self.setEditable(False)
-
-    def setReadPermissionGroups(self, authGroups):
-        self.readPermissions = []
-        for perm in authGroups.split(','):
-            self.readPermissions.append(perm.strip())
-
-    def setWritePermissionGroups(self, authGroups):
-        self.writePermissions = []
-        for perm in authGroups.split(','):
-            self.writePermissions.append(perm.strip())
 
     def scriptContainer(self):
         """
@@ -562,6 +515,7 @@ class WebElement(Connectable):
         """
         if child in self.childElements:
             self.childElements.remove(child)
+            child.parent = None
             return True
 
         return False
@@ -607,29 +561,19 @@ class WebElement(Connectable):
 
         return unicode("</" + self.tagName + ">")
 
-    def content(self, variableDict=None, formatted=False):
+    def content(self, formatted=False):
         """
             returns the elements html content
-            (the html bettween startTag and endTag):
-                variableDict - dictionary of variables that can be replaced within the generated
-                               html ({'var':'hello'}) would replace all instances of ${var} with
-                               hello in the html output.
+            (the html bettween startTag and endTag)
         """
-        if variableDict == None:
-            variableDict = {}
-
         elementContent = []
-        if self.textBeforeChildren:
-            elementContent.append(unicode(self.textBeforeChildren))
         for element in self.childElements:
             if type(element) in (types.FunctionType, types.MethodType):
                 currentElement = element()
             else:
                 currentElement = element
 
-            elementContent.append(currentElement.toHtml(variableDict, formatted=formatted))
-        if self.textAfterChildren:
-            elementContent.append(unicode(self.textAfterChildren))
+            elementContent.append(currentElement.toHtml(formatted=formatted))
         if formatted:
             return "\n".join(elementContent)
         else:
@@ -642,22 +586,6 @@ class WebElement(Connectable):
         """
         if variableDict == None:
             variableDict = {}
-
-        for regeneration in self.regenerate:
-            iterator = regeneration['using']
-            method = self.__getattribute__(regeneration['action'])
-            limit = regeneration.get('limitedBy', None)
-            if limit != None:
-                limit = int(variableDict.get(limit, '0'))
-
-            for instance, value in DictUtils.iterateOver(variableDict, self.prefix() + iterator):
-                if limit != None and instance >= limit:
-                    break
-
-                if acceptsArguments(method, 2):
-                    method(instance, value)
-                elif acceptsArguments(method, 1):
-                    method(value)
 
         for child in self.childElements:
             child.insertVariables(variableDict)
@@ -732,51 +660,46 @@ class WebElement(Connectable):
         for key, value in dictionary.iteritems():
             self.addJavascriptEvent(key, value)
 
-    def setInnerText(self, text):
+    def setProperty(self, name, value):
         """
-            Allows you to set textBeforeChildren and textAfterChildren in one call
+            Sets the property of single element - as defined in the elements property dictionary
         """
-        if '${childElements}' in text:
-            self.textBeforeChildren, self.textAfterChildren = text.split('${childElements}', 1)
+        propertyDict = self.properties[name]
+        propertyAction = propertyDict['action']
+        propertyActions = propertyAction.split('.')
+        propertyAction = propertyActions.pop(-1)
+        propertyName = propertyDict.get('name', name)
+
+        objectWithProperty = self
+        for attributeName in propertyActions:
+            objectWithProperty = objectWithProperty.__getattribute__(attributeName)
+
+        if propertyAction == "classAttribute":
+            objectWithProperty.__setattr__(propertyName, value)
+        elif propertyAction == "attribute":
+            objectWithProperty.attributes[propertyName] = value
+        elif propertyAction == "javascriptEvent":
+            objectWithProperty.addJavascriptEvent(propertyName, value)
+        elif propertyAction == "call":
+            if value:
+                objectWithProperty.__getattribute__(propertyName)()
+        elif not hasattr(objectWithProperty, propertyAction):
+            print("Trying to set " + propertyName + " using " + propertyAction + " but no" +
+                    " such method or attribute exists on " + objectWithProperty.__class__.__name__)
         else:
-            self.textBeforeChildren = text
+            objectWithProperty.__getattribute__(propertyAction)(value)
 
-    def loadFromDictionary(self, valueDict):
+    def setProperties(self, valueDict):
         """
-            Loads element attributes from dictionary
+            Loads element attributes from dictionary - using the property dictionary defined for the element
         """
-        for propertyName, propertyDict in self.properties.iteritems():
-            propertyAction = propertyDict['action']
-            propertyValue = valueDict.get(propertyName, None)
-            if propertyValue != None:
-                propertyActions = propertyAction.split('.')
-                propertyAction = propertyActions.pop(-1)
-                propertyName = propertyDict.get('name', propertyName)
+        for propertyName, propertyValue in valueDict.iteritems():
+            if propertyValue != None and self.properties.has_key(propertyName):
+                self.setProperty(propertyName, propertyValue)
 
-                objectWithProperty = self
-                for attributeName in propertyActions:
-                    objectWithProperty = objectWithProperty.__getattribute__(attributeName)
-
-                if propertyAction == "classAttribute":
-                    objectWithProperty.__setattr__(propertyName, propertyValue)
-                elif propertyAction == "attribute":
-                    objectWithProperty.attributes[propertyName] = propertyValue
-                elif propertyAction == "javascriptEvent":
-                    objectWithProperty.addJavascriptEvent(propertyName, propertyValue)
-                elif propertyAction == "call":
-                    if propertyValue:
-                        objectWithProperty.__getattribute__(propertyName)()
-                elif not hasattr(objectWithProperty, propertyAction):
-                    print("Trying to set " + propertyName + " using " + propertyAction + " but no" +
-                          " such method or attribute exists on " + objectWithProperty.__class__.__name__)
-                else:
-                    objectWithProperty.__getattribute__(propertyAction)(propertyValue)
-
-    def toHtml(self, variableDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         """
-           Returns the element(including child elements) as standard html:
-           allows ${} for variables:
-            replaces ${foobar} with variableDict.get('foobar', '')
+           Returns the element(including child elements) as standard html
         """
 
         self.emit("beforeToHtml")
@@ -786,40 +709,22 @@ class WebElement(Connectable):
         if startTag:
             html.append(startTag)
 
-        emphasis = getattr(self, 'emphasis', False)
-        strong = getattr(self, 'strong', False)
-        if strong:
-            html.append('<strong>')
-        if emphasis:
-            html.append('<em>')
-
-        content = self.content(variableDict, formatted=formatted)
+        content = self.content(formatted=formatted)
         if content:
             if formatted:
                 for line in content.split("\n"):
                     html.append(" " + line)
             else:
                 html.append(content)
-        if emphasis:
-            html.append('</em>')
-        if strong:
-            html.append('</strong>')
+
         endTag = self.endTag() or ''
         if endTag:
             html.append(endTag)
-
 
         if formatted:
             html = "\n".join(html)
         else:
             html = "".join(html)
-        if variableDict:
-            for key, value in variableDict.iteritems():
-                if type(value) in types.StringTypes:
-                    html = html.replace('${' + unicode(key) + '}', value)
-
-        if self.clearUnusedVariables:
-            html = self.__unusedVariabls.sub('', html)
 
         return html
 
@@ -827,7 +732,7 @@ class WebElement(Connectable):
         """
             Returns true if the elements will render as an HTML block type
         """
-        if self.tagName in BLOCK_TAGS or self.hasClass("WebElementBlock"):
+        if self.tagName in BLOCK_TAGS or self.hasClass("WBlock"):
             return True
         return False
 
@@ -890,21 +795,48 @@ class Invalid(WebElement):
     """
         An Invalid WebElement - used generally to show that a desired element failed to load
     """
+    allowsChildren = False
 
     def __init__(self, id=None, name=None, parent=None):
         WebElement.__init__(self, id, name, parent)
         self.tagName = "h2"
 
-    def loadFromDictionary(self, valueDict):
+    def setProperties(self, valueDict):
         pass
 
-    def content(self, variableDict=None, formatted=False):
+    def content(self, formatted=False):
         """
             Overrides content to return 'Invalid element' string
         """
         return "Invalid Element"
 
-Factory.addProduct(Invalid)
+
+class TextNode(object):
+    """
+        Defines the most basic concept of an html node - does not have the concept of children only of producing html
+        should only be used internally or for testing objects
+    """
+    _text = ''
+    parent = None
+
+    def __init__(self, text=None):
+        if text:
+            self.setText(text)
+
+    def setText(self, text):
+        self._text = text
+
+    def text(self):
+        return self._text
+
+    def toHtml(self, *args, **kwargs):
+        return unicode(self.text())
+
+    def insertVariables(self, *args, **kwargs):
+        pass
+
+    def __repr__(self):
+        return self.__class__.__name__ + "(" + repr(self.text()) + ")"
 
 
 class TemplateElement(WebElement):
@@ -912,7 +844,7 @@ class TemplateElement(WebElement):
         A template WebElement is a web element that uses a template for its presantation and
         structure
     """
-    factory = Factory
+    factory = None
     template = None
 
     def __init__(self, id=None, name=None, parent=None, template=None, factory=None):
@@ -937,18 +869,3 @@ class TemplateElement(WebElement):
 
         self.addChildElement(instance)
 
-class CacheElement(WebElement):
-    """
-        Renders an element once caches the result and returns the cache every time after
-    """
-
-    def __init__(self, id=None, name=None, parent=None):
-        WebElement.__init__(self, id, name, parent)
-        self.__cachedHTML__ = None
-
-    def toHtml(self, variableDict=None, formatted=False):
-        if self.__cachedHTML__ == None:
-            self.__cachedHTML__ = WebElement.toHtml(self, variableDict, formatted)
-        return self.__cachedHTML__
-
-Factory.addProduct(CacheElement)

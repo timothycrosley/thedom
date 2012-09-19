@@ -62,6 +62,3 @@ class TestFormContainer(ElementTester):
         self.element.addChildElement(Factory.build("Button", name="Button"))
         self.element.addChildElement(Factory.build("Container", name="Container"))
 
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_Container.py", shell=True).wait()

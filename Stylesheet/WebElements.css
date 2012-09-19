@@ -242,9 +242,20 @@
   padding: 10px;
   overflow: auto; }
 
+.ClearFix {
+  *zoom: 1; }
+  .ClearFix:before, .ClearFix:after {
+    display: table;
+    content: ""; }
+  .ClearFix:after {
+    clear: both; }
+
+.WActions {
+  line-height: 40px; }
+
 div.WSelectedMultiOption {
   border: 1px gray solid;
-  background-color: lightgray;
+  background-color: lightgrey;
   padding: 2px;
   margin-left: 2px;
   color: black; }
@@ -264,20 +275,6 @@ div.WAdded {
   width: 48%;
   float: right;
   margin: 3px; }
-div.WTripDiff {
-  width: 510px;
-  background-color: white;
-  border: 1px #7c7c7c solid;
-  padding: 5px; }
-div.WLegDiff {
-  margin-top: 40px;
-  background-color: #f3f3f3;
-  border: 1px #bdbdbd solid; }
-div.WCheckboxTabsModelDiff {
-  margin: 5px;
-  margin-top: 10px;
-  background-color: #eeeeee;
-  border: 1px #bdbdbd solid; }
 div.WStatusIndicator {
   border: 1px gray solid;
   margin-top: 10px;
@@ -317,10 +314,10 @@ div.StatusIncomplete {
 input.ToggledOn {
   background-color: #77b2e0; }
 
-a.Toggle:visited, a.Toggle:link {
+a.WToggleLink:visited, a.WToggleLink:link {
   font-weight: normal;
   text-decoration: none; }
-a.ToggledOn:visited, a.ToggledOn:link {
+a.WToggleLink.Pushed:visited, a.WToggleLink.Pushed:link {
   font-weight: bold;
   text-decoration: none; }
 
@@ -347,32 +344,9 @@ input.AddFilterButton {
   margin-top: 7px;
   clear: both; }
 
-input.WCheckbox {
-  margin-right: 3px; }
-
 .OptionalCheckboxField {
   width: 96%;
   margin: 1px; }
-
-textarea.WTextArea {
-  border-width: 1px;
-  font-size: 12px;
-  font-family: Arial, Helvetica, sans-serif; }
-
-input.WTextBox {
-  margin-left: 2px;
-  margin-right: 2px;
-  border-width: 1px;
-  font-size: 12px;
-  font-family: Arial, Helvetica, sans-serif; }
-  input.WTextBox[readonly] {
-    color: gray; }
-input.WIntegerTextBox {
-  padding: 0px;
-  margin: 0px;
-  height: 22px;
-  font-size: 12px;
-  font-family: Arial, Helvetica, sans-serif; }
 
 .Clickable {
   cursor: pointer;
@@ -411,8 +385,8 @@ input.WIntegerTextBox {
   border: 1px #5a5a5a solid; }
 
 .SpacedWord {
-  margin-left: 3px;
-  margin-right: 3px; }
+  margin-left: 0.3em;
+  margin-right: 0.3em; }
 
 .WAccordion {
   width: 100%; }
@@ -499,56 +473,6 @@ a.BreadCrumbLink {
 
 .WBlock {
   display: block; }
-
-.StaticFieldDisplay input {
-  border: none;
-  margin-right: 0px;
-  margin-left: 4px;
-  border-color: transparent;
-  background-color: #e7e7e7;
-  font-size: 12px; }
-.StaticFieldDisplay select {
-  border: none;
-  margin-right: 0px;
-  margin-left: 4px;
-  border-color: transparent;
-  background-color: #e7e7e7;
-  font-size: 12px; }
-  .StaticFieldDisplay select.WMultiSelect {
-    border: none;
-    margin-right: 0px;
-    margin-left: 4px;
-    border-color: transparent;
-    background-color: #e7e7e7;
-    font-size: 12px; }
-.StaticFieldDisplay input.WTextBox {
-  border: none;
-  margin-right: 0px;
-  margin-left: 4px;
-  border-color: transparent;
-  background-color: #e7e7e7;
-  font-size: 12px; }
-.StaticFieldDisplay textarea {
-  border: none;
-  margin-right: 0px;
-  margin-left: 4px;
-  border-color: transparent;
-  background-color: #e7e7e7;
-  font-size: 12px; }
-  .StaticFieldDisplay textarea.WTextArea {
-    border: none;
-    margin-right: 0px;
-    margin-left: 4px;
-    border-color: transparent;
-    background-color: #e7e7e7;
-    font-size: 12px; }
-.StaticFieldDisplay input.WCheckBox {
-  border: none;
-  margin-right: 0px;
-  margin-left: 4px;
-  border-color: transparent;
-  background-color: #e7e7e7;
-  font-size: 12px; }
 
 .WLabeledData {
   color: #775544; }

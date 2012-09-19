@@ -11,7 +11,7 @@ class ChartTester(ElementTester):
                         'width':300,
                         'meaninglessProperty':None}
 
-        self.element.loadFromDictionary(variableDict)
+        self.element.setProperties(variableDict)
 
         assert self.element.height() == 200
         assert self.element.width() == 300

@@ -20,7 +20,7 @@ import UITemplate
 from Factory import Composite, Factory
 from MethodUtils import CallBack
 
-Factory = Factory(Base.Invalid, name="DataViews")
+Factory = Factory("DataViews")
 
 
 class Table(Base.WebElement):
@@ -59,20 +59,22 @@ class Table(Base.WebElement):
             self.element = self.addChildElement(Display.FreeText())
             if self.parent and self.parent.parent and getattr(self.parent.parent, 'uniformStyle', None):
                 self.setStyleFromString(self.parent.parent.uniformStyle)
+            self._textNode = Base.TextNode()
+            self.connect("beforeToHtml", None, self, "addChildElement", self._textNode)
 
         def setText(self, text):
             """
                 Sets the table columns visible text
             """
-            if text != self.textAfterChildren:
-                self.textAfterChildren = text
+            if text != self._textNode.text():
+                self._textNode.setText(text)
                 self.emit('textChanged', text)
 
         def text(self):
             """
                 Returns the table columns visible text
             """
-            return self.textAfterChildren
+            return self._textNode.text()
 
     class Row(Base.WebElement):
         """
@@ -144,7 +146,7 @@ class Table(Base.WebElement):
         row = self.addChildElement(self.Row())
         column = row.addChildElement(self.Column())
         column.attributes['colspan'] = len(self.columns)
-        column.textAfterChildren = separatorName
+        column.setText(separatorName)
         return column
 
     def addRow(self):
@@ -184,7 +186,7 @@ class Table(Base.WebElement):
             if self.alignHeaders:
                 column.attributes['align'] = self.alignHeaders
 
-            column.textAfterChildren = (showName and (columnName or '')) or ''
+            column.addChildElement(Base.TextNode((showName and (columnName or '')) or ''))
             self.columns.append(columnName)
 
             self.emit('columnAdded', column)

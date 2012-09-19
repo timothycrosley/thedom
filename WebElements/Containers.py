@@ -18,7 +18,7 @@ import UITemplate
 from Factory import Composite
 from MethodUtils import CallBack
 
-Factory = Factory.Factory(Base.Invalid, name="Containers")
+Factory = Factory.Factory("Containers")
 
 
 class DropDownMenu(Layout.Box):
@@ -273,6 +273,7 @@ class Tab(Layout.Box):
         Layout.Box.__init__(self, id=id, name=name, parent=parent)
 
         self.text = None
+        self._textNode = Base.TextNode()
         self.tabLabel = self.TabLabel(id=self.id + "Label", parent=self)
         self.imageName = None
         self.unselect()
@@ -280,12 +281,13 @@ class Tab(Layout.Box):
         self.tabLabel.connect('beforeToHtml', None, self, '__updateUI__')
 
     def __updateUI__(self):
-        self.tabLabel.textAfterChildren = self.text or self.name
         if self.imageName:
             image = self.tabLabel.addChildElement(Layout.Box())
             image.addClass(self.imageName)
             image.style['margin'] = "auto"
             image.style['clear'] = "both"
+
+        self.tabLabel.addChildElement(self._textNode).setText(self.text or self.name)
 
     def select(self):
         """

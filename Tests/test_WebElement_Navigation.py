@@ -110,7 +110,3 @@ class TestBreadCrumb(ElementTester):
                                       'Test:Key':'ad'})
         assert self.element.currentLocation == "direct.arinc.net"
         assert self.element.currentText == "Arinc Direct"
-
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_Navigation.py", shell=True).wait()

@@ -23,7 +23,7 @@ from Inputs import ValueElement
 from MethodUtils import CallBack
 
 
-Factory = Factory.Factory(Base.Invalid, name="CodeDocumentation")
+Factory = Factory.Factory("CodeDocumentation")
 
 
 class CodeSnippet(Base.WebElement):
@@ -31,7 +31,6 @@ class CodeSnippet(Base.WebElement):
         Enables adding a snippet of code directly to a page.
     """
     tagName = "pre"
-    allowsChildren = False
     properties = Base.WebElement.properties.copy()
     properties['code'] = {'action':'classAttribute'}
     properties['lexer'] = {'action':'classAttribute'}
@@ -39,6 +38,8 @@ class CodeSnippet(Base.WebElement):
 
     def __init__(self, id=None, name=None, parent=None):
         Base.WebElement.__init__(self, id, name, parent)
+
+        self._textNode = self.addChildElement(Base.TextNode())
 
         self.showLineNumbers = False
         self.lexer = "python"
@@ -57,12 +58,12 @@ class CodeSnippet(Base.WebElement):
            Renders the code with pygments if it is available otherwise with a simple pre-tag
         """
         if not hasPygments:
-            self.textBeforeChildren = self.code
+            self._textNode.setText(self.code)
             return
 
         self.tagName = "span"
         formatter = HtmlFormatter(linenos=self.showLineNumbers)
-        self.textBeforeChildren = highlight(self._getCode(), self._getLexer(), formatter)
+        self._textNode.setText(highlight(self._getCode(), self._getLexer(), formatter))
 
 Factory.addProduct(CodeSnippet)
 

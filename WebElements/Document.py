@@ -12,7 +12,7 @@ import Base
 import Factory
 from MethodUtils import CallBack
 
-Factory = Factory.Factory(Base.Invalid, name="Document")
+Factory = Factory.Factory("Document")
 
 DOCTYPE_XHTML_TRANSITIONAL = ('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" '
                               '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">')
@@ -26,6 +26,7 @@ DOCTYPE_HTML4_STRICT = ('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"'
                         '"http://www.w3.org/TR/html4/strict.dtd">')
 DOCTYPE_HTML4_FRAMESET = ('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" '
                           '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">')
+DOCTYPE_HTML5 = "<!DOCTYPE html>"
 
 class MetaData(Base.WebElement):
     """
@@ -97,7 +98,7 @@ class Document(Base.WebElement):
     """
         A WebElement representation of the overall document that fills a single page
     """
-    doctype = DOCTYPE_HTML4_TRANSITIONAL
+    doctype = DOCTYPE_HTML5
     tagName = "html"
     properties = Base.WebElement.properties.copy()
     properties['doctype'] = {'action':'classAttribute'}
@@ -123,17 +124,23 @@ class Document(Base.WebElement):
         """
         tagName = "title"
 
+        def __init__(self, id=None, name=None, parent=None):
+            Base.WebElement.__init__(self, id=id, name=name, parent=parent)
+
+            self._textNode = self.addChildElement(Base.TextNode())
+
+
         def setText(self, text):
             """
                 Sets the document title
             """
-            self.textBeforeChildren = text
+            self._textNode.setText(text)
 
         def text(self):
             """
                 Returns the document title
             """
-            return self.textBeforeChildren
+            return self._textNode.text(text)
 
     def __init__(self, id=None, name=None, parent=None):
         Base.WebElement.__init__(self)
@@ -160,8 +167,8 @@ class Document(Base.WebElement):
         header.setValue(value)
         return header
 
-    def toHtml(self, variableDict=None, formatted=False):
-        return self.doctype + "\n" + Base.WebElement.toHtml(self, variableDict, formatted)
+    def toHtml(self, formatted=False):
+        return self.doctype + "\n" + Base.WebElement.toHtml(self, formatted)
 
     def addChildElement(self, childElement, ensureUnique=True):
         if type(childElement) in [self.Head, self.Body]:

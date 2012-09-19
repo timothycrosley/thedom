@@ -13,7 +13,7 @@ import Factory
 from Inputs import InputElement
 from MethodUtils import CallBack
 
-Factory = Factory.Factory(Base.Invalid, name="HiddenInputs")
+Factory = Factory.Factory("HiddenInputs")
 
 
 class HiddenValue(InputElement):
@@ -26,10 +26,6 @@ class HiddenValue(InputElement):
     def __init__(self, id=None, name=None, parent=None, key=None):
         InputElement.__init__(self, id, name, parent, key=key)
         self.attributes['type'] = "hidden"
-        self.addClass((id or name or '') + "Value")
-        self.addClass("Value")
-        self.addClass("WHiddenInput")
-        self.addClass(id or name or '')
 
         self.width = "hidden"
 

@@ -16,7 +16,7 @@ import Factory
 from MethodUtils import CallBack
 from StringUtils import interpretAsString
 
-Factory = Factory.Factory(Base.Invalid, name="Inputs")
+Factory = Factory.Factory("Inputs")
 
 
 class ValueElement(Base.WebElement):
@@ -159,7 +159,6 @@ class CheckBox(InputElement):
 
     def __init__(self, id=None, name=None, parent=None, key=None):
         InputElement.__init__(self, id, name, parent, key=key)
-        self.addClass("WCheckBox")
 
         self._value = False
         self.attributes['value'] = None
@@ -260,7 +259,6 @@ class TextBox(InputElement):
         InputElement.__init__(self, id, name, parent, key)
         self.attributes['type'] = 'text'
         self.length = None
-        self.addClass("WTextBox")
 
     def setIsPassword(self, isPassword):
         """
@@ -298,7 +296,6 @@ class IntegerTextBox(TextBox):
 
     def __init__(self, id, name=None, parent=None, key=None):
         TextBox.__init__(self, id, name, parent, key)
-        self.addClass("WIntegerTextBox")
         self.attributes['size'] = '4'
         self.setValue(0)
 
@@ -367,16 +364,15 @@ class TextArea(ValueElement):
 
     def __init__(self, id, name=None, parent=None, key=None):
         ValueElement.__init__(self, id, name, parent, key=key)
-        self.addClass("WTextArea")
 
-    def content(self, variableDict, formatted=False):
+    def content(self, formatted=False):
         return self.value() or ""
 
-    def toHtml(self, valueDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         if not self.editable():
             self.attributes['readonly'] = 'readonly'
 
-        return ValueElement.toHtml(self, valueDict)
+        return ValueElement.toHtml(self)
 
 Factory.addProduct(TextArea)
 
@@ -385,7 +381,6 @@ class Option(ValueElement):
         Defines a select '<option>' webelement
     """
     tagName = "option"
-    allowsChildren = False
     signals = ValueElement.signals + ['selected', 'unselected']
     properties = ValueElement.properties.copy()
     properties['select'] = {'action':'call'}
@@ -396,6 +391,7 @@ class Option(ValueElement):
         ValueElement.__init__(self, id, name, parent, key=key)
 
         self._selected = False
+        self._textNode = self.addChildElement(Base.TextNode())
 
     def selected(self):
         """
@@ -432,13 +428,13 @@ class Option(ValueElement):
         """
             Sets the displayed text of the option
         """
-        self.textBeforeChildren = text
+        self._textNode.setText(text)
 
     def text(self):
         """
             Returns the displayed text of the option
         """
-        return self.textBeforeChildren
+        return self._textNode.text()
 
 Factory.addProduct(Option)
 
@@ -535,7 +531,7 @@ class Select(ValueElement):
         strValue = interpretAsString(value)
         for obj in self.childElements:
             if strValue and ((obj.fullId() == strValue) or (str(obj.value()) == strValue) or
-                             (obj.textBeforeChildren == strValue)):
+                             (obj._textNode.text() == strValue)):
                 obj.select()
             else:
                 obj.unselect()
@@ -559,7 +555,6 @@ class MultiSelect(Select):
     """
     def __init__(self, id, name=None, parent=None):
         Select.__init__(self, id, name, parent)
-        self.addClass("WMultiSelect")
         self.attributes['multiple'] = True
 
     def selected(self):
@@ -593,7 +588,7 @@ class MultiSelect(Select):
 
         for obj in self.childElements:
             if (obj.fullId() in value) or (str(obj.value()) in value) or \
-                (obj.textBeforeChildren in value):
+                (obj._textNode.text() in value):
                 obj.select()
             else:
                 obj.unselect()

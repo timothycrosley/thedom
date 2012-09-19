@@ -46,6 +46,3 @@ class TestScriptContainer(ElementTester):
         self.element.removeScript("alert('I am a script :D');")
         assert self.element._scripts == []
 
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_Resources.py", shell=True).wait()

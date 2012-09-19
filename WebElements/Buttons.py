@@ -17,7 +17,7 @@ from Inputs import InputElement
 from HiddenInputs import HiddenValue
 from MethodUtils import CallBack
 
-Factory = Factory.Factory(Base.Invalid, name="Buttons")
+Factory = Factory.Factory("Buttons")
 
 
 class Link(Base.WebElement):
@@ -35,6 +35,7 @@ class Link(Base.WebElement):
 
     def __init__(self, id=None, name=None, parent=None):
         Base.WebElement.__init__(self, id, name, parent)
+        self._textNode = self.addChildElement(Base.TextNode())
 
     def setDestination(self, destination):
         self.attributes['href'] = destination
@@ -43,11 +44,11 @@ class Link(Base.WebElement):
         return self.attributes.get('href', "")
 
     def setText(self, text):
-        self.textBeforeChildren = text
+        self._textNode.setText(text)
         self.emit('textChanged', text)
 
     def text(self):
-        return self.textBeforeChildren
+        return self._textNode.text()
 
 Factory.addProduct(Link)
 
@@ -92,7 +93,6 @@ class Button(InputElement):
 
     def __init__(self, id=None, name=None, parent=None):
         InputElement.__init__(self, id, name, parent)
-        self.addClass('button')
         self.attributes['type'] = 'button'
 
         self.connect('beforeToHtml', None, self, 'updateVisableState')
@@ -115,13 +115,9 @@ class Button(InputElement):
         if disabled:
             self.attributes['disabled'] = '1'
             self.attributes['readonly'] = '1'
-            self.removeClass('button')
-            self.addClass('disabledButton')
         else:
             self.attributes.pop('disabled', None)
             self.attributes.pop('readonly', None)
-            self.removeClass('disabledButton')
-            self.addClass('button')
 
     def setText(self, text):
         """
@@ -259,7 +255,7 @@ class ToggleButton(Layout.Box):
         """
             Turns the toggle off
         """
-        if 'Pushed' in self.button.classes:
+        if self.button.hasClass('Pushed'):
             self.button.removeClass('Pushed')
             self.toggledState.setValue('off')
             self.emit('toggled', False)
@@ -330,9 +326,9 @@ class ToggleButton(Layout.Box):
         """
         return self.button.value()
 
-    def loadFromDictionary(self, valueDict=None):
+    def setProperties(self, valueDict=None):
         Layout.Box.insertVariables(self, valueDict)
-        self.button.loadFromDictionary(valueDict)
+        self.button.setProperties(valueDict)
 
     def insertVariables(self, valueDict=None):
         if valueDict == None:
@@ -354,7 +350,7 @@ class ToggleLink(ToggleButton):
     def __createToggle__(self, id):
         link = Link(id)
         link.setDestination("#Link")
-        link.addClass("Toggle")
+        link.addClass("WToggleLink")
         return link
 
 Factory.addProduct(ToggleLink)

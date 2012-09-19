@@ -13,7 +13,7 @@ import Factory
 import Layout
 from MethodUtils import CallBack
 
-Factory = Factory.Factory(Base.Invalid, name="Printing")
+Factory = Factory.Factory("Printing")
 
 class PageBreak(Layout.Box):
     """

@@ -60,11 +60,11 @@ class TestCheckBoxField(ElementTester):
         assert type(self.element.userInput) == CheckBox
         assert type(self.element.label) == Label
 
-    def loadFromDictionary(self):
+    def setProperties(self):
         data = {"text":"My Label Text",
                 "value":"on"}
 
-        self.element.loadFromDictionary(data)
+        self.element.setProperties(data)
         assert self.element.userInput.value() == True
         assert self.element.text() == "My Label Text"
 
@@ -123,6 +123,3 @@ class TestFilter(ElementTester):
                                                    'term': 'Person',
 
                                                    'type': 'Or'}]
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_Fields.py", shell=True).wait()

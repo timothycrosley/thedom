@@ -172,7 +172,7 @@ class TestWebElement(object):
     def test_startTag(self):
         """Test to ensure startTag() works correctly"""
         assert self.container.startTag() == '<div name="1" id="1">'
-        assert self.firstChild.startTag() == '<input name="2" id="2" type="text" class="WTextBox" />'
+        assert self.firstChild.startTag() == '<input type="text" name="2" id="2" />'
 
     def test_endTag(self):
         """Test to ensure endTag() works correctly"""
@@ -182,14 +182,14 @@ class TestWebElement(object):
 
     def test_content(self):
         """Test to ensure content() works correctly"""
-        assert self.container.content() == '<input name="2" id="2" type="text" class="WTextBox" />'
+        assert self.container.content() == '<input type="text" name="2" id="2" />'
         assert self.firstChild.content() == ''
 
     def test_toHtml(self):
         """Test to ensure toHtml() works correctly"""
         assert self.container.toHtml() == '<div name="1" id="1"><input' + \
-                                          ' name="2" id="2" type="text" class="WTextBox" /></div>'
-        assert self.firstChild.toHtml({}) == '<input name="2" id="2" type="text" class="WTextBox" />'
+                                          ' type="text" name="2" id="2" /></div>'
+        assert self.firstChild.toHtml({}) == '<input type="text" name="2" id="2" />'
 
     def test_insertExportVariables(self):
         """Test to ensure inserting variables updates a webElement correctly,
@@ -257,6 +257,14 @@ class ElementTester(object):
     def test_isValid(self):
         assert not isinstance(self.element, Invalid)
 
+    def test_childAddingBehavior(self):
+        link = Factory.build("a")
+        if self.element.allowsChildren == True:
+            assert self.element.addChildElement(link) != False
+            link.remove()
+        else:
+            assert self.element.addChildElement(link) == False
+
     def test_pickleable(self):
         pickled = pickle.dumps(self.element)
         self._parseElement(pickle.loads(pickled))
@@ -269,6 +277,3 @@ class TestTemplateElement(ElementTester):
                                                  'accessor':'container'},
                                        factory=Factory)
 
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_Base.py", shell=True).wait()

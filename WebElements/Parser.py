@@ -9,7 +9,7 @@
 
 from types import StringTypes
 
-from Base import WebElement
+from Base import WebElement, TextNode
 from Display import FreeText
 
 class WebElementTree(WebElement):
@@ -148,7 +148,7 @@ class WebElementTree(WebElement):
                     (content, endTag) = self.textTillString('</' + tagName + '>')
                     content = content.strip()
                     if content:
-                        newTag.textBeforeChildren = content + "\n"
+                        newTag.addChildElement(TextNode(content + "\n"))
                     continue
                 else:
                     newTag.parse()

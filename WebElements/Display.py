@@ -10,11 +10,12 @@
 
 import Base
 import DictUtils
+import DOM
 import Factory
 from Inputs import ValueElement
 from MethodUtils import CallBack
 
-Factory = Factory.Factory(Base.Invalid, name="Display")
+Factory = Factory.Factory("Display")
 
 
 class Image(ValueElement):
@@ -81,17 +82,22 @@ class List(Base.WebElement):
         """
         tagName = "li"
 
+        def __init__(self, id=None, name=None, parent=None):
+            Base.WebElement.__init__(self, id=id, name=name, parent=parent)
+
+            self._textNode = self.addChildElement(Base.TextNode())
+
         def setText(self, text):
             """
                 Sets the displayed item text
             """
-            self.textBeforeChildren = text
+            self._textNode.setText(text)
 
         def text(self):
             """
                 Returns the displayed item text
             """
-            return self.textBeforeChildren
+            return self._textNode.text()
 
     def __init__(self, id=None, name=None, parent=None):
         Base.WebElement.__init__(self, id=id, name=name, parent=parent)
@@ -130,13 +136,20 @@ class Label(Base.WebElement):
     properties = Base.WebElement.properties.copy()
     properties['text'] = {'action':'setText'}
     properties['useNBSP'] = {'action':'call', 'type':'bool'}
+    properties['strong'] = {'action':'call', 'name':'makeStrong', 'type':'bool'}
+    properties['emphasis'] = {'action':'call', 'name':'addEmphasis', 'type':'bool'}
+
+    def __init__(self, id=None, name=None, parent=None):
+        Base.WebElement.__init__(self, id=id, name=name, parent=parent)
+
+        self._textNode = self.addChildElement(Base.TextNode())
 
     def setText(self, text):
         """
             Sets the displayed text
         """
-        if text != self.textBeforeChildren:
-            self.textBeforeChildren = text
+        if text != self._textNode.text():
+            self._textNode.setText(text)
             self.emit('textChanged', text)
 
     def useNBSP(self):
@@ -149,7 +162,7 @@ class Label(Base.WebElement):
         """
             Returns the displayed text
         """
-        return self.textBeforeChildren
+        return self._textNode.text()
 
     def appendText(self, text):
         """
@@ -160,6 +173,24 @@ class Label(Base.WebElement):
             return self.setText(text)
 
         self.setText(prevText + "<br />" + text)
+
+    def makeStrong(self):
+        """
+            wraps into a strong tag - requires parent element to be defined
+        """
+        strong = DOM.Strong()
+        self.replaceWith(strong)
+        strong.addChildElement(self)
+        strong.addChildElementsTo = self
+
+    def addEmphasis(self):
+        """
+            wraps into an emphasis tag - requires parent element to be defined
+        """
+        emphasis = DOM.Em()
+        self.replaceWith(emphasis)
+        emphasis.addChildElement(self)
+        emphasis.addChildElementsTo = self
 
 Factory.addProduct(Label)
 
@@ -196,7 +227,6 @@ class PreformattedText(Label):
         Defines a preformatted text label, where no forced format should be applied (such as single space)
     """
     tagName = "pre"
-    allowsChildren = False
 
 Factory.addProduct(PreformattedText)
 
@@ -212,13 +242,13 @@ class HeaderLabel(Label):
         Label.__init__(self, id, name, parent=parent)
         self.level = 2
 
-    def toHtml(self, variableDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         self.level = int(self.level)
         if self.level > 6 or self.level < 1:
             raise ValueError("Valid levels for headers are 1-6 (h1-6)")
 
         self.tagName = "h%d" % self.level
-        return Label.toHtml(self, variableDict, formatted)
+        return Label.toHtml(self, formatted)
 
 Factory.addProduct(HeaderLabel)
 
@@ -297,7 +327,9 @@ class FormError(Label):
         self.tagName = "span"
         self.addClass("error-message")
         self.tagSelfCloses = False
-        self.textBeforeChildren = errorText
+        if not getattr(self, '_textNode', None):
+            self.textNode = Base.TextNode()
+        self._textNode.setText(errorText)
 
     def shown(self):
         """
@@ -314,8 +346,8 @@ class BlankRendered(Base.WebElement):
     """
     displayable = False
 
-    def toHtml(self, variableDict=None, formatted=False):
-        Base.WebElement.toHtml(self, variableDict, False)
+    def toHtml(self, formatted=False):
+        Base.WebElement.toHtml(self, False)
         return ""
 
     def shown(self):
@@ -333,7 +365,7 @@ class Empty(Base.WebElement):
     def __init__(self, name=None, id=None, parent=None):
         Base.WebElement.__init__(self, None, None, parent)
 
-    def toHtml(self, variableDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         return ""
 
     def shown(self):
@@ -354,7 +386,7 @@ class HTML(Base.WebElement):
 
         self.html = html
 
-    def toHtml(self, variableDict=None, formatted=False):
+    def toHtml(self, formatted=False):
         return self.html
 
 Factory.addProduct(HTML)
@@ -389,3 +421,20 @@ class StatusIndicator(Base.WebElement):
         self.chooseClass(self.statuses, statusClass)
 
 Factory.addProduct(StatusIndicator)
+
+
+class CacheElement(Base.WebElement):
+    """
+        Renders an element once caches the result and returns the cache every time after
+    """
+
+    def __init__(self, id=None, name=None, parent=None):
+        Base.WebElement.__init__(self, id, name, parent)
+        self.__cachedHTML__ = None
+
+    def toHtml(self, formatted=False):
+        if self.__cachedHTML__ == None:
+            self.__cachedHTML__ = Base.WebElement.toHtml(self, formatted)
+        return self.__cachedHTML__
+
+Factory.addProduct(CacheElement)

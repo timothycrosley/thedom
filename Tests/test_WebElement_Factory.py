@@ -18,7 +18,7 @@ class FakeWebElement(WebElement):
 class TestFactory(object):
 
     def setup_class(self):
-        baseElement = Factory.build("Container")
+        baseElement = Factory.build("box")
         baseElement.setPrefix("myPrefix-")
         self.base = baseElement
 
@@ -129,6 +129,3 @@ class TestCompositeFactory(object):
         electricCarCompanyOfTheFuture = CompositeFactory((generalMotors, toyota))
         assert electricCarCompanyOfTheFuture.products == {'volt':Volt, 'prius':Prius}
 
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_Factory.py", shell=True).wait()

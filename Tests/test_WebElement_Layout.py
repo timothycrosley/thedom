@@ -73,6 +73,3 @@ class TestVerticalRule(ElementTester):
     def setup_class(self):
         self.element = Factory.build('VerticalRule', 'test')
 
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElement_Layout.py", shell=True).wait()
