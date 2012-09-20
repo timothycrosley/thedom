@@ -27,6 +27,8 @@ BLOCK_TAGS = ('address', 'blockquote', 'center', 'dir', 'div', 'dl', 'fieldset',
               'p', 'pre', 'table', 'ul', 'dd', 'dt', 'frameset', 'li', 'tbody', 'td', 'tfoot', 'th',
               'thead', 'tr')
 
+INDENTATION = " "
+
 def addChildProperties(propertiesDict, classDefinition, accessor):
     for propertyName, propertyDict in classDefinition.properties.iteritems():
         propertyDict = propertyDict.copy()
@@ -713,7 +715,7 @@ class WebElement(Connectable):
         if content:
             if formatted:
                 for line in content.split("\n"):
-                    html.append(" " + line)
+                    html.append(INDENTATION + line)
             else:
                 html.append(content)
 
