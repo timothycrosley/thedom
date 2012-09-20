@@ -16,7 +16,6 @@ class WebElementTree(WebElement):
     """
         Creates a tree of webelement children from plain html
     """
-    clearUnusedVariables = False
     endTags = ["/>", ">"]
     startTags = ["</", "<"]
     whiteSpace = [' ', '\n', '\r', '\t']
@@ -131,7 +130,7 @@ class WebElementTree(WebElement):
                     break
 
 
-                newTag = self.addChildElement(WebElementTree(tag=tagName, parent=self))
+                newTag = self.addChildElement(self.__class__(tag=tagName, parent=self))
 
                 if endedBy in self.whiteSpace:
                     self.prev()
