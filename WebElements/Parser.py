@@ -9,6 +9,7 @@
 
 from types import StringTypes
 
+import Base
 from Base import WebElement, TextNode
 
 class WebElementTree(WebElement):
@@ -51,7 +52,7 @@ class WebElementTree(WebElement):
     def _insertFormattedContent(self, content, html):
         if self.parent:
             for line in content.split("\n"):
-                html.append(INDENTATION + line)
+                html.append(Base.INDENTATION + line)
         else:
             for line in content.split("\n"):
                 html.append(line)
