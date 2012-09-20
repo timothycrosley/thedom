@@ -714,8 +714,7 @@ class WebElement(Connectable):
         content = self.content(formatted=formatted)
         if content:
             if formatted:
-                for line in content.split("\n"):
-                    html.append(INDENTATION + line)
+                self._insertFormattedContent(content, html)
             else:
                 html.append(content)
 
@@ -729,6 +728,10 @@ class WebElement(Connectable):
             html = "".join(html)
 
         return html
+
+    def _insertFormattedContent(self, content, html):
+        for line in content.split("\n"):
+            html.append(INDENTATION + line)
 
     def isBlockElement(self):
         """

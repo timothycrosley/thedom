@@ -10,7 +10,6 @@
 from types import StringTypes
 
 from Base import WebElement, TextNode
-from Display import FreeText
 
 class WebElementTree(WebElement):
     """
@@ -48,6 +47,14 @@ class WebElementTree(WebElement):
 
     def __representSelf__(self):
         return WebElement.__representSelf__(self).replace('WebElementTree', self.tagName)
+
+    def _insertFormattedContent(self, content, html):
+        if self.parent:
+            for line in content.split("\n"):
+                html.append(INDENTATION + line)
+        else:
+            for line in content.split("\n"):
+                html.append(line)
 
     def html(self):
         """
@@ -98,7 +105,7 @@ class WebElementTree(WebElement):
 
             string = string.strip()
             if string:
-                self.addChildElement(FreeText(parent=self)).setText(string)
+                self.addChildElement(TextNode(string))
 
             if startTag == "<":
                 (rawTagName, endedBy) = self.textTillString(self.endTags + self.whiteSpace + ['<'])
@@ -106,14 +113,14 @@ class WebElementTree(WebElement):
                 if rawTagName.startswith('!'):#HTML Comment
                     if tagName.startswith('!--'):
                         (content, end) = self.textTillString('-->')
-                        self.addChildElement(FreeText(parent=self)).setText('<' + rawTagName + ' ' + content.replace('--', '==') + end)
+                        self.addChildElement(TextNode('<' + rawTagName + ' ' + content.replace('--', '==') + end))
                         continue
                     else:
                         (content, end) = self.textTillString('>')
-                        self.addChildElement(FreeText(parent=self)).setText('<' + rawTagName + ' ' + content + end)
+                        self.addChildElement(TextNode('<' + rawTagName + ' ' + content + end))
                         continue
                 elif endedBy == "<" or not tagName:
-                    self.addChildElement(FreeText(parent=self)).setText("&lt;" + tagName)
+                    self.addChildElement(TextNode("&lt;" + tagName))
                     self.prev()
                     continue
 
