@@ -9,6 +9,7 @@
 
 import re
 import types
+from itertools import chain
 
 import DictUtils
 import ToClientSide
@@ -530,12 +531,12 @@ class WebElement(Connectable):
         if not self.tagName:
             return u''
 
-        self.attributes['name'] = self.fullName()
-        self.attributes['id'] = self.fullId()
-        self.attributes['class'] = self.classes
-        self.attributes['style'] = self.style
+        nativeAttributes = (('name', self.fullName()),
+                            ('id', self.fullId()),
+                            ('class', self.classes),
+                            ('style', self.style))
         startTag = "<" + self.tagName + " "
-        for key, value in self.attributes.iteritems():
+        for key, value in chain(nativeAttributes, self.attributes.iteritems()):
             value = interpretAsString(value)
             if value:
                 if value == '<BLANK>':
@@ -561,25 +562,18 @@ class WebElement(Connectable):
         if self.tagSelfCloses or not self.tagName:
             return u''
 
-        return unicode("</" + self.tagName + ">")
+        return unicode("".join(("</", self.tagName, ">")))
 
     def content(self, formatted=False):
         """
             returns the elements html content
             (the html bettween startTag and endTag)
         """
-        elementContent = []
-        for element in self.childElements:
-            if type(element) in (types.FunctionType, types.MethodType):
-                currentElement = element()
-            else:
-                currentElement = element
-
-            elementContent.append(currentElement.toHtml(formatted=formatted))
+        elements = [element.toHtml() for element in self.childElements]
         if formatted:
-            return "\n".join(elementContent)
+            return "\n".join(elements)
         else:
-            return ''.join(elementContent)
+            return ''.join(elements)
 
     def insertVariables(self, variableDict=None):
         """
@@ -708,32 +702,20 @@ class WebElement(Connectable):
 
         self.emit("beforeToHtml")
 
-        html = []
-        startTag = self.startTag() or ''
-        if startTag:
-            html.append(startTag)
-
-        content = self.content(formatted=formatted)
-        if content:
-            if formatted:
-                self._insertFormattedContent(content, html)
-            else:
-                html.append(content)
-
-        endTag = self.endTag() or ''
-        if endTag:
-            html.append(endTag)
+        data = (self.startTag() or '', formatted and self._formattedContent() or self.content(), self.endTag() or '')
 
         if formatted:
-            html = "\n".join(html)
+            html = "\n".join(data)
         else:
-            html = "".join(html)
+            html = "".join(data)
 
         return html
 
-    def _insertFormattedContent(self, content, html):
-        for line in content.split("\n"):
+    def _formattedContent(self):
+        html = []
+        for line in self.content().split("\n"):
             html.append(INDENTATION + line)
+        return "\n".join(html)
 
     def isBlockElement(self):
         """
@@ -848,7 +830,7 @@ class TextNode(object):
 
 class TemplateElement(WebElement):
     """
-        A template WebElement is a web element that uses a template for its presantation and
+        A template WebElement is a web element that uses a template for its presentation and
         structure
     """
     factory = None

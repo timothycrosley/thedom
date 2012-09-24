@@ -327,7 +327,7 @@ class ToggleButton(Layout.Box):
         return self.button.value()
 
     def setProperties(self, valueDict=None):
-        Layout.Box.insertVariables(self, valueDict)
+        Layout.Box.setProperties(self, valueDict)
         self.button.setProperties(valueDict)
 
     def insertVariables(self, valueDict=None):

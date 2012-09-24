@@ -57,31 +57,31 @@ class TestPieChart(ChartTester):
 
     def setup_class(self):
         print "Called"
-        self.element = Factory.build("Charts.PieChart")
+        self.element = Factory.build("Charts-PieChart")
 
 
 class TestPieChart3D(ChartTester):
 
     def setup_class(self):
-        self.element = Factory.build("Charts.PieChart3D")
+        self.element = Factory.build("Charts-PieChart3D")
 
 
 class TestHorizontalBarChart(ChartTester):
 
     def setup_class(self):
-        self.element = Factory.build("Charts.HorizontalBarChart")
+        self.element = Factory.build("Charts-HorizontalBarChart")
 
 
 class TestVerticalBarChart(ChartTester):
 
     def setup_class(self):
-        self.element = Factory.build("Charts.VerticalBarChart")
+        self.element = Factory.build("Charts-VerticalBarChart")
 
 
 class TestLineChart(ChartTester):
 
     def setup_class(self):
-        self.element = Factory.build("Charts.LineChart")
+        self.element = Factory.build("Charts-LineChart")
 
 if __name__ == "__main__":
     import subprocess

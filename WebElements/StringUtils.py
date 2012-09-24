@@ -66,14 +66,8 @@ def removeAlphas(value):
             newValue += part
     return newValue
 
-
 def convertIterableToString(iterable):
-    newValues = []
-    for item in iterable:
-        item = interpretAsString(item)
-        if item is not None:
-            newValues.append(item)
-    return ' '.join(newValues)
+    return ' '.join([interpretAsString(item) or '' for item in iterable])
 
 def convertBoolToString(boolean):
     return unicode(boolean).lower()

@@ -33,8 +33,9 @@ class Factory(object):
                 parent - the element that will contain the newly built element
         """
         className = className.lower()
-        if self.products.has_key(className):
-            return self.products[className](id, name, parent)
+        product = self.products.get(className, None)
+        if product:
+            return product(id, name, parent)
         else:
             print(self.name + " has no product " + className + " sorry :(")
             return Invalid()
@@ -53,47 +54,37 @@ class Factory(object):
                                   in
                 accessors - pass in a dictionary to have it updated with element accessors
         """
-        if variableDict == None: variableDict = {}
-
         if not template:
             return Invalid()
 
         if type(template) in types.StringTypes:
             return TextNode(template)
 
-        elementType = template.create
-        if elementType == None:
-            return False
-        elementType = elementType.lower()
-
-        id = template.id
-        name = template.name
+        ID = template.id
         accessor = template.accessor
 
-        elementObject = self.build(elementType, id, name, parent)
-        if elementObject:
-            if idPrefix and not elementObject._prefix:
-                elementObject.setPrefix(idPrefix)
-            elementObject.setScriptContainer(scriptContainer)
-            elementObject.setProperties(template.properties)
-            if accessors != None:
-                if accessor:
-                    accessors[accessor] = elementObject
-                elif  id:
-                    accessors[id] = elementObject
+        elementObject = self.build(template.create, ID, template.name, parent)
+        if idPrefix and not elementObject._prefix:
+            elementObject.setPrefix(idPrefix)
+        elementObject.setScriptContainer(scriptContainer)
+        elementObject.setProperties(template.properties)
+        if accessors != None:
+            if accessor:
+                accessors[accessor] = elementObject
+            elif ID:
+                accessors[ID] = elementObject
 
-            if elementObject.allowsChildren:
-                for child in template.childElements or ():
-                    childElement = self.buildFromTemplate(child,
-                                        parent=elementObject.addChildElementsTo,
-                                        accessors=accessors)
-                    elementObject.addChildElement(childElement)
-            if variableDict:
-                elementObject.insertVariables(variableDict)
-            return elementObject
+        if elementObject.allowsChildren:
+            addChildElement = elementObject.addChildElement
+            buildFromTemplate = self.buildFromTemplate
+            addChildElementsTo = elementObject.addChildElementsTo
+            for child in template.childElements or ():
+                childElement = buildFromTemplate(child, parent=addChildElementsTo, accessors=accessors)
+                addChildElement(childElement)
+        if variableDict:
+            elementObject.insertVariables(variableDict)
 
-        return Invalid()
-
+        return elementObject
 
 class Composite(Factory):
     """
@@ -109,4 +100,4 @@ class Composite(Factory):
             self.products.update(factory.products)
             if factory.name:
                 for productName, product in factory.products.iteritems():
-                    self.products[factory.name.lower() + "." + productName] = product
+                    self.products[factory.name.lower() + "-" + productName] = product

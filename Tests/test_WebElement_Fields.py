@@ -27,7 +27,7 @@ class TestTextAreaField(ElementTester):
 class TestAutoField(ElementTester):
 
     def setup_class(self):
-        self.element = Factory.build("Fields.AutoField", "Test")
+        self.element = Factory.build("Fields-AutoField", "Test")
 
     def test_label(self):
         assert type(self.element.label) == Label

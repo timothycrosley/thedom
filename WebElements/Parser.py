@@ -49,13 +49,16 @@ class WebElementTree(WebElement):
     def __representSelf__(self):
         return WebElement.__representSelf__(self).replace('WebElementTree', self.tagName)
 
-    def _insertFormattedContent(self, content, html):
+    def _formattedContent(self,):
+        html = []
         if self.parent:
-            for line in content.split("\n"):
+            for line in self.content().split("\n"):
                 html.append(Base.INDENTATION + line)
         else:
-            for line in content.split("\n"):
+            for line in self.content()split("\n"):
                 html.append(line)
+
+        return "\n".join(html)
 
     def html(self):
         """
