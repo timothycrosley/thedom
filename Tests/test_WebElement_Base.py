@@ -3,6 +3,7 @@ import cPickle as pickle
 from WebElements.All import Factory
 from WebElements.Base import Invalid, TemplateElement, WebElement
 from WebElements.Resources import ScriptContainer
+from WebElements.UITemplate import Template
 from lxml import etree
 
 parser = etree.XMLParser()
@@ -273,7 +274,6 @@ class ElementTester(object):
 class TestTemplateElement(ElementTester):
 
     def setup_class(self):
-        self.element = TemplateElement(template={'create':'box',
-                                                 'accessor':'container'},
+        self.element = TemplateElement(template=Template('box', accessor='container'),
                                        factory=Factory)
 

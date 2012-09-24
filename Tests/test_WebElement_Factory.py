@@ -9,6 +9,7 @@
 from WebElements.All import Factory
 from WebElements.Base import Invalid, WebElement
 from WebElements.Factory import Composite as CompositeFactory, Factory as FactoryClass
+from WebElements.UITemplate import Template
 
 class FakeWebElement(WebElement):
     def __init__(self, id=None, name=None, parent=None):
@@ -52,35 +53,30 @@ class TestFactory(object):
         assert createdObject.fullName() == "myPrefix-Name"
         assert createdObject.parent == self.base
 
-    def test_buildFromDictionary(self):
+    def test_buildFromTemplate(self):
         """test to ensure creating a webelement from a dictionary works"""
 
         #Try invalid input
-        assert type(Factory.buildFromDictionary({})) == Invalid
-        assert Factory.buildFromDictionary({'doesNotContainCreate':True}) is False
-        assert type(Factory.buildFromDictionary({'create':'SomeElementThatDoesNotExist'})) == Invalid
+        assert type(Factory.buildFromTemplate(None)) == Invalid
+        assert Factory.buildFromTemplate(Template(create=None)) is False
+        assert type(Factory.buildFromTemplate(Template('SomeElementThatDoesNotExist'))) == Invalid
 
-        paramDict = {'create':'box',
-                     'style':'margin:5px;',
-                     'childElements':
-                        [{'create':'textfield',
-                          'id':'My Field A',
-                          'style':'margin-bottom:4px; margin-top:7px; clear:both;',
-                          'text':'Field 1:',
-                          'accessor':'Field1'},
-                         {'create':'textfield',
-                          'id':'My Field B',
-                          'style':'margin-bottom:4px; margin-top:7px; clear:both;',
-                          'text':'Field 2:'},
-                         {'create':'textareafield',
-                          'id':'My Field C',
-                          'style':'margin-bottom:4px; margin-top:7px; clear:both;',
-                          'text':'Field 3:'}]}
+        template = Template('box', properties=(('style', 'margin:5px;'),),
+                            childElements=(Template('textfield', id='My Field A', accessor="Field1",
+                                                properties=(('style', 'margin-bottom:4px; margin-top:7px; clear:both;'),
+                                                            ('text', 'Field 1:'))),
+                                           Template('textfield', id='My Field B',
+                                                properties=(('style', 'margin-bottom:4px; margin-top:7px; clear:both;'),
+                                                            ('text', 'Field 2:'))),
+                                           Template('textareafield', id='My Field C',
+                                                properties=(('style', 'margin-bottom:4px; margin-top:7px; clear:both;'),
+                                                            ('text', 'Field 3:'))),
+                                                            ))
 
         Factory.addProduct(FakeWebElement)
 
         accessors = {}
-        testObject = Factory.buildFromDictionary(paramDict, {'InputField1':"value"}, accessors=accessors)
+        testObject = Factory.buildFromTemplate(template, {'InputField1':"value"}, accessors=accessors)
         assert testObject.__class__.__name__ == "Box"
         assert testObject.style['margin'] == '5px'
 

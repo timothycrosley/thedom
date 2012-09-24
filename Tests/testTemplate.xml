@@ -1,5 +1,5 @@
 <container randomattribute="Hello">
-    <childelement id="SomeRandomeId" name="SomeRandomeName">
+    <childelement id="SomeRandomId" name="SomeRandomName">
         <childishchildelement />
     </childelement>
 </container>

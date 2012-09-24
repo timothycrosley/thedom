@@ -21,13 +21,49 @@ except ImportError:
 XML = 0
 SHPAML = 1
 
-def fromFile(templateFile, formatType=XML):
+class Template(object):
+    """
+        A very memory efficient representation of a user interface template
+    """
+    __slots__ = ('create', 'accessor', 'id', 'name', 'childElements', 'properties')
+
+    def __init__(self, create, accessor="", id="", name="", childElements=None, properties=()):
+        self.create = create
+        self.accessor = accessor
+        self.id = id
+        self.name = name
+        self.childElements = childElements
+        self.properties = properties
+
+    def __getstate__(self):
+        return (self.create, self.accessor, self.id, self.name, self.childElements, self.properties)
+
+    def __setstate__(self, state):
+        (self.create, self.accessor, self.id, self.name, self.childElements, self.properties) = state
+
+    def __eq__(self, other):
+        if (self.create != other.create or self.accessor != other.accessor or self.id != other.id or
+            self.name != other.name or self.properties != other.properties):
+            return False
+
+        if self.childElements:
+            if len(self.childElements) != len(other.childElements):
+                return False
+            for child, otherChild in zip(self.childElements, other.childElements):
+                if not child.__eq__(otherChild):
+                    return False
+        elif other.childElements:
+            return False
+
+        return True
+
+def fromFile(templateFile, formatType=SHPAML):
     """
         Returns a parsable dictionary representation of the interface:
             templateFile - a file containing an xml representation of the interface
     """
     if formatType == XML:
-        return __createDictionaryFromXML(minidom.parse(templateFile).childNodes[0])
+        return __createTemplateFromXML(minidom.parse(templateFile).childNodes[0])
     elif formatType == SHPAML:
         with open(templateFile) as openFile:
             return fromSHPAML(openFile.read())
@@ -38,7 +74,7 @@ def fromXML(xml):
             xml - a string containing an xml representation of the interface
     """
     xmlStructure = minidom.parseString(xml)
-    return __createDictionaryFromXML(xmlStructure.childNodes[0])
+    return __createTemplateFromXML(xmlStructure.childNodes[0])
 
 def fromSHPAML(shpamlTemplate):
     """
@@ -49,29 +85,37 @@ def fromSHPAML(shpamlTemplate):
         raise ImportError("shpaml import not found and it is a requirement to expand shpaml templates")
 
     xmlStructure = minidom.parseString(shpaml.convert_text(shpamlTemplate))
-    return __createDictionaryFromXML(xmlStructure.childNodes[0])
+    return __createTemplateFromXML(xmlStructure.childNodes[0])
 
-def __createDictionaryFromXML(xml):
+def __createTemplateFromXML(xml):
     """
-        Parses an xml string converting it to an easily parseble dictionary representation:
+        Parses an xml string converting it to an easily parse-able python template representation:
             xml - a string containing an xml representation of the interface
     """
     if isinstance(xml, minidom.Text):
         return xml.nodeValue.strip()
 
-    (name, attributes, children) = (xml.tagName, xml.attributes, xml.childNodes)
+    (create, attributes, children) = (xml.tagName, xml.attributes, xml.childNodes)
+    accessor = attributes.get('accessor', "")
+    id = attributes.get('id', "")
+    name = attributes.get('name', "")
+    if accessor:
+        accessor = accessor.value
+        attributes.removeNamedItem('accessor')
+    if id:
+        id = id.value
+        attributes.removeNamedItem('id')
+    if name:
+        name = name.value
+        attributes.removeNamedItem('name')
 
-    dictionary = {'create':name}
-    for key, value in attributes.items():
-        dictionary[key] = interpretFromString(value)
-
+    properties = tuple(((attribute[0], interpretFromString(attribute[1])) for attribute in attributes.items()))
     if children:
-        dictionary['childElements'] = []
-        for childElement in children:
-            if childElement.__class__ in (minidom.Element, minidom.Text):
-                newElement = __createDictionaryFromXML(childElement)
-                if newElement:
-                    dictionary['childElements'].append(newElement)
+        childNodes = (__createTemplateFromXML(node) for node in children if
+                      node.__class__ in (minidom.Element, minidom.Text))
+        childElements = tuple(child for child in childNodes if child)
+    else:
+        childElements = None
 
-    return dictionary
+    return Template(create, accessor, id, name, childElements, properties)
 

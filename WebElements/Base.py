@@ -691,11 +691,13 @@ class WebElement(Connectable):
         else:
             objectWithProperty.__getattribute__(propertyAction)(value)
 
-    def setProperties(self, valueDict):
+    def setProperties(self, properties):
         """
-            Loads element attributes from dictionary - using the property dictionary defined for the element
+            Loads element properties from a list of property name to value tuples
         """
-        for propertyName, propertyValue in valueDict.iteritems():
+        if isinstance(properties, dict):
+            properties = properties.iteritems()
+        for propertyName, propertyValue in properties:
             if propertyValue != None and self.properties.has_key(propertyName):
                 self.setProperty(propertyName, propertyValue)
 
@@ -863,7 +865,7 @@ class TemplateElement(WebElement):
             self.factory = factory
 
         accessors = {}
-        instance = self.factory.buildFromDictionary(self.template, accessors=accessors, parent=self)
+        instance = self.factory.buildFromTemplate(self.template, accessors=accessors, parent=self)
         for accessor, element in accessors.iteritems():
             if hasattr(self, accessor):
                 raise ValueError("The accessor name or id of the element has to be unique and can not be the same as a"

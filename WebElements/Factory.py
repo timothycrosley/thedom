@@ -39,11 +39,11 @@ class Factory(object):
             print(self.name + " has no product " + className + " sorry :(")
             return Invalid()
 
-    def buildFromDictionary(self, structureDict, variableDict=None, idPrefix=None, parent=None,
+    def buildFromTemplate(self, template, variableDict=None, idPrefix=None, parent=None,
                             scriptContainer=None, accessors=None):
         """
             Builds an WebElement or a tree of web elements from a dictionary definition:
-                structureDict - the WebElement definition tree
+                template - the WebElement template node definition tree
                 variableDict - a dictionary of variables (id/name/key):value to use to populate the
                                tree of WebElements
                 idPrefix - a prefix to prepend before each element id in the tree to distinguish it
@@ -55,27 +55,27 @@ class Factory(object):
         """
         if variableDict == None: variableDict = {}
 
-        if not structureDict:
+        if not template:
             return Invalid()
 
-        if type(structureDict) in types.StringTypes:
-            return TextNode(structureDict)
+        if type(template) in types.StringTypes:
+            return TextNode(template)
 
-        elementType = structureDict.get('create', None)
+        elementType = template.create
         if elementType == None:
             return False
         elementType = elementType.lower()
 
-        id = structureDict.get('id', '')
-        name = structureDict.get('name', id)
-        accessor = structureDict.get('accessor', '')
+        id = template.id
+        name = template.name
+        accessor = template.accessor
 
         elementObject = self.build(elementType, id, name, parent)
         if elementObject:
             if idPrefix and not elementObject._prefix:
                 elementObject.setPrefix(idPrefix)
             elementObject.setScriptContainer(scriptContainer)
-            elementObject.setProperties(structureDict)
+            elementObject.setProperties(template.properties)
             if accessors != None:
                 if accessor:
                     accessors[accessor] = elementObject
@@ -83,8 +83,8 @@ class Factory(object):
                     accessors[id] = elementObject
 
             if elementObject.allowsChildren:
-                for child in structureDict.get('childElements', []):
-                    childElement = self.buildFromDictionary(child,
+                for child in template.childElements or ():
+                    childElement = self.buildFromTemplate(child,
                                         parent=elementObject.addChildElementsTo,
                                         accessors=accessors)
                     elementObject.addChildElement(childElement)

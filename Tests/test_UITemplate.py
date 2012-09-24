@@ -1,31 +1,29 @@
 '''
-    Test UITemplate correctly builds parseble interface structures
+    Test UITemplate correctly builds python parse-able interface structures
 '''
 
 from WebElements import UITemplate
 
-EXPECTED_STRUCTURE = {'childElements': [
-                        {'childElements':
-                            [{'create': u'childishchildelement'}],
-                              'create': u'childelement',
-                              u'id': u'SomeRandomeId',
-                              u'name': u'SomeRandomeName'}],
-                        'create': u'container',
-                        u'randomattribute': u'Hello'}
+EXPECTED_STRUCTURE = UITemplate.Template('container', properties=(("randomattribute", "Hello"),),
+                                         childElements=(
+                                           UITemplate.Template('childelement', id="SomeRandomId", name="SomeRandomName",
+                                                                childElements=(
+                                                                    UITemplate.Template("childishchildelement"),
+                                                            )),))
 
 def test_fromFile():
     """
         Ensure UITemplate creates a dictionary structure from an XML File correctly
     """
-    assert UITemplate.fromFile("testTemplate.xml") == EXPECTED_STRUCTURE #xml template file
-    assert UITemplate.fromFile("testTemplate.shpaml", formatType=UITemplate.SHPAML) == EXPECTED_STRUCTURE #
+    assert UITemplate.fromFile("testTemplate.xml", formatType=UITemplate.XML) == EXPECTED_STRUCTURE #xml file
+    assert UITemplate.fromFile("testTemplate.shpaml", formatType=UITemplate.SHPAML) == EXPECTED_STRUCTURE #shpaml file
 
 def test_fromXML():
     """
         Ensure UITemplate creates a dictionary structure from XML correctly
     """
     xml = """<container randomattribute="Hello">
-                <childelement id="SomeRandomeId" name="SomeRandomeName">
+                <childelement id="SomeRandomId" name="SomeRandomName">
                     <childishchildelement />
                 </childelement>
              </container>"""
@@ -38,7 +36,7 @@ def test_fromSHPAML():
     """
     shpmal = """
              container randomattribute=Hello
-                childelement#SomeRandomeId name=SomeRandomeName
+                childelement#SomeRandomId name=SomeRandomName
                     > childishchildelement
              """
 
