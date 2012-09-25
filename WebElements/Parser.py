@@ -35,7 +35,7 @@ class WebElementTree(WebElement):
 
     def __init__(self, html="", tag="", parent=None):
         WebElement.__init__(self, parent=parent)
-        self.tagName = tag
+        self._tagName = tag
         if not parent:
             self._html = html
             self._length = len(html)
