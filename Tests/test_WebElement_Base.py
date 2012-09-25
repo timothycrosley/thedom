@@ -193,8 +193,10 @@ class TestWebElement(object):
         assert self.firstChild.toHtml({}) == '<input name="2" id="2" type="text" />'
 
     def test_insertExportVariables(self):
-        """Test to ensure inserting variables updates a webElement correctly,
-            so that it can then export those same variables"""
+        """
+          Test to ensure inserting variables updates a webElement correctly,
+            so that it can then export those same variables
+        """
 
         self.container.setPrefix("MyPrefix-")
         self.firstChild.name = "name"
