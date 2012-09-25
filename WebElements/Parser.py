@@ -55,7 +55,7 @@ class WebElementTree(WebElement):
             for line in self.content().split("\n"):
                 html.append(Base.INDENTATION + line)
         else:
-            for line in self.content()split("\n"):
+            for line in self.content().split("\n"):
                 html.append(line)
 
         return "\n".join(html)
