@@ -52,7 +52,7 @@ class Horizontal(Box):
             self.__modifyChild__(childElement)
         lineBreak = Box.addChildElement(self, LineBreak())
         returnValue = Box.toHtml(self, formatted=formatted)
-        self.childElements = oldChildElements
+        self._childElements = oldChildElements
         return returnValue
 
 Factory.addProduct(Horizontal)
@@ -88,7 +88,7 @@ class Vertical(Box):
             self.__modifyChild__(childElement)
         lineBreak = Box.addChildElement(self, LineBreak())
         returnValue = Box.toHtml(self, formatted=formatted)
-        self.childElements = oldChildElements
+        self._childElements = oldChildElements
         return returnValue
 
 Factory.addProduct(Vertical)

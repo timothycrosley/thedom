@@ -14,11 +14,12 @@ import MethodUtils
 
 
 class Connectable(object):
+    __slots__ = ("connections")
 
     signals = []
 
     def __init__(self):
-        self.connections = {}
+        self.connections = None
 
     def emit(self, signal, value=None):
         """
@@ -77,6 +78,8 @@ class Connectable(object):
                       {'name':self.__class__.__name__, 'signal':unicode(signal)})
             return
 
+        if self.connections is None:
+            self.connections = {}
         connections = self.connections.setdefault(signal, {})
         connection = connections.setdefault(receiver, {})
         connection = connection.setdefault(condition, {})
@@ -104,4 +107,4 @@ class Connectable(object):
         elif signal:
             self.connections.pop(signal, None)
         else:
-            self.connections = {}
+            self.connections = None

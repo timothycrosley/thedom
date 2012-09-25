@@ -261,7 +261,7 @@ class StoredValue(Layout.Box):
         label = Display.Label()
         label.setText(id + ": ")
         value = Display.Label()
-        value.strong = True
+        value.makeStrong()
         hiddenValue = HiddenInputs.HiddenValue(name=name)
         hiddenValue.addJavascriptEvent('onchange',
                                        "WEPrevElement(this).innerHTML = this.value;")

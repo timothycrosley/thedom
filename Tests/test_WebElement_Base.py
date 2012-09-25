@@ -267,7 +267,7 @@ class ElementTester(object):
             assert self.element.addChildElement(link) == False
 
     def test_pickleable(self):
-        pickled = pickle.dumps(self.element)
+        pickled = pickle.dumps(self.element, -1)
         self._parseElement(pickle.loads(pickled))
 
 

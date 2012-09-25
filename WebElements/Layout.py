@@ -39,9 +39,9 @@ class Stack(Base.WebElement):
     def __setChildren__(self):
         visibleElement = self.visibleElement()
         if visibleElement:
-            self.childElements = [self.visibleElement()]
+            self._childElements = [self.visibleElement()]
         else:
-            self.childElements = []
+            self._childElements = None
 
     def setVisibleElement(self, element):
         """
@@ -171,7 +171,7 @@ class Horizontal(Box):
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
         returnValue = Box.toHtml(self, formatted=formatted)
-        self.childElements = oldChildElements
+        self._childElements = oldChildElements
         return returnValue
 
 Factory.addProduct(Horizontal)
@@ -210,7 +210,7 @@ class Vertical(Box):
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
         returnValue = Box.toHtml(self, formatted=formatted)
-        self.childElements = oldChildElements
+        self._childElements = oldChildElements
         return returnValue
 
 Factory.addProduct(Vertical)

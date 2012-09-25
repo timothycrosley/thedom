@@ -32,7 +32,7 @@ class Factory(object):
                 name - the non-unique identifier to asign to the newly built element
                 parent - the element that will contain the newly built element
         """
-        className = className.lower()
+        className = className and className.lower() or ""
         product = self.products.get(className, None)
         if product:
             return product(id, name, parent)

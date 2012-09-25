@@ -58,7 +58,7 @@ class TestFactory(object):
 
         #Try invalid input
         assert type(Factory.buildFromTemplate(None)) == Invalid
-        assert Factory.buildFromTemplate(Template(create=None)) is False
+        assert type(Factory.buildFromTemplate(Template(create=None))) == Invalid
         assert type(Factory.buildFromTemplate(Template('SomeElementThatDoesNotExist'))) == Invalid
 
         template = Template('box', properties=(('style', 'margin:5px;'),),

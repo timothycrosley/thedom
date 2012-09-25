@@ -103,12 +103,12 @@ def getNestedElementTime():
     startTime = time.time()
     rootElement = WebElement('root')
     element = rootElement
-    element.tagName = "root"
+    element._tagName = "root"
     html = ""
     for x in xrange(900):
         doneSection()
         element = element.addChildElement(WebElement("element" + str(x)))
-        element.tagName = 'tag' + str(x)
+        element._tagName = 'tag' + str(x)
         html += element.toHtml()
 
     results['nestedNodeCreation'] = time.time() - startTime

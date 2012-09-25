@@ -14,6 +14,7 @@ import Base
 import Factory
 from MethodUtils import CallBack
 from StringUtils import interpretAsString
+from DOM import Link, Script, H2
 
 Factory = Factory.Factory("Resources")
 
@@ -22,7 +23,6 @@ class ResourceFile(Base.WebElement):
     """
         Enables you to add resource files (javascript, css, etc..) to a page
     """
-    tagName = 'link'
     properties = Base.WebElement.properties.copy()
     properties['file'] = {'action':'setFile'}
     properties['media'] = {'action':'attribute'}
@@ -30,6 +30,7 @@ class ResourceFile(Base.WebElement):
 
     def __init__(self, id=None, name=None, parent=None):
         Base.WebElement.__init__(self, id, name)
+        self.resourceFile = self.addChildElement(Base.TextNode())
         self.setFile("")
 
     def shown(self):
@@ -48,35 +49,28 @@ class ResourceFile(Base.WebElement):
         extension = fileName.split("?")[0][-3:]
         if ":" in fileName:
             rel, href = fileName.split(":")
-            self.tagName = "link"
-            self.attributes['src'] = href
-            self.attributes['rel'] = rel
+            resource = Link()
+            resource.setProperties((('rel', rel), ('src', href)))
             self.resourceType = rel
-            self.tagSelfCloses = True
         elif extension == ".js":
-            self.tagName = "script"
-            self.attributes['src'] = fileName
+            resource = Script()
+            resource.setProperties((('src', fileName), ))
             self.resourceType = "javascript"
-            self.tagSelfCloses = False
         elif extension == "css":
-            self.tagName = "link"
-            self.attributes['rel'] = "stylesheet"
-            self.attributes['type'] = "text/css"
-            self.attributes['href'] = fileName
+            self._tagName = "link"
+            resource = Link()
+            resource.setProperties((('rel', 'stylesheet'), ('type','text/css'), ('href', fileName)))
             self.resourceType = "css"
-            self.tagSelfCloses = True
         elif extension == "png":
-            self.tagName = "link"
-            self.attributes['rel'] = "icon"
-            self.attributes['type'] = "image/png"
-            self.attributes['href'] = fileName
-            self.resourceType = "css"
-            self.tagSelfCloses = True
+            resource = Link()
+            resource.setProperties((('rel', 'icon'), ('type','image/png'), ('href', fileName)))
+            self.resourceType = "favicon"
         else:
-            self.tagName = "h2"
-            self.addChildElement(Base.TextNode("Invalid Resource: %s" % fileName))
+            resource = H2()
+            resource.addChildElement(Base.TextNode("Invalid Resource: %s" % fileName))
             self.resourceType = None
-            self.tagSelfCloses = False
+
+        self.resourceFile = self.resourceFile.replaceWith(resource)
 
 Factory.addProduct(ResourceFile)
 

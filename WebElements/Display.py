@@ -22,6 +22,8 @@ class Image(ValueElement):
     """
         Adds an image to the page
     """
+    __slots__ = ()
+
     tagName = "img"
     allowsChildren = False
     tagSelfCloses = True
@@ -45,6 +47,8 @@ class HoverImage(Image):
     """
         Defines an image that changes on mouseover
     """
+    __slots__ = ()
+
     properties = ValueElement.properties.copy()
     properties['imageOnHover'] = {'action':'classAttribute'}
     properties['imageOnClick'] = {'action':'classAttribute'}
@@ -71,6 +75,8 @@ class List(Base.WebElement):
     """
         Defines a list webelement (that will automatically list out its child elements in the format chosen)
     """
+    __slots__ = ('ordered')
+
     tagName = "ul"
     properties = Base.WebElement.properties.copy()
     properties['ordered'] = {'action':'classAttribute', 'type':'bool'}
@@ -80,6 +86,8 @@ class List(Base.WebElement):
         """
             Defines an individual Item within a list
         """
+        __slots__ = ('_textNode')
+
         tagName = "li"
 
         def __init__(self, id=None, name=None, parent=None):
@@ -121,7 +129,7 @@ class List(Base.WebElement):
 
     def __updateTag__(self):
         if self.ordered:
-            self.tagName = "ol"
+            self._tagName = "ol"
 
 Item = List.Item
 Factory.addProduct(List)
@@ -131,6 +139,8 @@ class Label(Base.WebElement):
     """
         Defines a label webelement, which will display a single string of text to the user
     """
+    __slots__ = ('_textNode')
+
     tagName = 'span'
     signals = Base.WebElement.signals + ['textChanged']
     properties = Base.WebElement.properties.copy()
@@ -199,6 +209,7 @@ class Paragraph(Label):
     """
         Defines a paragraph element
     """
+    __slots__ = ()
     tagName = "p"
 
 Factory.addProduct(Paragraph)
@@ -208,6 +219,7 @@ class Subscript(Label):
     """
         Defines a subscripted text element
     """
+    __slots__ = ()
     tagName = "sub"
 
 Factory.addProduct(Subscript)
@@ -217,6 +229,7 @@ class Superscript(Label):
     """
         Defines a superscripted text element
     """
+    __slots__ = ()
     tagName = "sup"
 
 Factory.addProduct(Superscript)
@@ -226,6 +239,7 @@ class PreformattedText(Label):
     """
         Defines a preformatted text label, where no forced format should be applied (such as single space)
     """
+    __slots__ = ()
     tagName = "pre"
 
 Factory.addProduct(PreformattedText)
@@ -235,6 +249,7 @@ class HeaderLabel(Label):
     """
         Defined a heading (h1-h6) label
     """
+    __slots__ = ('level')
     properties = Label.properties.copy()
     properties['level'] = {'action':'classAttribute', 'type':'int'}
 
@@ -247,7 +262,7 @@ class HeaderLabel(Label):
         if self.level > 6 or self.level < 1:
             raise ValueError("Valid levels for headers are 1-6 (h1-6)")
 
-        self.tagName = "h%d" % self.level
+        self._tagName = "h%d" % self.level
         return Label.toHtml(self, formatted)
 
 Factory.addProduct(HeaderLabel)
@@ -257,6 +272,7 @@ class FreeText(Label):
     """
         A Free text element is a label without a border
     """
+    __slots__ = ()
     tagName = ''
 
 Factory.addProduct(FreeText)
@@ -266,6 +282,8 @@ class LabeledData(Label):
     """
         Defines a label data pair, where the value type is defined by the label
     """
+    __slots__ = ('__data__', )
+
     properties = Base.WebElement.properties.copy()
     properties['label'] = {'action':'setText'}
     properties['data'] = {'action':'setData'}
@@ -297,7 +315,9 @@ class Error(Label):
     """
         Defines an error webElement
     """
+    __slots__ = ()
     tagName = "div"
+
     def __init__(self, id=None, name=None, parent=None):
         Label.__init__(self, id, name, parent)
 
@@ -309,6 +329,7 @@ class FormError(Label):
         Defines a '<form:error>' web element, which is used by formencode, or dynamics forms error processor to
         know where to place an error when present
     """
+    __slots__ = ()
     displayable = False
     tagName = 'form:error'
     tagSelfCloses = True
@@ -324,7 +345,7 @@ class FormError(Label):
         """
             Sets the error text
         """
-        self.tagName = "span"
+        self._tagName = "span"
         self.addClass("error-message")
         self.tagSelfCloses = False
         if not getattr(self, '_textNode', None):
@@ -344,6 +365,7 @@ class BlankRendered(Base.WebElement):
     """
         Outupts nothing but still renders child elements
     """
+    __slots__ = ()
     displayable = False
 
     def toHtml(self, formatted=False):
@@ -360,6 +382,7 @@ class Empty(Base.WebElement):
     """
         Outputs nothing to the page -- a useful placeholder
     """
+    __slots__ = ()
     displayable = False
 
     def __init__(self, name=None, id=None, parent=None):
@@ -378,6 +401,7 @@ class HTML(Base.WebElement):
     """
         Simply displays the html as it is given
     """
+    __slots__ = ('html')
     properties = Base.WebElement.properties.copy()
     properties['html'] = {'action':'classAttribute'}
 
@@ -396,6 +420,7 @@ class StatusIndicator(Base.WebElement):
     """
         Shows a visual indication of status from incomplete to complete
     """
+    __slots__ = ('status')
     statuses = ['StatusIncomplete', 'StatusPartial', 'StatusComplete']
     Incomplete = 0
     Partial = 1
@@ -427,6 +452,7 @@ class CacheElement(Base.WebElement):
     """
         Renders an element once caches the result and returns the cache every time after
     """
+    __slots__ = ('__cachedHTML__')
 
     def __init__(self, id=None, name=None, parent=None):
         Base.WebElement.__init__(self, id, name, parent)

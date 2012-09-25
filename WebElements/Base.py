@@ -42,11 +42,12 @@ class WebElement(Connectable):
     """
         The base WebElement which all custom WebElements should extend.
     """
-    displayable = True
+    __slots__ = ('_tagName', '_prefix', '__scriptTemp__',
+                 '__objectTemp__', 'validator', '_editable', '__scriptContainer__', 'id', 'name', 'parent', '_style',
+                 '_classes', '_attributes', '_childElements', 'addChildElementsTo')
     tagSelfCloses = False
-    tagName = ""
     allowsChildren = True
-    _prefix = None
+    displayable = True
     signals = ['hidden', 'shown', 'beforeToHtml', 'childAdded', 'editableChanged']
     properties = OrderedDict()
     properties['style'] = {'action':'setStyleFromString'}
@@ -61,6 +62,7 @@ class WebElement(Connectable):
     properties['key'] = {'action':'classAttribute'}
     properties['validator'] = {'action':'classAttribute'}
     properties['uneditable'] = {'action':'call', 'name':'__setUneditable__', 'type':'bool'}
+    tagName = ""
 
     def __init__(self, id=None, name=None, parent=None):
         """
@@ -69,16 +71,47 @@ class WebElement(Connectable):
         """
         Connectable.__init__(self)
 
+        self._tagName = self.__class__.tagName
+        self._prefix = None
+
         self.id = id
         self.name = name or id
         self.parent = parent
 
-        self.style = {}
-        self.classes = set()
-        self.attributes = {}
+        self._style = None
+        self._classes = None
+        self._attributes = None
 
-        self.childElements = []
+        self._childElements = None
         self.addChildElementsTo = self
+
+    @property
+    def attributes(self):
+        if self._attributes is None:
+            self._attributes = {}
+
+        return self._attributes
+
+    @property
+    def classes(self):
+        if self._classes is None:
+            self._classes = set([])
+
+        return self._classes
+
+    @property
+    def style(self):
+        if self._style is None:
+            self._style = {}
+
+        return self._style
+
+    @property
+    def childElements(self):
+        if self._childElements is None:
+            self._childElements = []
+
+        return self._childElements
 
     def jsId(self):
         """
@@ -90,7 +123,7 @@ class WebElement(Connectable):
         """
             clears the element of all children
         """
-        self.childElements = []
+        self._childElements = []
 
     def hide(self):
         """
@@ -355,7 +388,7 @@ class WebElement(Connectable):
 
     def setClasses(self, classes):
         """ Replace all current classes with a list of classes """
-        self.classes = set(classes)
+        self._classes = set(classes)
         self.attributes['class'] = self.classes
 
     def removeClass(self, className):
@@ -528,15 +561,19 @@ class WebElement(Connectable):
             Returns the elements html start tag,
                 for example '<span class="whateverclass">'
         """
-        if not self.tagName:
+        if not self._tagName:
             return u''
 
         nativeAttributes = (('name', self.fullName()),
                             ('id', self.fullId()),
-                            ('class', self.classes),
-                            ('style', self.style))
-        startTag = "<" + self.tagName + " "
-        for key, value in chain(nativeAttributes, self.attributes.iteritems()):
+                            ('class', self._classes),
+                            ('style', self._style),)
+        startTag = "<" + self._tagName + " "
+
+        attributes = nativeAttributes
+        if self._attributes is not None:
+            attributes = chain(attributes, self.attributes.iteritems())
+        for key, value in attributes:
             value = interpretAsString(value)
             if value:
                 if value == '<BLANK>':
@@ -559,16 +596,19 @@ class WebElement(Connectable):
         """
             Returns the elements html end tag, for example '</span>'
         """
-        if self.tagSelfCloses or not self.tagName:
+        if self.tagSelfCloses or not self._tagName:
             return u''
 
-        return unicode("".join(("</", self.tagName, ">")))
+        return unicode("".join(("</", self._tagName, ">")))
 
     def content(self, formatted=False):
         """
             returns the elements html content
             (the html bettween startTag and endTag)
         """
+        if self._childElements is None:
+            return ''
+
         elements = [element.toHtml() for element in self.childElements]
         if formatted:
             return "\n".join(elements)
@@ -721,7 +761,7 @@ class WebElement(Connectable):
         """
             Returns true if the elements will render as an HTML block type
         """
-        if self.tagName in BLOCK_TAGS or self.hasClass("WBlock"):
+        if self._tagName in BLOCK_TAGS or self.hasClass("WBlock"):
             return True
         return False
 
@@ -784,11 +824,9 @@ class Invalid(WebElement):
     """
         An Invalid WebElement - used generally to show that a desired element failed to load
     """
+    __slots__ = ()
+    tagName = "h2"
     allowsChildren = False
-
-    def __init__(self, id=None, name=None, parent=None):
-        WebElement.__init__(self, id, name, parent)
-        self.tagName = "h2"
 
     def setProperties(self, valueDict):
         pass
@@ -805,12 +843,11 @@ class TextNode(object):
         Defines the most basic concept of an html node - does not have the concept of children only of producing html
         should only be used internally or for testing objects
     """
-    _text = ''
-    parent = None
+    __slots__ = ('_text', 'parent')
 
-    def __init__(self, text=None):
-        if text:
-            self.setText(text)
+    def __init__(self, text='', parent=None):
+        self.setText(text)
+        self.parent = parent
 
     def setText(self, text):
         self._text = text
@@ -827,6 +864,18 @@ class TextNode(object):
     def __repr__(self):
         return self.__class__.__name__ + "(" + repr(self.text()) + ")"
 
+    def replaceWith(self, replacementElement):
+        """
+            Replaces this text node with a webelement
+        """
+        if self.parent:
+            index = self.parent.childElements.index(self)
+            self.parent.childElements[index] = replacementElement
+            replacementElement.parent = self.parent
+            return replacementElement
+        else:
+            return Invalid()
+
 
 class TemplateElement(WebElement):
     """
@@ -835,10 +884,10 @@ class TemplateElement(WebElement):
     """
     factory = None
     template = None
+    tagName = 'div'
 
     def __init__(self, id=None, name=None, parent=None, template=None, factory=None):
         WebElement.__init__(self, id, name, parent)
-        self.tagName = 'div'
 
         if template:
             self.template = template
