@@ -23,6 +23,7 @@ class ResourceFile(Base.WebElement):
     """
         Enables you to add resource files (javascript, css, etc..) to a page
     """
+    __slots__ = ('resourceFile', 'fileName', 'resourceFile', 'resourceType')
     properties = Base.WebElement.properties.copy()
     properties['file'] = {'action':'setFile'}
     properties['media'] = {'action':'attribute'}
@@ -79,6 +80,7 @@ class ScriptContainer(Base.WebElement):
     """
         All scripts should be stored in a Script Box object
     """
+    __slots__ = ('_scripts', 'usedObjects')
     displayable = False
     tagName = "script"
     properties = Base.WebElement.properties.copy()

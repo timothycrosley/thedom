@@ -20,6 +20,7 @@ class HiddenValue(InputElement):
     """
         Defines a hidden '<input>' webelement (An input that can be modified but not viewed clientside)
     """
+    __slots__ = ('width')
     signals = InputElement.signals + ['textChanged']
     displayable = False
 
@@ -56,6 +57,7 @@ class HiddenBooleanValue(HiddenValue):
     """
         Defines a hidden value which accepts true or false values
     """
+    __slots__ = ()
 
     def __init__(self, id=None, name=None, parent=None, key=None):
         HiddenValue.__init__(self, id, name, parent, key=key)
@@ -85,6 +87,8 @@ class HiddenIntValue(HiddenValue):
     """
         Defines a hidden value which accepts integer values only
     """
+    __slots__ = ()
+
     def __init__(self, id=None, name=None, parent=None, key=None):
         HiddenValue.__init__(self, id, name, parent, key=key)
         self.attributes['value'] = 0

@@ -32,6 +32,8 @@ class BaseField(Layout.Box):
         Base field implementation where a field is defined as:
             a label, input, and validator paired together
     """
+    __slots__ = ('submitIfDisabled', 'layout', 'inputContainer', 'label', 'inputAndActions', 'userInput',
+                 'fieldActions', 'formError')
     inputElement = None
     properties = Base.WebElement.properties.copy()
     Base.addChildProperties(properties, Display.Label, 'label')
@@ -167,6 +169,7 @@ class TextField(BaseField):
     """
         A field with a textbox as the input
     """
+    __slots__ = ()
     inputElement = Inputs.TextBox
     properties = BaseField.properties.copy()
     Base.addChildProperties(properties, Inputs.TextBox, 'userInput')
@@ -178,6 +181,7 @@ class RadioField(BaseField):
     """
         A field with a radio button as the input
     """
+    __slots__ = ()
     inputElement = Inputs.Radio
     properties = BaseField.properties.copy()
     Base.addChildProperties(properties, Inputs.Radio, 'userInput')
@@ -216,6 +220,7 @@ class TextAreaField(BaseField):
     """
         A field with a textarea as the input
     """
+    __slots__ = ()
     inputElement = Inputs.TextArea
     properties = BaseField.properties.copy()
     Base.addChildProperties(properties, Inputs.TextArea, 'userInput')
@@ -228,6 +233,7 @@ class AutoField(Layout.Vertical):
         Allows you to use any input element as a field (text label, inputElement, validator pair)
         simply by adding it as a childElement
     """
+    __slots__ = ('inputContainer', 'fieldActions', 'userInput', 'formError', 'label')
     properties = Base.WebElement.properties.copy()
     properties['text'] = {'action':'setText'}
     properties['setApart'] = {'action':'call', 'type':'bool'}
@@ -305,6 +311,7 @@ class SelectField(BaseField):
     """
         A field with a select box as the input
     """
+    __slots__ = ()
     inputElement = Inputs.Select
     properties = BaseField.properties.copy()
     Base.addChildProperties(properties, Inputs.Select, 'userInput')
@@ -384,9 +391,11 @@ class MultiField(SelectField):
         The multifield is a multi select field, where each individual option is selected in the same mannor
         as a normal select field to make it more intuitive for users
     """
+    __slots__ = ('sortBy', 'selectContainer', 'hiddenMultiSelect')
     properties = SelectField.properties.copy()
     properties['validator'] = {'action': 'hiddenMultiSelect.classAttribute', 'name': 'validator'}
     properties['sortBy'] = {'action': 'classAttribute'}
+
     def __createNewSelection__(self, name):
         new = Layout.Horizontal()
         new.addClass('WSelectedMultiOption')
@@ -457,6 +466,7 @@ class MultiSelectField(BaseField):
     """
         A field with a multiselect as the input
     """
+    __slots__ = ()
     inputElement = Inputs.MultiSelect
     properties = BaseField.properties.copy()
     Base.addChildProperties(properties, Inputs.MultiSelect, 'userInput')
@@ -510,19 +520,19 @@ class CheckboxField(BaseField):
     """
         A field with a checkbox as the input
     """
+    __slots__ = ('labelContainer', 'childContainer')
     properties = BaseField.properties.copy()
     Base.addChildProperties(properties, Inputs.CheckBox, 'userInput')
     properties['checked'] = {'action':'setValue', 'type':'bool'}
     inputElement = Inputs.CheckBox
 
-    def __init__(self, id, name=None, parent=None, key=None):
+    def __init__(self, id, name=None, parent=None):
         BaseField.__init__(self, id, name, parent)
-        self.key = key
 
         inputContainer = Layout.Box(id + "_inputContainer", '', self)
         inputContainer.style['float'] = 'left'
         inputContainer.style['clear'] = 'none'
-        userInput = Inputs.CheckBox(id, None, self, key=key)
+        userInput = Inputs.CheckBox(id, None, self)
         self.userInput.addJavascriptEvent('onload', 'CCClickCheckbox(this)')
         self.userInput.addJavascriptEvent('onclick', CallBack(self, 'toggleChildren'))
         self.userInput = self.userInput.replaceWith(userInput)
@@ -604,8 +614,8 @@ class IntegerField(BaseField):
     """
         A field with a incremntable and deincrementable textfield (with up and down arrows) as the input
     """
+    __slots__ = ('toggleLayout', 'up', 'down')
     inputElement = Inputs.IntegerTextBox
-    validator = "NewValidators.Int()"
     properties = TextField.properties.copy()
     Base.addChildProperties(properties, Inputs.IntegerTextBox, 'userInput')
 
@@ -615,6 +625,7 @@ class IntegerField(BaseField):
         self.toggleLayout = self.addChildElement(Layout.Vertical())
         self.toggleLayout.style["font-size"] = "75%"
         self.toggleLayout.addClass("Clickable")
+        self.validator = "NewValidators.Int()"
 
         self.label.style['display'] = "block"
         self.label.style['margin-top'] = "5px;"
@@ -651,6 +662,7 @@ class DateField(TextField):
     """
         A field with a date widget as the input (which provides a browseable way to select the date)
     """
+    __slots__ = ('userInput', 'dateFormat', 'calendarLink', 'calendarTypeLabel', 'formatDisplay', 'isZulu')
     properties = TextField.properties.copy()
     Base.addChildProperties(properties, Display.Label, 'calendarTypeLabel')
     properties['isZulu'] = {'action':'setIsZulu', 'type':'bool'}
@@ -715,6 +727,7 @@ class NestedSelect(Layout.Vertical):
         Defines two select Layout.Boxes where the selection of an item from the first will trigger
         the population of the second.
     """
+    __slots__ = ('groupLabel', 'groupSelect', 'itemLabel', 'itemSelect', 'groups', 'items')
     properties = Layout.Vertical.properties.copy()
     properties['groupData'] = {'action':'setGroupData'}
     properties['groupLabel'] = {'action':'setGroupLabel'}
@@ -812,6 +825,8 @@ class Filter(Layout.Box):
     """
         Defines a dynamic and expandable list of filters
     """
+    __slots__ = ('searchFieldList', 'filters', 'isSubFilter', 'filterContainer', 'searchTerm', 'searchFields',
+                 'filterType', 'removeButton', 'addAndFilter', 'addOrFilter', 'addFilter', 'subFilter')
 
     jsFunctions = ["javascriptAddFilter", "javascriptRemoveFilter"]
 

@@ -25,6 +25,7 @@ class DropDownMenu(Layout.Box):
     """
         Defines a dropdown menu webelement -- where clicking a button exposes or hides a menu.
     """
+    __slots__ = ('toggle', 'menu', 'openOnly', 'parentElement')
     properties = Layout.Box.properties.copy()
     properties['openOnly'] = {'action':'classAttribute', 'type':'bool'}
     properties['parentElement'] = {'action':'classAttribute'}
@@ -119,6 +120,7 @@ class CollapsedText(DropDownMenu):
     """
         Shows a limited amount of text revealing the rest when the user hovers over
     """
+    __slots__ = ('lengthLimit', '__text', 'label')
     properties = DropDownMenu.properties.copy()
     properties['lengthLimit'] = {'action':'classAttribute', 'type':'int'}
     properties['text'] = {'action':'setText'}
@@ -162,6 +164,7 @@ class Autocomplete(Layout.Box):
     """
         A text box that opens a drop down menu upon editing
     """
+    __slots__ = ('blockTab', 'menu', 'userInput')
     properties = Layout.Box.properties.copy()
     properties['blockTab'] = {'action':'classAttribute', 'type':'bool'}
 
@@ -230,6 +233,7 @@ class Tab(Layout.Box):
     """
         A single tab - holds a single element(The tabs content) and the tabs label
     """
+    __slots__ = ('text', '_textNode', 'tabLabel', 'imageName', 'isSelected')
     signals = Layout.Box.signals + ['selected', 'unselected']
     properties = Layout.Box.properties.copy()
     properties['select'] = {'action':'call', 'type':'bool'}
@@ -241,6 +245,7 @@ class Tab(Layout.Box):
         """
             The label used to represent the tab in the tab-bar
         """
+        __slots__ = ()
         def __init__(self, id, name=None, parent=None):
             Display.Label.__init__(self, id=id, name=name, parent=parent)
             self.addClass("WebElementTabLabel")
@@ -315,6 +320,7 @@ class TabContainer(Base.WebElement):
     """
         TabContaier makes it easy to show association between several elements on a page via tabs
     """
+    __slots__ = ('tabs', 'selectedTab', 'layout', '__tabLabelContainer__', '__tabContentContainer__')
     __layoutElement__ = Layout.Vertical
     __tabLayoutElement__ = Layout.Horizontal
 
@@ -394,6 +400,7 @@ class Accordion(Layout.Vertical):
         Defines an accordion, a labeled section of the page, that upon clicking the label has its visibility
         toggled
     """
+    __slots__ = ('toggle', 'toggleImage', 'toggleLabel', 'isOpen', 'contentElement')
     jsFunctions = ['toggleAccordion']
     properties = Layout.Box.properties.copy()
     properties['open'] = {'action':'call', 'type':'bool'}
@@ -496,6 +503,7 @@ class FormContainer(Layout.Flow):
         Defines a form container web element - a portion of the page that contains fields to be submitted back to
         the server.
     """
+    __slots__ = ()
     tagName = 'form'
     properties = Base.WebElement.properties.copy()
     properties['action'] = {'action':'attribute'}
@@ -529,6 +537,7 @@ class ActionBox(Layout.Vertical):
     """
         Defines a list of actions grouped together under a header
     """
+    __slots__ = ('header', 'actions')
     properties = Layout.Vertical.properties.copy()
     properties['header'] = {'action':'header.setText'}
 

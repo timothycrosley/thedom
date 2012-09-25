@@ -177,7 +177,7 @@ class TestWebElement(object):
 
     def test_endTag(self):
         """Test to ensure endTag() works correctly"""
-        self.container.tagName = 'div'
+        self.container._tagName = 'div'
         assert self.container.endTag() == '</div>'
         assert self.firstChild.endTag() == ''
 

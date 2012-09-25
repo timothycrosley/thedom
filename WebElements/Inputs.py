@@ -23,6 +23,7 @@ class ValueElement(Base.WebElement):
     """
         Defines a base value containing WebElement
     """
+    __slots__ = ('key', '_value')
     signals = Base.WebElement.signals + ['valueChanged']
     properties = Base.WebElement.properties.copy()
     properties['text'] = {'action':'setValue'}
@@ -126,6 +127,7 @@ class InputElement(ValueElement):
     """
         Defines a base '<input>' webelement
     """
+    __slots__ = ()
     tagName = "input"
     tagSelfCloses = True
     allowsChildren = False
@@ -153,7 +155,7 @@ class CheckBox(InputElement):
     """
         Defines a checkbox '<input type="checkbox">' webelement
     """
-
+    __slots__ = ()
     properties = InputElement.properties.copy()
     properties['valueAttribute'] = {'action':'setValueAttributeFromString'}
 
@@ -217,6 +219,7 @@ class Radio(CheckBox):
         where the name represents the radio group identifier and the id reperents the individual
         radio buttons identifier
     """
+    __slots__ = ()
     def __init__(self, id=None, name=None, parent=None, key=None):
         CheckBox.__init__(self, id, name, parent, key=key)
         self.attributes['type'] = "radio"
@@ -247,6 +250,7 @@ class TextBox(InputElement):
     """
         Defines a textbox '<input>' webelement
     """
+    __slots__ = ('length', )
     properties = InputElement.properties.copy()
     properties['size'] = {'action':'attribute'}
     properties['maxlength'] = {'action':'attribute'}
@@ -288,14 +292,15 @@ class IntegerTextBox(TextBox):
     """
         Defines a textbox '<input>' webelement that can only contain integer values
     """
+    __slots__ = ('maximum', 'minimum')
     properties = TextBox.properties.copy()
     properties['maximum'] = {'action':'classAttribute', 'type':'int'}
     properties['minimum'] = {'action':'classAttribute', 'type':'int'}
-    maximum = None
-    minimum = None
 
     def __init__(self, id, name=None, parent=None, key=None):
         TextBox.__init__(self, id, name, parent, key)
+        self.maximum = None
+        self.minimum = None
         self.attributes['size'] = '4'
         self.setValue(0)
 
@@ -338,6 +343,7 @@ class FileUpload(InputElement):
     """
         An input for uploading files to the server
     """
+    __slots__ = ()
     properties = InputElement.properties.copy()
     properties['size'] = {'action':'attribute'}
     properties['maxlength'] = {'action':'attribute'}
@@ -354,6 +360,7 @@ class TextArea(ValueElement):
     """
         Defines a <textarea> webelement (A multi line textbox)
     """
+    __slots__ = ()
     tagName = "textarea"
     allowsChildren = False
     properties = ValueElement.properties.copy()
@@ -380,6 +387,7 @@ class Option(ValueElement):
     """
         Defines a select '<option>' webelement
     """
+    __slots__ = ('_selected', '_textNode')
     tagName = "option"
     signals = ValueElement.signals + ['selected', 'unselected']
     properties = ValueElement.properties.copy()
@@ -443,6 +451,7 @@ class Select(ValueElement):
     """
         Provides a way to let a user choose one out of several options
     """
+    __slots__ = ()
     tagName = "select"
     properties = ValueElement.properties.copy()
     properties['multiple'] = {'action':'attribute', 'type':'bool'}
@@ -553,6 +562,8 @@ class MultiSelect(Select):
     """
         Provides a way for a user to select a portion of several choices
     """
+    __slots__ = ()
+
     def __init__(self, id, name=None, parent=None):
         Select.__init__(self, id, name, parent)
         self.attributes['multiple'] = True

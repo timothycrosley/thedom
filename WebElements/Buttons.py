@@ -25,7 +25,6 @@ class Link(Base.WebElement):
         Defines an <a href> webelement (An html link meant to open a new page)
     """
     __slots__ = ('_textNode')
-
     signals = Base.WebElement.signals + ['emit', 'textChanged']
     properties = Base.WebElement.properties.copy()
     properties['text'] = {'action':'setText'}
@@ -60,7 +59,6 @@ class PopupLink(Link):
         A link that will open the new page in a popup window
     """
     __slots__ = ('height', 'width', 'windowTitle', 'normal', 'separateWindow')
-
     properties = Link.properties.copy()
     properties['width'] = {'action':'classAttribute'}
     properties['height'] = {'action':'classAttribute'}
@@ -93,7 +91,6 @@ class Button(InputElement):
         Defines an input button '<input type="button">' webelement
     """
     __slots__ = ()
-
     properties = InputElement.properties.copy()
     properties['disabled'] = {'action':'setDisabled', 'type':'bool'}
 
@@ -142,7 +139,6 @@ Factory.addProduct(Button)
 
 class PopupButton(PopupLink):
     __slots__ = ('button')
-
     properties = PopupLink.properties.copy()
     properties['buttonClass'] = {'action': 'button.addClassesFromString', 'name': 'class'}
     properties['buttonStyle'] = {'action': 'button.setStyleFromString', 'name': 'style'}
@@ -176,7 +172,6 @@ class UpButton(Display.HoverImage):
         A concrete button implementation, used to increase something by a factor of 1
     """
     __slots__ = ()
-
     imageOnHover = 'images/count_up_highlight.png'
     imageOnClick = 'images/count_up_pressed.png'
 
@@ -195,7 +190,6 @@ class DownButton(Display.HoverImage):
         A concrete button implementation, used to decrease something by a factor of 1
     """
     __slots__ = ()
-
     imageOnHover = 'images/count_down_highlight.png'
     imageOnClick = 'images/count_down_pressed.png'
 
@@ -214,7 +208,6 @@ class PrintButton(Button):
         Defines a button thats sole purpose in life is to print the current page
     """
     __slots__ = ()
-
     def __init__(self, id=None, name=None, parent=None):
         Button.__init__(self, id, name, parent)
         self.setValue("Print")
@@ -228,7 +221,6 @@ class SubmitButton(Button):
         Defines a button that when clicked will submit the current page back to the server (if contained in a form)
     """
     __slots__ = ()
-
     def __init__(self, id=None, name=None, parent=None):
         Button.__init__(self, id, name, parent)
         self.attributes['type'] = 'submit'
@@ -241,7 +233,6 @@ class ToggleButton(Layout.Box):
         Defines a button that can be used as a toggle, with an on and off state
     """
     __slots__ = ('button', 'toggledState')
-
     properties = Button.properties
     signals = Layout.Box.signals + ['toggled', 'jsToggled']
 

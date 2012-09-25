@@ -44,7 +44,7 @@ class WebElement(Connectable):
     """
     __slots__ = ('_tagName', '_prefix', '__scriptTemp__',
                  '__objectTemp__', 'validator', '_editable', '__scriptContainer__', 'id', 'name', 'parent', '_style',
-                 '_classes', '_attributes', '_childElements', 'addChildElementsTo')
+                 '_classes', '_attributes', '_childElements', 'addChildElementsTo', 'key')
     tagSelfCloses = False
     allowsChildren = True
     displayable = True
@@ -77,6 +77,7 @@ class WebElement(Connectable):
         self.id = id
         self.name = name or id
         self.parent = parent
+        self.key = None
 
         self._style = None
         self._classes = None
@@ -84,6 +85,10 @@ class WebElement(Connectable):
 
         self._childElements = None
         self.addChildElementsTo = self
+
+        self.__scriptTemp__ = None
+        self.__scriptContainer__ = None
+        self.__objectTemp__ = None
 
     @property
     def attributes(self):
@@ -293,12 +298,12 @@ class WebElement(Connectable):
             self.addChildElementsTo.childElements.append(childElement)
             self.addChildElementsTo.emit('childAdded', childElement)
 
-            scriptTemp = getattr(childElement, '__scriptTemp__', None)
+            scriptTemp = childElement.__scriptTemp__
             if scriptTemp:
                 for script in scriptTemp:
                     self.addScript(script)
 
-            objectTemp = getattr(childElement, '__objectTemp__', None)
+            objectTemp = childElement.__objectTemp__
             if objectTemp:
                 for objectWithScripts in objectTemp:
                     self.addJSFunctions(objectWithScripts)
@@ -430,7 +435,7 @@ class WebElement(Connectable):
         if self.parent:
             return self.parent.scriptContainer()
 
-        return getattr(self, '__scriptContainer__', False)
+        return self.__scriptContainer__
 
     def setScriptContainer(self, scriptContainer):
         """
@@ -460,7 +465,7 @@ class WebElement(Connectable):
         elif self.parent:
             self.parent.addScript(script)
         else:
-            self.__scriptTemp__ = getattr(self, '__scriptTemp__', [])
+            self.__scriptTemp__ = self.__scriptTemp__ or []
             if not script in self.__scriptTemp__:
                 self.__scriptTemp__.append(script)
 
@@ -474,7 +479,7 @@ class WebElement(Connectable):
         elif self.parent:
             self.parent.removeScript(script)
         else:
-            scriptTemp = getattr(self, '__scriptTemp__', None)
+            scriptTemp = self.__scriptTemp__
             if scriptTemp and script in scriptTemp:
                 scriptTemp.remove(script)
 
@@ -488,7 +493,7 @@ class WebElement(Connectable):
         elif self.parent:
             self.parent.addJSFunctions(objectType)
         else:
-            self.__objectTemp__ = getattr(self, '__objectTemp__', [])
+            self.__objectTemp__ = self.__objectTemp__ or []
             self.__objectTemp__.append(objectType)
 
     def __insertTemporaryScripts(self):
@@ -496,13 +501,13 @@ class WebElement(Connectable):
             Moves scripts that were added to the WebElement but not a scriptContainer over to
             the set scriptContainer
         """
-        scriptTemp = getattr(self, '__scriptTemp__', None)
+        scriptTemp = self.__scriptTemp__
         if scriptTemp:
             for script in scriptTemp:
                 self.addScript(script)
             self.__scriptTemp__ = []
 
-        objectTemp = getattr(self, '__objectTemp__', [])
+        objectTemp = self.__objectTemp__ or []
         if objectTemp:
             for objectType in objectTemp:
                 self.addJSFunctions(objectType)
@@ -844,6 +849,10 @@ class TextNode(object):
         should only be used internally or for testing objects
     """
     __slots__ = ('_text', 'parent')
+    displayable = True
+    tagName = ''
+    __scriptTemp__ = None
+    __objectTemp__ = None
 
     def __init__(self, text='', parent=None):
         self.setText(text)

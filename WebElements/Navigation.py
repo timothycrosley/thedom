@@ -30,6 +30,9 @@ class ItemPager(Layout.Vertical):
         Paged Results:
         Encapsulates the UI logic for paging multiple item from a database or other source.
     """
+    __slots__ = ('resultsStartAt', 'numberOfResults', 'showAllButton', 'startButton', 'backButton', 'pageLinks',
+                 'nextButton', 'lastButton', 'pagesShownAtOnce', 'itemsPerPage', '_index_', '_pages_',
+                 'resultsEndAt')
     signals = Base.TemplateElement.signals + ['jsIndexChanged']
     properties = Base.TemplateElement.properties.copy()
     properties['itemsPerPage'] = {'action':'classAttribute', 'type':'int'}
@@ -181,6 +184,7 @@ class JumpToLetter(Layout.Vertical):
     """
         Provides a simple set of links that allow a user to jump to a particular letter
     """
+    __slots__ = ('__letterMap__', 'selectedLetter')
     letters = map(chr, xrange(ord('A'), ord('Z') + 1))
     signals = Layout.Vertical.signals + ['jsLetterClicked']
 
@@ -255,6 +259,8 @@ class BreadCrumb(Layout.Box):
     """
         Defines a dynamically built navigation breadcrumb
     """
+    __slots__ = ('hiddenData', 'prevLinkClicked', 'location', 'label', 'currentLocation', 'currentText', 'formName',
+                 'linkCount', 'links', 'trail', 'currentLink')
     properties = Layout.Box.properties.copy()
     properties['formName'] = {'action':'classAttribute'}
 
@@ -407,6 +413,8 @@ class UnrolledSelect(Display.List):
     """
          A select input implementation where all options are visible at once but only one is selectable
     """
+    __slots__ = ('userInput', 'optionList')
+
     def __init__(self, id, name=None, parent=None):
         Display.List.__init__(self, None, None, parent)
         self.addChildElement(Display.Label()).addClass('first')
@@ -414,7 +422,7 @@ class UnrolledSelect(Display.List):
         self.userInput = HiddenInputs.HiddenValue(id, parent=self)
         self.childElements.append(self.userInput)
         self.userInput.addClass("Value")
-        self.options = []
+        self.optionList = []
 
         self.addScript("function selectUnrolledOption(option)"
                        "{"
@@ -462,7 +470,7 @@ class UnrolledSelect(Display.List):
         """
         newOption = Buttons.Link()
         newOption.setDestination("#Link")
-        if not self.options:
+        if not self.optionList:
             newOption.addClass('selected')
         if not value:
             value = key
@@ -478,7 +486,7 @@ class UnrolledSelect(Display.List):
 
         newOption.addJavascriptEvent('onclick', 'selectUnrolledOption(this);')
 
-        self.options.append(newOption)
+        self.optionList.append(newOption)
         return self.addChildElement(newOption)
 
     def options(self):
@@ -486,7 +494,7 @@ class UnrolledSelect(Display.List):
             Returns a list of all available options
         """
         options = {}
-        for option in self.options:
+        for option in self.optionList:
             options[option.name] = option.text()
 
         return options
@@ -503,7 +511,7 @@ class UnrolledSelect(Display.List):
         """
             Selects a child select option
         """
-        for option in self.options:
+        for option in self.optionList:
             if option.name == "value":
                 option.addClass('selected')
             else:
@@ -513,7 +521,7 @@ class UnrolledSelect(Display.List):
         """
             Returns the value of the currently selected item
         """
-        for option in self.options:
+        for option in self.optionList:
             if option.hasClass('selected'):
                 return option.name
 
@@ -524,6 +532,7 @@ class TimeFrame(Layout.Horizontal):
     """
         Allows a user to select the time frame from which items will appear
     """
+    __slots__ = ('anyTime', 'hours24', 'days7', 'days14', 'helpDropDown', 'help', 'days')
     signals = Base.TemplateElement.signals + ['jsTimeFrameChanged']
     properties = Layout.Horizontal.properties.copy()
     properties['help'] = {'action':'help.setText'}

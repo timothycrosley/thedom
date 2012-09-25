@@ -9,6 +9,7 @@ class GoogleChart(Image):
     """
         Provides a way for the google chart api to be used via WebElements
     """
+    __slots__ = ('__dataPoints__', '__height__', '__width__')
     chartType = None
     url = ('http://chart.apis.google.com/chart?cht='
            '%(chart)s&chs=%(width)sx%(height)s&chd=t:%(data)s&chl=%(labels)s&chbh=a'
@@ -93,6 +94,7 @@ class PieChart(GoogleChart):
     """
         Implementation of Google's pie chart
     """
+    __slots__ = ()
     chartType = "p"
 
 Factory.addProduct(PieChart)
@@ -102,6 +104,7 @@ class PieChart3D(GoogleChart):
     """
         Implementation of Google's 3d pie chart
     """
+    __slots__ = ()
     chartType = "p3"
 
 Factory.addProduct(PieChart3D)
@@ -111,6 +114,7 @@ class HorizontalBarChart(GoogleChart):
     """
         Implementation of Googles Horizontal Bar Chart
     """
+    __slots__ = ()
     chartType = "bhs"
     url = ('http://chart.apis.google.com/chart?cht='
            '%(chart)s&chs=%(width)sx%(height)s&chd=t:%(data)s&chxl=1:|%(labels)s&chbh=a'
@@ -134,6 +138,7 @@ class VerticalBarChart(GoogleChart):
     """
         Implementation of Google's Vertical Bar Chart
     """
+    __slots__ = ()
     chartType = "bvs"
 
 Factory.addProduct(VerticalBarChart)
@@ -143,6 +148,7 @@ class LineChart(GoogleChart):
     """
         Implementation of Google's Line Chart
     """
+    __slots__ = ()
     chartType = "lc"
 
 Factory.addProduct(LineChart)

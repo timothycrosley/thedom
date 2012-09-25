@@ -19,6 +19,8 @@ class PageBreak(Layout.Box):
     """
         Will force a page break before printing any additional elements
     """
+    __slots__ = ()
+
     def __init__(self, id=None, name=None, parent=None):
         Layout.Box.__init__(self, id=id, name=name, parent=parent)
 
@@ -31,6 +33,8 @@ class HidePrint(Layout.Box):
     """
         Will hide any child elements from printing
     """
+    __slots__ = ()
+
     def __init__(self, id=None, name=None, parent=None):
         Layout.Box.__init__(self, id=id, name=name, parent=parent)
 

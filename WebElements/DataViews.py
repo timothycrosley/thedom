@@ -28,6 +28,7 @@ class Table(Base.WebElement):
         Defines a table webelement - which is designed to be used as an actual table of data (not for alignment of
         child elements), you can quickly fill it with data, and it will take care of the display for you.
     """
+    __slots__ = ('alignHeaders', 'header', 'rows', 'columns', 'columnMap', 'uniformStyle')
     tagName = "table"
     signals = Base.WebElement.signals + ['rowAdded', 'columnAdded']
     properties = Base.WebElement.properties.copy()
@@ -43,12 +44,14 @@ class Table(Base.WebElement):
         """
             Defines a table header
         """
+        __slots__ = ()
         tagName = "th"
 
     class Column(Base.WebElement):
         """
             Defines a table column
         """
+        __slots__ = ('element', '_textNode')
         tagName = "td"
         signals = Base.WebElement.signals + ['textChanged']
 
@@ -80,6 +83,7 @@ class Table(Base.WebElement):
         """
             Defines a table row
         """
+        __slots__ = ()
         tagName = "tr"
 
         def actualCell(self, columnName):
@@ -254,6 +258,7 @@ class StoredValue(Layout.Box):
     """
         Defines a label:value pair that will be passed into the request
     """
+    __slots__ = ('label', 'value', 'valueDisplay')
     def __init__(self, id=None, name=None, parent=None):
         Layout.Box.__init__(self, name=name + "Container", parent=parent)
 

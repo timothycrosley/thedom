@@ -19,6 +19,7 @@ class Center(Base.WebElement):
     """
         Makes childElements appear in the center of there parent element
     """
+    __slots__ = ()
     tagName = "center"
 Factory.addProduct(Center)
 
@@ -28,6 +29,7 @@ class Stack(Base.WebElement):
        A stack is a container for child elements where only of the contained elements can be
        displayed at a time.
     """
+    __slots__ = ('index', 'stackElements')
     properties = Base.WebElement.properties.copy()
     properties['index'] = {'action':'classAttribute', 'type':'int'}
 
@@ -87,6 +89,7 @@ class Box(Base.WebElement):
         A container that allows child elements to be contained within
        the border of the container.
     """
+    __slots__ = ()
     properties = Base.WebElement.properties.copy()
     properties['containerType'] = {'action':'setContainerType'}
     tagName = "div"
@@ -96,7 +99,7 @@ class Box(Base.WebElement):
             Change the container type to div (block) or span (inline)
         """
         if container_type in ["div", "span"]:
-            self.tagName = container_type
+            self._tagName = container_type
             return True
         else:
             return False
@@ -105,7 +108,7 @@ class Box(Base.WebElement):
         """
             Returns the container type (div or span)
         """
-        return self.tagName
+        return self._tagName
 
 Factory.addProduct(Box)
 
@@ -115,6 +118,7 @@ class Flow(Base.WebElement):
         A container that does not impose a border around its childElements
        allowing them to flow freely.
     """
+    __slots__ = ()
     tagName = None
 
 Factory.addProduct(Flow)
@@ -124,6 +128,7 @@ class Horizontal(Box):
     """
         A container element that adds child elements horizontally.
     """
+    __slots__ = ()
     def __init__(self, id=None, name=None, parent=None):
         Box.__init__(self, id, name, parent)
         self.addClass("ClearFix")
@@ -181,6 +186,7 @@ class Vertical(Box):
     """
         A container that encourage elements to be added vertically with minimum html
     """
+    __slots__ = ()
     def __init__(self, id=None, name=None, parent=None):
         Box.__init__(self, id, name, parent)
         self.addClass("ClearFix")
@@ -220,9 +226,13 @@ class FieldSet(Box):
     """
         Groups child elements together with a labeled border
     """
+    __slots__ = ('legend')
     tagName = 'fieldset'
-    legend = None
     Box.properties['legend'] = {'action':'setLegend'}
+
+    def __init__(self, id=None, name=None, parent=None):
+        Box.__init__(self, id, name, parent)
+        self.legend = None
 
     def addLegend(self):
         """
@@ -248,6 +258,7 @@ class Fields(Box):
     """
         Automatically lays out fields in a grid
     """
+    __slots__ = ('fields', 'labels', 'inputs', 'fieldHeight', '__showErrorsOnRight__')
     properties = Box.properties.copy()
     properties['labelsStyle'] = {'action':'labels.setStyleFromString'}
     properties['inputsStyle'] = {'action':'inputs.setStyleFromString'}
@@ -306,6 +317,7 @@ class Grid(Box):
     """
         Automatically lays out elements in a grid without using tables
     """
+    __slots__ = ('rowHeight', 'numberOfColumns', 'uniformStyle', 'layout')
     properties = Box.properties.copy()
     properties['rowHeight'] = {'action':'classAttribute'}
     properties['uniformStyle'] = {'action':'classAttribute'}
@@ -353,9 +365,10 @@ class LineBreak(Box):
         Forces a newline below all divs
         Like a more forceful <br/>
     """
+    __slots__ = ()
+
     def __init__(self, name=None, id=None, parent=None):
         Box.__init__(self, '', None, parent)
-        self.allowsChildren = False
         self.addChildElement(Base.TextNode("&nbsp;"))
         self.style['clear'] = 'both'
         self.style['height'] = '0px'
@@ -367,6 +380,7 @@ class HorizontalRule(Base.WebElement):
     """
         Defines a 'hr' webelement - a line drawn between 2 elements horizontally
     """
+    __slots__ = ()
     tagName = 'hr'
     allowsChildren = False
     tagSelfCloses = True
@@ -378,6 +392,7 @@ class VerticalRule(Base.WebElement):
     """
         Defines a vertical rule break - a line drawn between 2 elements vertically
     """
+    __slots__ = ('stylePreference')
     tagName = 'span'
     allowsChildren = False
 

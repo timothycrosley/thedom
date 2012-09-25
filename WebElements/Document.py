@@ -32,6 +32,7 @@ class MetaData(Base.WebElement):
     """
         A webelement implementation of the meta tag
     """
+    __slots__ = ()
     tagName = "meta"
     displayable = False
 
@@ -79,6 +80,7 @@ class HTTPHeader(MetaData):
     """
         A webelement that represents an http header meta tag
     """
+    __slots__ = ()
     def getName(self):
         """
             Returns the headers name
@@ -98,6 +100,7 @@ class Document(Base.WebElement):
     """
         A WebElement representation of the overall document that fills a single page
     """
+    __slots__ = ('head', 'body', 'title', 'contentType')
     doctype = DOCTYPE_HTML5
     tagName = "html"
     properties = Base.WebElement.properties.copy()
