@@ -101,7 +101,7 @@ class WebElementTree(WebElement):
             Commenses the parsing of the html
         """
         if not self.parent:
-            self.childElements = []
+            self.reset()
 
         while self.more():
             (string, startTag) = self.textTillString(self.startTags + ['\n'])
