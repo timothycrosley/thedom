@@ -47,18 +47,7 @@ class WebElementTree(WebElement):
             self.startChar = self.index() - len(self.startTag())
 
     def __representSelf__(self):
-        return WebElement.__representSelf__(self).replace('WebElementTree', self.tagName)
-
-    def _formattedContent(self,):
-        html = []
-        if self.parent:
-            for line in self.content().split("\n"):
-                html.append(Base.INDENTATION + line)
-        else:
-            for line in self.content().split("\n"):
-                html.append(line)
-
-        return "\n".join(html)
+        return WebElement.__representSelf__(self).replace('WebElementTree', self._tagName)
 
     def html(self):
         """
@@ -128,10 +117,10 @@ class WebElementTree(WebElement):
                     self.prev()
                     continue
 
-                if((tagName in self.forceTagEndBefore and not self.tagName in ["html", '']) or
-                   (self.tagName == tagName and (tagName in self.dontNest or tagName in self.closeIfNested))):
+                if((tagName in self.forceTagEndBefore and not self._tagName in ["html", '']) or
+                   (self._tagName == tagName and (tagName in self.dontNest or tagName in self.closeIfNested))):
 
-                    print self.incorrectPlacement % {'tag':self.tagName,
+                    print self.incorrectPlacement % {'tag':self._tagName,
                                                      'startChar':self.startChar,
                                                      'startLine':len(self.html()[:self.startChar].split("\n")),
                                                      'forcedTag':tagName,
@@ -151,7 +140,7 @@ class WebElementTree(WebElement):
                     (text, endedBy) = self.textTillString(self.endTags)
 
                 if tagName in self.selfClosingTags:
-                    newTag.tagSelfCloses = True
+                    newTag._tagSelfCloses = True
                 elif endedBy == "/>":
                     continue
                 elif tagName in self.retainFormat:
@@ -166,9 +155,9 @@ class WebElementTree(WebElement):
             elif startTag == "</":
                 (endTag, match) = self.textTillString(self.endTags + self.startTags)
                 endTag = endTag.lower().strip()
-                if endTag != self.tagName and not self.tagName in self.forceTagEndBefore:
+                if endTag != self._tagName and not self._tagName in self.forceTagEndBefore:
 
-                    print self.missedEndTag % {'startTag':self.tagName,
+                    print self.missedEndTag % {'startTag':self._tagName,
                                                'endTag':endTag.strip(),
                                                'startChar':self.startChar,
                                                'startLine':len(self.html()[:self.startChar].split("\n")),

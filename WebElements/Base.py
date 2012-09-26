@@ -44,7 +44,7 @@ class WebElement(Connectable):
     """
     __slots__ = ('_tagName', '_prefix', '__scriptTemp__',
                  '__objectTemp__', 'validator', '_editable', '__scriptContainer__', 'id', 'name', 'parent', '_style',
-                 '_classes', '_attributes', '_childElements', 'addChildElementsTo', 'key')
+                 '_classes', '_attributes', '_childElements', 'addChildElementsTo', 'key', '_tagSelfCloses')
     tagSelfCloses = False
     allowsChildren = True
     displayable = True
@@ -72,6 +72,7 @@ class WebElement(Connectable):
         Connectable.__init__(self)
 
         self._tagName = self.__class__.tagName
+        self._tagSelfCloses = self.tagSelfCloses
         self._prefix = None
 
         self.id = id
@@ -589,7 +590,7 @@ class WebElement(Connectable):
                 else:
                     startTag += key + '="' + value.replace('"', '&quot;') + '" '
 
-        if self.tagSelfCloses:
+        if self._tagSelfCloses:
             startTag += '/'
         else:
             startTag = startTag[:-1]
@@ -601,7 +602,7 @@ class WebElement(Connectable):
         """
             Returns the elements html end tag, for example '</span>'
         """
-        if self.tagSelfCloses or not self._tagName:
+        if self._tagSelfCloses or not self._tagName:
             return u''
 
         return unicode("".join(("</", self._tagName, ">")))
@@ -616,7 +617,8 @@ class WebElement(Connectable):
 
         elements = [element.toHtml(formatted=formatted) for element in self.childElements]
         if formatted:
-            return "\n".join(elements)
+            return "\n".join([(self._tagName and INDENTATION or '') +
+                               line for line in "\n".join(elements).split("\n") if line])
         else:
             return ''.join(elements)
 
@@ -747,20 +749,14 @@ class WebElement(Connectable):
 
         self.emit("beforeToHtml")
 
-        data = (self.startTag() or '', formatted and self._formattedContent() or self.content(), self.endTag() or '')
+        data = (self.startTag() or '', self.content(formatted), self.endTag() or '')
 
         if formatted:
-            html = "\n".join(data)
+            html = "\n".join([data for data in data if data])
         else:
             html = "".join(data)
 
         return html
-
-    def _formattedContent(self):
-        html = []
-        for line in self.content(formatted=True).split("\n"):
-            html.append(INDENTATION + line)
-        return "\n".join(html)
 
     def isBlockElement(self):
         """
@@ -769,6 +765,9 @@ class WebElement(Connectable):
         if self._tagName in BLOCK_TAGS or self.hasClass("WBlock"):
             return True
         return False
+
+    ##def __len__(self):
+    ##    return len(self.childElements)
 
     def __iter__(self):
         return self.childElements.__iter__()
