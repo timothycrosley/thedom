@@ -614,7 +614,7 @@ class WebElement(Connectable):
         if self._childElements is None:
             return ''
 
-        elements = [element.toHtml() for element in self.childElements]
+        elements = [element.toHtml(formatted=formatted) for element in self.childElements]
         if formatted:
             return "\n".join(elements)
         else:
@@ -758,7 +758,7 @@ class WebElement(Connectable):
 
     def _formattedContent(self):
         html = []
-        for line in self.content().split("\n"):
+        for line in self.content(formatted=True).split("\n"):
             html.append(INDENTATION + line)
         return "\n".join(html)
 
