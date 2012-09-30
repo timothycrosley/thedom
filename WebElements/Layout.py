@@ -131,29 +131,13 @@ class Horizontal(Box):
     __slots__ = ()
     def __init__(self, id=None, name=None, parent=None):
         Box.__init__(self, id, name, parent)
-        self.addClass("ClearFix")
-
-    def addChildElement(self, childElement, align=None, width=None, style=None, ensureUnique=True):
-        if width is not None:
-            childElement.widthPreference = width
-        if style is not None:
-            childElement.stylePreference = style
-        if align is not None:
-            childElement.align = align
-
-        return Box.addChildElement(self, childElement, ensureUnique=ensureUnique)
+        self.addClass("WClear")
 
     def __modifyChild__(self, childElement):
-        width = getattr(childElement, 'widthPreference', '')
-        align = getattr(childElement, 'alignPreference', 'left')
-        style = getattr(childElement, 'stylePreference', {})
-
-        if width == "0" or width == "hide":
-            self.childElements.append(childElement)
         if not childElement.displayable:
             self.childElements.append(childElement)
             return
-        if not childElement.tagName:
+        if not childElement._tagName:
             container = Box.addChildElement(self, Box())
             container.addChildElement(childElement)
         else:
@@ -162,13 +146,9 @@ class Horizontal(Box):
             container = childElement
             self.childElements.append(childElement)
 
-        container.style['float'] = align
-        if width:
-            container.style['vertical-align'] = 'middle'
-            container.style['width'] = width
-
-        if style:
-            container.style.update(style)
+        if not childElement.hasClass("WLeft") and not childElement.hasClass("WRight") and not \
+               (childElement._style and childElement.style.get("float", None)):
+            childElement.addClass("WLeft")
 
     def toHtml(self, formatted=False):
         oldChildElements = self.childElements
@@ -189,24 +169,19 @@ class Vertical(Box):
     __slots__ = ()
     def __init__(self, id=None, name=None, parent=None):
         Box.__init__(self, id, name, parent)
-        self.addClass("ClearFix")
-
-    def addChildElement(self, childElement, style=None, ensureUnique=True):
-        if style:
-            childElement.style.update(style)
-        return Box.addChildElement(self, childElement, ensureUnique=ensureUnique)
+        self.addClass("WClear")
 
     def __modifyChild__(self, childElement):
         if not childElement.displayable:
             self.childElements.append(childElement)
-        elif childElement.tagName:
-            childElement.style['clear'] = "both"
+        elif childElement._tagName:
+            childElement.addClass("WClear")
             if not childElement.isBlockElement():
                 childElement.addClass("WBlock")
             self.childElements.append(childElement)
         else:
             container = Box()
-            container.style['clear'] = "both"
+            container.addClass("WClear")
             container.addChildElement(childElement)
             return Box.addChildElement(self, container)
 
@@ -248,7 +223,7 @@ class FieldSet(Box):
             Sets the label associated to the elements by adding a labeled legend
         """
         self.addLegend()
-        self.legend.tagName = 'legend'
+        self.legend._tagName = 'legend'
         self.legend.addChildElement(Base.TextNode(legend))
 
 Factory.addProduct(FieldSet)
@@ -392,13 +367,12 @@ class VerticalRule(Base.WebElement):
     """
         Defines a vertical rule break - a line drawn between 2 elements vertically
     """
-    __slots__ = ('stylePreference')
-    tagName = 'span'
+    __slots__ = ()
+    tagName = 'div'
     allowsChildren = False
 
     def __init__(self, id=None, name=None, parent=None):
         Base.WebElement.__init__(self, id, name, parent)
-        self.stylePreference = {'height':'100%'}
         self.addClass("WVerticalRule")
 
 Factory.addProduct(VerticalRule)

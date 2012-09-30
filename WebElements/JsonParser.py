@@ -15,7 +15,7 @@ TYPE_MAP = {str:'string', unicode:'string', int:'integer'}
 class __Tag__(WebElement):
     def __init__(self, tagName, parent, id=None, name=None):
         WebElement.__init__(self, id, name, parent)
-        self.tagName = tagName
+        self._tagName = tagName
 
 def parse(data):
     """

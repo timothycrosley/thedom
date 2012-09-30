@@ -20,18 +20,19 @@ import Document
 import DOM
 import Factory
 import Fields
-import Future
 import HiddenInputs
 import Inputs
 import Layout
 import Navigation
 import Printing
 import Resources
+import HTML5
 import UITemplate
 import CodeDocumentation
 
 FactoryClasses = Factory
-Factory = Factory.Composite((DOM.Factory, Future.Factory,Buttons.Factory, Ajax.Factory, DataViews.Factory,
+Factory = Factory.Composite((DOM.Factory, Buttons.Factory, Ajax.Factory, DataViews.Factory,
                              Display.Factory, Fields.Factory, HiddenInputs.Factory, Inputs.Factory,
                              Layout.Factory, Navigation.Factory, Resources.Factory, Containers.Factory,
-                             Charts.Factory, Printing.Factory, Document.Factory, CodeDocumentation.Factory))
+                             Charts.Factory, Printing.Factory, Document.Factory, CodeDocumentation.Factory,
+                             HTML5.Factory))

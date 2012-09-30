@@ -54,14 +54,17 @@ class WebElement(Connectable):
     properties['class'] = {'action':'addClassesFromString'}
     properties['javascriptEvents'] = {'action':'addJavascriptEventsFromDictionary'}
     properties['hide'] = {'action':'call', 'type':'bool'}
-    properties['widthPreference'] = {'action':'classAttribute'}
-    properties['alignPreference'] = {'action':'classAttribute'}
-    properties['stylePreference'] = {'action':'setStylePreferenceFromString'}
     properties['title'] = {'action':'attribute'}
     properties['lang'] = {'action':'attribute'}
     properties['key'] = {'action':'classAttribute'}
     properties['validator'] = {'action':'classAttribute'}
     properties['uneditable'] = {'action':'call', 'name':'__setUneditable__', 'type':'bool'}
+    properties['contenteditable'] = {'action':'attribute'}
+    properties['draggable'] = {'action':'attribute'}
+    properties['hidden'] = {'action':'attribute', 'type':'bool'}
+    properties['hidden'] = {'action':'attribute', 'type':'bool'}
+    properties['tabindex'] = {'action':'attribute', 'type':'int'}
+    properties['accesskey'] = {'action':'attribute'}
     tagName = ""
 
     def __init__(self, id=None, name=None, parent=None):
@@ -232,7 +235,7 @@ class WebElement(Connectable):
         """
         childrenWithTagName = []
         for child in self.childElements:
-            if child.tagName == tagName:
+            if child._tagName == tagName:
                 childrenWithTagName.append(child)
             childrenWithTagName.extend(child.getChildElementsWithTagName(tagName))
 
@@ -679,14 +682,6 @@ class WebElement(Connectable):
         """
         self.style.update(self.__getStyleDictFromString(string))
 
-    def setStylePreferenceFromString(self, string):
-        """
-            Updates the style preference dictionary based on a html style string
-        """
-        if not hasattr(self, 'stylePreference'):
-            self.stylePreference = {}
-        self.stylePreference.update(self.__getStyleDictFromString(string))
-
     def addClassesFromString(self, string):
         """
             Adds classes based on a html type class string
@@ -850,6 +845,7 @@ class TextNode(object):
     __slots__ = ('_text', 'parent')
     displayable = True
     tagName = ''
+    _tagName = ''
     __scriptTemp__ = None
     __objectTemp__ = None
 
@@ -892,7 +888,6 @@ class TemplateElement(WebElement):
     """
     factory = None
     template = None
-    tagName = 'div'
 
     def __init__(self, id=None, name=None, parent=None, template=None, factory=None):
         WebElement.__init__(self, id, name, parent)

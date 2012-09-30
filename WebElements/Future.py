@@ -31,7 +31,7 @@ class Horizontal(Box):
             self.childElements.append(childElement)
             return
 
-        if not childElement.tagName or width:
+        if not childElement._tagName or width:
             container = Box.addChildElement(self, Box())
             container.addChildElement(childElement)
         else:
@@ -67,7 +67,7 @@ class Vertical(Box):
 
         if not childElement.displayable:
             self.childElements.append(childElement)
-        elif not childElement.tagName or height:
+        elif not childElement._tagName or height:
             container = Box()
             container.style['height'] = height
             childElement.style['height'] = "100%"

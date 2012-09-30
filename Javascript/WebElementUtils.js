@@ -12,7 +12,7 @@ var IS_IOS = navigator.platform == 'iPad' || navigator.platform == 'iPhone' || n
 
 var currentDropDown = null;
 var currentButton = null;
-var throbberImage = 'images/throbber.gif';
+var throbberImage = 'static/images/throbber.gif';
 
 //returns the element given (if it is a page element) or the result of getElementId
 function WEGetElement(element)
@@ -1710,4 +1710,67 @@ function WECheckboxActsLikeRadioButton(elem, pair)
     if(!elem.checked)
         return;
     pair.checked = false;
+}
+
+// Accepts an event performing no operation on it and stopping any further operations from taking place
+function WEStopOperation(evt)
+{
+  evt.stopPropagation();
+  evt.preventDefault();
+}
+
+function WEBuildFileOpener(dropBox)
+{
+    var dropBox = WEGetElement(dropBox);
+    var statusBar = WEGetElement(dropBox.id + 'StatusBar');
+    var dropLabel = WEGetElement(dropBox.id + 'DropLabel');
+    var fileTemplate = WEGetElement(dropBox.id + 'File');
+    var filesContainer = WEGetElement(dropBox.id + 'Files');
+
+    // init event handlers
+    dropBox.addEventListener("dragenter", WEStopOperation, false);
+    dropBox.addEventListener("dragexit", WEStopOperation, false);
+    dropBox.addEventListener("dragover", WEStopOperation, false);
+    dropBox.addEventListener("drop", function(evt){
+        evt.preventDefault(evt);
+
+        var files = evt.dataTransfer.files;
+        var count = files.length;
+
+        // Only call the handler if 1 or more files was dropped.
+        if (files.length > 0)
+        {
+            WEShowElement(statusBar);
+            WERemoveClass(dropBox, "WEmpty");
+            for(var currentFile = 0; currentFile < files.length; currentFile++)
+            {
+                var file = files[currentFile];
+                dropLabel.innerHTML = "Processing " + file.name;
+
+                var reader = new FileReader();
+                reader.file = file;
+
+                // init the reader event handlers
+                reader.onload = function(evt)
+                {
+                    var fileName = dropBox.id + evt.target.file.name;
+                     if(WEGetElement(fileName))
+                     {
+                         return; // Don't upload the same file twice but don't annoy users with pesky errors
+                     }
+                    newFile = WECopy(fileTemplate, filesContainer, false);
+                    newFile.id = fileName;
+                    WEShowElement(newFile);
+                    WEGetElementByClassName('WThumbnail', newFile).src = evt.target.result;
+                    WEGetElementByClassName('WFileName', newFile).innerHTML = evt.target.file.name;
+                };
+
+                // begin the read operation
+                reader.readAsDataURL(file);
+            }
+        }
+        WEHideElement(statusBar);
+
+    }, false);
+
 }

@@ -29,6 +29,7 @@ class Image(ValueElement):
     tagSelfCloses = True
     properties = ValueElement.properties.copy()
     properties['src'] = {'action':'setValue'}
+    properties['alt'] = {'action':'attribute'}
 
     def __init__(self, id=None, name=None, parent=None):
         ValueElement.__init__(self, id, name, parent)

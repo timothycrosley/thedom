@@ -679,7 +679,7 @@ class DateField(TextField):
         self.calendarLink = layout.addChildElement(Display.Image(id + "CalendarLink"))
         self.calendarLink.addClass('Clickable')
         self.calendarLink.addClass('hidePrint')
-        self.calendarLink.setValue('images/calendar_icon.gif')
+        self.calendarLink.setValue('static/images/calendar_icon.gif')
         self.calendarLink.addJavascriptEvent('onclick', CallBack(self, "jsOpenCalendar"))
 
         self.calendarTypeLabel = layout.addChildElement(Display.Label())

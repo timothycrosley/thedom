@@ -11,6 +11,7 @@
 import Base
 import Factory
 from MethodUtils import CallBack
+from Resources import ResourceFile
 
 Factory = Factory.Factory("Document")
 
@@ -176,7 +177,8 @@ class Document(Base.WebElement):
     def addChildElement(self, childElement, ensureUnique=True):
         if type(childElement) in [self.Head, self.Body]:
             return Base.WebElement.addChildElement(self, childElement, ensureUnique)
-        elif childElement.tagName in ['title', 'base', 'link', 'meta', 'script', 'style']:
+        elif type(childElement) == ResourceFile or childElement._tagName in ['title', 'base', 'link',
+                                                                             'meta', 'script', 'style']:
             return self.head.addChildElement(childElement, ensureUnique)
         else:
             return self.body.addChildElement(childElement, ensureUnique)
