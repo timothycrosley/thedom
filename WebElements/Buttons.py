@@ -8,6 +8,7 @@
 
 """
 
+import DOM
 import Base
 import ClientSide
 import Display
@@ -20,7 +21,7 @@ from MethodUtils import CallBack
 Factory = Factory.Factory("Buttons")
 
 
-class Link(Base.WebElement):
+class Link(DOM.A):
     """
         Defines an <a href> webelement (An html link meant to open a new page)
     """
@@ -32,10 +33,9 @@ class Link(Base.WebElement):
     properties['target'] = {'action':'attribute'}
     properties['onclick'] = {'action':'javascriptEvent'}
     properties['href'] = {'action':'setDestination'}
-    tagName = 'a'
 
-    def __init__(self, id=None, name=None, parent=None):
-        Base.WebElement.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        DOM.A.__init__(self, id, name, parent, **kwargs)
         self._textNode = self.addChildElement(Base.TextNode())
 
     def setDestination(self, destination):
@@ -67,8 +67,8 @@ class PopupLink(Link):
     properties['windowTitle'] = {'action':'classAttribute'}
     properties['separateWindow'] = {'action':'classAttribute', 'type':'bool'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        Link.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Link.__init__(self, id, name, parent, **kwargs)
         self.height = 700
         self.width = 700
         self.windowTitle = "_blank"
@@ -94,8 +94,8 @@ class Button(InputElement):
     properties = InputElement.properties.copy()
     properties['disabled'] = {'action':'setDisabled', 'type':'bool'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        InputElement.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        InputElement.__init__(self, id, name, parent, **kwargs)
         self.attributes['type'] = 'button'
 
         self.connect('beforeToHtml', None, self, 'updateVisableState')
@@ -143,8 +143,8 @@ class PopupButton(PopupLink):
     properties['buttonClass'] = {'action': 'button.addClassesFromString', 'name': 'class'}
     properties['buttonStyle'] = {'action': 'button.setStyleFromString', 'name': 'style'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        PopupLink.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        PopupLink.__init__(self, id, name, parent, **kwargs)
         self.button = self.addChildElement(Button())
         self.addClass("PopupButton")
 
@@ -159,8 +159,8 @@ Factory.addProduct(PopupButton)
 class ClosePopupButton(Button):
     __slots__ = ()
 
-    def __init__(self, id=None, name=None, parent=None):
-        Button.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Button.__init__(self, id, name, parent, **kwargs)
         self.addJavascriptEvent('onclick', 'window.close();')
         self.setText('Close')
 
@@ -175,8 +175,8 @@ class UpButton(Display.HoverImage):
     imageOnHover = 'images/count_up_highlight.png'
     imageOnClick = 'images/count_up_pressed.png'
 
-    def __init__(self, id=None, name=None, parent=None):
-        Display.HoverImage.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Display.HoverImage.__init__(self, id, name, parent, **kwargs)
 
         self.style['height'] = "11px"
         self.style['width'] = "16px"
@@ -193,8 +193,8 @@ class DownButton(Display.HoverImage):
     imageOnHover = 'images/count_down_highlight.png'
     imageOnClick = 'images/count_down_pressed.png'
 
-    def __init__(self, id=None, name=None, parent=None):
-        Display.HoverImage.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Display.HoverImage.__init__(self, id, name, parent, **kwargs)
 
         self.style['height'] = "11px"
         self.style['width'] = "16px"
@@ -208,8 +208,8 @@ class PrintButton(Button):
         Defines a button thats sole purpose in life is to print the current page
     """
     __slots__ = ()
-    def __init__(self, id=None, name=None, parent=None):
-        Button.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Button.__init__(self, id, name, parent, **kwargs)
         self.setValue("Print")
         self.addJavascriptEvent('onclick', 'window.print()')
 
@@ -221,8 +221,8 @@ class SubmitButton(Button):
         Defines a button that when clicked will submit the current page back to the server (if contained in a form)
     """
     __slots__ = ()
-    def __init__(self, id=None, name=None, parent=None):
-        Button.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Button.__init__(self, id, name, parent, **kwargs)
         self.attributes['type'] = 'submit'
 
 Factory.addProduct(SubmitButton)
@@ -236,8 +236,8 @@ class ToggleButton(Layout.Box):
     properties = Button.properties
     signals = Layout.Box.signals + ['toggled', 'jsToggled']
 
-    def __init__(self, id, name=None, parent=None):
-        Layout.Box.__init__(self, id + "Container", name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Layout.Box.__init__(self, id + "Container", name, parent, **kwargs)
 
         self.setContainerType('span')
 

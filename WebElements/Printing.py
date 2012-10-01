@@ -17,7 +17,7 @@ Factory = Factory.Factory("Printing")
 
 class PageBreak(Layout.Box):
     """
-        Will force a page break before printing any additional elements
+        Defines an area where a break in the page would be logical
     """
     __slots__ = ()
 
@@ -29,9 +29,9 @@ class PageBreak(Layout.Box):
 Factory.addProduct(PageBreak)
 
 
-class HidePrint(Layout.Box):
+class UnPrintable(Layout.Box):
     """
-        Will hide any child elements from printing
+        Defines content as being unprintable and therefore should be hidden from printing
     """
     __slots__ = ()
 
@@ -40,4 +40,4 @@ class HidePrint(Layout.Box):
 
         self.addClass('hidePrint')
 
-Factory.addProduct(HidePrint)
+Factory.addProduct(Unprintable)

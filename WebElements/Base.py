@@ -67,7 +67,7 @@ class WebElement(Connectable):
     properties['accesskey'] = {'action':'attribute'}
     tagName = ""
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         """
             Initiates a WebElement object
             (if no name is passed in it will default to id)
@@ -93,6 +93,9 @@ class WebElement(Connectable):
         self.__scriptTemp__ = None
         self.__scriptContainer__ = None
         self.__objectTemp__ = None
+
+        if kwargs:
+            self.setProperties(kwargs)
 
     @property
     def attributes(self):
@@ -889,8 +892,8 @@ class TemplateElement(WebElement):
     factory = None
     template = None
 
-    def __init__(self, id=None, name=None, parent=None, template=None, factory=None):
-        WebElement.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, template=None, factory=None, **kwargs):
+        WebElement.__init__(self, id, name, parent, **kwargs)
 
         if template:
             self.template = template

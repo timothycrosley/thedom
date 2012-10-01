@@ -9,19 +9,12 @@
 """
 
 import Base
+import DOM
 import Display
 import Factory
 from MethodUtils import CallBack
 
 Factory = Factory.Factory("Layout")
-
-class Center(Base.WebElement):
-    """
-        Makes childElements appear in the center of there parent element
-    """
-    __slots__ = ()
-    tagName = "center"
-Factory.addProduct(Center)
 
 
 class Stack(Base.WebElement):
@@ -84,31 +77,12 @@ class Stack(Base.WebElement):
 Factory.addProduct(Stack)
 
 
-class Box(Base.WebElement):
+class Box(DOM.Div):
     """
         A container that allows child elements to be contained within
        the border of the container.
     """
     __slots__ = ()
-    properties = Base.WebElement.properties.copy()
-    properties['containerType'] = {'action':'setContainerType'}
-    tagName = "div"
-
-    def setContainerType(self, container_type):
-        """
-            Change the container type to div (block) or span (inline)
-        """
-        if container_type in ["div", "span"]:
-            self._tagName = container_type
-            return True
-        else:
-            return False
-
-    def containerType(self):
-        """
-            Returns the container type (div or span)
-        """
-        return self._tagName
 
 Factory.addProduct(Box)
 
@@ -119,7 +93,6 @@ class Flow(Base.WebElement):
        allowing them to flow freely.
     """
     __slots__ = ()
-    tagName = None
 
 Factory.addProduct(Flow)
 
@@ -197,34 +170,33 @@ class Vertical(Box):
 Factory.addProduct(Vertical)
 
 
-class FieldSet(Box):
+class FieldSet(DOM.FieldSet):
     """
         Groups child elements together with a labeled border
     """
     __slots__ = ('legend')
-    tagName = 'fieldset'
-    Box.properties['legend'] = {'action':'setLegend'}
+    properties = DOM.FieldSet.properties.copy()
+    properties['legend'] = {'action':'setLegendText'}
 
     def __init__(self, id=None, name=None, parent=None):
-        Box.__init__(self, id, name, parent)
+        DOM.FieldSet.__init__(self, id, name, parent)
         self.legend = None
 
-    def addLegend(self):
+    def getLegend(self):
         """
-            Adds and returns the legend to the field set
+            Gets the legend associated with the field set - creating one if it is not present
         """
         if self.legend:
-            return
-        l = Base.WebElement()
-        self.legend = Box.addChildElement(self, l)
+            return self.legend
+        self.legend = Box.addChildElement(self, DOM.Legend)
+        self.legend.text = Base.TextNode()
+        return self.legend
 
-    def setLegend(self, legend):
+    def setLegendText(self, legend):
         """
             Sets the label associated to the elements by adding a labeled legend
         """
-        self.addLegend()
-        self.legend._tagName = 'legend'
-        self.legend.addChildElement(Base.TextNode(legend))
+        self.getLegend().text.setText(legend)
 
 Factory.addProduct(FieldSet)
 
@@ -351,28 +323,24 @@ class LineBreak(Box):
 Factory.addProduct(LineBreak)
 
 
-class HorizontalRule(Base.WebElement):
+class HorizontalRule(DOM.HR):
     """
-        Defines a 'hr' webelement - a line drawn between 2 elements horizontally
+        Defines a 'hr' webelement - to specify a major shift in content horizontally
     """
     __slots__ = ()
-    tagName = 'hr'
-    allowsChildren = False
-    tagSelfCloses = True
 
 Factory.addProduct(HorizontalRule)
 
 
-class VerticalRule(Base.WebElement):
+class VerticalRule(Box):
     """
-        Defines a vertical rule break - a line drawn between 2 elements vertically
+        Defines a vertical rule break - to specify a major shift in content vertically
     """
     __slots__ = ()
-    tagName = 'div'
     allowsChildren = False
 
     def __init__(self, id=None, name=None, parent=None):
-        Base.WebElement.__init__(self, id, name, parent)
+        Box.__init__(self, id, name, parent)
         self.addClass("WVerticalRule")
 
 Factory.addProduct(VerticalRule)

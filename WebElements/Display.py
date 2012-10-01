@@ -18,28 +18,14 @@ from MethodUtils import CallBack
 Factory = Factory.Factory("Display")
 
 
-class Image(ValueElement):
+class Image(DOM.Img):
     """
         Adds an image to the page
     """
     __slots__ = ()
 
-    tagName = "img"
     allowsChildren = False
     tagSelfCloses = True
-    properties = ValueElement.properties.copy()
-    properties['src'] = {'action':'setValue'}
-    properties['alt'] = {'action':'attribute'}
-
-    def __init__(self, id=None, name=None, parent=None):
-        ValueElement.__init__(self, id, name, parent)
-
-    def setValue(self, value):
-        """
-            Sets the location from which to load the image
-        """
-        ValueElement.setValue(self, value)
-        self.attributes['src'] = value
 
 Factory.addProduct(Image)
 
@@ -50,14 +36,14 @@ class HoverImage(Image):
     """
     __slots__ = ()
 
-    properties = ValueElement.properties.copy()
+    properties = Image.properties.copy()
     properties['imageOnHover'] = {'action':'classAttribute'}
     properties['imageOnClick'] = {'action':'classAttribute'}
     imageOnHover = None
     imageOnClick = None
 
-    def __init__(self, id=None, name=None, parent=None):
-        Image.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Image.__init__(self, id, name, parent, **kwargs)
 
         self.connect("beforeToHtml", None, self, "__addEvents__")
 
@@ -72,27 +58,24 @@ class HoverImage(Image):
 Factory.addProduct(HoverImage)
 
 
-class List(Base.WebElement):
+class List(DOM.UL):
     """
         Defines a list webelement (that will automatically list out its child elements in the format chosen)
     """
     __slots__ = ('ordered')
 
-    tagName = "ul"
-    properties = Base.WebElement.properties.copy()
+    properties = DOM.UL.properties.copy()
     properties['ordered'] = {'action':'classAttribute', 'type':'bool'}
     properties['type'] = {'action':'attribute'}
 
-    class Item(Base.WebElement):
+    class Item(DOM.LI):
         """
             Defines an individual Item within a list
         """
         __slots__ = ('_textNode')
 
-        tagName = "li"
-
         def __init__(self, id=None, name=None, parent=None):
-            Base.WebElement.__init__(self, id=id, name=name, parent=parent)
+            DOM.LI.__init__(self, id=id, name=name, parent=parent)
 
             self._textNode = self.addChildElement(Base.TextNode())
 
@@ -109,7 +92,7 @@ class List(Base.WebElement):
             return self._textNode.text()
 
     def __init__(self, id=None, name=None, parent=None):
-        Base.WebElement.__init__(self, id=id, name=name, parent=parent)
+        DOM.UL.__init__(self, id=id, name=name, parent=parent)
         self.ordered = False
         self.connect("beforeToHtml", None, self, "__updateTag__")
 
@@ -136,22 +119,21 @@ Item = List.Item
 Factory.addProduct(List)
 
 
-class Label(Base.WebElement):
+class Label(DOM.Span):
     """
         Defines a label webelement, which will display a single string of text to the user
     """
     __slots__ = ('_textNode')
 
-    tagName = 'span'
-    signals = Base.WebElement.signals + ['textChanged']
-    properties = Base.WebElement.properties.copy()
+    signals = DOM.Span.signals + ['textChanged']
+    properties = DOM.Span.properties.copy()
     properties['text'] = {'action':'setText'}
     properties['useNBSP'] = {'action':'call', 'type':'bool'}
     properties['strong'] = {'action':'call', 'name':'makeStrong', 'type':'bool'}
     properties['emphasis'] = {'action':'call', 'name':'addEmphasis', 'type':'bool'}
 
     def __init__(self, id=None, name=None, parent=None):
-        Base.WebElement.__init__(self, id=id, name=name, parent=parent)
+        DOM.Span.__init__(self, id=id, name=name, parent=parent)
 
         self._textNode = self.addChildElement(Base.TextNode())
 
@@ -206,42 +188,38 @@ class Label(Base.WebElement):
 Factory.addProduct(Label)
 
 
-class Paragraph(Label):
+class Paragraph(DOM.P):
     """
         Defines a paragraph element
     """
     __slots__ = ()
-    tagName = "p"
 
 Factory.addProduct(Paragraph)
 
 
-class Subscript(Label):
+class Subscript(DOM.Sub):
     """
         Defines a subscripted text element
     """
     __slots__ = ()
-    tagName = "sub"
 
 Factory.addProduct(Subscript)
 
 
-class Superscript(Label):
+class Superscript(DOM.Sup):
     """
         Defines a superscripted text element
     """
     __slots__ = ()
-    tagName = "sup"
 
 Factory.addProduct(Superscript)
 
 
-class PreformattedText(Label):
+class PreformattedText(DOM.Pre):
     """
         Defines a preformatted text label, where no forced format should be applied (such as single space)
     """
     __slots__ = ()
-    tagName = "pre"
 
 Factory.addProduct(PreformattedText)
 
@@ -398,7 +376,7 @@ class Empty(Base.WebElement):
 Factory.addProduct(Empty)
 
 
-class HTML(Base.WebElement):
+class StraightHTML(Base.WebElement):
     """
         Simply displays the html as it is given
     """
@@ -414,10 +392,10 @@ class HTML(Base.WebElement):
     def toHtml(self, formatted=False):
         return self.html
 
-Factory.addProduct(HTML)
+Factory.addProduct(StraightHTML)
 
 
-class StatusIndicator(Base.WebElement):
+class StatusIndicator(DOM.Div):
     """
         Shows a visual indication of status from incomplete to complete
     """
@@ -427,12 +405,11 @@ class StatusIndicator(Base.WebElement):
     Partial = 1
     Complete = 2
 
-    tagName = "div"
-    properties = Base.WebElement.properties.copy()
+    properties = DOM.Div.properties.copy()
     properties['setStatus'] = {'action':'setStatus', 'type':'int'}
 
     def __init__(self, name=None, id=None, parent=None):
-        Base.WebElement.__init__(self, name=name, id=id, parent=parent)
+        DOM.Div.__init__(self, name=name, id=id, parent=parent)
         self.setStatus(StatusIndicator.Incomplete)
         self.style['height'] = "100%"
         self.addClass('hidePrint')

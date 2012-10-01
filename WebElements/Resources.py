@@ -10,6 +10,7 @@
 
 import types
 
+import DOM
 import Base
 import Factory
 from MethodUtils import CallBack
@@ -76,14 +77,13 @@ class ResourceFile(Base.WebElement):
 Factory.addProduct(ResourceFile)
 
 
-class ScriptContainer(Base.WebElement):
+class ScriptContainer(DOM.Script):
     """
         All scripts should be stored in a Script Box object
     """
     __slots__ = ('_scripts', 'usedObjects')
     displayable = False
-    tagName = "script"
-    properties = Base.WebElement.properties.copy()
+    properties = DOM.Script.properties.copy()
     properties['script'] = {'action':'addScript'}
 
     def __init__(self, id=None, name=None, parent=None):

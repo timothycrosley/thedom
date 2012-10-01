@@ -498,22 +498,16 @@ class Accordion(Layout.Vertical):
 Factory.addProduct(Accordion)
 
 
-class FormContainer(Layout.Flow):
+class FormContainer(DOM.Form):
     """
         Defines a form container web element - a portion of the page that contains fields to be submitted back to
         the server.
     """
     __slots__ = ()
-    tagName = 'form'
-    properties = Base.WebElement.properties.copy()
-    properties['action'] = {'action':'attribute'}
-    properties['method'] = {'action':'attribute'}
-    properties['onsubmit'] = {'action':'attribute'}
-    properties['enctype'] = {'action':'attribute'}
 
     def __init__(self, id=None, name=None, parent=None):
-        Layout.Flow.__init__(self, id, name, parent)
-        self.attributes['method'] = "POST"
+        DOM.Form.__init__(self, id, name, parent)
+        self.setProperty('method', 'POST')
 
     def validators(self, useFullId=True):
         """

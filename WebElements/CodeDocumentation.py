@@ -17,6 +17,7 @@ except ImportError:
     hasPygments = False
 
 import Base
+import DOM
 import DictUtils
 import Factory
 from Inputs import ValueElement
@@ -26,7 +27,7 @@ from MethodUtils import CallBack
 Factory = Factory.Factory("CodeDocumentation")
 
 
-class CodeSnippet(Base.WebElement):
+class CodeSnippet(DOM.Pre):
     """
         Enables adding a snippet of code directly to a page.
     """
@@ -38,7 +39,7 @@ class CodeSnippet(Base.WebElement):
     properties['showLineNumbers'] = {'action':'classAttribute', 'type':'bool'}
 
     def __init__(self, id=None, name=None, parent=None):
-        Base.WebElement.__init__(self, id, name, parent)
+        DOM.Pre.__init__(self, id, name, parent)
 
         self._textNode = self.addChildElement(Base.TextNode())
 

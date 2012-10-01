@@ -14,17 +14,6 @@ class TestBox(ElementTester):
     def setup_class(self):
         self.element = Factory.build("Box", name="Test")
 
-    def test_containerType(self):
-        assert self.element.containerType() == "div"
-        self.element.setContainerType("span")
-        assert self.element.containerType() == "span"
-
-        self.element.setContainerType("div")
-        assert self.element.containerType() == "div"
-
-        assert not self.element.setContainerType("fdsd")
-        assert self.element.containerType() == "div"
-
 
 class TestFlow(ElementTester):
 
