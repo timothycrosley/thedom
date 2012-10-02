@@ -242,6 +242,11 @@
   padding: 10px;
   overflow: auto; }
 
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
 .WClear {
   *zoom: 1; }
   .WClear:before, .WClear:after {
@@ -288,28 +293,6 @@ div.StatusPartial {
   background-color: yellow; }
 div.StatusIncomplete {
   background-color: red; }
-
-.DiffRemovedSymbol {
-  color: #6f0000;
-  font-size: 200%; }
-
-.DiffAddedSymbol {
-  color: #056a00;
-  font-size: 200%; }
-
-.LegDiffHeader {
-  font-size: 175%;
-  display: block;
-  margin-bottom: 20px;
-  background-color: #d7d7d7;
-  border-bottom: 1px #bdbdbd solid; }
-
-.ModelDiffHeader {
-  display: block;
-  font-size: 140%;
-  margin-bottom: 5px;
-  background-color: #cacaca;
-  border-bottom: 1px #bdbdbd solid; }
 
 input.ToggledOn {
   background-color: #77b2e0; }
@@ -692,3 +675,14 @@ table.GlobalTable {
       color: white; }
       table.GlobalTable .rowlight.selected a {
         color: white; }
+
+div.WCenter {
+  overflow: hidden;
+  position: relative; }
+  div.WCenter div {
+    float: left;
+    position: relative;
+    left: 50%; }
+    div.WCenter div div {
+      position: relative;
+      left: -50%; }
