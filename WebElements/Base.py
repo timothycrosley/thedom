@@ -93,6 +93,8 @@ class WebElement(Connectable):
         self.__scriptTemp__ = None
         self.__scriptContainer__ = None
         self.__objectTemp__ = None
+        self._editable = None
+        self.validator = None
 
         if kwargs:
             self.setProperties(kwargs)
@@ -198,7 +200,8 @@ class WebElement(Connectable):
         children = []
         for child in self:
             children.append(child)
-            children.extend(child.allChildren())
+            if not type(child) == TextNode:
+                children.extend(child.allChildren())
 
         return children
 
@@ -305,15 +308,16 @@ class WebElement(Connectable):
             self.addChildElementsTo.childElements.append(childElement)
             self.addChildElementsTo.emit('childAdded', childElement)
 
-            scriptTemp = childElement.__scriptTemp__
-            if scriptTemp:
-                for script in scriptTemp:
-                    self.addScript(script)
+            if not type(childElement) == TextNode:
+                scriptTemp = childElement.__scriptTemp__
+                if scriptTemp:
+                    for script in scriptTemp:
+                        self.addScript(script)
 
-            objectTemp = childElement.__objectTemp__
-            if objectTemp:
-                for objectWithScripts in objectTemp:
-                    self.addJSFunctions(objectWithScripts)
+                objectTemp = childElement.__objectTemp__
+                if objectTemp:
+                    for objectWithScripts in objectTemp:
+                        self.addJSFunctions(objectWithScripts)
 
             return childElement
         else:
@@ -356,7 +360,7 @@ class WebElement(Connectable):
                 useFullId - if set to True the validators are set against the prefix + id
         """
         validatorDict = {}
-        validator = getattr(self, 'validator', None)
+        validator = self.validator
         if self.editable() and validator:
             if useFullId:
                 validatorId = self.fullId()
@@ -371,7 +375,7 @@ class WebElement(Connectable):
 
             validatorDict[validatorId] = validator
 
-        for child in self.childElements:
+        for child in (child  for child in self.childElements if type(child) != TextNode):
             validatorDict.update(child.validators(useFullId))
 
         return validatorDict
@@ -415,7 +419,7 @@ class WebElement(Connectable):
         """
             Returns true if the input-type field in the element are editable
         """
-        editable = getattr(self, '_editable', None)
+        editable = self._editable
         if editable == None:
             if self.parent:
                 return self.parent.editable()
@@ -664,7 +668,7 @@ class WebElement(Connectable):
             reqDict.pop(self.name, '')
             reqDict.pop(self.fullName() , '')
 
-        for child in self.childElements:
+        for child in (child for child in self.childElements if type(child) != TextNode):
             child.clearFromRequest(reqDict)
 
     @staticmethod
@@ -849,8 +853,6 @@ class TextNode(object):
     displayable = True
     tagName = ''
     _tagName = ''
-    __scriptTemp__ = None
-    __objectTemp__ = None
 
     def __init__(self, text='', parent=None):
         self.setText(text)

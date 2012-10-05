@@ -38,8 +38,8 @@ class CodeSnippet(DOM.Pre):
     properties['lexer'] = {'action':'classAttribute'}
     properties['showLineNumbers'] = {'action':'classAttribute', 'type':'bool'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        DOM.Pre.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        DOM.Pre.__init__(self, id, name, parent, **kwargs)
 
         self._textNode = self.addChildElement(Base.TextNode())
 

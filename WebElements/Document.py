@@ -41,7 +41,7 @@ class MetaData(Base.WebElement):
     properties['value'] = {'action':'setValue'}
     properties['name'] = {'action':'setName'}
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         Base.WebElement.__init__(self)
 
     def value(self):
@@ -128,7 +128,7 @@ class Document(Base.WebElement):
         """
         tagName = "title"
 
-        def __init__(self, id=None, name=None, parent=None):
+        def __init__(self, id=None, name=None, parent=None, **kwargs):
             Base.WebElement.__init__(self, id=id, name=name, parent=parent)
 
             self._textNode = self.addChildElement(Base.TextNode())
@@ -146,7 +146,7 @@ class Document(Base.WebElement):
             """
             return self._textNode.text(text)
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         Base.WebElement.__init__(self)
         self.head = self.addChildElement(self.Head())
         self.body = self.addChildElement(self.Body())

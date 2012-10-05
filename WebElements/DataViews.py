@@ -37,7 +37,6 @@ class Table(Base.WebElement):
     properties['border'] = {'action':'attribute'}
     properties['rules'] = {'action':'attribute'}
     properties['alignHeaders'] = {'action':'classAttribute'}
-    properties['makeSortable'] = {'action':'call', 'type':'bool'}
     properties['uniformStyle'] = {'action':'classAttribute'}
 
     class Header(Base.WebElement):
@@ -55,8 +54,8 @@ class Table(Base.WebElement):
         tagName = "td"
         signals = Base.WebElement.signals + ['textChanged']
 
-        def __init__(self, id=None, name=None, parent=None):
-            Base.WebElement.__init__(self, id, name, parent)
+        def __init__(self, id=None, name=None, parent=None, **kwargs):
+            Base.WebElement.__init__(self, id, name, parent, **kwargs)
             self.addClass((id or "").replace(" ", "") + "Column")
             self.addClass("WColumn")
             self.element = self.addChildElement(Display.FreeText())
@@ -129,8 +128,8 @@ class Table(Base.WebElement):
 
             return False
 
-    def __init__(self, id=None, name=None, parent=None):
-        Base.WebElement.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement.__init__(self, id, name, parent, **kwargs)
 
         header = self.Row('WTableHeader', parent=self)
         self.alignHeaders = ""
@@ -172,12 +171,6 @@ class Table(Base.WebElement):
 
         self.emit('rowAdded', row)
         return row
-
-    def makeSortable(self):
-        """
-            Makes the table sortable client side
-        """
-        self.addScript('ts_makeSortable(WEGetElement("%s"));' % self.jsId())
 
     def addColumn(self, columnName, showName=True):
         """
@@ -259,7 +252,7 @@ class StoredValue(Layout.Box):
         Defines a label:value pair that will be passed into the request
     """
     __slots__ = ('label', 'value', 'valueDisplay')
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         Layout.Box.__init__(self, name=name + "Container", parent=parent)
 
         self.addClass("WStoredValue")
@@ -269,7 +262,7 @@ class StoredValue(Layout.Box):
         value.makeStrong()
         hiddenValue = HiddenInputs.HiddenValue(name=name)
         hiddenValue.addJavascriptEvent('onchange',
-                                       "WEPrevElement(this).innerHTML = this.value;")
+                                       "WebElements.prev(this).innerHTML = this.value;")
 
         hiddenValue.connect('valueChanged', None, value, 'setText')
 

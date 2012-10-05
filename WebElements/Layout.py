@@ -26,8 +26,8 @@ class Stack(Base.WebElement):
     properties = Base.WebElement.properties.copy()
     properties['index'] = {'action':'classAttribute', 'type':'int'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        Base.WebElement.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement.__init__(self, id, name, parent, **kwargs)
         self.index = 0
         self.stackElements = []
 
@@ -102,8 +102,8 @@ class Horizontal(Box):
         A container element that adds child elements horizontally.
     """
     __slots__ = ()
-    def __init__(self, id=None, name=None, parent=None):
-        Box.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Box.__init__(self, id, name, parent, **kwargs)
         self.addClass("WClear")
 
     def __modifyChild__(self, childElement):
@@ -119,9 +119,9 @@ class Horizontal(Box):
             container = childElement
             self.childElements.append(childElement)
 
-        if not childElement.hasClass("WLeft") and not childElement.hasClass("WRight") and not \
-               (childElement._style and childElement.style.get("float", None)):
-            childElement.addClass("WLeft")
+        if not container.hasClass("WLeft") and not container.hasClass("WRight") and not \
+               (container._style and container.style.get("float", None)):
+            container.addClass("WLeft")
 
     def toHtml(self, formatted=False):
         oldChildElements = self.childElements
@@ -140,8 +140,8 @@ class Vertical(Box):
         A container that encourage elements to be added vertically with minimum html
     """
     __slots__ = ()
-    def __init__(self, id=None, name=None, parent=None):
-        Box.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Box.__init__(self, id, name, parent, **kwargs)
         self.addClass("WClear")
 
     def __modifyChild__(self, childElement):
@@ -178,8 +178,8 @@ class FieldSet(DOM.FieldSet):
     properties = DOM.FieldSet.properties.copy()
     properties['legend'] = {'action':'setLegendText'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        DOM.FieldSet.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        DOM.FieldSet.__init__(self, id, name, parent, **kwargs)
         self.legend = None
 
     def getLegend(self):
@@ -212,8 +212,8 @@ class Fields(Box):
     properties['showErrorsOnRight'] = {'action':'call', 'name':'showErrorsOnRight', 'type':'bool'}
     properties['fieldHeight'] = {'action':'classAttribute'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        Box.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Box.__init__(self, id, name, parent, **kwargs)
         self.fields = self.addChildElement(Display.BlankRendered())
 
         layout = self.addChildElement(Horizontal())
@@ -270,8 +270,8 @@ class Grid(Box):
     properties['uniformStyle'] = {'action':'classAttribute'}
     properties['numberOfColumns'] = {'action':'classAttribute', 'type':'int'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        Box.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Box.__init__(self, id, name, parent, **kwargs)
 
         self.rowHeight = None
         self.numberOfColumns = 2
@@ -339,8 +339,22 @@ class VerticalRule(Box):
     __slots__ = ()
     allowsChildren = False
 
-    def __init__(self, id=None, name=None, parent=None):
-        Box.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Box.__init__(self, id, name, parent, **kwargs)
         self.addClass("WVerticalRule")
 
 Factory.addProduct(VerticalRule)
+
+
+class Center(Box):
+    """
+        Defines a centered area (using valid css3)
+    """
+    __slots__ = ()
+
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Box.__init__(self, id, name, parent, **kwargs)
+        self.addClass("WCenter")
+        self.addChildElementsTo = self.addChildElement(Box()).addChildElement(Box())
+
+Factory.addProduct(Center)

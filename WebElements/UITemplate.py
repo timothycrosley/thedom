@@ -9,13 +9,8 @@
 
 from xml.dom import minidom
 
+import shpaml
 from StringUtils import interpretFromString
-
-try:
-    import shpaml
-    HAS_SHPAML = True
-except ImportError:
-    HAS_SHPAML = False
 
 # Supported format types
 XML = 0
@@ -81,9 +76,6 @@ def fromSHPAML(shpamlTemplate):
         Returns a parsable dictionary representation of the interface:
             shpaml - a string containing a shpaml representation of the interface
     """
-    if not HAS_SHPAML:
-        raise ImportError("shpaml import not found and it is a requirement to expand shpaml templates")
-
     xmlStructure = minidom.parseString(shpaml.convert_text(shpamlTemplate))
     return __createTemplateFromXML(xmlStructure.childNodes[0])
 

@@ -21,7 +21,7 @@ class PageBreak(Layout.Box):
     """
     __slots__ = ()
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         Layout.Box.__init__(self, id=id, name=name, parent=parent)
 
         self.style['page-break-before'] = "always"
@@ -35,9 +35,9 @@ class UnPrintable(Layout.Box):
     """
     __slots__ = ()
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         Layout.Box.__init__(self, id=id, name=name, parent=parent)
 
         self.addClass('hidePrint')
 
-Factory.addProduct(Unprintable)
+Factory.addProduct(UnPrintable)

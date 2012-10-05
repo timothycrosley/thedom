@@ -48,7 +48,7 @@ class BaseField(Layout.Box):
     properties['submitIfDisabled'] = {'action':'setSubmitIfDisabled', 'type':'bool'}
     properties['flip'] = {'action':'call', 'type':'bool'}
 
-    def __init__(self, id, name=None, parent=None):
+    def __init__(self, id, name=None, parent=None, **kwargs):
         Layout.Box.__init__(self, id + "Field", name, parent)
         self.submitIfDisabled = False
 
@@ -239,7 +239,7 @@ class AutoField(Layout.Vertical):
     properties['setApart'] = {'action':'call', 'type':'bool'}
     properties['value'] = {'action':'setValue'}
 
-    def __init__(self, id, name=None, parent=None):
+    def __init__(self, id, name=None, parent=None, **kwargs):
         Layout.Vertical.__init__(self, id, name, parent=parent)
 
         self.inputContainer = self.addChildElement(Layout.Horizontal())
@@ -316,9 +316,9 @@ class SelectField(BaseField):
     properties = BaseField.properties.copy()
     Base.addChildProperties(properties, Inputs.Select, 'userInput')
 
-    def __init__(self, id, name=None, parent=None):
+    def __init__(self, id, name=None, parent=None, **kwargs):
         self.fieldActions = None
-        BaseField.__init__(self, id, name, parent)
+        BaseField.__init__(self, id, name, parent, **kwargs)
         self.addChildElementsTo = self
 
     def addChildElement(self, childElement):
@@ -364,27 +364,27 @@ Factory.addProduct(SelectField)
 class MultiFieldClientSide(object):
 
     def removeSelectedOption(self, button, sortBy):
-        selectionBox = WEFellowChild(button, 'multiField', 'selectionBox')
-        hiddenMultiSelect = WEFellowChild(button, 'multiField', 'hiddenMultiSelectionField')
-        shownOption = WEGetElementByClassName('valueSelected', button.parentNode)
-        hiddenOption = WEGetElementByInnerHTML(hiddenMultiSelect, shownOption.innerHTML)
-        WEAddOption(selectionBox, hiddenOption.innerHTML, hiddenOption.value)
-        WERemoveElement(button.parentNode)
-        WERemoveElement(hiddenOption)
+        selectionBox = WebElements.fellowChild(button, 'multiField', 'selectionBox')
+        hiddenMultiSelect = WebElements.fellowChild(button, 'multiField', 'hiddenMultiSelectionField')
+        shownOption = WebElements.getByClassName('valueSelected', button.parent())
+        hiddenOption = WebElements.getByInnerHTML(hiddenMultiSelect, shownOption.innerHTML)
+        WebElements.addOption(selectionBox, hiddenOption.innerHTML, hiddenOption.value)
+        WebElements.removeElement(button.parentNode)
+        WebElements.removeElement(hiddenOption)
         if sortBy == "innerHTML":
-            WESortSelect(selectionBox)
+            WebElements.sortSelect(selectionBox)
         elif sortBy == "value":
-            WESortSelectByValue(selectionBox)
+            WebElements.sortSelect(selectionBox, True)
 
     def addSelectedOption(self, selectBox):
-        shownSelection = WEFellowChild(selectBox, 'multiField', 'selectContainer')
-        hiddenMultiSelect = WEFellowChild(selectBox, 'multiField', 'hiddenMultiSelectionField')
-        selected = WESelectedOption(selectBox)
-        shownSelection.innerHTML += WEUnserialize('%s')
-        WEAddOption(hiddenMultiSelect, selected.innerHTML, selected.value)
-        WESelectOption(selectBox, ' ')
-        WERemoveElement(selected)
-        WESelectAllOptions(hiddenMultiSelect)
+        shownSelection = WebElements.fellowChild(selectBox, 'multiField', 'selectContainer')
+        hiddenMultiSelect = WebElements.fellowChild(selectBox, 'multiField', 'hiddenMultiSelectionField')
+        selected = WebElements.selectedOption(selectBox)
+        shownSelection.innerHTML += WebElements.unserialize('%s')
+        WebElements.addOption(hiddenMultiSelect, selected.innerHTML, selected.value)
+        WebElements.selectOption(selectBox, ' ')
+        WebElements.removeElement(selected)
+        WebElements.selectAllOptions(hiddenMultiSelect)
 
 class MultiField(SelectField):
     """
@@ -411,8 +411,8 @@ class MultiField(SelectField):
 
         return new
 
-    def __init__(self, id, name=None, parent=None):
-        SelectField.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        SelectField.__init__(self, id, name, parent, **kwargs)
         self.sortBy = "innerHTML"
         self.userInput.id = id + "MultiField"
         self.userInput.name = (name or id) + "MultiField"
@@ -471,9 +471,9 @@ class MultiSelectField(BaseField):
     properties = BaseField.properties.copy()
     Base.addChildProperties(properties, Inputs.MultiSelect, 'userInput')
 
-    def __init__(self, id, name=None, parent=None):
+    def __init__(self, id, name=None, parent=None, **kwargs):
         self.fieldActions = None
-        BaseField.__init__(self, id, name, parent)
+        BaseField.__init__(self, id, name, parent, **kwargs)
         self.addChildElementsTo = self
         self.userInput.attributes['multiple'] = True
 
@@ -526,8 +526,8 @@ class CheckboxField(BaseField):
     properties['checked'] = {'action':'setValue', 'type':'bool'}
     inputElement = Inputs.CheckBox
 
-    def __init__(self, id, name=None, parent=None):
-        BaseField.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        BaseField.__init__(self, id, name, parent, **kwargs)
 
         inputContainer = Layout.Box(id + "_inputContainer", '', self)
         inputContainer.style['float'] = 'left'
@@ -586,7 +586,7 @@ class CheckboxField(BaseField):
         """
             Returns javascript that will toggle the visibility of the checkbox field child elements clientside
         """
-        javascript = "WEToggleElement('" + self.childContainer.fullId() + "');"
+        javascript = "WebElements.toggleVisibility('" + self.childContainer.fullId() + "');"
         return javascript
 
     def validators(self, useFullId=True):
@@ -619,20 +619,18 @@ class IntegerField(BaseField):
     properties = TextField.properties.copy()
     Base.addChildProperties(properties, Inputs.IntegerTextBox, 'userInput')
 
-    def __init__(self, id, name, parent):
-        BaseField.__init__(self, id, name=None, parent=None)
+    def __init__(self, id, name, parent, **kwargs):
+        BaseField.__init__(self, id, name=None, parent=None, **kwargs)
 
         self.toggleLayout = self.addChildElement(Layout.Vertical())
         self.toggleLayout.style["font-size"] = "75%"
         self.toggleLayout.addClass("Clickable")
-        self.validator = "NewValidators.Int()"
 
         self.label.style['display'] = "block"
         self.label.style['margin-top'] = "5px;"
         self.up = self.toggleLayout.addChildElement(Buttons.UpButton())
         self.up.addClass("hidePrint")
-        self.down = self.toggleLayout.addChildElement(Buttons.DownButton())
-        self.down.setValue('images/count_down.png')
+        self.down = self.toggleLayout.addChildElement(Buttons.DownButton(src='images/count_down.png'))
         self.down.addClass("hidePrint")
         self.userInput.setValue(0)
 
@@ -646,9 +644,9 @@ class IntegerField(BaseField):
         maximum = self.userInput.maximum
         if maximum == None:
             maximum = "undefined"
-        self.up.addJavascriptEvent('onclick', "WEIncrement('%s', %s);" %
+        self.up.addJavascriptEvent('onclick', "WebElements.increment('%s', %s);" %
                                  (self.userInput.jsId(), str(maximum)))
-        self.down.addJavascriptEvent('onclick', "WEDeincrement('%s', %s);" %
+        self.down.addJavascriptEvent('onclick', "WebElements.deincrement('%s', %s);" %
                                  (self.userInput.jsId(), str(minimum)))
 
     def __updateReadOnly__(self):
@@ -669,17 +667,17 @@ class DateField(TextField):
     properties['hideTypeLabel'] = {'action':'formatDisplay.call', 'name':'hide', 'type':'bool'}
     properties['dateFormat'] = {'action':'classAttribute'}
 
-    def __init__(self, id, name=None, parent=None):
-        TextField.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        TextField.__init__(self, id, name, parent, **kwargs)
         self.userInput.style['width'] = '7.5em'
         self.dateFormat = "dd-mmm-yyyy"
 
         layout = self.addChildElement(Layout.Horizontal())
         layout.addClass("FieldDescription")
-        self.calendarLink = layout.addChildElement(Display.Image(id + "CalendarLink"))
+        self.calendarLink = layout.addChildElement(Display.Image(id + "CalendarLink",
+                                                                 src='static/images/calendar_icon.gif'))
         self.calendarLink.addClass('Clickable')
         self.calendarLink.addClass('hidePrint')
-        self.calendarLink.setValue('static/images/calendar_icon.gif')
         self.calendarLink.addJavascriptEvent('onclick', CallBack(self, "jsOpenCalendar"))
 
         self.calendarTypeLabel = layout.addChildElement(Display.Label())
@@ -716,7 +714,7 @@ class DateField(TextField):
         else:
             calendarType = "lcl"
 
-        return ("%sCalendar.popUpCalendar(this, WEGetElement('%s'), '%s')" %
+        return ("%sCalendar.popUpCalendar(this, WebElements.get('%s'), '%s')" %
                 (calendarType, self.userInput.fullId(), self.dateFormat))
 
 Factory.addProduct(DateField)
@@ -724,17 +722,17 @@ Factory.addProduct(DateField)
 
 class NestedSelect(Layout.Vertical):
     """
-        Defines two select Layout.Boxes where the selection of an item from the first will trigger
+        Defines two select boxes where the selection of an item from the first will trigger
         the population of the second.
     """
-    __slots__ = ('groupLabel', 'groupSelect', 'itemLabel', 'itemSelect', 'groups', 'items')
+    __slots__ = ('groupLabel', 'groupSelect', 'itemLabel', 'itemSelect', 'items')
     properties = Layout.Vertical.properties.copy()
     properties['groupData'] = {'action':'setGroupData'}
     properties['groupLabel'] = {'action':'setGroupLabel'}
     properties['itemLabel'] = {'action':'setItemLabel'}
     properties['selectWidth'] = {'action':'setSelectWidth'}
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         Layout.Vertical.__init__(self, id + "NestedSelect", name, parent)
 
         self.groupLabel = self.addChildElement(Display.Label())
@@ -745,8 +743,7 @@ class NestedSelect(Layout.Vertical):
         self.itemLabel = self.addChildElement(Display.Label())
         self.itemSelect = self.addChildElement(Inputs.Select(id + "Items"))
 
-        self.groups = []
-        self.items = {}
+        self.items = None
 
     def updateItems(self):
         """
@@ -766,13 +763,8 @@ class NestedSelect(Layout.Vertical):
         """
         self.groupSelect.reset()
         self.itemSelect.reset()
-        self.groups = []
-        self.items = {}
-        for group in data:
-            newGroup = group['name']
-            items = group['value']
-            self.groups.append(newGroup)
-            self.items[newGroup] = items
+        self.items = data
+        for newGroup, items in data.iteritems():
             self.groupSelect.addOption(newGroup, newGroup)
 
         self.addScript(CallBack(self, "jsGroups"))
@@ -804,17 +796,18 @@ class NestedSelect(Layout.Vertical):
         """
             Creates the group structure client side
         """
-        return """document.%(groupId)s = %(groups)s;
-                  document.%(itemId)s = %(items)s;
-               """ % {'items':self.items, 'groups':self.groups, 'id':self.jsId(),
-                      'itemId':self.itemSelect.jsId(), 'groupId':self.groupSelect.jsId()}
+        if self.items:
+            return """document.%(groupId)s = %(groups)s;
+                    document.%(itemId)s = %(items)s;
+                """ % {'items':self.items, 'groups':self.items.keys(), 'id':self.jsId(),
+                        'itemId':self.itemSelect.jsId(), 'groupId':self.groupSelect.jsId()}
 
     def jsPopulateItemSelect(self):
         """
             Populates the item select Layout.Box with the items contained in the selected group
         """
-        return """populateSelect(document.getElementById('%(itemSelectId)s'),
-                     document.%(itemSelectId)s[document.getElementById('%(groupSelectId)s').value]);
+        return """WebElements.setOptions('%(itemSelectId)s',
+                     document.%(itemSelectId)s[WebElements.getValue('%(groupSelectId)s')]);
                """ % {'itemSelectId':self.itemSelect.jsId(),
                       'groupSelectId':self.groupSelect.jsId()}
 
@@ -830,8 +823,8 @@ class Filter(Layout.Box):
 
     jsFunctions = ["javascriptAddFilter", "javascriptRemoveFilter"]
 
-    def __init__(self, id, name=None, parent=None):
-        Layout.Box.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Layout.Box.__init__(self, id, name, parent, **kwargs)
 
         self.searchFieldList = []
         self.filters = [self, ]
@@ -876,11 +869,11 @@ class Filter(Layout.Box):
         removeButton.addClass('RemoveFilter')
         removeButton.addJavascriptEvent("onclick", CallBack(self, 'jsRemoveFilter'))
         removeButton.addJavascriptEvent("onmouseover",
-                                        """WEAddClass(WEParentElement(this,
+                                        """WebElements.addClass(WebElements.parent(this,
                                                                       'Filter'),
                                                         'FilterHighlight');""")
         removeButton.addJavascriptEvent("onmouseout",
-                                        """WERemoveClass(WEParentElement(this,
+                                        """WebElements.removeClass(WebElements.parent(this,
                                                                       'Filter'),
                                                         'FilterHighlight');""")
         self.removeButton = filterContainer.addChildElement(removeButton)
@@ -943,66 +936,66 @@ class Filter(Layout.Box):
     def javascriptAddFilter(element, filterType, toggledOn):
         return """
             if(toggledOn){
-                parentFilter = WEParentElement(element, 'WFilter');
-                filter = WEGetElementByClassName('WFilter', parentFilter);
+                parentFilter = WebElements.parent(element, 'WFilter');
+                filter = WebElements.getByClassName('WFilter', parentFilter);
                 if(!filter){
-                    filter = WECopy(parentFilter,
-                                    WEGetElementByClassName('subFilter',
+                    filter = WebElements.copy(parentFilter,
+                                    WebElements.getByClassName('subFilter',
                                                             parentFilter));
-                    oldTerm = WEGetElementByClassName('FilterTerm',
+                    oldTerm = WebElements.getByClassName('FilterTerm',
                                                         parentFilter);
-                    newTerm = WEGetElementByClassName('FilterTerm', filter);
+                    newTerm = WebElements.getByClassName('FilterTerm', filter);
                     newTerm.value = oldTerm.value;
                     newTerm.focus();
                     newTerm.select();
-                    WEGetElementByClassName('RemoveFilter', filter).style.display = 'block';
+                    WebElements.getByClassName('RemoveFilter', filter).style.display = 'block';
                 }
-                WEGetElementByClassName('filterType', filter).value = filterType;
+                WebElements.getByClassName('filterType', filter).value = filterType;
             }
             else{
-                WERemoveElement(WEGetElementByClassName('WFilter',
-                                        WEParentElement(element, 'WFilter')));
+                WebElements.removeElement(WebElements.getByClassName('WFilter',
+                                        WebElements.parent(element, 'WFilter')));
             }"""
 
     @staticmethod
     def javascriptRemoveFilter(element):
         return """
-                thisFilter = WEParentElement(element, 'WFilter');
-                childFilter = WEGetElementByClassName('WFilter', thisFilter);
-                filterType = WEGetElementByClassName('filterType',
+                thisFilter = WebElements.parent(element, 'WFilter');
+                childFilter = WebElements.getByClassName('WFilter', thisFilter);
+                filterType = WebElements.getByClassName('filterType',
                                                      childFilter).value;
 
-                AndButton = WEGetElementByClassName('AddAndFilter', thisFilter);
-                OrButton = WEGetElementByClassName('AddOrFilter', thisFilter);
-                parentFilter = WEParentElement(thisFilter, 'WFilter');
+                AndButton = WebElements.getByClassName('AddAndFilter', thisFilter);
+                OrButton = WebElements.getByClassName('AddOrFilter', thisFilter);
+                parentFilter = WebElements.parent(thisFilter, 'WFilter');
 
-                parentAndButton = WEGetElementByClassName('AddAndFilter',
+                parentAndButton = WebElements.getByClassName('AddAndFilter',
                                                           parentFilter);
-                parentOrButton = WEGetElementByClassName('AddOrFilter',
+                parentOrButton = WebElements.getByClassName('AddOrFilter',
                                                          parentFilter);
 
                 parentOrButton.className = OrButton.className;
                 parentAndButton.className = AndButton.className;
 
                 if(filterType == 'Or'){
-                    WENextElement(parentOrButton).value = 'on';
-                    WENextElement(parentAndButton).value = 'off';
+                    WebElements.next(parentOrButton).value = 'on';
+                    WebElements.next(parentAndButton).value = 'off';
                 }
                 else if(filterType == 'And'){
-                    WENextElement(parentAndButton).value = 'on';
-                    WENextElement(parentOrButton).value = 'off';
+                    WebElements.next(parentAndButton).value = 'on';
+                    WebElements.next(parentOrButton).value = 'off';
                 }
                 else{
-                    WENextElement(parentAndButton).value = 'off';
-                    WENextElement(parentOrButton).value = 'off';
+                    WebElements.next(parentAndButton).value = 'off';
+                    WebElements.next(parentOrButton).value = 'off';
                 }
 
                 if(childFilter)
                 {
-                    WEMove(childFilter,
-                        WEGetElementByClassName('subFilter', parentFilter));
+                    WebElements.move(childFilter,
+                        WebElements.getByClassName('subFilter', parentFilter));
                 }
-                WERemoveElement(thisFilter);
+                WebElements.removeElement(thisFilter);
                """
 
     def addSearchField(self, searchField):

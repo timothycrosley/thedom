@@ -180,7 +180,7 @@ class UpButton(Display.HoverImage):
 
         self.style['height'] = "11px"
         self.style['width'] = "16px"
-        self.setValue("images/count_up.png")
+        self.setProperty('src', "images/count_up.png")
 
 Factory.addProduct(UpButton)
 
@@ -198,7 +198,7 @@ class DownButton(Display.HoverImage):
 
         self.style['height'] = "11px"
         self.style['width'] = "16px"
-        self.setValue("images/count_down.png")
+        self.setProperty("src", "images/count_down.png")
 
 Factory.addProduct(DownButton)
 
@@ -238,8 +238,6 @@ class ToggleButton(Layout.Box):
 
     def __init__(self, id, name=None, parent=None, **kwargs):
         Layout.Box.__init__(self, id + "Container", name, parent, **kwargs)
-
-        self.setContainerType('span')
 
         button = self.__createToggle__(id)
         button.addJavascriptEvent('onClick', CallBack(self, 'jsToggle'))
@@ -283,7 +281,7 @@ class ToggleButton(Layout.Box):
         """
             Returns the javascript that will reverse the buttons toggle state client side
         """
-        return """if(WENextElement(this).value == 'off'){
+        return """if(WebElements.next(this).value == 'off'){
                     """ + self.jsToggleOn() + '\n'.join(self.emit('jsToggled', True)) + """
                   }
                   else{
@@ -295,9 +293,9 @@ class ToggleButton(Layout.Box):
             Returns the javascript that will turn the button off client side
         """
         return """
-                var element = WEGetElement('""" + self.button.jsId() + """');
-                WERemoveClass(element, 'Pushed');
-                WENextElement(element).value = 'off';
+                var element = WebElements.get('""" + self.button.jsId() + """');
+                WebElements.removeClass(element, 'Pushed');
+                WebElements.next(element).value = 'off';
                """
 
     def jsToggleOn(self):
@@ -305,9 +303,9 @@ class ToggleButton(Layout.Box):
             Returns the javascript that will turn the button on client side
         """
         return """
-                var element = WEGetElement('""" + self.button.jsId() + """');
-                WEAddClass(element, 'Pushed');
-                WENextElement(element).value = 'on';
+                var element = WebElements.get('""" + self.button.jsId() + """');
+                WebElements.addClass(element, 'Pushed');
+                WebElements.next(element).value = 'on';
                """
 
     def toggled(self):

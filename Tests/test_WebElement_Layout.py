@@ -62,3 +62,7 @@ class TestVerticalRule(ElementTester):
     def setup_class(self):
         self.element = Factory.build('VerticalRule', 'test')
 
+class TestCenter(ElementTester):
+
+    def setup_class(self):
+        self.element = Factory.build('center', 'test')

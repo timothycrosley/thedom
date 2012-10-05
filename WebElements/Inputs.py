@@ -33,8 +33,8 @@ class ValueElement(Base.WebElement):
     properties['onclick'] = {'action':'javascriptEvent'}
     properties['onblur'] = {'action':'javascriptEvent'}
 
-    def __init__(self, id, name=None, parent=None, key=None):
-        Base.WebElement.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, key=None, **kwargs):
+        Base.WebElement.__init__(self, id, name, parent, **kwargs)
         self.key = key
         self._value = ''
         self.attributes['value'] = CallBack(self, 'value')
@@ -146,9 +146,9 @@ class InputElement(ValueElement):
 
     def setDisabledJs(self, disabled):
         '''
-        Returns javascript to disable this input clientside
+            Returns javascript to disable this input clientside
         '''
-        return 'WEGetElement(\'%s\').disabled = %s;' % (self.id, str(disabled))
+        return 'WebElements.get(\'%s\').disabled = %s;' % (self.id, str(disabled))
 
 
 class CheckBox(InputElement):
@@ -201,7 +201,7 @@ class CheckBox(InputElement):
         '''
         Return javascript to check/uncheck the checkbox.
         '''
-        return 'WEGetElement(\'%s\').checked = %s' % (self.id, str(checked))
+        return 'WebElements.get(\'%s\').checked = %s' % (self.id, str(checked))
 
     def setValueAttributeFromString(self, value):
         '''
@@ -281,7 +281,7 @@ class TextBox(InputElement):
         """
             Returns the javascript to select all the text in the textbox clientside
         """
-        return """textBox = WEGetElement('""" + (id or self.id) + """');
+        return """textBox = WebElements.get('""" + (id or self.id) + """');
                   textBox.focus();
                   textBox.select();"""
 
@@ -457,8 +457,8 @@ class Select(ValueElement):
     properties['multiple'] = {'action':'attribute', 'type':'bool'}
     signals = ValueElement.signals + ['selectionChanged']
 
-    def __init__(self, id, name=None, parent=None):
-        ValueElement.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        ValueElement.__init__(self, id, name, parent, **kwargs)
 
         self.connect('beforeToHtml', None, self, '_updateReadOnly_')
 
@@ -564,8 +564,8 @@ class MultiSelect(Select):
     """
     __slots__ = ()
 
-    def __init__(self, id, name=None, parent=None):
-        Select.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Select.__init__(self, id, name, parent, **kwargs)
         self.attributes['multiple'] = True
 
     def selected(self):

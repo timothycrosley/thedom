@@ -38,8 +38,8 @@ class ItemPager(Layout.Vertical):
     properties['itemsPerPage'] = {'action':'classAttribute', 'type':'int'}
     properties['pagesShownAtOnce'] = {'action':'classAttribute', 'type':'int'}
 
-    def __init__(self, id, name=None, parent=None):
-        Layout.Vertical.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Layout.Vertical.__init__(self, id, name, parent, **kwargs)
 
         positionLayout = self.addChildElement(Layout.Horizontal())
         positionLayout.addClass("WActions")
@@ -101,7 +101,7 @@ class ItemPager(Layout.Vertical):
         self._pages_ = None
 
         self.connect('beforeToHtml', None, self, '_updateUI_')
-        self.showAllButton.addJavascriptEvent('onclick', "WEReplaceElement(this, WEBuildThrobber());")
+        self.showAllButton.addJavascriptEvent('onclick', "WebElements.replace(this, WebElements.buildThrobber());")
         self.showAllButton.connect('jsToggled', None, self, 'jsSetNavigationIndex', 0)
         self.showAllButton.connect('toggled', True, self.showAllButton, 'setValue', 'Show in Pages')
         self.showAllButton.connect('toggled', False, self.showAllButton, 'setValue', 'Show All')
@@ -132,7 +132,7 @@ class ItemPager(Layout.Vertical):
             Creates the javascript to switch to a different position within the items:
             index - the first item you want to appear in your pages results
         """
-        return ("WEGetElement('%(id)sIndex').value = '%(index)d';%(handlers)s;" %
+        return ("WebElements.get('%(id)sIndex').value = '%(index)d';%(handlers)s;" %
                 {'id':self.jsId(), 'index':index, 'handlers':"\n".join(self.emit('jsIndexChanged'))})
 
     def _updateUI_(self):
@@ -186,10 +186,9 @@ class JumpToLetter(Layout.Vertical):
     """
     __slots__ = ('__letterMap__', 'selectedLetter')
     letters = map(chr, xrange(ord('A'), ord('Z') + 1))
-    signals = Layout.Vertical.signals + ['jsLetterClicked']
 
-    def __init__(self, id, name=None, parent=None):
-        Layout.Vertical.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Layout.Vertical.__init__(self, id, name, parent, **kwargs)
         self.addClass("WJumpToLetter")
         self.style['float'] = "left"
 
@@ -206,23 +205,21 @@ class JumpToLetter(Layout.Vertical):
 
         self.connect("beforeToHtml", None, self, "__highlightSelectedLetter__")
         self.addScript("function letterJumpHover(letterJump){"
-                       "    var letterJump = WEGetElement(letterJump);"
+                       "    var letterJump = WebElements.get(letterJump);"
                        "    letterJump.paddingBottom = '4px';"
                        "    letterJump.paggingTop = '3px';"
                        "}")
         self.addScript("function letterJumpLeave(letterJump){"
-                       "    var letterJump = WEGetElement(letterJump);"
+                       "    var letterJump = WebElements.get(letterJump);"
                        "    letterJump.paddingBottom = '10px';"
                        "    letterJump.paggingTop = '10px';"
+                       "}")
+        self.addScript("function l(letterJump, letter){"
+                       "    WebElements.get(letterJump).value = letter;"
                        "}")
 
     def __highlightSelectedLetter__(self):
         jsId = self.jsId()
-        functionName = jsId.replace(".", "").replace(":", "") + "SelectLetter"
-        self.addScript(("function %s(letter){"
-                        "    WEGetElement('%s').value = letter;"
-                        "    %s"
-                        "}") % (functionName, self.selectedLetter.jsId(), "\n".join(self.emit("jsLetterClicked"))))
         for letter, link in self.__letterMap__.iteritems():
             if letter == self.selectedLetter.value():
                 link.addClass("WLetterSelected")
@@ -231,7 +228,7 @@ class JumpToLetter(Layout.Vertical):
                 if not link.javascriptEvent('onmouseover'):
                     link.addJavascriptEvent("onmouseover", "letterJumpHover('%s');" % jsId)
                     link.addJavascriptEvent("onmouseout", "letterJumpLeave('%s')" % jsId)
-                    link.addJavascriptEvent("onclick", "%s('%s');" % (functionName, letter))
+                    link.addJavascriptEvent("onclick", "letterSelect('%s', '%s');" % (jsId, letter))
 
     def clearSelection(self):
         """
@@ -264,8 +261,8 @@ class BreadCrumb(Layout.Box):
     properties = Layout.Box.properties.copy()
     properties['formName'] = {'action':'classAttribute'}
 
-    def __init__(self, id, name=None, parent=None):
-        Layout.Box.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Layout.Box.__init__(self, id, name, parent, **kwargs)
         self.addClass("WBreadCrumb")
 
         hiddenData = Inputs.TextBox(id + ':HiddenData')
@@ -356,17 +353,17 @@ class BreadCrumb(Layout.Box):
         return """
                 function submitLink(label, view, key, index){
                     if(index != null){
-                        link = WEGetElement('""" + self.prevLinkClicked.id + """');
+                        link = WebElements.get('""" + self.prevLinkClicked.id + """');
                         link.value = index;
                     }
                     if(key == null){
                         key = label;
                     }
 
-                    WEGetElement('""" + self.label.id  + """').value = label;
-                    WEGetElement('""" + self.location.id + """').value = view;
-                    WEGetElement('""" + self.key.id + """').value = key;
-                    WEGetElement('""" + self.formName + """').submit();
+                    WebElements.get('""" + self.label.id  + """').value = label;
+                    WebElements.get('""" + self.location.id + """').value = view;
+                    WebElements.get('""" + self.key.id + """').value = key;
+                    WebElements.get('""" + self.formName + """').submit();
                 }
                """
 
@@ -415,7 +412,7 @@ class UnrolledSelect(Display.List):
     """
     __slots__ = ('userInput', 'optionList')
 
-    def __init__(self, id, name=None, parent=None):
+    def __init__(self, id, name=None, parent=None, **kwargs):
         Display.List.__init__(self, None, None, parent)
         self.addChildElement(Display.Label()).addClass('first')
         self.addClass('WUnrolledSelect')
@@ -426,10 +423,10 @@ class UnrolledSelect(Display.List):
 
         self.addScript("function selectUnrolledOption(option)"
                        "{"
-                       "    var valueElement = WEFellowChild(option, 'WUnrolledSelect', 'Value');"
+                       "    var valueElement = WebElements.fellowChild(option, 'WUnrolledSelect', 'Value');"
                        "    valueElement.value = option.name;"
                        "    valueElement.onchange();"
-                       "    WEStealClassFromFellowChild(option, 'WUnrolledSelect', 'selected');"
+                       "    WebElements.stealClassFromFellowChild(option, 'WUnrolledSelect', 'selected');"
                        "}")
 
         self.connect('beforeToHtml', None, self, '__addLast__')
@@ -538,8 +535,8 @@ class TimeFrame(Layout.Horizontal):
     properties['help'] = {'action':'help.setText'}
     properties['disableAnyTime'] = {'action':'call', 'type':'bool'}
 
-    def __init__(self, id, name=None, parent=None):
-        Layout.Horizontal.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Layout.Horizontal.__init__(self, id, name, parent, **kwargs)
         self.style['margin-top'] = '2px'
         self.addClass("WTimeFrame")
 
@@ -583,7 +580,7 @@ class TimeFrame(Layout.Horizontal):
             self.days.setValue(1)
 
     def __addScripts__(self):
-        setTimeFrame = ("WEStealClassFromPeer(this, 'selected');WEPeer(this, 'Value').value = '%d';" +
+        setTimeFrame = ("WebElements.stealClassFromPeer(this, 'selected');WebElements.peer(this, 'Value').value = '%d';" +
                         "".join(self.emit("jsTimeFrameChanged")))
         valueMap = {0:self.anyTime, 1:self.hours24, 7:self.days7, 14:self.days14}
         for value, element in valueMap.iteritems():

@@ -14,11 +14,11 @@ class GoogleChart(Image):
     url = ('http://chart.apis.google.com/chart?cht='
            '%(chart)s&chs=%(width)sx%(height)s&chd=t:%(data)s&chl=%(labels)s&chbh=a'
            '&chxt=y&chds=0,%(max)f&chxr=0,0,%(max)f&chco=4D89F9')
-    properties = Base.WebElement.properties.copy()
+    properties = Image.properties.copy()
     properties['height'] = {'action':'setHeight', 'type':'int'}
     properties['width'] = {'action':'setWidth', 'type':'int'}
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         super(GoogleChart, self).__init__(id, name, parent)
         self.__dataPoints__ = {}
         self.__height__ = 100
@@ -76,7 +76,7 @@ class GoogleChart(Image):
         values = [value for value, key in items]
 
         self.style['height'] = self.__height__
-        self.setValue(self.getURL(keys, values))
+        self.setProperty('src', self.getURL(keys, values))
 
     def getURL(self, keys, values):
         """

@@ -7,13 +7,12 @@ class TestImage(ElementTester):
         self.element = Factory.build("Image", name="Test")
 
     def test_setProperties(self):
-        self.element.setProperties({'value':'images/lightbulb.png'})
-        assert self.element.value() == 'images/lightbulb.png'
+        self.element.setProperties({'src':'images/lightbulb.png'})
+        assert self.element.attributes['src'] == 'images/lightbulb.png'
 
     def test_value(self):
-        assert not self.element.value()
-        self.element.setValue("images/lightbulb.png")
-        assert self.element.value() == "images/lightbulb.png"
+        assert not self.element.attributes.get('src', None)
+        self.element.setProperty('src', "images/lightbulb.png")
         assert self.element.attributes['src'] == "images/lightbulb.png"
 
 
@@ -41,25 +40,25 @@ class TestLabel(object):
         assert "I set the text" in self.element.toHtml()
 
 
-class TestParagraph(TestLabel):
+class TestParagraph(ElementTester):
 
     def setup_method(self, method):
         self.element = Factory.build("Paragraph", "Test")
 
 
-class TestSubscript(TestLabel):
+class TestSubscript(ElementTester):
 
     def setup_method(self, method):
         self.element = Factory.build("Subscript", "Test")
 
 
-class TestSuperscript(TestLabel):
+class TestSuperscript(ElementTester):
 
     def setup_method(self, method):
         self.element = Factory.build("Superscript", "Test")
 
 
-class TestPreformattedText(TestLabel):
+class TestPreformattedText(ElementTester):
 
     def setup_method(self, method):
         self.element = Factory.build("PreformattedText", "Test")

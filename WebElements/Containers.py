@@ -6,6 +6,7 @@
        Elements that allow you to contain elements on the page
 """
 
+import DOM
 import Base
 import Buttons
 import Display
@@ -30,73 +31,30 @@ class DropDownMenu(Layout.Box):
     properties['openOnly'] = {'action':'classAttribute', 'type':'bool'}
     properties['parentElement'] = {'action':'classAttribute'}
 
-    jsToggleDropDown = ("function toggleDropDown(menu, openOnly, button, parentElement)"
-                        "{"
-                        "   isPopupOpen = true;"
-                        "   if(currentDropDown && currentDropDown != menu){"
-                        "       WEHideElement(currentDropDown);"
-                        "       WERemoveClass(currentButton, 'SelectedDropDown');"
-                        "   }"
-                        "   currentDropDown = menu;"
-                        "   currentButton = button;"
-                        "   if(!openOnly || !WEElementShown(currentDropDown)){"
-                        "        if(WEToggleDropDown(currentDropDown, parentElement)){"
-                        "           WEAddClass(button, 'SelectedDropDown');"
-                        "        }"
-                        "        else{"
-                        "           WERemoveClass(button, 'SelectedDropDown');"
-                        "       }"
-                        "   }"
-                        "   "
-                        "}")
 
-    jsCloseCurrentDropDown = ("function closeCurrentDropDown()"
-                              "{"
-                              "   try{ x = currentDropDown; }"
-                              "   catch(e){ window.currentDropDown = null; }"
-                              "   WEHideElement(currentDropDown);"
-                              "   if(currentButton){"
-                              "     WERemoveClass(currentButton, 'SelectedDropDown');"
-                              "   }"
-                              "}")
-
-    jsPopupOnClick = ("var isPopupOpen = false;"
-                      "document.body.onclick = "
-                      "function closeOpenMenu()"
-                      "{"
-                      "      if(isPopupOpen){"
-                      "         isPopupOpen = false;"
-                      "       }"
-                      "       else {"
-                      "          closeCurrentDropDown();"
-                      "          isPopupOpen = false;"
-                      "      }"
-                      "};")
-
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         Layout.Box.__init__(self, id  and (id + "Container") or "", name, parent)
         self.toggle = None
         self.menu = None
         self.openOnly = False
         self.parentElement = None
-        self.addScript(self.jsCloseCurrentDropDown)
-        self.addScript(self.jsToggleDropDown)
-        self.addScript(self.jsPopupOnClick)
 
-    def setToggleButton(self, toggleButton, relation="WEPeer"):
+    def setToggleButton(self, toggleButton, relation="WebElements.peer"):
         """
             Sets the button that controls the toggling of the menu
 
             toggleButton - the control button
-            relation - the relational javascript method to call to get the menu aka "WEPeer" or "WEChildElement"
+            relation - the relational javascript method to call to get the menu aka "WebElements.peer" or
+                      "WebElements.childElement"
         """
         self.toggle = toggleButton
         if self.id:
             self.toggle.id = self.id + ":Toggle"
-        self.toggle.addJavascriptEvent('onclick', "toggleDropDown(%s(this, 'WebElementMenu'), %s, this, %s);" %
+        self.toggle.addJavascriptEvent('onclick',
+                                       "WebElements.clickDropDown(%s(this, 'WMenu'), %s, this, %s);" %
                                         (relation, ((self.openOnly and "true") or "false"),
-                                    (self.parentElement and "WEGetElement('%s')" % self.parentElement) or "null"))
-        self.toggle.addClass("WebElementToggle")
+                                    (self.parentElement and "$('#%s')" % self.parentElement) or "null"))
+        self.toggle.addClass("WToggle")
         return toggleButton
 
     def addChildElement(self, childElement):
@@ -106,8 +64,8 @@ class DropDownMenu(Layout.Box):
             self.menu = Layout.Box.addChildElement(self, childElement)
             if self.id:
                 self.menu.id = self.id + ":Content"
-            self.menu.addClass("WebElementMenu")
-            self.menu.addJavascriptEvent('onclick', 'isPopupOpen = true;')
+            self.menu.addClass("WMenu")
+            self.menu.addJavascriptEvent('onclick', 'WebElements.State.isPopupOpen = true;')
             self.menu.hide()
             return self.menu
         else:
@@ -125,8 +83,8 @@ class CollapsedText(DropDownMenu):
     properties['lengthLimit'] = {'action':'classAttribute', 'type':'int'}
     properties['text'] = {'action':'setText'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        DropDownMenu.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        DropDownMenu.__init__(self, id, name, parent, **kwargs)
 
         self.lengthLimit = 40
         self.label = self.addChildElement(Display.Label)
@@ -143,8 +101,9 @@ class CollapsedText(DropDownMenu):
     def __updateUI__(self):
         text = self.text()
         if len(text or '') > int(self.lengthLimit or 0):
-            self.label.parent.addJavascriptEvent('onmouseover', "WEDisplayDropDown(WEPeer(this, 'WebElementMenu'));")
-            self.label.parent.addJavascriptEvent('onmouseout', "WEHideElement(WEPeer(this, 'WebElementMenu'));")
+            self.label.parent.addJavascriptEvent('onmouseover',
+                                               "WebElements.displayDropDown(WebElements.peer(this, 'WMenu'));")
+            self.label.parent.addJavascriptEvent('onmouseout', "WebElements.hide(WebElements.peer(this, 'WMenu'));")
             self.label.setText(text[:int(self.lengthLimit) - 3] + "...")
             self.completeText = self.addChildElement(Display.Label())
             self.completeText.setText(text)
@@ -168,7 +127,7 @@ class Autocomplete(Layout.Box):
     properties = Layout.Box.properties.copy()
     properties['blockTab'] = {'action':'classAttribute', 'type':'bool'}
 
-    def __init__(self, id, name=None, parent=None):
+    def __init__(self, id, name=None, parent=None, **kwargs):
         Layout.Box.__init__(self, id + "Container", name, parent)
 
         self.blockTab = True
@@ -179,7 +138,7 @@ class Autocomplete(Layout.Box):
         self.userInput.attributes['autocomplete'] = "off"
         self.userInput.addJavascriptEvent('onkeydown', CallBack(self, "jsShowIfActive"))
         self.userInput.addJavascriptEvent('onkeyup', CallBack(self, "jsShowIfActive"))
-        self.userInput.addClass("WebElementToggle")
+        self.userInput.addClass("WToggle")
 
         self.addScript("""if(!document.hasMenuClose){
                             document.hasMenuClose = true;
@@ -190,7 +149,7 @@ class Autocomplete(Layout.Box):
                             function CloseLastAutocompletePopup()
                             {
                                 if(AutoCompletePopup && !MenuClicked){
-                                    WEHideElement(AutoCompletePopup)
+                                    WebElements.hide(AutoCompletePopup)
                                 }
                                 if(prevFunction)prevFunction();
                                 MenuClicked = false;
@@ -204,7 +163,7 @@ class Autocomplete(Layout.Box):
         if not self.menu:
             self.menu = Layout.Box.addChildElement(self, childElement)
             self.menu.id = self.id + ":Content"
-            self.menu.addClass("WebElementMenu")
+            self.menu.addClass("WMenu")
             self.menu.hide()
             return self.menu
         else:
@@ -212,15 +171,15 @@ class Autocomplete(Layout.Box):
 
     def jsShowIfActive(self):
         return """if(event.keyCode != ENTER){
-                    var menu = WEPeer(this, 'WebElementMenu');
+                    var menu = WebElements.peer(this, 'WMenu');
                     if(this.value""" + (self.blockTab and " && event.keyCode != TAB)" or ")") + """
                     {
-                        WEShowElement(menu);
+                        WebElements.show(menu);
                         AutoCompletePopup = menu;
                     }
                     else
                     {
-                        WEHideElement(menu);
+                        WebElements.hide(menu);
                         AutoCompletePopup = null;
                     }
                   }
@@ -246,9 +205,9 @@ class Tab(Layout.Box):
             The label used to represent the tab in the tab-bar
         """
         __slots__ = ()
-        def __init__(self, id, name=None, parent=None):
+        def __init__(self, id, name=None, parent=None, **kwargs):
             Display.Label.__init__(self, id=id, name=name, parent=parent)
-            self.addClass("WebElementTabLabel")
+            self.addClass("WabLabel")
 
         def select(self):
             """
@@ -266,15 +225,15 @@ class Tab(Layout.Box):
 
         @staticmethod
         def jsSelect(tab):
-            return ("WERemoveClass(%(tab)s, 'UnselectedTabLabel');"
-                    "WEAddClass(%(tab)s, 'SelectedTabLabel');") % {'tab':tab}
+            return ("WebElements.removeClass(%(tab)s, 'UnselectedTabLabel');"
+                    "WebElements.addClass(%(tab)s, 'SelectedTabLabel');") % {'tab':tab}
 
         @staticmethod
         def jsUnselect(tab):
-            return ("WERemoveClass(%(tab)s, 'SelectedTabLabel');"
-                    "WEAddClass(%(tab)s, 'UnselectedTabLabel');") % {'tab':tab}
+            return ("WebElements.removeClass(%(tab)s, 'SelectedTabLabel');"
+                    "WebElements.addClass(%(tab)s, 'UnselectedTabLabel');") % {'tab':tab}
 
-    def __init__(self, id, name=None, parent=None):
+    def __init__(self, id, name=None, parent=None, **kwargs):
         Layout.Box.__init__(self, id=id, name=name, parent=parent)
 
         self.text = None
@@ -324,14 +283,14 @@ class TabContainer(Base.WebElement):
     __layoutElement__ = Layout.Vertical
     __tabLayoutElement__ = Layout.Horizontal
 
-    def __init__(self, id, name=None, parent=None):
-        Base.WebElement.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Base.WebElement.__init__(self, id, name, parent, **kwargs)
 
         self.tabs = {}
         self.selectedTab = None
 
         self.layout = self.addChildElement(self.__layoutElement__(id, name, parent))
-        self.layout.addClass("WebElement" + self.__class__.__name__)
+        self.layout.addClass("W" + self.__class__.__name__)
 
         self.__tabLabelContainer__ = self.layout.addChildElement(self.__tabLayoutElement__())
         self.__tabLabelContainer__.addClass('TabLabels')
@@ -349,10 +308,10 @@ class TabContainer(Base.WebElement):
         """
             Returns the javascript code to select an individual tab client side
         """
-        return (("WEHideElement(%(tabContainer)s_selectedTab);" +
+        return (("WebElements.hide(%(tabContainer)s_selectedTab);" +
                  tab.TabLabel.jsUnselect("%s_selectedTab + 'Label'" % self.jsId()) +
                  "%(tabContainer)s_selectedTab = '%(tab)s';"
-                 "WEShowElement(%(tabContainer)s_selectedTab);" +
+                 "WebElements.show(%(tabContainer)s_selectedTab);" +
                  tab.TabLabel.jsSelect("'" + tab.jsId() + "Label'")) %
                     {'tab':tab.jsId(),
                      'tabContainer':self.jsId()})
@@ -406,9 +365,9 @@ class Accordion(Layout.Vertical):
     properties['open'] = {'action':'call', 'type':'bool'}
     properties['label'] = {'action':'setLabel'}
 
-    def __init__(self, id, name=None, parent=None):
-        Layout.Vertical.__init__(self, id, name, parent)
-        self.addClass("WebElementAccordion")
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Layout.Vertical.__init__(self, id, name, parent, **kwargs)
+        self.addClass("WAccordion")
 
         self.toggle = self.addChildElement(Layout.Horizontal())
         self.toggle.addClass('AccordionToggle')
@@ -438,11 +397,10 @@ class Accordion(Layout.Vertical):
         """
             Returns the javascript that will toggle the label on client side
         """
-        return """if (!WEElementShown('%s')){
-                     WEShowElement('%s');
-                     WEGetElement('%s').value = 'True';
-                     WEGetElement('%s').src = 'images/hide.gif'
-                   }
+        return """if (!WebElements.shown('%s')){
+                     WebElements.show('%s');
+                     WebElements.get('%s').value = 'True';
+                     WebElements.get('%s').src = 'images/hide.gif'
                 """ % (self.contentElement.jsId(), self.contentElement.jsId(),
                        self.isOpen.jsId(), self.toggleImage.jsId())
 
@@ -450,11 +408,10 @@ class Accordion(Layout.Vertical):
         """
             Returns the javascript that will toggle the label off client side
         """
-        return """if (WEElementShown('%s')){
-                     WEHideElement('%s');
-                     WEGetElement('%s').value = 'False';
-                     WEGetElement('%s').src = 'images/show.gif'
-                   }
+        return """if (WebElements.shown('%s')){
+                     WebElements.hide('%s');
+                     WebElements.get('%s').value = 'False';
+                     WebElements.get('%s').src = 'images/show.gif'
                 """ % (self.contentElement.jsId(), self.contentElement.jsId(),
                        self.isOpen.jsId(), self.toggleImage.jsId())
 
@@ -466,14 +423,14 @@ class Accordion(Layout.Vertical):
                                                    self.isOpen.jsId())
     @staticmethod
     def toggleAccordion(elementContent, elementImage, elementValue):
-        return """if(!WEElementShown(elementContent)){
-                     WEShowElement(elementContent);
+        return """if(!WebElements.shown(elementContent)){
+                     WebElements.show(elementContent);
                      elementValue.value = 'True';
                      elementImage.src = 'images/hide.gif'
                   }
                   else
                   {
-                     WEHideElement(elementContent);
+                     WebElements.hide(elementContent);
                      elementValue.value = 'False';
                      elementImage.src = 'images/show.gif'
                   }"""
@@ -482,7 +439,7 @@ class Accordion(Layout.Vertical):
         """
             Makes the accordions content visible
         """
-        self.toggleImage.setValue('images/hide.gif')
+        self.toggleImage.setProperty('src', 'images/hide.gif')
         self.contentElement.show()
         self.isOpen.setValue(True)
 
@@ -490,7 +447,7 @@ class Accordion(Layout.Vertical):
         """
             Hides the accordions content
         """
-        self.toggleImage.setValue('images/show.gif')
+        self.toggleImage.setProperty('src', 'images/show.gif')
         self.contentElement.hide()
         self.isOpen.setValue(False)
 
@@ -505,8 +462,8 @@ class FormContainer(DOM.Form):
     """
     __slots__ = ()
 
-    def __init__(self, id=None, name=None, parent=None):
-        DOM.Form.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        DOM.Form.__init__(self, id, name, parent, **kwargs)
         self.setProperty('method', 'POST')
 
     def validators(self, useFullId=True):
@@ -535,12 +492,12 @@ class ActionBox(Layout.Vertical):
     properties = Layout.Vertical.properties.copy()
     properties['header'] = {'action':'header.setText'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        Layout.Vertical.__init__(self, id, name, parent)
-        self.addClass("WebElementActionBox")
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Layout.Vertical.__init__(self, id, name, parent, **kwargs)
+        self.addClass("WActionBox")
 
         self.header = self.addChildElement(Display.Label())
-        self.header.addClass("WebElementActionBoxHeader")
+        self.header.addClass("WActionBoxHeader")
 
         self.actions = self.addChildElement(Display.List())
 

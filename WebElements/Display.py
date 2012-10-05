@@ -50,10 +50,10 @@ class HoverImage(Image):
     def __addEvents__(self):
         if self.imageOnHover:
             self.addJavascriptEvent('onmouseover', "this.src = '%s';" % self.imageOnHover)
-            self.addJavascriptEvent('onmouseout', "this.src = '%s';" % self.value())
+            self.addJavascriptEvent('onmouseout', "this.src = '%s';" % self.attributes['src'])
         if self.imageOnClick:
             self.addJavascriptEvent('onmousedown', "this.src = '%s';" % self.imageOnClick)
-            self.addJavascriptEvent('onmouseup', "this.src = '%s';" % self.value())
+            self.addJavascriptEvent('onmouseup', "this.src = '%s';" % self.attributes['src'])
 
 Factory.addProduct(HoverImage)
 
@@ -74,7 +74,7 @@ class List(DOM.UL):
         """
         __slots__ = ('_textNode')
 
-        def __init__(self, id=None, name=None, parent=None):
+        def __init__(self, id=None, name=None, parent=None, **kwargs):
             DOM.LI.__init__(self, id=id, name=name, parent=parent)
 
             self._textNode = self.addChildElement(Base.TextNode())
@@ -91,7 +91,7 @@ class List(DOM.UL):
             """
             return self._textNode.text()
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         DOM.UL.__init__(self, id=id, name=name, parent=parent)
         self.ordered = False
         self.connect("beforeToHtml", None, self, "__updateTag__")
@@ -132,7 +132,7 @@ class Label(DOM.Span):
     properties['strong'] = {'action':'call', 'name':'makeStrong', 'type':'bool'}
     properties['emphasis'] = {'action':'call', 'name':'addEmphasis', 'type':'bool'}
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         DOM.Span.__init__(self, id=id, name=name, parent=parent)
 
         self._textNode = self.addChildElement(Base.TextNode())
@@ -171,19 +171,15 @@ class Label(DOM.Span):
         """
             wraps into a strong tag - requires parent element to be defined
         """
-        strong = DOM.Strong()
-        self.replaceWith(strong)
-        strong.addChildElement(self)
-        strong.addChildElementsTo = self
+        self.addChildElementsTo = self.addChildElement(DOM.Strong())
+        self.addChildElementsTo.addChildElement(self._textNode)
 
     def addEmphasis(self):
         """
             wraps into an emphasis tag - requires parent element to be defined
         """
-        emphasis = DOM.Em()
-        self.replaceWith(emphasis)
-        emphasis.addChildElement(self)
-        emphasis.addChildElementsTo = self
+        self.addChildElementsTo = self.addChildElement(DOM.Em())
+        self.addChildElementsTo.addChildElement(self._textNode)
 
 Factory.addProduct(Label)
 
@@ -232,7 +228,7 @@ class HeaderLabel(Label):
     properties = Label.properties.copy()
     properties['level'] = {'action':'classAttribute', 'type':'int'}
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         Label.__init__(self, id, name, parent=parent)
         self.level = 2
 
@@ -297,8 +293,8 @@ class Error(Label):
     __slots__ = ()
     tagName = "div"
 
-    def __init__(self, id=None, name=None, parent=None):
-        Label.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Label.__init__(self, id, name, parent, **kwargs)
 
 Factory.addProduct(Error)
 
@@ -313,12 +309,12 @@ class FormError(Label):
     tagName = 'form:error'
     tagSelfCloses = True
 
-    def __init__(self, id=None, name=None, parent=None):
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
         if id and not name:
             name = id or "ErrorGettingName"
             id = None
 
-        Label.__init__(self, id, name, parent)
+        Label.__init__(self, id, name, parent, **kwargs)
 
     def setError(self, errorText):
         """
@@ -432,8 +428,8 @@ class CacheElement(Base.WebElement):
     """
     __slots__ = ('__cachedHTML__')
 
-    def __init__(self, id=None, name=None, parent=None):
-        Base.WebElement.__init__(self, id, name, parent)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement.__init__(self, id, name, parent, **kwargs)
         self.__cachedHTML__ = None
 
     def toHtml(self, formatted=False):

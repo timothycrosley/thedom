@@ -1,21 +1,58 @@
-/* Javascript Utils
+/* WebElementUtils
  *
  * Contains general functions which ease the usage of multi-browser Javascript coding
- * and are unrelated to Prototype, or other javascript libraries.
+ * Is a self contained namespaced library so it can interact well with other javascript libraries
  *
  */
 
-var TAB = 9;
-var ENTER = 13;
-var DOWN_ARROW = 40;
-var IS_IOS = navigator.platform == 'iPad' || navigator.platform == 'iPhone' || navigator.platform == 'iPod'
+//Provide a mapping of all commonly used keys under Keys.KEY_NAME
+var Keys = Keys || {}
+Keys.SPACE = 32;
+Keys.ENTER = 13;
+Keys.TAB = 9;
+Keys.ESC = 27;
+Keys.BACKSPACE = 8;
+Keys.SHIFT = 16;
+Keys.CONTROL = 17;
+Keys.ALT = 18;
+Keys.CAPSLOCK = 20;
+Keys.NUMLOCK = 144;
+Keys.LEFT = 37;
+Keys.UP = 38;
+Keys.RIGHT = 39;
+Keys.DOWN = 40;
+Keys.HOME = 36;
+Keys.END = 35;
+Keys.PAGE_UP = 33;
+Keys.PAGE_DOWN = 34;
+Keys.INSERT = 45;
+Keys.DELETE = 46;
+Keys.FUNCTIONS = [112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123];
+Keys.NUMBERS = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
 
-var currentDropDown = null;
-var currentButton = null;
-var throbberImage = 'static/images/throbber.gif';
+//Provide basic platform information under Platform name-space
+var Platform = Platform || {}
+Platform.IS_IOS = /Apple.*Mobile/.test(navigator.userAgent)
+Platform.IS_OPERA = Object.prototype.toString.call(window.opera) == '[object Opera]';
+Platform.IS_IE = navigator.appVersion.match(/\bMSIE\b/) && !!window.attachEvent && !Platform.IS_OPERA;
+Platform.IS_WEBKIT = navigator.userAgent.indexOf('AppleWebKit/') > -1
+Platform.IS_GECKO = navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') === -1
 
-//returns the element given (if it is a page element) or the result of getElementId
-function WEGetElement(element)
+//Create main WebElement name space - pulling in Keys and Platform name space's
+var WebElements = WebElements || {}
+WebElements.Keys = Keys;
+WebElements.Platform = Platform;
+
+WebElements.Settings = {}
+WebElements.Settings.throbberImage = 'static/images/throbber.gif';
+
+WebElements.State = {}
+WebElements.State.dropDownOpen = false;
+WebElements.State.currentDropDown = null;
+WebElements.State.currentButton = null;
+
+//Returns the element given (if it is a page element) or the result of getElementId
+WebElements.get = function (element)
 {
     //If an actual element is given (or nothing is given) just return it
     if(!element || element.innerHTML != null || element == document)
@@ -40,107 +77,37 @@ function WEGetElement(element)
     return null;
 }
 
-function WEGetValue(element)
+//Calls a callback method for each item in a list optionally returning on the first match
+WebElements.forEach = function(arrayOfItems, callBack, stopOnFirstMatch)
 {
-    var element = WEGetElement(element)
-    if (element)
+    for(var currentItem=0; currentItem < arrayOfItems.length; currentItem++)
     {
-        return element.value;
+        callBack(arrayOfItems[currentItem]);
     }
-
-    return ""
+    return true;
 }
 
-//Hides Elements with a particular class name
-function WEHideClass(className, parentNode)
+//Returns elements that pass a conditional callback, optionally returning on the first match
+WebElements.getByCondition = function(conditional, parentNode, stopOnFirstMatch)
 {
-    var elements = WEGetElementsByClassName(className, parentNode);
-    for(var currentElement=0; currentElement < elements.length; currentElement++)
-    {
-        var element = elements[currentElement];
-        WEHideElement(element)
-    }
-}
-
-//Shows Elements with a particular class name
-function WEShowClass(className, parentNode)
-{
-    var elements = WEGetElementsByClassName(className, parentNode);
-    for(var currentElement=0; currentElement < elements.length; currentElement++)
-    {
-        var element = elements[currentElement];
-        WEShowElement(element);
-    }
-}
-
-
-//Creates a throbber on the fly, change window.throbberImage to edit image
-function WEBuildThrobber()
-{
-    var throbber = document.createElement('img');
-    throbber.src = throbberImage;
-    return throbber;
-}
-
-//Gets elements by there css class that are childern of a certain node
-function WEGetElementsByClassName(classname, parentNode)
-{
-    parentNode = WEGetElement(parentNode);
-    if(document.getElementByClassName){
-        if(parentNode)
-        {
-            parentNode.getElementByClassName(className);
-        }
-        else
-        {
-            document.getElementByClassName(className);
-        }
-    }
-
-    if(!parentNode)
-    {
-        if(document.getElementsByClassName)
-        {
-            return document.getElementsByClassName(classname);
-        }
-        else
-        {
-            parentNode = document.getElementsByTagName("body")[0];
-        }
-    }
-    else
-    {
-        parentNode = WEGetElement(parentNode);
-    }
-
+    if(!stopOnFirstMatch){stopOnFirstMatch = false;}
     var elements_to_return = [];
-    var regexp = new RegExp('\\b' + classname + '\\b');
-    var elements = parentNode.getElementsByTagName("*");
-
-    for(var currentElement=0; currentElement < elements.length; currentElement++)
+    var elements = parentNode;
+    if(!parentNode instanceof Array)
     {
-        element = elements[currentElement];
-        if(regexp.test(element.className))
-        {
-            elements_to_return.push(element);
-        }
+        parentNode = WebElements.get(parentNode);
+        elements = parentNode.getElementsByTagName("*");
     }
-
-    return elements_to_return;
-}
-
-//Returns elements that pass a conditional callback
-function WEGetElementsByCondition(conditional, parentNode)
-{
-    var parentNode = WEGetElement(parentNode);
-    var elements_to_return = [];
-    var elements = parentNode.getElementsByTagName("*");
 
     for(var currentElement=0; currentElement < elements.length; currentElement++)
     {
         element = elements[currentElement];
         if(conditional(element))
         {
+            if(stopOnFirstMatch)
+            {
+                return element;
+            }
             elements_to_return.push(element);
         }
     }
@@ -148,25 +115,93 @@ function WEGetElementsByCondition(conditional, parentNode)
     return elements_to_return;
 }
 
-//Returns children of an element by their name
-function WEGetChildrenByName(parentNode, name)
+//Gets an element and returns its value
+WebElements.getValue = function(element)
 {
-    return WEGetElementsByCondition(function(element){return element.name == name}, parentNode);
+    var element = WebElements.get(element)
+    return element && element.value || ""
+}
+
+//Hides Elements with a particular class name
+WebElements.hideClass = function(className, parentNode)
+{
+    WebElements.forEach(WebElements.getElementByClassName(className, parentNode), WebElements.hide);
+}
+
+//Shows Elements with a particular class name
+WebElements.showClass = function(className, parentNode)
+{
+    WebElements.forEach(WebElements.getElementByClassName(className, parentNode), WebElements.show);
+}
+
+//Creates a throbber on the fly, change WebElements.Settings.throbberImage to change image file
+WebElements.buildThrobber = function()
+{
+    var throbber = document.createElement('img');
+    throbber.src = WebElements.Settings.throbberImage;
+    return throbber;
+}
+
+//Gets elements by there css class that are childern of a certain node - uses native implementation if present
+WebElements.getElementsByClassName = function(className, parentNode, stopOnFirstMatch)
+{
+    parentNode = WebElements.get(parentNode);
+    if(document.getElementByClassName){
+        if(parentNode)
+        {
+            return parentNode.getElementByClassName(className);
+        }
+        else
+        {
+            return document.getElementByClassName(className);
+        }
+    }
+    if(!parentNode)
+    {
+        parentNode = document.getElementsByTagName("body")[0];
+    }
+
+    var regexp = new RegExp('\\b' + className + '\\b');
+    return WebElements.getByCondition(function(element){regexp.test(element.className)}, parentNode, stopOnFirstMatch);
+}
+
+//Gets the first element in parent node with a certain class name
+WebElements.getElementByClassName = function(className, parentNode)
+{
+    return WebElements.getElementsByClassName(className, parentNode, true);
+}
+
+//Returns all children with a particular attribute value
+WebElements.getChildrenByAttribute = function(parentNode, attributeName, attributeValue)
+{
+    return WebElements.getByCondition(function(element){return element[attributeName] === attributeValue;}, parentNode);
+}
+
+//Returns the first child with a particular attribute value
+WebElements.getChildrenByAttribute = function(parentNode, attributeName, attributeValue)
+{
+    return WebElements.getByCondition(function(element){return element[attributeName] === attributeValue;}, parentNode,
+                                      true);
+}
+
+//Returns children of an element by their name
+WebElements.getChildrenByName = function(parentNode, name)
+{
+    return WebElements.getByCondition(function(element){return element.name == name}, parentNode);
 }
 
 //Returns a child of an element by its name
-function WEGetChildByName(parentNode, name)
+WebElements.getChildByName = function(parentNode, name)
 {
-    return WEGetChildrenByName(parentNode, name)[0];
+    return WebElements.getByCondition(function(element){return element.name == name}, parentNode, true);
 }
 
-
 //populates a form using an id/name:value dictionary -- such as a request dictionary.
-function WEPopulate(fieldDict)
+WebElements.populate = function(fieldDict)
 {
     for(fieldId in fieldDict)
     {
-        field = WEGetElement(fieldId);
+        field = WebElements.get(fieldId);
         value = fieldDict[fieldId];
         if(field && value)
         {
@@ -176,41 +211,34 @@ function WEPopulate(fieldDict)
 }
 
 //updates a countdown label slowly deincrementing till reaches 0 than calls action
-function WECountDown(label, seconds, action)
+WebElements.countDown = function(label, seconds, action)
 {
-    var label = WEGetElement(label);
+    var label = WebElements.get(label);
     label.innerHTML = seconds;
     label.timeoutList = []
 
     for(var currentCount = 1; currentCount < seconds; currentCount++)
     {
-        timeout = setTimeout('WEGetElement(\'' + label.id + '\').innerHTML = ' +
+        timeout = setTimeout('WebElements.get(\'' + label.id + '\').innerHTML = ' +
                   (seconds - currentCount) + ';', (currentCount * 1000));
         label.timeoutList.push(timeout);
     }
 
-    timeout = setTimeout('WEGetElement(\'' + label.id + '\').innerHTML = 0;' +
+    timeout = setTimeout('WebElements.get(\'' + label.id + '\').innerHTML = 0;' +
                          action, seconds * 1000);
     label.timeoutList.push(timeout);
 }
 
 //updates a countdown label slowly deincrementing till reaches 0 than calls action
-function WEAbortCountDown(label)
+WebElements.abortCountDown = function(label)
 {
-    var label = WEGetElement(label);
-    var timeoutList = label.timeoutList
-
-    for(var currentTimeout = 0; currentTimeout < timeoutList.length; currentTimeout++)
-    {
-        var timeout = timeoutList[currentTimeout];
-        clearTimeout(timeout);
-    }
+    WebElements.forEach(WebElements.get(label).timeoutList, clearTimeout);
 }
 
 //Returns the number of pixels left of element
-function WEPixelsToLeft(element)
+WebElements.pixelsToLeft = function(element)
 {
-    var aTag = WEGetElement(element);
+    var aTag = WebElements.get(element);
 
     var pixelsToLeft = 0;
     do
@@ -233,9 +261,9 @@ function WEPixelsToLeft(element)
 }
 
 //Returns the number of pixels above an element
-function WEPixelsAbove(element)
+WebElements.pixelsAbove = function(element)
 {
-    var aTag = WEGetElement(element);
+    var aTag = WebElements.get(element);
 
     var pixelsAbove = 0;
     do
@@ -258,95 +286,53 @@ function WEPixelsAbove(element)
 }
 
 //Sets an element position to that of its parents + pixelsDown & pixelsToRight
-function WESetAbsoluteRelativeToParent(element, pixelsDown, pixelsToRight, parentElement)
+WebElements.setAbsoluteRelativeToParent = function(element, pixelsDown, pixelsToRight, parentElement)
 {
-    var element = WEGetElement(element);
-    if(parentElement == null)
-    {
-        parentElement = element.parentNode;
-    }
-    else
-    {
-        parentElement = WEGetElement(parentElement);
-    }
-    if(pixelsDown == null)
-    {
-        pixelsDown = 0;
-    }
-    if(pixelsToRight == null)
-    {
-        pixelsToRight = 0;
-    }
+    var element = WebElements.get(element);
+    if(!parentElement){parentElement = element.parentNode;}
+    if(!pixelsDown){pixelsDown = 0;}
+    if(!pixelsToRight){pixelsToRight = 0;}
 
-    element.style.left = WEPixelsToLeft(parentElement) + pixelsToRight;
-    element.style.top = WEPixelsAbove(parentElement) + pixelsDown;
+    var parentElement = WebElements.get(parentElement);
+    element.style.left = WebElements.plixelsToLeft(parentElement) + pixelsToRight;
+    element.style.top = WebElements.pixelsAbove(parentElement) + pixelsDown;
 }
 
 //Sets an element position to that of its parents + pixelsDown & pixelsToRight
-function WEDisplayDropDown(dropDown, parentElement)
+WebElements.displayDropDown = function(dropDown, parentElement)
 {
-    var dropDownElement = WEGetElement(dropDown);
-    if(parentElement == null)
-    {
-        parentElement = dropDownElement.parentNode;
-    }
-    else
-    {
-        parentElement = WEGetElement(parentElement);
-    }
+    var dropDownElement = WebElements.get(dropDown);
+    if(!parentElement){parentElement = dropDownElement.parentNode;}
+    var parentElement = WebElements.get(parentElement);
 
-    WESetAbsoluteRelativeToParent(dropDownElement, parentElement.offsetHeight -1,
+    WebElements.setAbsoluteRelativeToParent(dropDownElement, parentElement.offsetHeight -1,
                                   0, parentElement);
-    WEShowElement(dropDownElement);
+    WebElements.showElement(dropDownElement);
 }
 
-function WEToggleDropDown(dropDown, parentElement)
+//Toggles the displayed state of a drop down menu
+WebElements.toggleDropDown = function(dropDown, parentElement)
 {
-    if(WEElementShown(dropDown))
-    {
-        WEHideElement(dropDown);
-        return false;
-    }
-    else
-    {
-        WEDisplayDropDown(dropDown, parentElement);
-        return true;
-    }
+    var dropDown = WebElements.get(dropDown);
+    WebElements.shown(dropDown) && WebElements.hide(dropDown) || WebElements.displayDropDown(dropDown, parentElement);
 }
 
-//Gets the first element in parent node with a certain class name
-function WEGetElementByClassName(classname, parentNode)
+WebElements.openAccordion = function(accordionName)
 {
-    var elements = WEGetElementsByClassName(classname, parentNode);
-    if(elements.length > 0)
-    {
-        return elements[0];
-    }
-    else
-    {
-        return null;
-    }
-}
-function WEOpenAccordion(accordionName)
-{
-    var elementContent = WEGetElementByClassName('AccordionContent', accordionName);
-    var elementValue = WEGetElement(accordionName + 'Value');
-    var elementImage = WEGetElement(accordionName + 'Image');
-    WEShowElement(elementContent);
-    elementValue.value = 'True';
-    elementImage.src = 'images/hide.gif';
+    WebElements.show(WebElements.getElementByClassName('AccordionContent', accordionName));
+    WebElements.get(accordionName + 'Value').value = 'True';
+    WebElements.get(accordionName + 'Image').src = 'images/hide.gif';
 }
 
-
-function WEFellowChild(element, parentClass, childClass)
+WebElements.fellowChild = function(element, parentClass, childClass)
 {
-    return WEGetElementByClassName(childClass, WEParentElement(element, parentClass));
+    return WebElements.getElementByClassName(childClass, WebElements.parent(element, parentClass));
 }
 
 //Get first child element (exluding empty elements)
-function WEFirstChildElement(element)
+WebElements.firstChild = function(element)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
     if(element.firstChild)
     {
         element = element.firstChild
@@ -358,10 +344,10 @@ function WEFirstChildElement(element)
     return element;
 }
 
-//Get first child element (exluding empty elements)
-function WELastChildElement(element)
+//Get last child element (exluding empty elements)
+WebElements.lastChild = function(element)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
     if(element.lastChild)
     {
         element = element.lastChild
@@ -374,10 +360,10 @@ function WELastChildElement(element)
 }
 
 
-//Same as element.nextSibling except it is called
-//as WENextElement(object) and ignores blank elements
-function WENextElement(element)
+//Gets the next sibling (ignoring empty elements)
+WebElements.next = function(element)
 {
+    var element = WebElements.get(element);
     if(element.nextSibling)
     {
         element = element.nextSibling;
@@ -389,62 +375,10 @@ function WENextElement(element)
     return element;
 }
 
-//increments the value of a hiddenField
-function WEIncrement(element, max)
+//Gets the previous sibling (ignoring empty elements)
+WebElements.prev = function(element)
 {
-    var element = WEGetElement(element);
-    var number = parseInt(element.value)
-    if(!number){
-        number = 0;
-    }
-    number += 1;
-    if(max != undefined && number > max){
-        number = max;
-    }
-    element.value = number;
-    if(element.onchange)
-    {
-        element.onchange();
-    }
-}
-
-//deincrements the value of a hiddenField
-function WEDeincrement(element, min)
-{
-    var element = WEGetElement(element);
-    var number = parseInt(element.value)
-    if(!number){
-        number = 0;
-    }
-    number -= 1;
-    if(min != undefined && number < min){
-        number = min;
-    }
-    element.value = number;
-    element.onchange();
-}
-
-//Sets the prefix for the container and all childElements
-function WESetPrefix(container, prefix)
-{
-    var container = WEGetElement(container);
-    container.id = prefix + container.id;
-    container.name = prefix + container.name;
-
-    var children = WEChildElements(container);
-    for(currentChild = 0; currentChild != children.length; currentChild++)
-    {
-        var child = children[currentChild];
-        child.id = prefix + child.id;
-        child.name = prefix + child.name;
-    }
-
-}
-
-//Same as element.previousSibling except it is called
-//as WEPrevElement(object) and ignores blank elements
-function WEPrevElement(element)
-{
+    var element = WebElements.get(element);
     if(element.previousSibling)
     {
         element = element.previousSibling;
@@ -456,11 +390,46 @@ function WEPrevElement(element)
     return element;
 }
 
-//Same as element.parentNode except it is called as
-//WEParentElement(object) and ignores blank elements
-function WEParentElement(element, className, giveUpAtClass)
+//increments the value of a hiddenField
+WebElements.increment = function(element, max)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
+    var number = (parseInt(element.value) || 0) + 1;
+    if(max != undefined && number > max){
+        number = max;
+    }
+    element.value = number;
+    element.onchange && element.onchange();
+}
+
+//deincrements the value of a hiddenField
+WebElements.deincrement = function(element, min)
+{
+    var element = WebElements.get(element);
+    var number = (parseInt(element.value) || 0) - 1;
+    if(min != undefined && number < min){
+        number = min;
+    }
+    element.value = number;
+    element.onchange && element.onchange();
+}
+
+//Sets the prefix for the container and all childElements
+WebElements.setPrefix = function(container, prefix)
+{
+    var container = WebElements.get(container);
+    container.id = prefix + container.id;
+    container.name = prefix + container.name;
+
+    WebElements.forEach(WebElements.childElements(container), function(child){
+            child.id = prefix + child.id;
+            child.name = prefix + child.name;});
+}
+
+//Gets a parent element based on its class name or alternatively giving up when it hits a particular class
+WebElements.parent = function(element, className, giveUpAtClass)
+{
+    var element = WebElements.get(element);
     var regexp = new RegExp('\\b' + className + '\\b');
     var regexpCancel = false;
     if(giveUpAtClass)
@@ -485,87 +454,51 @@ function WEParentElement(element, className, giveUpAtClass)
 
 
 //Removes all children
-function WEClearChildren(element, replacement)
+WebElements.clearChildren = function(element, replacement)
 {
-    var childElements = WEChildElements(element);
-    if(childElements)
-    {
-        for(var currentChild = 0; currentChild < childElements.length; currentChild++)
-        {
-            WERemoveElement(childElements[currentChild]);
-        }
-    }
+    var element = WebElements.get(element)
+    WebElements.forEach(WebElements.childElements(element), function(element){WebElements.remove(element)});
     if(replacement)
     {
         element.appendChild(replacement)
     }
 }
 
-//Allows you to get a childElement by class name
-function WEChildElement(element, className)
+//Allows you to get a list of all non empty childElements
+WebElements.childElements = function(parentElement)
 {
-    var element = WEGetElement(element);
-    return WEGetElementByClassName(className, element);
+    return WebElements.getByCondition(function(element){return element && element.innerHTML}, parentElement)
 }
-
-//Allows you to get childElements by class name if provided or simply returns all child elements
-function WEChildElements(parentElement, className)
-{
-    var parentElement = WEGetElement(parentElement);
-    if(className != null)
-    {
-        return WEGetElementsByClassName(className, parentElement);
-    }
-
-    var childElements = parentElement.getElementsByTagName('*');
-    var returnedChildren = Array();
-    for(var currentChild = 0; currentChild != childElements.length; currentChild++)
-    {
-        var child = childElements[currentChild];
-        if(child && child.innerHTML != null)
-        {
-            returnedChildren.push(child);
-        }
-    }
-
-    return returnedChildren;
-}
-
-
 
 //Allows you to get an element in the same location on the tree based on a classname
-function WEPeer(element, className)
+WebElements.peer = function(element, className)
 {
-    var parentElement = WEGetElement(element).parentNode
-    return WEChildElement(parentElement, className);
+    return WebElements.getElementByClassName(className, WebElements.get(element).parentNode);
 }
 
 //Forces this to be the only peer with class
-function WEStealClassFromPeer(element, className)
+WebElements.stealClassFromPeer = function(element, className)
 {
-    var peer = WEPeer(element, className);
-    if(peer)
-    {
-        WERemoveClass(peer, className);
-    }
-    WEAddClass(element, className);
+    WebElements.forEach(WebElements.peer(element, className),
+                                         function(element){WebElements.removeClass(element, className)});
+    WebElements.addClass(element, className);
 }
 
 //Forces this to be the only peer with class
-function WEStealClassFromFellowChild(element, parentClassName, className)
+WebElements.stealClassFromFellowChild = function(element, parentClassName, className)
 {
-    var fellowChild = WEFellowChild(element, parentClassName, className);
+    var fellowChild = WebElements.fellowChild(element, parentClassName, className);
     if(fellowChild)
     {
-        WERemoveClass(fellowChild, className);
+        WebElements.removeClass(fellowChild, className);
     }
-    WEAddClass(element, className);
+    WebElements.addClass(element, className);
 }
 
 //hides an element by setting its display property to none
-function WEHideElement(element)
+WebElements.hide = function(element)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
     if(element != null)
     {
         element.style.display = "none";
@@ -575,46 +508,28 @@ function WEHideElement(element)
 }
 
 //shows an element by setting its display property to block
-function WEShowElement(element)
+WebElements.show = function(element)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
     if(element != null)
     {
-        var tagName = element.tagName.toLowerCase();
-        if(tagName == "span")
-        {
-            element.style.display = "inline";
-        }
-        else if(tagName == "tr")
-        {
-            element.style.display = "";
-        }
-        else
-        {
-            element.style.display = "block";
-        }
+       element.style.display = "";
         return true;
     }
     return false;
 }
 
 //shows the element if it is hidden - hides it if it is visable
-function WEToggleElement(element)
+WebElements.toggleVisibility = function(element)
 {
-    if(WEElementShown(element))
-    {
-        WEHideElement(element);
-        return true;
-    }
-    WEShowElement(element);
-    return false;
+    var element = WebElements.get(element);
+    WebElements.shown(element) && WebElements.hide(element) || WebElements.show(element);
 }
 
 //return if the element is visable or not
-function WEElementShown(element)
+WebElements.elementShown = function(element)
 {
-    var element = WEGetElement(element);
-    if(element.style.display == "none")
+    if(WebElements.get(element).style.display == "none")
     {
         return false;
     }
@@ -622,24 +537,22 @@ function WEElementShown(element)
 }
 
 //replaces 'element' with 'newElement' (element must contain a parent element)
-function WEReplaceElement(element, newElement)
+WebElements.replace = function(element, newElement)
 {
-   var element = WEGetElement(element);
+   var element = WebElements.get(element);
    var elementParent = element.parentNode;
    if(!elementParent)
    {
        return false;
    }
-
-   var newElement = WEGetElement(newElement);
-   elementParent.replaceChild(newElement, element);
+   elementParent.replaceChild(WebElements.get(newElement), element);
    return true;
 }
 
 //removes 'element' from the page (element must contain a parent element)
-function WERemoveElement(element)
+WebElements.remove = function(element)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
     var elementParent = element.parentNode;
     if(!elementParent)
     {
@@ -651,52 +564,43 @@ function WERemoveElement(element)
 }
 
 //clears the innerHTML of an element
-function WEClear(element)
+WebElements.clear = function(element)
 {
-    var element = WEGetElement(element);
-    element.innerHTML = "";
+    WebElements.get(element).innerHTML = "";
 }
 
 //adds an option to a selectbox with a specified name and value
-function WEAddOption(selectElement, optionName, optionValue)
+WebElements.addOption = function(selectElement, optionName, optionValue)
 {
-    var selectElement = WEGetElement(selectElement);
-    if(optionValue == undefined){
-        optionValue = optionName;
-    }
-    newOption = document.createElement('option');
+    if(!optionValue){optionValue = optionName}
+
+    var newOption = document.createElement('option');
     newOption.innerHTML = optionName;
     newOption.value = optionValue;
-    selectElement.appendChild(newOption);
+    WebElements.get(selectElement).appendChild(newOption);
 }
 
 //adds html to element
-function WEAddHtml(element, html)
+WebElements.addHtml = function(element, html)
 {
-    var element = WEGetElement(element);
     var newDiv = document.createElement('div');
     newDiv.innerHTML = html;
-    element.appendChild(newDiv);
+    WebElements.get(element).appendChild(newDiv);
     return newDiv
 }
 
-//moves a div
-function WEMove(element, to)
+//moves an element to a new location
+WebElements.move = function(element, to)
 {
-    var element = WEGetElement(element);
-    var to = WEGetElement(to);
-    to.appendChild(element);
+    WebElements.get(to).appendChild(WebElements.get(element));
 }
 
-//makes a copy of an element into 'to' incrementing its id and returns the copy
-function WECopy(element, to, incrementId)
+//makes a copy of an element into 'to' and returns the copy optionally incrementing its ID
+WebElements.copy = function(element, to, incrementId)
 {
-    if(incrementId == null){incrementId = true;}
+    if(incrementId == null){incrementId = false;}
 
-    var element = WEGetElement(element);
-    var to = WEGetElement(to);
-
-    var elementCopy = element.cloneNode(true);
+    var elementCopy = WebElements.get(element).cloneNode(true);
     var toReplace = elementCopy.id
     if(toReplace && incrementId)
     {
@@ -716,18 +620,18 @@ function WECopy(element, to, incrementId)
         var html = elementCopy.innerHTML
 
     }
-    to.appendChild(elementCopy);
+    WebElements.get(to).appendChild(elementCopy);
 
     if(incrementId)
     {
-        elementCopy.innerHTML = WEReplaceAll(html, toReplace, replacement);
+        elementCopy.innerHTML = WebElements.replaceAll(html, toReplace, replacement);
     }
 
     return elementCopy
 }
 
 //returns true if text WEContains subtext false if not
-function WEContains(text, subtext, caseSensitive)
+WebElements.contains = function(text, subtext, caseSensitive)
 {
     if(!caseSensitive)
     {
@@ -735,15 +639,11 @@ function WEContains(text, subtext, caseSensitive)
         var subtext = subtext.toLowerCase();
     }
 
-    if(text.indexOf(subtext) == -1)
-    {
-        return false;
-    }
-    return true;
+    return text.indexOf(subtext) != -1 && true || false
 }
 
 //returns true if any words within text start with subtext
-function WEStartsWith(text, subtext, caseSensitive)
+WebElements.startsWith = function(text, subtext, caseSensitive)
 {
     if(!caseSensitive)
     {
@@ -751,10 +651,10 @@ function WEStartsWith(text, subtext, caseSensitive)
         var subtext = subtext.toLowerCase();
     }
 
-    var text = WEReplaceAll(text, ">", " ");
-    text = WEReplaceAll(text, "<", " ");
-    text = WEReplaceAll(text, ",", " ");
-    text = WEReplaceAll(text, "|", " ");
+    var text = WebElements.replaceAll(text, ">", " ");
+    text = WebElements.replaceAll(text, "<", " ");
+    text = WebElements.replaceAll(text, ",", " ");
+    text = WebElements.replaceAll(text, "|", " ");
     text = text.split(" ")
 
     for(currentWord = 0; currentWord < text.length; currentWord++)
@@ -770,7 +670,7 @@ function WEStartsWith(text, subtext, caseSensitive)
 }
 
 //Adds a prefix to all child elements
-function WEAddPrefix(container, prefix)
+WebElements.addPrefix = function(container, prefix)
 {
     if(!caseSensitive)
     {
@@ -786,94 +686,75 @@ function WEAddPrefix(container, prefix)
 }
 
 
-//perform the javascript contained on the page --
-//contained in elements innerHTML where the
-//class is set to 'onLoadJavascript'
-//made for use on AJAX pages -- inflicts a noticable performance penalty over <script>
-function WEDoInPageJavascript(container)
+//perform the javascript contained on the page -- contained in elements innerHTML where the class is set to
+//'onLoadJavascript' made for use on AJAX pages -- inflicts a noticable performance penalty over <script>
+WebElements.doInPageJavascript = function(container)
 {
-    var container = WEGetElement(container);
-    var elements = WEGetElementsByClassName("onLoadJavascript", container);
-    for(currentElement = 0; currentElement < elements.length; currentElement++)
-    {
-        var element = elements[currentElement]
-        if(element.innerHTML != null && element.innerHTML != "")
-        {
-            scriptTag = document.createElement('script');
-            scriptTag.type = "text/javascript"
-            container.appendChild(scriptTag)
+    WebElements.forEach(WebElements.getElementByClassName("onLoadJavascript", WebElements.get(container)),
+                        function(element){
+                            if(element.innerHTML != null && element.innerHTML != "")
+                            {
+                                scriptTag = document.createElement('script');
+                                scriptTag.type = "text/javascript"
+                                container.appendChild(scriptTag)
 
-            scriptTag.text = WEUnserialize(element.innerHTML);
-        }
-    }
+                                scriptTag.text = WebElements.unserialize(element.innerHTML);
+                            }
+                        });
 }
 
-function WEUnserialize(html)
+WebElements.unserialize = function(html)
 {
     var html = String(html);
-    html = WEReplaceAll(html, "&lt;", "<");
-    html = WEReplaceAll(html, "&gt;", ">");
-    html = WEReplaceAll(html, "&amp;", "&");
+    html = WebElements.replaceAll(html, "&lt;", "<");
+    html = WebElements.replaceAll(html, "&gt;", ">");
+    html = WebElements.replaceAll(html, "&amp;", "&");
     return html
 }
 
 //sorts a list alphabetically by innerHTML
-function WESortSelect(selectElement)
+WebElements.sortSelect = function(selectElement, sortByValue)
 {
-    var selectElement = WEGetElement(selectElement);
+    if(!sortByValue){sortByValue = false;}
+
+    var selectElement = WebElements.get(selectElement);
     var selectOptions = selectElement.options;
     var sorted = new Array();
     var selectElementSorted = new Array();
 
-    for(var currentOption = 0; currentOption < selectOptions.length; currentOption++)
+    for(currentOption in selectedOptions)
     {
         var option = selectOptions[currentOption];
-        sorted[currentOption] = new Array();
-        sorted[currentOption][0] = option.innerHTML;
-        sorted[currentOption][1] = option.value;
-        sorted[currentOption][2] = option.id;
+        if(sortByValue)
+        {
+            sorted[currentOption] = [option.value, option.innerHTML, option.id, option.disabled];
+        }
+        else
+        {
+            sorted[currentOption] = [option.innerHTML, option.value, option.id, option.disabled];
+        }
     }
 
     sorted.sort();
-    for(var currentOption=0; currentOption < sorted.length; currentOption++)
+    for(currentOption in sorted)
     {
-        selectElement.options[currentOption].innerHTML=sorted[currentOption][0];
-        selectElement.options[currentOption].value=sorted[currentOption][1];
-        selectElement.options[currentOption].id = sorted[currentOption][2];
-    }
-}
-
-//sorts a list by value
-function WESortSelectByValue(selectElement)
-{
-    var selectElement = WEGetElement(selectElement);
-    var selectOptions = selectElement.options;
-    var sorted = new Array();
-    var selectElementSorted = new Array();
-
-    for(var currentOption = 0; currentOption < selectOptions.length; currentOption++)
-    {
-        var option = selectOptions[currentOption];
-        sorted[currentOption] = new Array();
-        sorted[currentOption][0] = option.value;
-        sorted[currentOption][1] = option.innerHTML;
-        sorted[currentOption][2] = option.id;
-        sorted[currentOption][3] = option.disabled;
-    }
-
-    sorted.sort();
-
-    for(var currentOption=0; currentOption < sorted.length; currentOption++)
-    {
-        selectElement.options[currentOption].value=sorted[currentOption][0];
-        selectElement.options[currentOption].innerHTML=sorted[currentOption][1];
+        if(sortByValue)
+        {
+            selectElement.options[currentOption].value=sorted[currentOption][0];
+            selectElement.options[currentOption].innerHTML=sorted[currentOption][1];
+        }
+        else
+        {
+            selectElement.options[currentOption].innerHTML=sorted[currentOption][0];
+            selectElement.options[currentOption].value=sorted[currentOption][1];
+        }
         selectElement.options[currentOption].id = sorted[currentOption][2];
         selectElement.options[currentOption].disabled = sorted[currentOption][3];
     }
 }
 
 //returns a list without duplicate elements
-function WERemoveDuplicates(inArray)
+WebElements.removeDuplicates = function(inArray)
 {
     var result = {};
 
@@ -892,77 +773,36 @@ function WERemoveDuplicates(inArray)
 }
 
 //returns the selected options within a select box
-function WESelectedOptions(selectBox)
+WebElements.selectedOptions = function(selectBox)
 {
-    var selectBox = WEGetElement(selectBox);
-    var options = selectBox.options;
-
-    var selectedOptions = Array();
-    for(currentOption = 0; currentOption < options.length; currentOption++)
-    {
-        var option = options[currentOption];
-        if (option.selected)
-        {
-            selectedOptions.push(option)
-        }
-    }
-    return selectedOptions
+    return WebElements.getByCondition(function(option){return option.selected}, WebElements.get(selectBox).options);
 }
 
 //Selects all element of a select box
-function WESelectAllOptions(selectBox)
+WebElements.selectAllOptions = function(selectBox)
 {
-    var selectBox = WEGetElement(selectBox);
-    var options = selectBox.options;
-
-    var selectedOptions = Array();
-    for(currentOption = 0; currentOption < options.length; currentOption++)
-    {
-        var option = options[currentOption];
-        option.selected = true;
-    }
+    WebElements.forEach(WebElements.get(selectBox).options, function(option){option.selected = true;});
 }
 
 //returns the selected checkboxes withing a container
-function WESelectedCheckboxes(container)
+WebElements.selectedCheckboxes = function(container)
 {
-    var container = WEGetElement(container);
-    var elements = WEChildElements(container);
-
-    var selectedCheckboxes = Array();
-    for(currentElement = 0; currentElement < elements.length; currentElement++)
-    {
-        var element = elements[currentElement];
-        if (element.checked)
-        {
-            selectedCheckboxes.push(element.name)
-        }
-    }
-    return selectedCheckboxes
+    return WebElements.getByCondition(function(element){return element.checked}, container);
 }
 
-function WESelectAllCheckboxes(container, check)
+WebElements.selectAllCheckboxes = function(container, check)
 {
-    if(check == null){var check = true;}
-
-    var children = WEChildElements(container);
-    for(current = 0; current < children.length; current++)
-    {
-        var child = children[current];
-        if(child.type == 'checkbox')
-        {
-            child.checked = check;
-        }
-    }
+    WebElements.forEach(WebElements.getChildrenByAttribute(container, 'type', 'checkbox'),
+                        function(child){child.checked = check;});
 }
 
 //returns all nested values within a contianer
-function WEGetValues(container, checkSelected, tagName)
+WebElements.getValues = function(container, checkSelected, tagName)
 {
     if(checkSelected == null){var checkSelected = false;}
-    if(!tagName) { tagName = "option"; }
+    if(!tagName) {tagName = "option";}
 
-    var container = WEGetElement(container);
+    var container = WebElements.get(container);
     var optionElements = container.getElementsByTagName(tagName);
 
     var values = Array();
@@ -978,76 +818,41 @@ function WEGetValues(container, checkSelected, tagName)
 }
 
 //Get a child element of element based on value
-function WEGetElementByValue(element, value)
+WebElements.getElementByValue = function(element, value)
 {
-    var element = WEGetElement(element);
-
-    var children = WEChildElements(element);
-    for(current = 0; current < children.length; current++)
-    {
-        var child = children[current];
-        if(child.value == value)
-        {
-            return child;
-        }
-    }
-
-    return false;
+    return WebElements.getChildByAttribute(element, 'value', value);
 }
 
-//Get a child element of element based on innerHtml
-function WEGetElementByInnerHTML(element, text)
+//Get a child element of element based on value
+WebElements.getElementByInnerHTML = function(element, html)
 {
-    var element = WEGetElement(element);
-
-    var children = WEChildElements(element);
-    for(current = 0; current < children.length; current++)
-    {
-        var child = children[current];
-        if(child.innerHTML == text)
-        {
-            return child;
-        }
-    }
-
-    return false;
+    return WebElements.getChildByAttribute(element, 'innerHTML', html);
 }
 
 //returns the first selected option within a select box
-function WESelectedOption(selectBox)
+WebElements.selectedOption = function(selectBox)
 {
-    var selectBox = WEGetElement(selectBox);
-    var options = selectBox.options;
-
-    for(currentOption = 0; currentOption < options.length; currentOption++)
-    {
-        var option = options[currentOption];
-        if (option.selected)
-        {
-            return option;
-        }
-    }
-
-    return null
+    return WebElements.getByCondition(function(element){return element.selected;}, WebElements.get(selectBox).options,
+                                      true);
 }
 
 //selects an element based on its value
-function WESelectOption(selectBox, option)
+WebElements.selectOption = function(selectBox, option)
 {
-    WESelectedOption(selectBox).selected = false;
-    WEGetElementByValue(selectBox, option).selected = true;
+    WebElements.selectedOption(selectBox).selected = false;
+    WebElements.getElementByValue(selectBox, option).selected = true;
 }
 
 //replaces all instances of a string with another string
-function WEReplaceAll(string, toReplace, replacement)
+WebElements.replaceAll = function(string, toReplace, replacement)
 {
     return string.split(toReplace).join(replacement);
 }
 
 //returns all css classes attached to an element as a list
-function WEClasses(element)
+WebElements.classes = function(element)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
     if(!element)
     {
         return [];
@@ -1057,9 +862,9 @@ function WEClasses(element)
 }
 
 //returns true if element contains class
-function WEHasClass(element, className)
+WebElements.hasClass = function(element, className)
 {
-    var element = WEGetElement(element)
+    var element = WebElements.get(element)
     var regexp = new RegExp('\\b' + className + '\\b');
     if(regexp.test(element.className))
     {
@@ -1069,23 +874,23 @@ function WEHasClass(element, className)
 }
 
 //sets an elements classes based on the passed in list
-function WESetClasses(element, classList)
+WebElements.setClasses = function(element, classList)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
     element.className = classList.join(" ");
 }
 
 //removes a css class
-function WERemoveClass(element, classToRemove)
+WebElements.removeClass = function(element, classToRemove)
 {
-    WESetClasses(element, WERemoveFromArray(WEClasses(element), classToRemove))
+    WebElements.setClasses(element, WebElements.removeFromArray(WebElements.classes(element), classToRemove));
 }
 
 //adds a css class
-function WEAddClass(element, classToAdd)
+WebElements.addClass = function(element, classToAdd)
 {
-    var element = WEGetElement(element);
-    var styleClasses = WEClasses(element);
+    var element = WebElements.get(element);
+    var styleClasses = WebElements.classes(element);
 
     for(currentClass = 0; currentClass < styleClasses.length; currentClass++)
     {
@@ -1099,124 +904,50 @@ function WEAddClass(element, classToAdd)
     element.className += " " + classToAdd;
 }
 
-function WERemoveFromArray(existingArray, toRemove)
+//Removes all instances of an element from an array
+WebElements.removeFromArray = function(arrayOfItems, toRemove)
 {
-    newArrayToReturn = [];
-    for(currentIndex = 0; currentIndex < existingArray.length; currentIndex++)
-    {
-        currentItem = existingArray[currentIndex];
-        if(currentItem != toRemove)
-        {
-            newArrayToReturn.push(currentItem);
-        }
-    }
-    return newArrayToReturn;
+    return WebElements.getByCondition(function(item){return item != toRemove}, arrayOfItems);
 }
 
 //lets you choose one class out of a list of class choices
-function WEChooseClass(element, classes, choice)
+WebElements.chooseClass = function(element, classes, choice)
 {
-    var element = WEGetElement(element);
-    var styleClasses = WEClasses(element);
+    var element = WebElements.get(element);
+    var styleClasses = WebElements.classes(element);
     for(currentClass = 0; currentClass < classes.length; currentClass++){
-        styleClasses = WERemoveFromArray(styleClasses, classes[currentClass]);
+        styleClasses = WebElements.removeFromArray(styleClasses, classes[currentClass]);
     }
     styleClasses.push(choice);
-    WESetClasses(element, styleClasses);
+    WebElements.setClasses(element, styleClasses);
 }
 
-//forces the browser to redraw the element (Needs to exist becuase IE is Evil)
-function WERedraw(element)
+// Forces the browser to redraw the element
+WebElements.redraw = function(element)
 {
-    var element = WEGetElement(element);
-    var parentElement = element.parentNode;
+    var parentElement = WebElements.get(element).parentNode;
     var html = parentElement.innerHTML;
 
     parentElement.innerHTML = "";
     parentElement.innerHTML = html;
 }
 
-//Simple way to access data within div section
-function WEAttribute(element, attribute)
-{
-    element = WEGetElementByClassName(attribute + "Value", element)
-    if(element == null)
-    {
-        return "";
-    }
-
-    if(element.nodeName.toLowerCase() == "input")
-    {
-        return element.value;
-    }
-    else
-    {
-        return WEStrip(element.innerHTML);
-    }
-}
-
-//Simple way to set an attribute in a div section
-function WESetAttribute(element, attribute, value)
-{
-    element = WEChildElement(element, attribute + "Value")
-    if(element == null)
-    {
-        return false;
-    }
-
-    if(element.nodeName.toLowerCase() == "input")
-    {
-        element.value = value;
-        if(element.onchange)
-        {
-            element.onchange()
-        }
-    }
-    else
-    {
-        element.innerHTML = value;
-    }
-    return true;
-}
-
-
-//Simple way to export variables within a div
-function WEExport(element, delimiter, max)
-{
-    if(delimiter == null)
-    {
-        delimiter = ","
-    }
-
-    var exportedValue = [];
-    var values = WEGetElementsByClassName("Value", element);
-    for(currentValue = 0; currentValue < values.length; currentValue++)
-    {
-        element = values[currentValue];
-        if(max == currentValue)
-        {
-            break;
-        }
-        if(element.nodeName.toLowerCase() == "input")
-        {
-            exportedValue.push(WEStrip(element.value));
-        }
-        else
-        {
-            exportedValue.push(WEStrip(element.innerHTML));
-        }
-    }
-    return exportedValue.join(delimiter);
-}
-
 //Strip spaces before and after string
-function WEStrip(string)
+WebElements.strip = function(string)
 {
     return string.replace(/^\s+|\s+$/g,"");
 }
 
+WebElements.stripLeadingZeros = function(someStr)
+{
+   var someStr2 = String(someStr);
+   if(someStr2 == '0')
+       return someStr2;
+   return someStr2.replace(/^[0]+/, '');
+}
+
 //Easy way to see if a value is contained in a list
-function WEInList(list, value)
+WebElements.inList = function(list, value)
 {
     for(var current = 0; current < list.length; current++)
     {
@@ -1229,64 +960,63 @@ function WEInList(list, value)
 }
 
 //Appens to a list only if the value is not already contained in the list
-function WEAppendOnce(list, listItem)
+WebElements.appendOnce = function(list, listItem)
 {
-    if(!WEInList(list, listItem))
+    if(!WebElements.inList(list, listItem))
     {
         list.push(listItem)
     }
 }
 
 //Combines two lists into one ignoring duplicate values
-function WECombine(list, list2)
+WebElements.combine = function(list, list2)
 {
     for(var currentListItem = 0; currentListItem < list2.length; currentListItem++)
     {
         listItem = list2[currentListItem];
-        WEAppendOnce(list, listItem);
+        WebElements.appendOnce(list, listItem);
     }
 }
 
-//suppress a single nodes onclick event
-function WESuppress(element, attribute)
+//suppress a single elements attribute (usually an event)
+WebElements.suppress = function(element, attribute)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
 
     element['suppressed_' + attribute] = element[attribute];
     element[attribute] = null;
 }
 
-//unsuppress the supressed javascript event
-function WEUnsuppress(element, attribute)
+//unsuppress a single elements attribute
+WebElements.unsuppress = function(element, attribute)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
 
     element[attribute] = element['suppressed_' + attribute];
     element['suppressed_' + attribute] = element[attribute];
 }
 
-function WEToggleMenu(button)
+WebElements.toggleMenu = function(button)
 {
-    var menu = WEPeer(button, 'WEMenu');
-    try{ x = currentDropDown; }
-    catch(e){ window.currentDropDown = null; }
-    if(currentDropDown != menu){
-    WEHideElement(currentDropDown);
+    var menu = WebElements.peer(button, 'WMenu');
+    if(WebElements.State.currentDropDown != menu){
+        WebElements.hide(WebElements.State.currentDropDown);
     }
-    currentDropDown = menu;
-    WEToggleDropDown(currentDropDown);
+    WebElements.State.currentDropDown = menu;
+    WebElements.toggle(WebElements.State.currentDropDown);
 }
 
-function WECloseMenu()
+WebElements.closeMenu = function()
 {
-    try{ x = closeCurrentDropDown; }
-    catch(e){ window.currentDropDown = null; }
-    WEHideElement(currentDropDown);
+    WebElements.hide(WebElements.State.currentDropDown);
+    if(WebElements.State.currentButton){
+        WebElements.removeClass(WebElements.State.currentButton, 'SelectedDropDown');
+    }
 }
 
-function WESelectText(element, start, end)
+WebElements.selectText = function(element, start, end)
 {
-    var element = WEGetElement(element);
+    var element = WebElements.get(element);
     if(element.setSelectionRange){
         element.setSelectionRange(parseInt(start), parseInt(end));
     }
@@ -1299,190 +1029,15 @@ function WESelectText(element, start, end)
     }
 }
 
-function WEStripLeadingZeros(someStr)
+WebElements.openPopup = function(popupName, popupURL, popupParent)
 {
-   var someStr2 = String(someStr);
-   if(someStr2 == '0')
-       return someStr2;
-   return someStr2.replace(/^[0]+/, '');
-}
-
-function WEOpenPopup(popupName, popupURL, popupParent)
-{
-    var popupName = WEReplaceAll(popupName, ' ', '');
+    var popupName = WebElements.replaceAll(popupName, ' ', '');
     return window.open(popupURL, popupName, "width=800,height=600,toolbar=no,focus=true,scrollbars=yes,resizable=yes");
 }
 
-function WEOpenPopupFrame(popupName, popupURL, popupParent)
+WebElements.scrolledToBottom = function(scroller)
 {
-    if(IS_IOS)
-    {
-        return WEOpenPopup(popupName, popupURL, popupParent);
-    }
-
-    if(parent != window)
-    {
-        if(!popupParent)
-        {
-            return parent.WEOpenPopup(myPopupName + '-' + popupName, popupURL, myPopupName);
-        }
-        else
-        {
-            return parent.WEOpenPopup(popupName, popupURL, popupParent);
-        }
-    }
-    else if(WEInList(openPopups, popupName))
-    {
-        WESelectPopup(popupName);
-        return false;
-    }
-
-    if(openPopups.length > 0 && !WEHasClass('popupBackground', 'Enabled'))
-    {
-        WETogglePopupDisplay()
-    }
-    else
-    {
-        WEAddClass(WEGetElement('popupBackground'), 'Enabled')
-        WEAddClass(WEGetElement('popupToggle'), 'Enabled')
-        if(IS_IOS)
-        {
-            WEGetElement('body').style.maxHeight = (window.innerHeight - 300) + "px";
-            WEGetElement('body').style.width = window.innerHeight + "px";
-            WEGetElement('body').style.overflow = "hidden";
-        }
-    }
-    openPopups.push(popupName)
-
-    var newPopupLink = document.createElement('a');
-    newPopupLink.setAttribute('id', popupName + "PopUpTab");
-    newPopupLink.setAttribute('href', "#LINK");
-    newPopupLink.onclick = function(){WESelectPopup(popupName); return false;};
-    newPopupLink.appendChild(document.createTextNode(popupName))
-    WEGetElement('popupTabs').appendChild(newPopupLink)
-    var newPopupContent = document.createElement('iframe');
-    if(popupURL.indexOf("?") == -1)
-    {
-        popupURL = popupURL + "?myPopupName=" + popupName;
-    }
-    else
-    {
-        popupURL = popupURL + "&myPopupName=" + popupName
-    }
-    if(popupParent)
-    {
-        popupURL = popupURL + "&myPopupParent=" + popupParent
-    }
-    newPopupContent.setAttribute('id', popupName + "PopUpContents");
-    newPopupContent.setAttribute('src', popupURL);
-    if(IS_IOS)
-    {
-        newPopupContent.setAttribute('scrolling', "no");
-        if(!WEInList(['MappingFlightPlan', 'MappingRoute'], popupName))
-        {
-            newPopupContent.style.minHeight = "8000px";
-        }
-    }
-    WEGetElement('popupContents').appendChild(newPopupContent);
-
-    WESelectPopup(popupName);
-
-    return false;
-}
-
-function WEWindowOpenProxy(url, popupName, parameters)
-{
-    if(!popupName || popupName == "_blank")
-    {
-        var urlSplit = url.split("?")[0].split("/");
-        popupName = urlSplit[urlSplit.length -1];
-        popupName = popupName.split("?")[0];
-        popupName = popupName.split("#")[0];
-        popupName += Math.floor((Math.random()*100000)+1);
-    }
-    var popupName = WEReplaceAll(popupName, ' ', '');
-    window.open(url, popupName, parameters);
-}
-
-function WEClosePopup(popupName)
-{
-    if(parent != window)
-    {
-        return parent.WEClosePopup(popupName);
-    }
-
-    if(!popupName){
-        var popupName = selectedPopup;
-    }
-    WERemoveElement(popupName + "PopUpTab");
-    WERemoveElement(popupName + "PopUpContents");
-    openPopups = WERemoveFromArray(openPopups, popupName);
-    delete openPopupFrames[popupName];
-    if(openPopups.length <= 0)
-    {
-        WERemoveClass(WEGetElement('popupBackground'), 'Enabled');
-        WERemoveClass(WEGetElement('popupToggle'), 'Enabled');
-        if(IS_IOS)
-        {
-            WEGetElement('body').style.maxHeight = null;
-            WEGetElement('body').style.width = null;
-            WEGetElement('body').style.overflow = null;
-        }
-        selectedPopup = null;
-    }
-    else if(popupName == selectedPopup)
-    {
-        selectedPopup = null;
-        WESelectPopup(openPopups[openPopups.length - 1]);
-    }
-}
-
-var selectedPopup = null;
-function WESelectPopup(popupName)
-{
-    if(parent != window)
-    {
-        return parent.WESelectPopup(popupName);
-    }
-    if(openPopups.length > 0 && !WEHasClass('popupBackground', 'Enabled'))
-    {
-        WETogglePopupDisplay()
-    }
-    if(selectedPopup)
-    {
-        WERemoveClass(selectedPopup + "PopUpTab", "Selected");
-        WERemoveClass(selectedPopup + "PopUpContents", "Selected");
-    }
-
-    if(IS_IOS)
-    {
-        WEGetElement("popupContents").scrollTo(0, 0);
-    }
-
-    WEAddClass(popupName + "PopUpTab", "Selected");
-    WEAddClass(popupName + "PopUpContents", "Selected");
-    selectedPopup = popupName;
-}
-
-function WETogglePopupDisplay()
-{
-    var popupDisplay = WEGetElement('popupBackground');
-    var popupToggle = WEGetElement('popupToggle');
-    if(WEHasClass(popupDisplay, 'Enabled'))
-    {
-        WERemoveClass(popupDisplay, 'Enabled');
-        popupToggle.innerHTML = "You have open tasks / windows; click here to view.";
-    }
-    else
-    {
-        WEAddClass(popupDisplay, 'Enabled');
-        popupToggle.innerHTML = "Click here to return to the main window.";
-    }
-}
-
-function WEScrolledToBottom(scroller)
-{
-    var scroller = WEGetElement(scroller);
+    var scroller = WebElements.get(scroller);
     var oldScrollTop = scroller.scrollTop;
     scroller.scrollTop += 10;
     if (scroller.scrollTop != oldScrollTop)
@@ -1496,90 +1051,21 @@ function WEScrolledToBottom(scroller)
     }
 }
 
-function WEPopupUnload()
-{
-    if( openPopups.length > 0 )
-    {
-        return "You have unresolved pop-up notifications.";
-    }
-}
-
-function WEAddToForm(popupName, popupParent)
-{
-    for(var currentFormIndex = 0; currentFormIndex < document.forms.length; currentFormIndex++)
-    {
-        var currentForm = document.forms[currentFormIndex];
-        var newPopupValue = document.createElement('input');
-        newPopupValue.setAttribute('id', "myPopupName");
-        newPopupValue.setAttribute('name', "myPopupName");
-        newPopupValue.setAttribute('value', popupName);
-        newPopupValue.setAttribute('type', "hidden");
-        currentForm.appendChild(newPopupValue);
-
-        if(popupParent)
-        {
-            var newPopupValue = document.createElement('input');
-            newPopupValue.setAttribute('id', "myPopupParent");
-            newPopupValue.setAttribute('name', "myPopupParent");
-            newPopupValue.setAttribute('value', popupParent);
-            newPopupValue.setAttribute('type', "hidden");
-            currentForm.appendChild(newPopupValue);
-        }
-    }
-}
-
-function WEDetatchPopup(poupName)
-{
-    if(parent != window)
-    {
-        return parent.WEDetatchPopup(popupName);
-    }
-
-    if(!popupName)
-    {
-        var popupName = selectedPopup;
-    }
-
-    Popup.open({url:openPopupFrames[popupName].location.href, separateWindow:true, width:800, height:600})
-    WEClosePopup(popupName);
-
-    return false;
-}
-
-function WERegisterPopup(popupName, popupParent)
-{
-    window.myPopupName = popupName;
-    window.myPopupParent = popupParent;
-    if(popupParent)
-    {
-        opener = parent.openPopupFrames[popupParent];
-    }
-    for(var currentFrameIndex = 0; currentFrameIndex < parent.frames.length; currentFrameIndex++)
-    {
-        var currentFrame = parent.frames[currentFrameIndex];
-        if(currentFrame.frameElement.id == (popupName + "PopUpContents"))
-        {
-            parent.openPopupFrames[popupName] = currentFrame;
-        }
-    }
-    setTimeout("WEAddToForm('" + popupName + "', '" + popupParent + "');", 1);
-}
-
 // Toggle between Adding or Removing a class from an element.
-function WEToggleClass(element, classname )
+WebElements.toggleClass = function(element, className)
 {
-	if(WEHasClass(element, classname))
+	if(WebElements.hasClass(element, className))
 	{
-		WERemoveClass(element, classname);
+		WebElements.removeClass(element, className);
 	}
 	else
 	{
-		WEAddClass(element, classname);
+		WebElements.addClass(element, className);
 	}
 }
 
 // Toggle between selecting/unselecting a row on a table.
-function WEToggleTableRowSelect(input)
+WebElements.toggleTableRowSelect = function(input)
 {
 	var row = input
 	for (var levels = 3; levels > 0; levels -= 1)
@@ -1587,95 +1073,13 @@ function WEToggleTableRowSelect(input)
 		row = row.parentElement
 		if (row.parentElement.tagName == "TR")
 		{
-			WEToggleClass(row.parentElement, 'selected');
+			WebElements.toggleClass(row.parentElement, 'selected');
 			levels = 0;
 		}
 	}
 }
 
-// Attach popup warning to main window
-if(parent == window)
-{
-    var openPopups = [];
-    var openPopupFrames = {};
-
-    if(IS_IOS)
-    {
-        setTimeout("WEHideElement('popupToggle');", 1);
-    }
-    else
-    {
-        var oldBeforeUnload = null;
-        if(typeof window.onbeforeunload == "function")
-        {
-            oldBeforeUnload = window.onbeforeunload;
-        }
-        window.onbeforeunload = function(){
-            try{
-                unloadResult = WEPopupUnload()
-                if(unloadResult)
-                {
-                    return unloadResult;
-                }
-                else if(oldBeforeUnload != null)
-                {
-                    return oldBeforeUnload();
-                }
-            }
-            catch(e)
-            {
-            }
-        }
-        var oldUnload = null;
-        if(typeof window.unload == "function")
-        {
-            oldUnload = window.unload;
-        }
-        window.onunload = function(){
-            try{
-                if(oldUnload != null)
-                {
-                    return oldUnload();
-                }
-            }
-            catch(e)
-            {
-            }
-            delete openPopups;
-            delete openPopupFrames;
-        }
-    }
-}
-else
-{
-    opener = parent;
-    eval("function close(){return WEClosePopup(myPopupName);}");
-    if(IS_IOS)
-    {
-        setTimeout("parent.WEGetElement('popupContents').scrollTo(0, 0);", 1);
-        document.startY = 0;
-        document.startX = 0;
-        setTimeout(function () {
-            document.frameBody = document.body;
-            document.frameBody.addEventListener('touchstart', function (event) {
-                parent.window.scrollTo(0, 1);
-                document.startY = event.targetTouches[0].pageY;
-                document.startX = event.targetTouches[0].pageX;
-            });
-            document.frameBody.addEventListener('touchmove', function (event) {
-                event.preventDefault();
-                var currentPositionY = event.targetTouches[0].pageY;
-                var currentPositionX = event.targetTouches[0].pageX;
-                var scroller = parent.document.getElementById("popupContents");
-                scroller.scrollTop = scroller.scrollTop + (document.startY - currentPositionY);
-                scroller.scrollLeft = scroller.scrollLeft + (document.startX - currentPositionX);
-            });
-            }, 1);
-    }
-}
-
-
-function WEGetNotificationPermission()
+WebElements.getNotificationPermission = function()
 {
 
     if (window.webkitNotifications)
@@ -1687,12 +1091,10 @@ function WEGetNotificationPermission()
     }
 }
 
-function WEShowNotification(title, content, icon)
+WebElements.showNotification = function(title, content, icon)
 {
-    if(!icon)
-    {
-        icon = "images/info.png";
-    }
+    if(!icon){icon = "images/info.png";}
+
     if (window.webkitNotifications)
     {
         if (window.webkitNotifications.checkPermission() == 0)
@@ -1704,33 +1106,38 @@ function WEShowNotification(title, content, icon)
     }
 }
 
-// Make two checkboxes act like radio button. elem is "this" and pair is the other checkbox
-function WECheckboxActsLikeRadioButton(elem, pair)
+// Make two checkboxes act like radio button. element is "this" and pair is the other checkbox
+WebElements.checkboxActsLikeRadioButton = function(element, pair)
 {
-    if(!elem.checked)
+    var element = WebElements.get(element);
+    var pair = WebElements.get(pair);
+    if(!element.checked)
+    {
         return;
+    }
     pair.checked = false;
 }
 
 // Accepts an event performing no operation on it and stopping any further operations from taking place
-function WEStopOperation(evt)
+WebElements.stopOperation = function(evt)
 {
   evt.stopPropagation();
   evt.preventDefault();
 }
 
-function WEBuildFileOpener(dropBox)
+// attaches html5 drag and drop file uploading capabilities to an drop down skeleton
+WebElements.buildFileOpener = function(dropBox)
 {
-    var dropBox = WEGetElement(dropBox);
-    var statusBar = WEGetElement(dropBox.id + 'StatusBar');
-    var dropLabel = WEGetElement(dropBox.id + 'DropLabel');
-    var fileTemplate = WEGetElement(dropBox.id + 'File');
-    var filesContainer = WEGetElement(dropBox.id + 'Files');
+    var dropBox = WebElements.get(dropBox);
+    var statusBar = WebElements.get(dropBox.id + 'StatusBar');
+    var dropLabel = WebElements.get(dropBox.id + 'DropLabel');
+    var fileTemplate = WebElements.get(dropBox.id + 'File');
+    var filesContainer = WebElements.get(dropBox.id + 'Files');
 
     // init event handlers
-    dropBox.addEventListener("dragenter", WEStopOperation, false);
-    dropBox.addEventListener("dragexit", WEStopOperation, false);
-    dropBox.addEventListener("dragover", WEStopOperation, false);
+    dropBox.addEventListener("dragenter", WebElements.stopOperation, false);
+    dropBox.addEventListener("dragexit", WebElements.stopOperation, false);
+    dropBox.addEventListener("dragover", WebElements.stopOperation, false);
     dropBox.addEventListener("drop", function(evt){
         evt.preventDefault(evt);
 
@@ -1740,11 +1147,9 @@ function WEBuildFileOpener(dropBox)
         // Only call the handler if 1 or more files was dropped.
         if (files.length > 0)
         {
-            WEShowElement(statusBar);
-            WERemoveClass(dropBox, "WEmpty");
-            for(var currentFile = 0; currentFile < files.length; currentFile++)
-            {
-                var file = files[currentFile];
+            WebElements.show(statusBar);
+            WebElements.removeClass(dropBox, "WEmpty");
+            WebElements.forEach(files, function(file){
                 dropLabel.innerHTML = "Processing " + file.name;
 
                 var reader = new FileReader();
@@ -1754,23 +1159,61 @@ function WEBuildFileOpener(dropBox)
                 reader.onload = function(evt)
                 {
                     var fileName = dropBox.id + evt.target.file.name;
-                     if(WEGetElement(fileName))
+                     if(WebElements.get(fileName))
                      {
                          return; // Don't upload the same file twice but don't annoy users with pesky errors
                      }
-                    newFile = WECopy(fileTemplate, filesContainer, false);
+                    newFile = WebElements.copy(fileTemplate, filesContainer, false);
+                    alert("OO")
                     newFile.id = fileName;
-                    WEShowElement(newFile);
-                    WEGetElementByClassName('WThumbnail', newFile).src = evt.target.result;
-                    WEGetElementByClassName('WFileName', newFile).innerHTML = evt.target.file.name;
+                    WebElements.show(newFile);
+                    WebElements.getElementByClassName('WThumbnail', newFile).src = evt.target.result;
+                    WebElements.getElementByClassName('WFileName', newFile).innerHTML = evt.target.file.name;
                 };
 
                 // begin the read operation
                 reader.readAsDataURL(file);
-            }
+            });
         }
-        WEHideElement(statusBar);
+        WebElements.hide(statusBar);
 
     }, false);
+}
 
+WebElements.clickDropDown = function(menu, openOnly, button, parentElement)
+{
+    WebElements.State.dropDownOpen = true;
+    if(WebElements.State.currentDropDown && WebElements.State.currentDropDown != menu)
+    {
+        WebElements.hide(currentDropDown);
+        WebElements.removeClass(currentButton, 'SelectedDropDown');
+    }
+    WebElements.State.currentDropDown = menu;
+    WebElements.State.currentButton = button;
+    if(!openOnly || !WebElements.shown(currentDropDown)){
+        if(WebElements.toggleDropDown(currentDropDown, parentElement)){
+            WebElements.addClass(button, 'SelectedDropDown');
+        }
+        else{
+            WebElements.removeClass(button, 'SelectedDropDown');
+       }
+   }
+}
+
+
+//attach on click event to body to close any open pop up menus when a random click is placed
+document.onload = function()
+{
+    document.body.onclick = function closeOpenMenu()
+    {
+        if(WebElements.State.isPopupOpen)
+        {
+            WebElements.State.isPopupOpen = false;
+        }
+        else
+        {
+            WebElements.closeMenu();
+            WebElements.State.isPopupOpen = false;
+        }
+    }
 }

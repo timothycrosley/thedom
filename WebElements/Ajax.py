@@ -27,8 +27,8 @@ class AJAXScriptContainer(ScriptContainer):
     """
     tagName = "span"
 
-    def __init__(self, id=None, name=None, parent=None):
-        ScriptContainer.__init__(self)
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        ScriptContainer.__init__(self, **kwargs)
         self.addClass("onLoadJavascript")
         self.hide()
 
@@ -67,18 +67,17 @@ class AjaxController(Layout.Box):
         """
             Defines what is shown in place of the controller while its content is loaded from the server
         """
-        indicator = Display.Image()
-        indicator.setValue('images/loop-grey.gif')
+        indicator = Display.Image(src='images/loop-grey.gif')
 
-        def __init__(self, id, name=None, parent=None, loadingText=None):
-            Layout.Box.__init__(self, id, name=None, parent=None)
+        def __init__(self, id, name=None, parent=None, loadingText=None, **kwargs):
+            Layout.Box.__init__(self, id, name=None, parent=None, **kwargs)
             self.addChildElement(self.indicator, ensureUnique=False)
             self.label = self.addChildElement(Display.Label())
             self.label.setText(parent.loadingText)
 
 
-    def __init__(self, id, name=None, parent=None):
-        Layout.Box.__init__(self, id, name, parent)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Layout.Box.__init__(self, id, name, parent, **kwargs)
 
         baseId = id
         self.index = 0
@@ -98,6 +97,7 @@ class AjaxController(Layout.Box):
         content = Layout.Box(id)
         content.addClass(id)
         self.ajaxContent = self.addChildElement(content)
+        self.ajaxContentText = self.ajaxContent.addChildElement(Base.TextNode())
 
         loading = self.Loading(id + ":Loading", parent=self)
         self.loadingBanner = self.addChildElement(loading)
@@ -204,13 +204,13 @@ class AjaxController(Layout.Box):
         return """
                 var parameters = Array();
                 for(var currentField = 0; currentField < fields.length; currentField++){
-                    field = WEGetElement(fields[currentField]);
+                    field = WEGet(fields[currentField]);
                     if(field && field.name){
                         parameters.push(Form.Element.serialize(field));
                     }
                 }
                 for(var currentForm = 0; currentForm < forms.length; currentForm++){
-                    var form = WEGetElement(forms[currentForm]);
+                    var form = WEGet(forms[currentForm]);
                     if(form){
                         parameters = parameters.concat(Form.serialize(form).split("&"));
                     }
@@ -220,7 +220,7 @@ class AjaxController(Layout.Box):
                 }
 
                 if(typeof(views) == typeof("")){
-                    var controller = WEGetElement(views + "Controller");
+                    var controller = WEGet(views + "Controller");
                     var pageControl = WEAttribute(controller, "serverController");
                     parameters.push("pageControl=" + encodeURIComponent(pageControl));
                     parameters.push(Form.serialize(controller));
@@ -228,7 +228,7 @@ class AjaxController(Layout.Box):
                 else if(typeof(views) == typeof([])){
                     for(currentView = 0; currentView < views.length; currentView++){
                         var view = views[currentView];
-                        var controller = WEGetElement(view + "Controller");
+                        var controller = WEGet(view + "Controller");
                         var pageControl = WEAttribute(controller, "serverController");
 
                         parameters.push("pageControls=" + encodeURIComponent(pageControl));
@@ -342,12 +342,12 @@ class AjaxController(Layout.Box):
     @staticmethod
     def _ajaxGetMultiple(views, mode, silent, parameters):
         return """
-                servlet = WEGetElement('servletName').value;
+                servlet = WEGet('servletName').value;
                 if(!silent){
                     for(currentView = 0; currentView < views.length; currentView++){
                         view = views[currentView];
-                        WEHideElement(view);
-                        WEShowElement(view + ':Loading');
+                        WebElements.hide(view);
+                        WebElements.show(view + ':Loading');
                     }
                 }
 
@@ -380,10 +380,10 @@ class AjaxController(Layout.Box):
     @staticmethod
     def _ajaxGet(view, mode, silent, parameters):
         return """
-                servlet = WEGetElement('servletName').value;
+                servlet = WEGet('servletName').value;
                 if(!silent){
-                    WEHideElement(view);
-                    WEShowElement(view + ':Loading');
+                    WebElements.hide(view);
+                    WebElements.show(view + ':Loading');
                 }
 
                 abortAjaxUpdate(view);
@@ -404,16 +404,16 @@ class AjaxController(Layout.Box):
     def applyAjaxUpdate(data, view, silent=False):
         return """
                 if(!silent){
-                    WEShowElement(view);
+                    WebElements.show(view);
                 }
                 loadingPageControls[view] = null;
-                WEHideElement(view + ':Loading');
-                var view = WEGetElement(view);
+                WebElements.hide(view + ':Loading');
+                var view = WEGet(view);
                 childElements = WEChildElements(view);
                 setTimeout("WEDoInPageJavascript('" + view.id + "');", 10);
                 defaults = document.getElementById(view.id + ":Defaults");
                 if(defaults){
-                    WERemoveElement(defaults);
+                    WebElements.removeElement(defaults);
                 }
                 //alert(document.activeElement.tagName);
                 if(document.activeElement && (document.activeElement.tagName.toLowerCase() == "input" ||
@@ -423,7 +423,7 @@ class AjaxController(Layout.Box):
                 {
                     var lastSelectedId = document.activeElement.id;
                     if(lastSelectedId){
-                        setTimeout("var element = WEGetElement('" + lastSelectedId + "'); element.focus();", 10);
+                        setTimeout("var element = WEGet('" + lastSelectedId + "'); element.focus();", 10);
                     }
                     if(document.activeElement.type == "text"){
                         var selectStart = document.activeElement.selectionStart;
