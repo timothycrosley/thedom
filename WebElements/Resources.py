@@ -93,7 +93,7 @@ class ScriptContainer(DOM.Script):
         self._scripts = []
         self.usedObjects = []
 
-    def content(self, formatted=False):
+    def content(self, formatted=False, *args, **kwargs):
         """
             Overrides the base content method to return the javascript associated with the scriptcontainer
         """

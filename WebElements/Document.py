@@ -171,8 +171,8 @@ class Document(Base.WebElement):
         header.setValue(value)
         return header
 
-    def toHtml(self, formatted=False):
-        return self.doctype + "\n" + Base.WebElement.toHtml(self, formatted)
+    def toHtml(self, formatted=False, *args, **kwargs):
+        return self.doctype + "\n" + Base.WebElement.toHtml(self, formatted, *args, **kwargs)
 
     def addChildElement(self, childElement, ensureUnique=True):
         if type(childElement) in [self.Head, self.Body]:

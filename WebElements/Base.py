@@ -460,6 +460,8 @@ class WebElement(Connectable):
             if scriptContainer and scriptContainer != []:
                 self.__insertTemporaryScripts()
 
+        return scriptContainer
+
     def runClientSide(self, python):
         return self.addScript(ToClientSide.convert(python))
 
@@ -617,7 +619,7 @@ class WebElement(Connectable):
 
         return unicode("".join(("</", self._tagName, ">")))
 
-    def content(self, formatted=False):
+    def content(self, formatted=False, *args, **kwargs):
         """
             returns the elements html content
             (the html bettween startTag and endTag)
@@ -625,7 +627,7 @@ class WebElement(Connectable):
         if self._childElements is None:
             return ''
 
-        elements = [element.toHtml(formatted=formatted) for element in self.childElements]
+        elements = [element.toHtml(formatted=formatted, *args, **kwargs) for element in self.childElements]
         if formatted:
             return "\n".join([(self._tagName and INDENTATION or '') +
                                line for line in "\n".join(elements).split("\n") if line])
@@ -744,14 +746,14 @@ class WebElement(Connectable):
             if propertyValue != None and self.properties.has_key(propertyName):
                 self.setProperty(propertyName, propertyValue)
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         """
            Returns the element(including child elements) as standard html
         """
 
         self.emit("beforeToHtml")
 
-        data = (self.startTag() or '', self.content(formatted), self.endTag() or '')
+        data = (self.startTag() or '', self.content(formatted, *args, **kwargs), self.endTag() or '')
 
         if formatted:
             html = "\n".join([data for data in data if data])
@@ -837,7 +839,7 @@ class Invalid(WebElement):
     def setProperties(self, valueDict):
         pass
 
-    def content(self, formatted=False):
+    def content(self, formatted=False, *args, **kwargs):
         """
             Overrides content to return 'Invalid element' string
         """

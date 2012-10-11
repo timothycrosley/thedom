@@ -59,12 +59,12 @@ class Stack(Base.WebElement):
             return self.stackElements[0]
         return None
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         """
             Changes toHtml behavior to only generate the html for the visible element
         """
         if self.stackElements:
-            return self.visibleElement().toHtml(formatted=formatted) or ""
+            return self.visibleElement().toHtml(formatted=formatted, *args, **kwargs) or ""
         return ""
 
     def addChildElement(self, childElement, ensureUnique=True):
@@ -123,12 +123,12 @@ class Horizontal(Box):
                (container._style and container.style.get("float", None)):
             container.addClass("WLeft")
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         oldChildElements = self.childElements
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
-        returnValue = Box.toHtml(self, formatted=formatted)
+        returnValue = Box.toHtml(self, formatted=formatted, *args, **kwargs)
         self._childElements = oldChildElements
         return returnValue
 
@@ -158,12 +158,12 @@ class Vertical(Box):
             container.addChildElement(childElement)
             return Box.addChildElement(self, container)
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         oldChildElements = self.childElements
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
-        returnValue = Box.toHtml(self, formatted=formatted)
+        returnValue = Box.toHtml(self, formatted=formatted, *args, **kwargs)
         self._childElements = oldChildElements
         return returnValue
 
@@ -301,8 +301,8 @@ class Grid(Box):
         for column in columns:
             self.layout += column
 
-    def content(self, formatted=False):
-        return self.layout.toHtml(formatted=formatted)
+    def content(self, formatted=False, *args, **kwargs):
+        return self.layout.toHtml(formatted=formatted, *args, **kwargs)
 
 Factory.addProduct(Grid)
 

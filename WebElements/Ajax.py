@@ -463,10 +463,10 @@ class ControlInstance(Base.WebElement):
         if self.initialContent:
             self.addChildElement(self.initialContent)
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         if self.initialContent:
             self.control.ajaxContent.addChildElement(self.initialContent).parent = self
-        content = self.control.toHtml(formatted=formatted)
+        content = self.control.toHtml(formatted=formatted, *args, **kwargs)
         self.control.ajaxContent.reset()
 
         return content

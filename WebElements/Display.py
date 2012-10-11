@@ -232,13 +232,13 @@ class HeaderLabel(Label):
         Label.__init__(self, id, name, parent=parent)
         self.level = 2
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         self.level = int(self.level)
         if self.level > 6 or self.level < 1:
             raise ValueError("Valid levels for headers are 1-6 (h1-6)")
 
         self._tagName = "h%d" % self.level
-        return Label.toHtml(self, formatted)
+        return Label.toHtml(self, formatted, *args, **kwargs)
 
 Factory.addProduct(HeaderLabel)
 
@@ -343,8 +343,8 @@ class BlankRendered(Base.WebElement):
     __slots__ = ()
     displayable = False
 
-    def toHtml(self, formatted=False):
-        Base.WebElement.toHtml(self, False)
+    def toHtml(self, formatted=False, *args, **kwargs):
+        Base.WebElement.toHtml(self, False, *args, **kwargs)
         return ""
 
     def shown(self):
@@ -363,7 +363,7 @@ class Empty(Base.WebElement):
     def __init__(self, name=None, id=None, parent=None):
         Base.WebElement.__init__(self, None, None, parent)
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         return ""
 
     def shown(self):
@@ -385,7 +385,7 @@ class StraightHTML(Base.WebElement):
 
         self.html = html
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         return self.html
 
 Factory.addProduct(StraightHTML)
@@ -432,9 +432,9 @@ class CacheElement(Base.WebElement):
         Base.WebElement.__init__(self, id, name, parent, **kwargs)
         self.__cachedHTML__ = None
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         if self.__cachedHTML__ == None:
-            self.__cachedHTML__ = Base.WebElement.toHtml(self, formatted)
+            self.__cachedHTML__ = Base.WebElement.toHtml(self, formatted, *args, **kwargs)
         return self.__cachedHTML__
 
 Factory.addProduct(CacheElement)

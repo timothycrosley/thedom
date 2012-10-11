@@ -45,13 +45,13 @@ class Horizontal(Box):
             container.style['vertical-align'] = 'middle'
             container.style['width'] = width
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         oldChildElements = self.childElements
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
         lineBreak = Box.addChildElement(self, LineBreak())
-        returnValue = Box.toHtml(self, formatted=formatted)
+        returnValue = Box.toHtml(self, formatted=formatted, *args, **kwargs)
         self._childElements = oldChildElements
         return returnValue
 
@@ -81,13 +81,13 @@ class Vertical(Box):
             self.childElements.append(childElement)
 
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         oldChildElements = self.childElements
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
         lineBreak = Box.addChildElement(self, LineBreak())
-        returnValue = Box.toHtml(self, formatted=formatted)
+        returnValue = Box.toHtml(self, formatted=formatted, *args, **kwargs)
         self._childElements = oldChildElements
         return returnValue
 

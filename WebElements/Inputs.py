@@ -372,14 +372,14 @@ class TextArea(ValueElement):
     def __init__(self, id, name=None, parent=None, key=None):
         ValueElement.__init__(self, id, name, parent, key=key)
 
-    def content(self, formatted=False):
+    def content(self, formatted=False, *args, **kwargs):
         return self.value() or ""
 
-    def toHtml(self, formatted=False):
+    def toHtml(self, formatted=False, *args, **kwargs):
         if not self.editable():
             self.attributes['readonly'] = 'readonly'
 
-        return ValueElement.toHtml(self)
+        return ValueElement.toHtml(self, *args, **kwargs)
 
 Factory.addProduct(TextArea)
 

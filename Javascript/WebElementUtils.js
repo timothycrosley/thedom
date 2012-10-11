@@ -67,19 +67,17 @@ WebElements.get = function (element)
         return idElement;
     }
 
-    //If a element name is given -- return the first element associated with the name
-    var nameElement = document.getElementsByName(element);
-    if(nameElement.length != 0 && nameElement[0].innerHTML != null)
-    {
-        return nameElement[0]
-    }
-
     return null;
 }
 
 //Calls a callback method for each item in a list optionally returning on the first match
-WebElements.forEach = function(arrayOfItems, callBack, stopOnFirstMatch)
+WebElements.forEach = function(arrayOfItems, callBack)
 {
+    if(Array.prototype.forEach)
+    {
+        return array.forEach(callBack);
+    }
+
     for(var currentItem=0; currentItem < arrayOfItems.length; currentItem++)
     {
         callBack(arrayOfItems[currentItem]);
@@ -1202,6 +1200,7 @@ WebElements.clickDropDown = function(menu, openOnly, button, parentElement)
 
 
 //attach on click event to body to close any open pop up menus when a random click is placed
+WebElements.State.oldDocumentOnload = document.onload;
 document.onload = function()
 {
     document.body.onclick = function closeOpenMenu()
@@ -1215,5 +1214,9 @@ document.onload = function()
             WebElements.closeMenu();
             WebElements.State.isPopupOpen = false;
         }
+    }
+    if(WebElements.State.oldDocumentOnload)
+    {
+        WebElements.State.oldDocumentOnload();
     }
 }
