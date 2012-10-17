@@ -59,7 +59,6 @@ class ResourceFile(Base.WebElement):
             resource.setProperties((('src', fileName), ))
             self.resourceType = "javascript"
         elif extension == "css":
-            self._tagName = "link"
             resource = Link()
             resource.setProperties((('rel', 'stylesheet'), ('type','text/css'), ('href', fileName)))
             self.resourceType = "css"

@@ -8,6 +8,7 @@
 
 """
 
+import json
 import operator
 import types
 
@@ -675,7 +676,7 @@ class DateField(TextField):
         layout = self.addChildElement(Layout.Horizontal())
         layout.addClass("FieldDescription")
         self.calendarLink = layout.addChildElement(Display.Image(id + "CalendarLink",
-                                                                 src='static/images/calendar_icon.gif'))
+                                                                 src='images/calendar_icon.gif'))
         self.calendarLink.addClass('Clickable')
         self.calendarLink.addClass('hidePrint')
         self.calendarLink.addJavascriptEvent('onclick', CallBack(self, "jsOpenCalendar"))
@@ -720,29 +721,22 @@ class DateField(TextField):
 Factory.addProduct(DateField)
 
 
-class NestedSelect(Layout.Vertical):
+class NestedSelect(SelectField):
     """
         Defines two select boxes where the selection of an item from the first will trigger
         the population of the second.
     """
-    __slots__ = ('groupLabel', 'groupSelect', 'itemLabel', 'itemSelect', 'items')
-    properties = Layout.Vertical.properties.copy()
+    __slots__ = ('itemSelect', 'items')
+    properties = SelectField.properties.copy()
     properties['groupData'] = {'action':'setGroupData'}
-    properties['groupLabel'] = {'action':'setGroupLabel'}
-    properties['itemLabel'] = {'action':'setItemLabel'}
-    properties['selectWidth'] = {'action':'setSelectWidth'}
 
     def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Layout.Vertical.__init__(self, id + "NestedSelect", name, parent)
+        SelectField.__init__(self, id, name, parent, **kwargs)
 
-        self.groupLabel = self.addChildElement(Display.Label())
-        self.groupSelect = self.addChildElement(Inputs.Select(id))
-        self.groupSelect.addJavascriptEvent('onclick', CallBack(self, "jsPopulateItemSelect"))
-        self.groupSelect.connect('selectionChanged', None, self, 'updateItems')
+        self.userInput.addJavascriptEvent('onclick', CallBack(self, "jsPopulateItemSelect"))
+        self.userInput.connect('selectionChanged', None, self, 'updateItems')
 
-        self.itemLabel = self.addChildElement(Display.Label())
         self.itemSelect = self.addChildElement(Inputs.Select(id + "Items"))
-
         self.items = None
 
     def updateItems(self):
@@ -750,7 +744,7 @@ class NestedSelect(Layout.Vertical):
             Updates the items select Layout.Box to load the items contained in the currently
             selected group.
         """
-        selected = self.groupSelect.selected()
+        selected = self.userInput.selected()
         if selected:
             for item in self.items[selected.value()]:
                 self.itemSelect.addOption(item)
@@ -758,39 +752,17 @@ class NestedSelect(Layout.Vertical):
     def setGroupData(self, data):
         """
             Sets the groups and the items each group should contain
-                data - a list of groupnames and item lists, for example:
-                    [{'name':'fruits, 'value':['apple', 'orange', 'grape']}]
+                data - a collection of name to value tuples - for example:
+                    (('fruits',('apple', 'orange', 'grape')), )
         """
-        self.groupSelect.reset()
+        self.userInput.reset()
         self.itemSelect.reset()
-        self.items = data
-        for newGroup, items in data.iteritems():
-            self.groupSelect.addOption(newGroup, newGroup)
+        self.items = dict(data)
+        for newGroup, items in data:
+            self.userInput.addOption(newGroup, newGroup)
 
         self.addScript(CallBack(self, "jsGroups"))
         self.addScript(CallBack(self, "jsPopulateItemSelect"))
-
-    def setGroupLabel(self, text):
-        """
-            Sets the text to be shown above the group selectbox
-                text - the labels text
-        """
-        self.groupLabel.setText(text)
-
-    def setItemLabel(self, text):
-        """
-            Sets the text to be shown above the item selectbox
-                text - the labels text
-        """
-        self.itemLabel.setText(text)
-        self.itemSelect.id = self.groupSelect.id + text
-
-    def setSelectWidth(self, width):
-        """
-            Sets the width of both select Layout.Boxes
-        """
-        self.groupSelect.style['width'] = width
-        self.itemSelect.style['width'] = width
 
     def jsGroups(self):
         """
@@ -799,8 +771,8 @@ class NestedSelect(Layout.Vertical):
         if self.items:
             return """document.%(groupId)s = %(groups)s;
                     document.%(itemId)s = %(items)s;
-                """ % {'items':self.items, 'groups':self.items.keys(), 'id':self.jsId(),
-                        'itemId':self.itemSelect.jsId(), 'groupId':self.groupSelect.jsId()}
+                """ % {'items':json.dumps(self.items), 'groups':self.items.keys(), 'id':self.jsId(),
+                        'itemId':self.itemSelect.jsId(), 'groupId':self.userInput.jsId()}
 
     def jsPopulateItemSelect(self):
         """
@@ -809,7 +781,7 @@ class NestedSelect(Layout.Vertical):
         return """WebElements.setOptions('%(itemSelectId)s',
                      document.%(itemSelectId)s[WebElements.getValue('%(groupSelectId)s')]);
                """ % {'itemSelectId':self.itemSelect.jsId(),
-                      'groupSelectId':self.groupSelect.jsId()}
+                      'groupSelectId':self.userInput.jsId()}
 
 Factory.addProduct(NestedSelect)
 

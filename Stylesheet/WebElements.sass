@@ -3,11 +3,6 @@
     pre
         padding: 10px
         overflow: auto
-
-*
-    -webkit-box-sizing: border-box
-    -moz-box-sizing: border-box
-    box-sizing: border-box
 .WClear
     *zoom: 1
     &:before, &:after
@@ -440,10 +435,10 @@ table.GlobalTable
 div.WCenter
     overflow: hidden
     position: relative
-    div
+    div.WOuter
         float: left
         position: relative
         left: 50%
-        div
+        div.WInner
             position: relative
             left: -50%

@@ -730,6 +730,8 @@ class WebElement(Connectable):
         elif propertyAction == "call":
             if value:
                 objectWithProperty.__getattribute__(propertyName)()
+        elif propertyAction == "send":
+            objectWithProperty.__getattribute__(propertyName)(name, value)
         elif not hasattr(objectWithProperty, propertyAction):
             print("Trying to set " + propertyName + " using " + propertyAction + " but no" +
                     " such method or attribute exists on " + objectWithProperty.__class__.__name__)

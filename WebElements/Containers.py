@@ -207,31 +207,31 @@ class Tab(Layout.Box):
         __slots__ = ()
         def __init__(self, id, name=None, parent=None, **kwargs):
             Display.Label.__init__(self, id=id, name=name, parent=parent)
-            self.addClass("WabLabel")
+            self.addClass("WTabLabel")
 
         def select(self):
             """
                 changes the class to reflect a selected tab label
             """
-            self.removeClass('UnselectedTabLabel')
-            self.addClass('SelectedTabLabel')
+            self.removeClass('WUnselected')
+            self.addClass('WSelected')
 
         def unselect(self):
             """
                 changes the class to reflect an unselected tab label
             """
-            self.removeClass('SelectedTabLabel')
-            self.addClass('UnselectedTabLabel')
+            self.removeClass('WSelected')
+            self.addClass('WUnselected')
 
         @staticmethod
         def jsSelect(tab):
-            return ("WebElements.removeClass(%(tab)s, 'UnselectedTabLabel');"
-                    "WebElements.addClass(%(tab)s, 'SelectedTabLabel');") % {'tab':tab}
+            return ("WebElements.removeClass(%(tab)s, 'WUnselected');"
+                    "WebElements.addClass(%(tab)s, 'WSelected');") % {'tab':tab}
 
         @staticmethod
         def jsUnselect(tab):
-            return ("WebElements.removeClass(%(tab)s, 'SelectedTabLabel');"
-                    "WebElements.addClass(%(tab)s, 'UnselectedTabLabel');") % {'tab':tab}
+            return ("WebElements.removeClass(%(tab)s, 'WSelected');"
+                    "WebElements.addClass(%(tab)s, 'WUnselected');") % {'tab':tab}
 
     def __init__(self, id, name=None, parent=None, **kwargs):
         Layout.Box.__init__(self, id=id, name=name, parent=parent)
@@ -293,9 +293,9 @@ class TabContainer(Base.WebElement):
         self.layout.addClass("W" + self.__class__.__name__)
 
         self.__tabLabelContainer__ = self.layout.addChildElement(self.__tabLayoutElement__())
-        self.__tabLabelContainer__.addClass('TabLabels')
+        self.__tabLabelContainer__.addClass('WTabLabels')
         self.__tabContentContainer__ = self.layout.addChildElement(Layout.Box())
-        self.__tabContentContainer__.addClass('TabContents')
+        self.__tabContentContainer__.addClass('WTabContents')
 
         self.addScript(CallBack(self, 'jsInit'))
 

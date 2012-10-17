@@ -22,7 +22,7 @@ class FileUploader(Layout.Vertical):
         self.statusBar.hide()
 
         self.dropIndicator = self.statusBar.addChildElement(Display.Image())
-        self.dropIndicator.setProperty('src', 'static/images/throbber.gif')
+        self.dropIndicator.setProperty('src', 'images/throbber.gif')
         self.dropIndicator.addClass("WDropIndicator")
 
         self.dropLabel = self.statusBar.addChildElement(Display.Label(id + "DropLabel"))

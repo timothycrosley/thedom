@@ -1,12 +1,11 @@
 #!/usr/bin/python
 '''
    Name:
-       WebElements.py
+       All.py
 
    Description:
-       WebElements enable highly flexible "widgets" or entire Web Applications
-       to be built from dictionaries, xml, or WebElement objects dynamically modified
-       and then converted to HTML on the fly
+        A Factory that contains all the base WebElements, additionally can be used to import all WebElements with
+        a single import (for example: import WebElements.All as WebElements; layout = WebElements.Layout.Vertical())
 '''
 
 import Ajax

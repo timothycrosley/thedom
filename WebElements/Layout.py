@@ -355,6 +355,10 @@ class Center(Box):
     def __init__(self, id=None, name=None, parent=None, **kwargs):
         Box.__init__(self, id, name, parent, **kwargs)
         self.addClass("WCenter")
-        self.addChildElementsTo = self.addChildElement(Box()).addChildElement(Box())
+        outer = self.addChildElement(Box())
+        outer.addClass("WOuter")
+        inner = outer.addChildElement(Box())
+        inner.addClass("WInner")
+        self.addChildElementsTo = inner
 
 Factory.addProduct(Center)

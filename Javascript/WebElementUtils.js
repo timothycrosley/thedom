@@ -44,7 +44,8 @@ WebElements.Keys = Keys;
 WebElements.Platform = Platform;
 
 WebElements.Settings = {}
-WebElements.Settings.throbberImage = 'static/images/throbber.gif';
+WebElements.Settings.throbberImage = 'images/throbber.gif';
+WebElements.Settings.Serialize = ['input', 'textarea', 'select'];
 
 WebElements.State = {}
 WebElements.State.dropDownOpen = false;
@@ -67,15 +68,22 @@ WebElements.get = function (element)
         return idElement;
     }
 
+    //If a element name is given -- return the first element associated with the name
+    var nameElement = document.getElementsByName(element);
+    if(nameElement.length != 0 && nameElement[0].innerHTML != null)
+    {
+        return nameElement[0]
+    }
+
     return null;
 }
 
 //Calls a callback method for each item in a list optionally returning on the first match
 WebElements.forEach = function(arrayOfItems, callBack)
 {
-    if(Array.prototype.forEach)
+    if(arrayOfItems.forEach)
     {
-        return array.forEach(callBack);
+        return arrayOfItems.forEach(callBack);
     }
 
     for(var currentItem=0; currentItem < arrayOfItems.length; currentItem++)
@@ -83,6 +91,58 @@ WebElements.forEach = function(arrayOfItems, callBack)
         callBack(arrayOfItems[currentItem]);
     }
     return true;
+}
+
+//Returns a list of nodes sorted by placement in the dom
+WebElements.sortElements = function(elements)
+{
+    firstNode = elements[0];
+    if(!firstNode)
+    {
+        return [];
+    }
+    if(firstNode.sourceIndex)
+    {
+        elements.sort(function(first, second){return first.sourceIndex - second.sourceIndex;});
+    }
+    else if(firstNode.compareDocumentPosition)
+    {
+        elements.sort(function(first, second){return 3 - (first.compareDocumentPosition(second) & 6)});
+    }
+    return elements;
+}
+
+//Returns a list of sorted and unique elements
+WebElements.sortUnique = function(elements)
+{
+    var elements = WebElements.sortElements(elements);
+    var lastAdded = null;
+    return WebElements.getByCondition(function(element)
+                                      {
+                                        if(element !== lastAdded)
+                                        {
+                                            lastAdded = element;
+                                            return true
+                                        }
+                                        return false;
+                                      }, elements);
+}
+
+//An optimized way to getElements that match against a list of tagNames
+WebElements.getElementsByTagNames = function(tagNames, parentElement, unsorted)
+{
+    var parentElement = WebElements.get(parentElement);
+    var results = [];
+    WebElements.forEach(tagNames, function(tagName){
+        WebElements.forEach(parentElement.getElementsByTagName(tagName),
+                            function(item){results.push(item);})});
+
+    if(!unsorted)
+    {
+        return WebElements.sortElements(results)
+    }
+
+    return results;
 }
 
 //Returns elements that pass a conditional callback, optionally returning on the first match
@@ -578,6 +638,13 @@ WebElements.addOption = function(selectElement, optionName, optionValue)
     WebElements.get(selectElement).appendChild(newOption);
 }
 
+//adds a list of options option to a selectbox with a specified name/value
+WebElements.addOptions = function(selectElement, options)
+{
+    var selectElement = WebElements.get(selectElement);
+    WebElements.forEach(options, function(option){WebElements.addOption(selectElement, option);})
+}
+
 //adds html to element
 WebElements.addHtml = function(element, html)
 {
@@ -683,33 +750,6 @@ WebElements.addPrefix = function(container, prefix)
     return true;
 }
 
-
-//perform the javascript contained on the page -- contained in elements innerHTML where the class is set to
-//'onLoadJavascript' made for use on AJAX pages -- inflicts a noticable performance penalty over <script>
-WebElements.doInPageJavascript = function(container)
-{
-    WebElements.forEach(WebElements.getElementByClassName("onLoadJavascript", WebElements.get(container)),
-                        function(element){
-                            if(element.innerHTML != null && element.innerHTML != "")
-                            {
-                                scriptTag = document.createElement('script');
-                                scriptTag.type = "text/javascript"
-                                container.appendChild(scriptTag)
-
-                                scriptTag.text = WebElements.unserialize(element.innerHTML);
-                            }
-                        });
-}
-
-WebElements.unserialize = function(html)
-{
-    var html = String(html);
-    html = WebElements.replaceAll(html, "&lt;", "<");
-    html = WebElements.replaceAll(html, "&gt;", ">");
-    html = WebElements.replaceAll(html, "&amp;", "&");
-    return html
-}
-
 //sorts a list alphabetically by innerHTML
 WebElements.sortSelect = function(selectElement, sortByValue)
 {
@@ -780,6 +820,15 @@ WebElements.selectedOptions = function(selectBox)
 WebElements.selectAllOptions = function(selectBox)
 {
     WebElements.forEach(WebElements.get(selectBox).options, function(option){option.selected = true;});
+}
+
+//sets the options available for selection within a select box
+WebElements.setOptions = function(selectBox, options)
+{
+    selectBox = WebElements.get(selectBox);
+    WebElements.forEach(selectBox.options, WebElements.remove);
+    WebElements.clear(selectBox);
+    WebElements.addOptions(selectBox, options);
 }
 
 //returns the selected checkboxes withing a container
@@ -1219,4 +1268,51 @@ document.onload = function()
     {
         WebElements.State.oldDocumentOnload();
     }
+}
+
+WebElements.serialize = function(field)
+{
+    var element = WebElements.get(field);
+    var tagName = element.tagName.toLowerCase();
+    var key = encodeURIComponent(element.name);
+    if(!key)
+    {
+        return '';
+    }
+    if(tagName == "input" || tagName == "textArea")
+    {
+        if(tagName == "input")
+        {
+            var type = element.type.toLowerCase();
+            if(((type == "checkbox" || type == "radio") && !element.checked) || type == "button")
+            {
+                return '';
+            }
+        }
+        return key + '=' + encodeURIComponent(element.value);
+    }
+    if(tagName == "select")
+    {
+        var value = [];
+        WebElements.forEach(element.options, function(option){
+                        if(option.selected){value.push(key + "=" + encodeURIComponent(option.value || option.text))}});
+        return value.join("&");
+    }
+}
+
+WebElements.serializeElements = function(elements)
+{
+    var params = []
+    WebElements.forEach(elements,
+                        function(item){result = WebElements.serialize(WebElements.get(item));
+                                       if(result){params.push(result);}});
+    return params.join("&");
+}
+
+WebElements.serializeAll = function(container)
+{
+    if(!container){container = document}
+
+    var container = WebElements.get(container);
+    return WebElements.serializeElements(WebElements.getElementsByTagNames(WebElements.Settings.Serialize, container));
 }
