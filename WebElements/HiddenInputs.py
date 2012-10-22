@@ -20,7 +20,7 @@ class HiddenValue(InputElement):
     """
         Defines a hidden '<input>' webelement (An input that can be modified but not viewed clientside)
     """
-    __slots__ = ('width')
+    __slots__ = ('width', )
     signals = InputElement.signals + ['textChanged']
     displayable = False
 

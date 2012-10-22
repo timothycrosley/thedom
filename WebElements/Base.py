@@ -112,6 +112,12 @@ class WebElement(Connectable):
         def __call__(self, script):
             return self.element.addScript(script)
 
+        def alert(self, message):
+            return ClientSide.call("alert", message)
+
+        def log(self, message):
+            return ClientSide.call("console.log", message)
+
         def get(self):
             return ClientSide.get(self)
 
