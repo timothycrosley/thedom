@@ -133,7 +133,7 @@ class ItemPager(Layout.Vertical):
             index - the first item you want to appear in your pages results
         """
         return ("WebElements.get('%(id)sIndex').value = '%(index)d';%(handlers)s;" %
-                {'id':self.jsId(), 'index':index, 'handlers':"\n".join(self.emit('jsIndexChanged'))})
+                {'id':self.fullId(), 'index':index, 'handlers':"\n".join(self.emit('jsIndexChanged'))})
 
     def _updateUI_(self):
         """
@@ -219,16 +219,16 @@ class JumpToLetter(Layout.Vertical):
                        "}")
 
     def __highlightSelectedLetter__(self):
-        jsId = self.jsId()
+        fullId = self.fullId()
         for letter, link in self.__letterMap__.iteritems():
             if letter == self.selectedLetter.value():
                 link.addClass("WLetterSelected")
             else:
                 link.setDestination("#" + letter)
                 if not link.javascriptEvent('onmouseover'):
-                    link.addJavascriptEvent("onmouseover", "letterJumpHover('%s');" % jsId)
-                    link.addJavascriptEvent("onmouseout", "letterJumpLeave('%s')" % jsId)
-                    link.addJavascriptEvent("onclick", "letterSelect('%s', '%s');" % (jsId, letter))
+                    link.addJavascriptEvent("onmouseover", "letterJumpHover('%s');" % fullId)
+                    link.addJavascriptEvent("onmouseout", "letterJumpLeave('%s')" % fullId)
+                    link.addJavascriptEvent("onclick", "letterSelect('%s', '%s');" % (fullId, letter))
 
     def clearSelection(self):
         """

@@ -9,7 +9,9 @@
 
 import re
 import types
+import ClientSide
 from itertools import chain
+from types import FunctionType
 
 import DictUtils
 import ToClientSide
@@ -38,13 +40,39 @@ def addChildProperties(propertiesDict, classDefinition, accessor):
         propertiesDict[accessor + "." + propertyName] = propertyDict
 
 
+def autoAddScript(function):
+    """
+        Decorator to make method automatically add script to element script container
+    """
+    def autoAdd(self, *args, **kwargs):
+        result = function(self, *args, **kwargs)
+        self(result)
+        return result
+    return autoAdd
+
+class AutoAddScripts(type):
+    """
+        Modifies the client side object to automatically addScripts when methods are called, unless the scripts are
+        later taken by a javascript event (essentially adds the autoAddScript decorator to every method in the class)
+    """
+    def __new__(cls, name, bases, dct):
+        for name, attribute in dct.items():
+            if name == "element" or name.startswith("_") or name == "id" or type(attribute) != FunctionType:
+                continue
+
+            dct[name] = autoAddScript(attribute)
+
+        return type.__new__(cls, name, bases, dct)
+
+
 class WebElement(Connectable):
     """
         The base WebElement which all custom WebElements should extend.
     """
     __slots__ = ('_tagName', '_prefix', '__scriptTemp__',
                  '__objectTemp__', 'validator', '_editable', '__scriptContainer__', 'id', 'name', 'parent', '_style',
-                 '_classes', '_attributes', '_childElements', 'addChildElementsTo', 'key', '_tagSelfCloses')
+                 '_classes', '_attributes', '_childElements', 'addChildElementsTo', 'key', '_tagSelfCloses',
+                 '_clientSide')
     tagSelfCloses = False
     allowsChildren = True
     displayable = True
@@ -67,6 +95,260 @@ class WebElement(Connectable):
     properties['accesskey'] = {'action':'attribute'}
     tagName = ""
 
+    class ClientSide(object):
+        """
+            Defines the client side behavior, and actions of an element
+        """
+        __metaclass__ = AutoAddScripts
+        __slots__ = ('element',)
+
+        def __init__(self, element):
+            self.element = element
+
+        @property
+        def id(self):
+            return self.element.fullId()
+
+        def __call__(self, script):
+            return self.element.addScript(script)
+
+        def get(self):
+            return ClientSide.get(self)
+
+        def forEach(self, arrayOfItems, callBack):
+            return ClientSide.forEach(arrayOfItems, callBack)
+
+        def onEach(self, arrayOfItems, callBack):
+            return ClientSide.onEach(arrayOfItems, callBack)
+
+        def sortElements(self, elements):
+            return ClientSide.sortElements(elements)
+
+        def sortUnique(self, elements):
+            return ClientSide.sortUnique(elements)
+
+        def getChildrenByTagNames(self, tagNames, unsorted=True):
+            return ClientSide.getElementsByTagNames(tagNames, parentElement=self, unsorted=unsorted)
+
+        def getChildrenByCondition(self, conditional, stopOnFirstMatch=False):
+            return ClientSide.getByCondition(conditional, self, stopOnFirstMatch)
+
+        def getChildrenByClassName(self, className):
+            return ClientSide.getElementsByClassName(className, self)
+
+        def getChildByClassName(self, className):
+            return ClientSide.getElementByClassName(className, self)
+
+        def getChildrenByAttribute(self, attributeName, attributeValue):
+            return ClientSide.getChildrenByAttribute(self,  attributeName, attributeValue)
+
+        def getChildByAttribute(self, attributeName, attributeValue):
+            return ClientSide.getChildByAttribute(self, attributeName, attributeName)
+
+        def getChildrenByName(self, name):
+            return ClientSide.getChildrenByName(self, name)
+
+        def getChildByName(self, name):
+            return ClientSide.getChildByName(self, name)
+
+        def populate(self, fieldDict):
+            return ClientSide.populate(fieldDict)
+
+        def pixelsToLeft(self):
+            return ClientSide.pixelsToLeft(self)
+
+        def pixelsAbove(self):
+            return ClientSide.pixelsAbove(self)
+
+        def setAbsoluteRelativeToParent(element, pixelsDown=0, pixelsToRight=0, parentElement=None):
+            return ClientSide.setAbsoluteRelativeToParent(self, pixelsDown, pixelsToRight, parentElement)
+
+        def fellowChild(self, parentClass, childClass):
+            return ClientSide.fellowChild(self, parentClass, childClass)
+
+        def firstChild(self):
+            return ClientSide.firstChild(self)
+
+        def lastChild(self):
+            return ClientSide.lastChild(self)
+
+        def nextSibling(self):
+            return ClientSide.nextSibling(self)
+
+        def prevSibling(self):
+            return ClientSide.prevSibling(self)
+
+        def setPrefix(self, prefix):
+            return ClientSide.setPrefix(self, prefix)
+
+        def parentWithClass(self, className, giveUpAtClass=False):
+            return ClientSide.parent(self, className, giveUpAtClass)
+
+        def clearChildren(self, replacement=None):
+            return ClientSide.clearChildren(self, replacement)
+
+        def childElements(self):
+            return ClientSide.childElements(self)
+
+        def peer(self, className):
+            return ClientSide.peer(self, className)
+
+        def stealClassFromPeer(self, className):
+            return ClientSide.stealClassFromPeer(self, className)
+
+        def stealClassFromFellowChild(self, parentClass, className):
+            return ClientSide.stealClassFromFellowChild(self, parentClass, className)
+
+        def toggleVisiblity(self):
+            return WebElements.toggleVisiblity(self)
+
+        def hideClass(self, className):
+            return ClientSide.hideClass(className, self)
+
+        def showClass(self, className):
+            return ClientSide.showClass(className, self)
+
+        def buildThrobber(self):
+            return ClientSide.buildThrobber()
+
+        def show(self):
+            return ClientSide.show(self)
+
+        def hide(self):
+            return ClientSide.hide(self)
+
+        def shown(self):
+            return ClientSide.elementShown(self)
+
+        def replace(self, newElement):
+            return ClientSide.replace(self, newElement)
+
+        def remove(self):
+            return ClientSide.remove(self)
+
+        def clear(self):
+            return ClientSide.clear(self)
+
+        def addHtml(self, html):
+            return ClientSide.addHtml(self, html)
+
+        def move(self, to):
+            return ClientSide.move(self, to)
+
+        def copy(self, to, incrementId=False):
+            return ClientSide.copy(self, to, incrementId)
+
+        def contains(self, text, subtext, caseSensitive=False):
+            return ClientSide.contains(text, subtext, caseSensitive)
+
+        def startsWith(self, text, subtext, caseSensitive=False):
+            return ClientSide.startsWith(text, subtext, caseSensitive)
+
+        def addPrefix(self, prefix):
+            return ClientSide.addPrefix(self, prefix)
+
+        def removeDuplicates(self, array):
+            return ClientSide.removeDuplicates(array)
+
+        def getElementsByValue(self, value):
+            return ClientSide.getElementByValue(self, value)
+
+        def getElementByInnerHTML(self, html):
+            return ClientSide.getElementByInnerHTML(self, html)
+
+        def replaceAll(string, toReplace, replacement):
+            return ClientSide.replaceAll(string, toReplace, replacement)
+
+        def classes(self):
+            return ClientSide.classes(self)
+
+        def hasClass(self, className):
+            return ClientSide.hasClass(self, className)
+
+        def setClasses(self, classList):
+            return ClientSide.setClasses(self, classList)
+
+        def removeClass(self, className):
+            return ClientSide.removeClass(self, className)
+
+        def addClass(self, className):
+            return ClientSide.addClass(self, className)
+
+        def removeFromArray(self, arrayOfItems, toRemove):
+            return ClientSide.removeFromArray(arrayOfItems, toRemove)
+
+        def chooseClass(self, classes, choice):
+            return ClientSide.chooseClass(self, classes, choice)
+
+        def redraw(self):
+            return ClientSide.redraw(self)
+
+        def strip(self, string):
+            return ClientSide.strip(string)
+
+        def stripLeadingZeros(self, string):
+            return ClientSide.stripLeadingZeros(string)
+
+        def inList(self, array, value):
+            return ClientSide.inList(array, value)
+
+        def appendOnce(self, array, item):
+            return ClientSide.appendOnce(array, item)
+
+        def combine(self, array1, array2):
+            return ClientSide.combine(array1, array2)
+
+        def suppress(self, attribute):
+            return ClientSide.suppress(self, attribute)
+
+        def unsuppress(self, attribute):
+            return ClientSide.unsuppress(self, attribute)
+
+        def closeMenu(self):
+            return ClientSide.closeMenu()
+
+        def openPopup(self, url, width=700, height=700, normal=False, windowTitle="_blank", options=None):
+            return ClientSide.openPopup(url, width, height, normal, windowTitle, options)
+
+        def scrolledToBottom(self):
+            return ClientSide.scrolledToBottom(self)
+
+        def toggleClass(self, className):
+            return ClientSide.toggleClass(self, className)
+
+        def getNotificationPermission(self):
+            return ClientSide.getNotificationPermission()
+
+        def showNotification(self, title, content, icon="images/info.png"):
+            return ClientSide.showNotification(title, content, icon)
+
+        def stopOperation(self, event):
+            return ClientSide.stopOperation(event)
+
+        def serialize(self):
+            return ClientSide.serialize(self)
+
+        def serializeElements(self, elements):
+            return ClientSide.serializeElements(self, elements)
+
+        def serializeAll(self):
+            return ClientSide.serializeAll(self)
+
+        def confirm(self, message, action):
+            return ClientSide.confirm(message, action)
+
+        def callOpener(self, method):
+            return ClientSide.callOpener(method)
+
+        def updateParent(self):
+            return ClientSide.updateParent()
+
+        def focus(self, selectText=False):
+            return ClientSide.focus(self, selectText)
+
+        def redirect(self, to):
+            return ClientSide.redirect(to)
+
     def __init__(self, id=None, name=None, parent=None, **kwargs):
         """
             Initiates a WebElement object
@@ -86,6 +368,7 @@ class WebElement(Connectable):
         self._style = None
         self._classes = None
         self._attributes = None
+        self._clientSide = None
 
         self._childElements = None
         self.addChildElementsTo = self
@@ -127,11 +410,11 @@ class WebElement(Connectable):
 
         return self._childElements
 
-    def jsId(self):
-        """
-            Returns an id that can be used client side to access the object.
-        """
-        return self.fullId()
+    @property
+    def clientSide(self):
+        if self._clientSide is None:
+            self._clientSide = self.ClientSide(self)
+        return self._clientSide
 
     def reset(self):
         """
@@ -473,8 +756,11 @@ class WebElement(Connectable):
             Adds a script to the script contianer set on the element:
                 script - the script text or function to add
         """
-        if self.scriptContainer():
-            self.scriptContainer().addScript(script)
+        scriptContainer = self.scriptContainer()
+        if hasattr(script, 'container'):
+            script.container = scriptContainer or self
+        if scriptContainer:
+            scriptContainer.addScript(script)
         elif self.parent:
             self.parent.addScript(script)
         else:
@@ -538,6 +824,8 @@ class WebElement(Connectable):
                 event - the name of the event to connect the javascript to (such as onclick)
                 javascript - the script text or function to call on event
         """
+        if hasattr(javascript, 'claim'):
+            javascript = javascript.claim()
         if type(event) in (types.ListType, types.TupleType):
             for eventName in event:
                 self.attributes.setdefault(eventName, []).append(javascript)

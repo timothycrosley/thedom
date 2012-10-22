@@ -83,7 +83,7 @@ class TestNestedSelect(ElementTester):
 
     def setup_class(self):
         self.element = Factory.build("nestedselect", "Test", "Test")
-        self.element.setGroupData({'fruits':['apple', 'orange', 'grape']})
+        self.element.setGroupData((('fruits', ('apple', 'orange', 'grape')),))
 
 
 class TestFilter(ElementTester):

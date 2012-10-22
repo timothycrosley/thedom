@@ -11,6 +11,7 @@
 import types
 
 import Base
+import ClientSide
 import DictUtils
 import Factory
 from MethodUtils import CallBack
@@ -32,6 +33,24 @@ class ValueElement(Base.WebElement):
     properties['onchange'] = {'action':'javascriptEvent'}
     properties['onclick'] = {'action':'javascriptEvent'}
     properties['onblur'] = {'action':'javascriptEvent'}
+
+    class ClientSide(Base.WebElement.ClientSide):
+
+        def setValue(self, value):
+            return ClientSide.setValue(self, value)
+
+        def value(self):
+            return ClientSide.value(self)
+
+        def increment(self, max=None):
+            return ClientSide.increment(self, max)
+
+        def deincrement(self, min=None):
+            return ClientSide.deincrement(self, min)
+
+        def selectText(self, start, end):
+            return ClientSide.selectText(self, start, end)
+
 
     def __init__(self, id, name=None, parent=None, key=None, **kwargs):
         Base.WebElement.__init__(self, id, name, parent, **kwargs)
@@ -158,6 +177,14 @@ class CheckBox(InputElement):
     __slots__ = ()
     properties = InputElement.properties.copy()
     properties['valueAttribute'] = {'action':'setValueAttributeFromString'}
+
+    class ClientSide(InputElement):
+
+        def showIfChecked(self, elementToShow):
+            return ClientSide.showIfChecked(elementToShow, self)
+
+        def actLikeRadio(self, pair):
+            return ClientSide.checkboxActsLikeRadioButton(self, pair)
 
     def __init__(self, id=None, name=None, parent=None, key=None):
         InputElement.__init__(self, id, name, parent, key=key)
@@ -395,6 +422,14 @@ class Option(ValueElement):
     properties['selected'] = {'action':'setSelected', 'type':'bool'}
     properties['text'] = {'action':'setText'}
 
+    class ClientSide(ValueElement.ClientSide):
+
+        def select(self):
+            return ClientSide.selectOption(self.element.parent.clientSide, self)
+
+        def showIfSelected(self, elementToShow):
+            return ClientSide.showIfSelected(self.element.parent.clientSide, self, elementToShow)
+
     def __init__(self, id=None, name=None, parent=None, key=None):
         ValueElement.__init__(self, id, name, parent, key=key)
 
@@ -456,6 +491,29 @@ class Select(ValueElement):
     properties = ValueElement.properties.copy()
     properties['multiple'] = {'action':'attribute', 'type':'bool'}
     signals = ValueElement.signals + ['selectionChanged']
+
+    class ClientSide(ValueElement.ClientSide):
+
+        def addOption(self, optionName, optionValue=None):
+            return ClientSide.addOption(self, optionName, optionValue)
+
+        def addOptions(self, options):
+            return ClientSide.addOptions(self, options)
+
+        def sort(self, sortByValue=False):
+            return ClientSide.sortSelect(self, sortByValue)
+
+        def setOptions(self, options):
+            return ClientSide.setOptions(self, options)
+
+        def selectedOption(self):
+            return ClientSide.selectedOption(self)
+
+        def selectOption(self, option):
+            return ClientSide.selectOption(self, option)
+
+        def showIfSelected(self, option, elementToShow):
+            return ClientSide.showIfSelected(option, elementToShow, self)
 
     def __init__(self, id, name=None, parent=None, **kwargs):
         ValueElement.__init__(self, id, name, parent, **kwargs)

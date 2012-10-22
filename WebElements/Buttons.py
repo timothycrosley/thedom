@@ -58,14 +58,14 @@ class PopupLink(Link):
     """
         A link that will open the new page in a popup window
     """
-    __slots__ = ('height', 'width', 'windowTitle', 'normal', 'separateWindow')
+    __slots__ = ('height', 'width', 'windowTitle', 'normal', 'popupOptions')
     properties = Link.properties.copy()
     properties['width'] = {'action':'classAttribute'}
     properties['height'] = {'action':'classAttribute'}
     # the 'normal' flag allows you to retain the menu/toolbar
     properties['normal'] = {'action':'classAttribute'}
     properties['windowTitle'] = {'action':'classAttribute'}
-    properties['separateWindow'] = {'action':'classAttribute', 'type':'bool'}
+    properties['popupOptions'] = {'action':'classAttribute'}
 
     def __init__(self, id=None, name=None, parent=None, **kwargs):
         Link.__init__(self, id, name, parent, **kwargs)
@@ -73,15 +73,16 @@ class PopupLink(Link):
         self.width = 700
         self.windowTitle = "_blank"
         self.normal = False
-        self.separateWindow = False
+        self.popupOptions = None
         self.addJavascriptEvent('onClick', CallBack(self, 'javascriptPopUp'))
 
     def javascriptPopUp(self):
         """
             Returns the javascript responsible for opening up the link in a new window
         """
-        return "return " + ClientSide.openPopup(height=self.height, width=self.width, normal=self.normal,
-                                                separateWindow=self.separateWindow, windowTitle=self.windowTitle)
+        return "return " + str(ClientSide.openPopup(url=ClientSide.Script("this.href"), height=self.height,
+                                                    width=self.width, normal=self.normal,
+                                                    windowTitle=self.windowTitle, options=self.popupOptions))
 
 Factory.addProduct(PopupLink)
 
@@ -293,7 +294,7 @@ class ToggleButton(Layout.Box):
             Returns the javascript that will turn the button off client side
         """
         return """
-                var element = WebElements.get('""" + self.button.jsId() + """');
+                var element = WebElements.get('""" + self.button.fullId() + """');
                 WebElements.removeClass(element, 'Pushed');
                 WebElements.next(element).value = 'off';
                """
@@ -303,7 +304,7 @@ class ToggleButton(Layout.Box):
             Returns the javascript that will turn the button on client side
         """
         return """
-                var element = WebElements.get('""" + self.button.jsId() + """');
+                var element = WebElements.get('""" + self.button.fullId() + """');
                 WebElements.addClass(element, 'Pushed');
                 WebElements.next(element).value = 'on';
                """

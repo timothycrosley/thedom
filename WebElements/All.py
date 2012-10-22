@@ -8,7 +8,6 @@
         a single import (for example: import WebElements.All as WebElements; layout = WebElements.Layout.Vertical())
 '''
 
-import Ajax
 import Base
 import Buttons
 import Charts
@@ -30,7 +29,7 @@ import UITemplate
 import CodeDocumentation
 
 FactoryClasses = Factory
-Factory = Factory.Composite((DOM.Factory, Buttons.Factory, Ajax.Factory, DataViews.Factory,
+Factory = Factory.Composite((DOM.Factory, Buttons.Factory, DataViews.Factory,
                              Display.Factory, Fields.Factory, HiddenInputs.Factory, Inputs.Factory,
                              Layout.Factory, Navigation.Factory, Resources.Factory, Containers.Factory,
                              Charts.Factory, Printing.Factory, Document.Factory, CodeDocumentation.Factory,

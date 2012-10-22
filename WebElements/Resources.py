@@ -13,6 +13,7 @@ import types
 import DOM
 import Base
 import Factory
+import ClientSide
 from MethodUtils import CallBack
 from StringUtils import interpretAsString
 from DOM import Link, Script, H2
@@ -96,14 +97,11 @@ class ScriptContainer(DOM.Script):
         """
             Overrides the base content method to return the javascript associated with the scriptcontainer
         """
-        scriptContent = ""
-        for script in self.scripts():
-            scriptContent += interpretAsString(script) + "\n"
+        scriptContent = ";".join([interpretAsString(script) for script in self.scripts()])
 
         for objectType in self.usedObjects:
             for function in objectType.jsFunctions:
-                scriptContent += self.jsFunctionAsString(getattr(objectType,
-                                                                 function))
+                scriptContent += self.jsFunctionAsString(getattr(objectType, function))
 
         return scriptContent
 

@@ -78,7 +78,7 @@ WebElements.get = function (element)
     return null;
 }
 
-//Calls a callback method for each item in a list optionally returning on the first match
+//Calls a callback method for each item in a list
 WebElements.forEach = function(arrayOfItems, callBack)
 {
     if(arrayOfItems.forEach)
@@ -91,6 +91,22 @@ WebElements.forEach = function(arrayOfItems, callBack)
         callBack(arrayOfItems[currentItem]);
     }
     return true;
+}
+
+//Calls a callback for each item in a list and returns an array of the results
+WebElements.map = function(arrayOfItems, callBack)
+{
+    if(arrayOfItems.map)
+    {
+        return arrayOfItems.map(callBack);
+    }
+
+    newArray = []
+    for(var currentItem=0; currentItem < arrayOfItems.length; currentItem++)
+    {
+        newArray.push(arrayOfItems[currentItem]);
+    }
+    return newArray;
 }
 
 //Returns a list of nodes sorted by placement in the dom
@@ -236,7 +252,7 @@ WebElements.getChildrenByAttribute = function(parentNode, attributeName, attribu
 }
 
 //Returns the first child with a particular attribute value
-WebElements.getChildrenByAttribute = function(parentNode, attributeName, attributeValue)
+WebElements.getChildByAttribute = function(parentNode, attributeName, attributeValue)
 {
     return WebElements.getByCondition(function(element){return element[attributeName] === attributeValue;}, parentNode,
                                       true);
@@ -1076,10 +1092,31 @@ WebElements.selectText = function(element, start, end)
     }
 }
 
-WebElements.openPopup = function(popupName, popupURL, popupParent)
+WebElements.openPopup = function(popupName, popupURL, width, height, normal, options)
 {
     var popupName = WebElements.replaceAll(popupName, ' ', '');
-    return window.open(popupURL, popupName, "width=800,height=600,toolbar=no,focus=true,scrollbars=yes,resizable=yes");
+
+    params = ["focus=true,scrollbars=yes,resizable=yes"]
+    if(height)
+    {
+        params.push("height=" + height);
+    }
+    if(width)
+    {
+        params.push("width=" + width);
+    }
+    if(normal)
+    {
+        params.push("menubar=yes,status=yes,toolbar=yes,location=yes");
+    }
+
+    var newWindow = window.open(popupURL, popupName, params.join(","));
+
+    if(window.focus)
+    {
+        newWindow.focus()
+    }
+    return false;
 }
 
 WebElements.scrolledToBottom = function(scroller)
@@ -1315,4 +1352,80 @@ WebElements.serializeAll = function(container)
 
     var container = WebElements.get(container);
     return WebElements.serializeElements(WebElements.getElementsByTagNames(WebElements.Settings.Serialize, container));
+}
+
+//Presents a confirm window to the user, before doing an action
+WebElements.confirm = function(message, action)
+{
+    if(window.confirm('%s'))
+    {
+        action();
+    }
+}
+
+//Evaluates a method on the popup's opener
+WebElements.callOpener = function(method)
+{
+    if(opener && !opener.closed)
+    {
+        try
+        {
+            eval("opener." + method + ";");
+        }
+        catch(err)
+        {
+        }
+    }
+}
+
+
+//Tells the popup's opener that it has updated
+WebElements.updateParent = function()
+{
+    return WebElements.callOpener("updatedFromChild()");
+}
+
+//Sets the focus to a specif element - optionally selecting text
+WebElements.focus = function(element, selectText)
+{
+    var element = WebElements.get(element);
+    element.focus();
+    if(selectText)
+    {
+        element.select();
+    }
+}
+
+//Sets the value of an element
+WebElements.setValue = function(element, value)
+{
+    var element = WebElements.get(element).value = value;
+}
+
+//Shows the defined element only if the value matches
+WebElements.showIfValue = function(element, value, elementToShow)
+{
+    var element = WebElements.get(element);
+    if(element.value == value)
+    {
+        WebElements.show(elementToShow);
+    }
+    else
+    {
+        WebElements.hide(elementToShow);
+    }
+}
+
+//Shows the defined element only if the checkbox is checked
+WebElements.showIfChecked = function(checkbox, value, elementToShow)
+{
+    var checkbox = WebElements.get(checkbox);
+    if(checkbox.checked)
+    {
+        WebElements.show(elementToShow);
+    }
+    else
+    {
+        WebElements.hide(elementToShow);
+    }
 }

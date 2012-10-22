@@ -45,6 +45,6 @@ class FileUploader(Layout.Vertical):
         self.addScript(CallBack(self, 'jsConnections'))
 
     def jsConnections(self):
-        return "WebElements.buildFileOpener('%s');" % self.jsId()
+        return "WebElements.buildFileOpener('%s');" % self.fullId()
 
 Factory.addProduct(FileUploader)

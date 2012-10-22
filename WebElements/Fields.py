@@ -646,9 +646,9 @@ class IntegerField(BaseField):
         if maximum == None:
             maximum = "undefined"
         self.up.addJavascriptEvent('onclick', "WebElements.increment('%s', %s);" %
-                                 (self.userInput.jsId(), str(maximum)))
+                                 (self.userInput.fullId(), str(maximum)))
         self.down.addJavascriptEvent('onclick', "WebElements.deincrement('%s', %s);" %
-                                 (self.userInput.jsId(), str(minimum)))
+                                 (self.userInput.fullId(), str(minimum)))
 
     def __updateReadOnly__(self):
         if not self.editable():
@@ -771,8 +771,8 @@ class NestedSelect(SelectField):
         if self.items:
             return """document.%(groupId)s = %(groups)s;
                     document.%(itemId)s = %(items)s;
-                """ % {'items':json.dumps(self.items), 'groups':self.items.keys(), 'id':self.jsId(),
-                        'itemId':self.itemSelect.jsId(), 'groupId':self.userInput.jsId()}
+                """ % {'items':json.dumps(self.items), 'groups':self.items.keys(), 'id':self.fullId(),
+                        'itemId':self.itemSelect.fullId(), 'groupId':self.userInput.fullId()}
 
     def jsPopulateItemSelect(self):
         """
@@ -780,8 +780,8 @@ class NestedSelect(SelectField):
         """
         return """WebElements.setOptions('%(itemSelectId)s',
                      document.%(itemSelectId)s[WebElements.getValue('%(groupSelectId)s')]);
-               """ % {'itemSelectId':self.itemSelect.jsId(),
-                      'groupSelectId':self.userInput.jsId()}
+               """ % {'itemSelectId':self.itemSelect.fullId(),
+                      'groupSelectId':self.userInput.fullId()}
 
 Factory.addProduct(NestedSelect)
 

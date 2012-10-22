@@ -92,9 +92,6 @@ class TestWebElement(object):
         assert self.container.fullId() == "IdPrefix1-NewId1"
         assert self.firstChild.fullId() == "IdPrefix2-NewId2"
 
-    def test_jsId(self):
-        assert self.container.jsId() == "1"
-
     def test_reset(self):
         assert len(self.container.childElements) > 0
         self.container.reset()

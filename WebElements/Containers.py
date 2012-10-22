@@ -301,7 +301,7 @@ class TabContainer(Base.WebElement):
 
     def jsInit(self):
         if self.selectedTab:
-            return "var %s_selectedTab = '%s';" % (self.jsId(), self.selectedTab.jsId())
+            return "var %s_selectedTab = '%s';" % (self.fullId(), self.selectedTab.fullId())
         return ""
 
     def jsSelectTab(self, tab):
@@ -309,12 +309,12 @@ class TabContainer(Base.WebElement):
             Returns the javascript code to select an individual tab client side
         """
         return (("WebElements.hide(%(tabContainer)s_selectedTab);" +
-                 tab.TabLabel.jsUnselect("%s_selectedTab + 'Label'" % self.jsId()) +
+                 tab.TabLabel.jsUnselect("%s_selectedTab + 'Label'" % self.fullId()) +
                  "%(tabContainer)s_selectedTab = '%(tab)s';"
                  "WebElements.show(%(tabContainer)s_selectedTab);" +
-                 tab.TabLabel.jsSelect("'" + tab.jsId() + "Label'")) %
-                    {'tab':tab.jsId(),
-                     'tabContainer':self.jsId()})
+                 tab.TabLabel.jsSelect("'" + tab.fullId() + "Label'")) %
+                    {'tab':tab.fullId(),
+                     'tabContainer':self.fullId()})
 
     def selectTab(self, tabName):
         """
@@ -401,8 +401,8 @@ class Accordion(Layout.Vertical):
                      WebElements.show('%s');
                      WebElements.get('%s').value = 'True';
                      WebElements.get('%s').src = 'images/hide.gif'
-                """ % (self.contentElement.jsId(), self.contentElement.jsId(),
-                       self.isOpen.jsId(), self.toggleImage.jsId())
+                """ % (self.contentElement.fullId(), self.contentElement.fullId(),
+                       self.isOpen.fullId(), self.toggleImage.fullId())
 
     def jsToggleOff(self):
         """
@@ -412,15 +412,15 @@ class Accordion(Layout.Vertical):
                      WebElements.hide('%s');
                      WebElements.get('%s').value = 'False';
                      WebElements.get('%s').src = 'images/show.gif'
-                """ % (self.contentElement.jsId(), self.contentElement.jsId(),
-                       self.isOpen.jsId(), self.toggleImage.jsId())
+                """ % (self.contentElement.fullId(), self.contentElement.fullId(),
+                       self.isOpen.fullId(), self.toggleImage.fullId())
 
     def jsToggle(self):
         """
             Returns the javascript that will set the toggled state to the reverse of its current state client side
         """
-        return "toggleAccordion('%s', '%s', '%s');" % (self.contentElement.jsId(), self.toggleImage.jsId(),
-                                                   self.isOpen.jsId())
+        return "toggleAccordion('%s', '%s', '%s');" % (self.contentElement.fullId(), self.toggleImage.fullId(),
+                                                   self.isOpen.fullId())
     @staticmethod
     def toggleAccordion(elementContent, elementImage, elementValue):
         return """if(!WebElements.shown(elementContent)){
