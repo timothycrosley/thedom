@@ -286,52 +286,19 @@ class LabeledData(Label):
 Factory.addProduct(LabeledData)
 
 
-class Error(Label):
+class FormError(Label):
     """
-        Defines an error webElement
+        Defines where a form error should be placed - adds it to the page
+        even when an error doesn't occur so that errors can be added
+        by javascript as well as server side validators
     """
     __slots__ = ()
     tagName = "div"
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Label.__init__(self, id, name, parent, **kwargs)
+    def __init__(self, id, name=None, parent=None, **kwargs):
+        Label.__init__(self, id + "Error", name, parent, **kwargs)
 
-Factory.addProduct(Error)
-
-
-class FormError(Label):
-    """
-        Defines a '<form:error>' web element, which is used by formencode, or dynamics forms error processor to
-        know where to place an error when present
-    """
-    __slots__ = ()
-    displayable = False
-    tagName = 'form:error'
-    tagSelfCloses = True
-
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        if id and not name:
-            name = id or "ErrorGettingName"
-            id = None
-
-        Label.__init__(self, id, name, parent, **kwargs)
-
-    def setError(self, errorText):
-        """
-            Sets the error text
-        """
-        self._tagName = "span"
-        self.addClass("error-message")
-        self.tagSelfCloses = False
-        if not getattr(self, '_textNode', None):
-            self.textNode = Base.TextNode()
-        self._textNode.setText(errorText)
-
-    def shown(self):
-        """
-            Form Errors are never visible but only replaced
-        """
-        return False
+        self.hide()
 
 Factory.addProduct(FormError)
 

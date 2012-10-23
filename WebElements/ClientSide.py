@@ -27,7 +27,7 @@ def var(variable):
     if isinstance(variable, Script):
         return variable.claim()
     if hasattr(variable, 'id'):
-        return variable.id
+        return json.dumps(variable.id)
     if type(variable) in (list, tuple, set):
         return "[" + ",".join(var(item) for item in variable) + "]"
     return json.dumps(variable)
