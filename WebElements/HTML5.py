@@ -3,6 +3,7 @@
 """
 
 import Factory
+from WebElements import Base
 from WebElements import Display
 from WebElements import Layout
 from MethodUtils import CallBack
@@ -22,7 +23,7 @@ class FileUploader(Layout.Vertical):
         self.statusBar.hide()
 
         self.dropIndicator = self.statusBar.addChildElement(Display.Image())
-        self.dropIndicator.setProperty('src', 'images/throbber.gif')
+        self.dropIndicator.setProperty('src', Base.IMAGES_URL + 'throbber.gif')
         self.dropIndicator.addClass("WDropIndicator")
 
         self.dropLabel = self.statusBar.addChildElement(Display.Label(id + "DropLabel"))

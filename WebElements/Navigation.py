@@ -10,6 +10,7 @@
 
 import Base
 import Buttons
+import ClientSide
 import Containers
 import Display
 import HiddenInputs
@@ -133,7 +134,8 @@ class ItemPager(Layout.Vertical):
             index - the first item you want to appear in your pages results
         """
         return ("WebElements.get('%(id)sIndex').value = '%(index)d';%(handlers)s;" %
-                {'id':self.fullId(), 'index':index, 'handlers':"\n".join(self.emit('jsIndexChanged'))})
+                {'id':self.fullId(), 'index':index, 'handlers':"\n".join([ClientSide.var(result) for result in
+                                                                          self.emit('jsIndexChanged')])})
 
     def _updateUI_(self):
         """

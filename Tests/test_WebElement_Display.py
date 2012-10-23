@@ -64,12 +64,6 @@ class TestPreformattedText(ElementTester):
         self.element = Factory.build("PreformattedText", "Test")
 
 
-class TestError(ElementTester):
-
-    def setup_class(self):
-        self.element = Factory.build("error", name="Test")
-
-
 class TestFormError(ElementTester):
 
     def setup_class(self):

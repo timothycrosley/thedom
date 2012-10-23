@@ -295,8 +295,8 @@ class FormError(Label):
     __slots__ = ()
     tagName = "div"
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Label.__init__(self, id + "Error", name, parent, **kwargs)
+    def __init__(self, id="", name=None, parent=None, **kwargs):
+        Label.__init__(self, id  and id + "Error", name, parent, **kwargs)
 
         self.hide()
 

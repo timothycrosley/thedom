@@ -400,9 +400,9 @@ class Accordion(Layout.Vertical):
         return """if (!WebElements.shown('%s')){
                      WebElements.show('%s');
                      WebElements.get('%s').value = 'True';
-                     WebElements.get('%s').src = 'images/hide.gif'
+                     WebElements.get('%s').src = '%shide.gif'
                 """ % (self.contentElement.fullId(), self.contentElement.fullId(),
-                       self.isOpen.fullId(), self.toggleImage.fullId())
+                       self.isOpen.fullId(), self.toggleImage.fullId(), Base.IMAGES_URL)
 
     def jsToggleOff(self):
         """
@@ -411,9 +411,9 @@ class Accordion(Layout.Vertical):
         return """if (WebElements.shown('%s')){
                      WebElements.hide('%s');
                      WebElements.get('%s').value = 'False';
-                     WebElements.get('%s').src = 'images/show.gif'
+                     WebElements.get('%s').src = '%sshow.gif'
                 """ % (self.contentElement.fullId(), self.contentElement.fullId(),
-                       self.isOpen.fullId(), self.toggleImage.fullId())
+                       self.isOpen.fullId(), self.toggleImage.fullId(), Base.IMAGES_URL)
 
     def jsToggle(self):
         """
@@ -426,20 +426,20 @@ class Accordion(Layout.Vertical):
         return """if(!WebElements.shown(elementContent)){
                      WebElements.show(elementContent);
                      elementValue.value = 'True';
-                     elementImage.src = 'images/hide.gif'
+                     elementImage.src = '%shide.gif'
                   }
                   else
                   {
                      WebElements.hide(elementContent);
                      elementValue.value = 'False';
-                     elementImage.src = 'images/show.gif'
-                  }"""
+                     elementImage.src = '%sshow.gif'
+                  }""" % (Base.IMAGES_URL, Base.IMAGES_URL)
 
     def open(self):
         """
             Makes the accordions content visible
         """
-        self.toggleImage.setProperty('src', 'images/hide.gif')
+        self.toggleImage.setProperty('src', Base.IMAGES_URL + 'hide.gif')
         self.contentElement.show()
         self.isOpen.setValue(True)
 
@@ -447,7 +447,7 @@ class Accordion(Layout.Vertical):
         """
             Hides the accordions content
         """
-        self.toggleImage.setProperty('src', 'images/show.gif')
+        self.toggleImage.setProperty('src', Base.IMAGES_URL + 'show.gif')
         self.contentElement.hide()
         self.isOpen.setValue(False)
 

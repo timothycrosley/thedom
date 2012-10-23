@@ -31,6 +31,7 @@ BLOCK_TAGS = ('address', 'blockquote', 'center', 'dir', 'div', 'dl', 'fieldset',
               'thead', 'tr')
 
 INDENTATION = " "
+IMAGES_URL = "images/"
 
 def addChildProperties(propertiesDict, classDefinition, accessor):
     for propertyName, propertyDict in classDefinition.properties.iteritems():
@@ -325,7 +326,7 @@ class WebElement(Connectable):
         def getNotificationPermission(self):
             return ClientSide.getNotificationPermission()
 
-        def showNotification(self, title, content, icon="images/info.png"):
+        def showNotification(self, title, content, icon=IMAGES_URL + "info.png"):
             return ClientSide.showNotification(title, content, icon)
 
         def stopOperation(self, event):
