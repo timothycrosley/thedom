@@ -58,7 +58,7 @@ class AutoAddScripts(type):
     """
     def __new__(cls, name, bases, dct):
         for name, attribute in dct.items():
-            if name == "element" or name.startswith("_") or name == "id" or type(attribute) != FunctionType:
+            if name in ("element", "id", "on") or name.startswith("_") or type(attribute) != FunctionType:
                 continue
 
             dct[name] = autoAddScript(attribute)
@@ -105,6 +105,17 @@ class WebElement(Connectable):
 
         def __init__(self, element):
             self.element = element
+
+        def on(self, event, action):
+            if type(event) in (types.ListType, types.TupleType):
+                event = ["on" + eventName for eventName in event]
+            else:
+                event = "on" + event
+
+            if type(action) in (types.ListType, types.TupleType):
+                action = ";".join([script.claim() for script in action])
+
+            return self.element.addJavascriptEvent(event, action)
 
         @property
         def id(self):
