@@ -10,6 +10,7 @@
 
 import types
 
+import DOM
 import Base
 import ClientSide
 import DictUtils
@@ -20,13 +21,16 @@ from StringUtils import interpretAsString
 Factory = Factory.Factory("Inputs")
 
 
-class ValueElement(Base.WebElement):
+class ValueElement(DOM.Input):
     """
         Defines a base value containing WebElement
     """
+    tagName = ""
+    tagSelfCloses = False
+    allowsChildren = True
     __slots__ = ('key', '_value')
-    signals = Base.WebElement.signals + ['valueChanged']
-    properties = Base.WebElement.properties.copy()
+    signals = DOM.Input.signals + ['valueChanged']
+    properties = DOM.Input.properties.copy()
     properties['text'] = {'action':'setValue'}
     properties['value'] = {'action':'setValue'}
     properties['tabindex'] = {'action':'attribute'}
@@ -34,7 +38,7 @@ class ValueElement(Base.WebElement):
     properties['onclick'] = {'action':'javascriptEvent'}
     properties['onblur'] = {'action':'javascriptEvent'}
 
-    class ClientSide(Base.WebElement.ClientSide):
+    class ClientSide(DOM.Input.ClientSide):
 
         def setValue(self, value):
             return ClientSide.setValue(self, value)
@@ -53,7 +57,7 @@ class ValueElement(Base.WebElement):
 
 
     def __init__(self, id, name=None, parent=None, key=None, **kwargs):
-        Base.WebElement.__init__(self, id, name, parent, **kwargs)
+        DOM.Input.__init__(self, id, name, parent, **kwargs)
         self.key = key
         self._value = ''
         self.attributes['value'] = CallBack(self, 'value')
@@ -65,7 +69,7 @@ class ValueElement(Base.WebElement):
         if variableDict == None:
             variableDict = {}
 
-        Base.WebElement.insertVariables(self, variableDict)
+        DOM.Input.insertVariables(self, variableDict)
 
         value = None
         removeFromDictionary = True
@@ -124,7 +128,7 @@ class ValueElement(Base.WebElement):
             if self.key:
                 DictUtils.setNestedValue(exportedVariables, self.key, self.value())
 
-        Base.WebElement.exportVariables(self, exportedVariables, flat)
+        DOM.Input.exportVariables(self, exportedVariables, flat)
         return exportedVariables
 
     def setValue(self, value):

@@ -194,7 +194,7 @@ class WebElementTree(WebElement):
                 value = "true"
 
             if value == "":
-                value = "<BLANK>"
+                value = "_BLANK_"
 
             if attribute == "id":
                 self.id = value

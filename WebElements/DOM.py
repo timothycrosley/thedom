@@ -6,7 +6,6 @@
 from Base import WebElement
 import DictUtils
 import Factory
-from Inputs import ValueElement
 from MethodUtils import CallBack
 
 Factory = Factory.Factory("DOM")

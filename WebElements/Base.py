@@ -889,10 +889,10 @@ class WebElement(Connectable):
         for key, value in attributes:
             value = interpretAsString(value)
             if value:
-                if value == '<BLANK>':
+                if value == '_BLANK_':
                     value = ""
 
-                if value == '<EMPTY>':
+                if value == '_EMPTY_':
                     startTag += key + " "
                 else:
                     startTag += key + '="' + value.replace('"', '&quot;') + '" '
