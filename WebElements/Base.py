@@ -832,7 +832,7 @@ class WebElement(Connectable):
                 javascript - the script text or function to call on event
         """
         if hasattr(javascript, 'claim'):
-            javascript = javascript.claim()
+            javascript = javascript.claim() + ";"
         if type(event) in (types.ListType, types.TupleType):
             for eventName in event:
                 self.attributes.setdefault(eventName, []).append(javascript)

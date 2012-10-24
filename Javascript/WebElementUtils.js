@@ -277,7 +277,7 @@ WebElements.populate = function(fieldDict)
     {
         field = WebElements.get(fieldId);
         value = fieldDict[fieldId];
-        if(field && value)
+        if(field)
         {
             field.value = value;
         }
