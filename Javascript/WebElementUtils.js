@@ -1332,7 +1332,7 @@ WebElements.serialize = function(field)
     {
         var value = [];
         WebElements.forEach(element.options, function(option){
-                        if(option.selected){value.push(key + "=" + encodeURIComponent(option.value || option.text))}});
+                        if(option.selected){value.push(key + "=" + encodeURIComponent(option.value))}});
         return value.join("&");
     }
 }
