@@ -113,7 +113,7 @@ class WebElement(Connectable):
                 event = "on" + event
 
             if type(action) in (types.ListType, types.TupleType):
-                action = ";".join([script.claim() for script in action])
+                action = ";".join([script.claim() for script in action]) + ";"
 
             return self.element.addJavascriptEvent(event, action)
 
