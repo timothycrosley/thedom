@@ -166,6 +166,20 @@ class BaseField(Layout.Box):
         self.inputAndActions.parent.style['float'] = 'right'
         self.formError.parent.style['float'] = 'right'
 
+
+class InputField(BaseField):
+    """
+        A field using an input element
+    """
+    __slots__ = ()
+    inputElement = Inputs.InputElement
+    properties = BaseField.properties.copy()
+    Base.addChildProperties(properties, Inputs.InputElement, 'userInput')
+    properties['type'] = {'action':'userInput.attribute', 'name':'type'}
+
+Factory.addProduct(InputField)
+
+
 class TextField(BaseField):
     """
         A field with a textbox as the input

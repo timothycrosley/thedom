@@ -173,6 +173,8 @@ class InputElement(ValueElement):
         '''
         return 'WebElements.get(\'%s\').disabled = %s;' % (self.id, str(disabled))
 
+Factory.addProduct(InputElement)
+
 
 class CheckBox(InputElement):
     """

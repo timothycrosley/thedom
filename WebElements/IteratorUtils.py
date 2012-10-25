@@ -347,7 +347,10 @@ class Queryable(list):
             for model in self:
                 currentModel = model
                 for modelName in keys:
-                    currentModel = currentModel.__getattribute__(modelName)
+                    if isinstance(currentModel, dict):
+                        currentModel = currentModel[modelName]
+                    else:
+                        currentModel = currentModel.__getattribute__(modelName)
 
                 if key == "in":
                     filterType = "in"
