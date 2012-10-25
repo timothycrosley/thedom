@@ -1,0 +1,32 @@
+// We should only have 2 font-families throught the ADC site, one for content and another for headings
+
+$family: helvetica, arial, sans-serif
+
+body
+    font-family: $family
+    font-size: 100%
+    line-height: 1.25
+
+small
+    font-size: .8em
+
+p
+    line-height: 1.5
+    text-indent: 1em
+
+em
+    font-style: italic
+
+strong
+    font-weight: bold
+
+$baseHeaderSize: 3.25
+@for $level from 1 through 6
+    h#{$level}
+        $headerSize: ($baseHeaderSize - (.25 * $level))
+        font-size: $headerSize * 1em
+        @if $level == 1
+            font-weight: bold
+        @if $level == 6
+            text-decoration: underline
+

@@ -46,30 +46,30 @@ class ItemPager(Layout.Vertical):
         positionLayout.addClass("WActions")
         label = positionLayout.addChildElement(Display.Label())
         label.setText('Showing Results')
-        label.addClass('SpacedWord')
+        label.addClass('WSpaced')
 
         self.resultsStartAt = positionLayout.addChildElement(Display.Label())
         self.resultsStartAt.makeStrong()
         self.resultsStartAt.setText('1')
-        self.resultsStartAt.addClass('SpacedWord')
+        self.resultsStartAt.addClass('WSpaced')
 
         label = positionLayout.addChildElement(Display.Label())
         label.setText('-')
-        label.addClass('SpacedWord')
+        label.addClass('WSpaced')
 
         self.resultsEndAt = positionLayout.addChildElement(Display.Label())
         self.resultsEndAt.makeStrong()
         self.resultsEndAt.setText('25')
-        self.resultsEndAt.addClass('SpacedWord')
+        self.resultsEndAt.addClass('WSpaced')
 
         label = positionLayout.addChildElement(Display.Label())
         label.setText('out of')
-        label.addClass('SpacedWord')
+        label.addClass('WSpaced')
 
         self.numberOfResults = positionLayout.addChildElement(Display.Label())
         self.numberOfResults.makeStrong()
         self.numberOfResults.setText('100')
-        self.numberOfResults.addClass('SpacedWord')
+        self.numberOfResults.addClass('WSpaced')
 
         self.showAllButton = positionLayout.addChildElement(Buttons.ToggleButton('showAllButton'))
         self.showAllButton.setText("Show All")
@@ -83,7 +83,7 @@ class ItemPager(Layout.Vertical):
         self.backButton = buttonLayout.addChildElement(Buttons.Link())
         self.backButton.setText("&lt; Back")
         self.backButton.setDestination("#Link")
-        self.backButton.addClass("SpacedWord")
+        self.backButton.addClass("WSpaced")
 
         self.pageLinks = buttonLayout.addChildElement(Layout.Flow())
 
@@ -94,7 +94,7 @@ class ItemPager(Layout.Vertical):
         self.lastButton = buttonLayout.addChildElement(Buttons.Link())
         self.lastButton.setText("&gt;&gt;")
         self.lastButton.setDestination("#Link")
-        self.lastButton.addClass("SpacedWord")
+        self.lastButton.addClass("WSpaced")
 
         self.pagesShownAtOnce = 15
         self.itemsPerPage = 25
@@ -174,7 +174,7 @@ class ItemPager(Layout.Vertical):
             for page in self._pages_.pageList():
                 link = self.pageLinks.addChildElement(Buttons.Link())
                 link.setText(unicode(page / self._pages_.itemsPerPage + 1))
-                link.addClass('SpacedWord')
+                link.addClass('WSpaced')
                 if page != self._index_.value():
                     link.setDestination('#Link')
                     link.addJavascriptEvent('onclick', self.jsSetNavigationIndex(page))
@@ -311,7 +311,6 @@ class BreadCrumb(Layout.Box):
             self.trail.append({'field':self.currentLocation, 'term':key})
 
             spacer = Display.Label('spacer')
-            spacer.addClass("BreadCrumbSpacer")
             spacer.setText(' >> ')
             self.addChildElement(spacer)
 
@@ -322,7 +321,7 @@ class BreadCrumb(Layout.Box):
             self.hiddenData.setValue(value)
 
         link = Buttons.Link('breadcrumb')
-        link.addClass("BreadCrumbLink")
+        link.addClass("WCrumb")
         link.setText(text)
         link.name = unicode(self.linkCount)
         link.addJavascriptEvent('onclick', "submitLink('" + text + "', '" +
@@ -373,7 +372,7 @@ class BreadCrumb(Layout.Box):
         """
             Updates the display of the current link to reflected its highlighted status
         """
-        self.currentLink.removeClass('BreadCrumbLink')
+        self.currentLink.removeClass('WCrumb')
 
     def insertVariables(self, valueDict=None):
         Layout.Box.insertVariables(self, valueDict)
@@ -544,22 +543,22 @@ class TimeFrame(Layout.Horizontal):
 
         label = self.addChildElement(Display.Label())
         label.setText('Show Timeframe:')
-        label.addClass("TimeFrameLabel")
+        label.addClass("WLabel")
 
         self.anyTime = self.addChildElement(Buttons.Link())
-        self.anyTime.addClass('SpacedWord')
+        self.anyTime.addClass('WSpaced')
         self.anyTime.setText('All,')
 
         self.hours24 = self.addChildElement(Buttons.Link())
-        self.hours24.addClass('SpacedWord')
+        self.hours24.addClass('WSpaced')
         self.hours24.setText('24 Hours,')
 
         self.days7 = self.addChildElement(Buttons.Link())
-        self.days7.addClass('SpacedWord')
+        self.days7.addClass('WSpaced')
         self.days7.setText('7 Days,')
 
         self.days14 = self.addChildElement(Buttons.Link())
-        self.days14.addClass('SpacedWord')
+        self.days14.addClass('WSpaced')
         self.days14.setText('14 Days')
 
         self.helpDropDown = self.addChildElement(Containers.DropDownMenu('help'))

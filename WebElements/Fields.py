@@ -817,7 +817,7 @@ class Filter(Layout.Box):
         self.isSubFilter = False
 
         filterContainer = Layout.Box(id + ":Container")
-        filterContainer.addClass('Filter')
+        filterContainer.addClass('WFilter')
         self.filterContainer = self.addChildElement(filterContainer)
 
         filterInput = Layout.Box()
@@ -829,7 +829,7 @@ class Filter(Layout.Box):
         filterInput.addChildElement(label)
 
         searchTerm = Inputs.TextBox(id + ":SearchTerm", "FilterTerm")
-        searchTerm.addClass("FilterTerm")
+        searchTerm.addClass("WFilterTerm")
         self.searchTerm = filterInput.addChildElement(searchTerm)
 
         label = Display.Label('filterFieldLabel')
@@ -837,7 +837,7 @@ class Filter(Layout.Box):
         filterInput.addChildElement(label)
 
         searchFields = Inputs.Select(id + ":SearchFields", "FilterField")
-        searchFields.addClass("FilterField")
+        searchFields.addClass("WFilterField")
         self.searchFields = filterInput.addChildElement(searchFields)
 
         filterType = Inputs.TextBox(id + ":FilterType", "FilterType")
@@ -852,29 +852,29 @@ class Filter(Layout.Box):
         removeButton.setText("")
         removeButton.addChildElement(DOM.Img()).setProperty("src", Base.IMAGES_URL + "/close.gif")
         removeButton.addClass('Clickable')
-        removeButton.addClass('RemoveFilter')
+        removeButton.addClass('WRemoveFilter')
         removeButton.addJavascriptEvent("onclick", CallBack(self, 'jsRemoveFilter'))
         removeButton.addJavascriptEvent("onmouseover",
                                         """WebElements.addClass(WebElements.parent(this,
-                                                                      'Filter'),
-                                                        'FilterHighlight');""")
+                                                                      'WFilter'),
+                                                        'WFilterHighlight');""")
         removeButton.addJavascriptEvent("onmouseout",
                                         """WebElements.removeClass(WebElements.parent(this,
-                                                                      'Filter'),
-                                                        'FilterHighlight');""")
+                                                                      'WFilter'),
+                                                        'WFilterHighlight');""")
         self.removeButton = filterContainer.addChildElement(removeButton)
 
         addFilter = Layout.Box()
-        addFilter.addClass('AddFilter')
+        addFilter.addClass('WAddFilter')
         addFilter.style['clear'] = 'both'
         addAndFilter = Buttons.ToggleButton(id + ":And")
-        addAndFilter.button.addClass('AddFilterButton')
-        addAndFilter.button.addClass('AddAndFilter')
+        addAndFilter.button.addClass('WAddFilterButton')
+        addAndFilter.button.addClass('WAddAndFilter')
         addAndFilter.setValue("And")
         self.addAndFilter = addFilter.addChildElement(addAndFilter)
         addOrFilter = Buttons.ToggleButton(id + ":Or")
-        addOrFilter.button.addClass('AddFilterButton')
-        addOrFilter.button.addClass('AddOrFilter')
+        addOrFilter.button.addClass('WAddFilterButton')
+        addOrFilter.button.addClass('WAddOrFilter')
         addOrFilter.setValue("Or")
         self.addOrFilter = addFilter.addChildElement(addOrFilter)
         self.addFilter = filterContainer.addChildElement(addFilter)
@@ -928,9 +928,9 @@ class Filter(Layout.Box):
                     filter = WebElements.copy(parentFilter,
                                     WebElements.getByClassName('subFilter',
                                                             parentFilter));
-                    oldTerm = WebElements.getByClassName('FilterTerm',
+                    oldTerm = WebElements.getByClassName('WFilterTerm',
                                                         parentFilter);
-                    newTerm = WebElements.getByClassName('FilterTerm', filter);
+                    newTerm = WebElements.getByClassName('WFilterTerm', filter);
                     newTerm.value = oldTerm.value;
                     newTerm.focus();
                     newTerm.select();
@@ -951,13 +951,13 @@ class Filter(Layout.Box):
                 filterType = WebElements.getByClassName('filterType',
                                                      childFilter).value;
 
-                AndButton = WebElements.getByClassName('AddAndFilter', thisFilter);
-                OrButton = WebElements.getByClassName('AddOrFilter', thisFilter);
+                AndButton = WebElements.getByClassName('WAddAndFilter', thisFilter);
+                OrButton = WebElements.getByClassName('WAddOrFilter', thisFilter);
                 parentFilter = WebElements.parent(thisFilter, 'WFilter');
 
-                parentAndButton = WebElements.getByClassName('AddAndFilter',
+                parentAndButton = WebElements.getByClassName('WAddAndFilter',
                                                           parentFilter);
-                parentOrButton = WebElements.getByClassName('AddOrFilter',
+                parentOrButton = WebElements.getByClassName('WAddOrFilter',
                                                          parentFilter);
 
                 parentOrButton.className = OrButton.className;

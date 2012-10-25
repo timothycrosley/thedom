@@ -601,7 +601,7 @@ WebElements.toggleVisibility = function(element)
 }
 
 //return if the element is visable or not
-WebElements.elementShown = function(element)
+WebElements.shown = function(element)
 {
     if(WebElements.get(element).style.display == "none")
     {

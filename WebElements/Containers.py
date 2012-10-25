@@ -370,15 +370,13 @@ class Accordion(Layout.Vertical):
         self.addClass("WAccordion")
 
         self.toggle = self.addChildElement(Layout.Horizontal())
-        self.toggle.addClass('AccordionToggle')
+        self.toggle.addClass('WToggle')
         self.toggle.addJavascriptEvent('onclick', CallBack(self, 'jsToggle'))
         self.toggleImage = self.toggle.addChildElement(Display.Image(id + "Image"))
-        self.toggleImage.addClass('AccordionImage')
         self.toggleLabel = self.toggle.addChildElement(Display.Label())
-        self.toggleLabel.addClass('AccordionLabel')
         self.isOpen = self.toggle.addChildElement(HiddenInputs.HiddenBooleanValue(id + "Value"))
         self.contentElement = self.addChildElement(Layout.Box(id + "Content"))
-        self.contentElement.addClass('AccordionContent')
+        self.contentElement.addClass('WContent')
         self.addChildElementsTo = self.contentElement
 
         self.isOpen.connect('valueChanged', True, self, 'open')
