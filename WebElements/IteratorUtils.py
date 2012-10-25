@@ -356,7 +356,10 @@ class Queryable(list):
                     filterType = "in"
                     matchAgainst = currentModel
                 elif key:
-                    matchAgainst = getattr(currentModel, key, None)
+                    if isinstance(currentModel, dict):
+                        matchAgainst = currentModel.get(key, None)
+                    else:
+                        matchAgainst = getattr(currentModel, key, None)
                 else:
                     matchAgainst = currentModel
 
