@@ -785,7 +785,7 @@ class NestedSelect(SelectField):
         if self.items:
             return """document.%(groupId)s = %(groups)s;
                     document.%(itemId)s = %(items)s;
-                """ % {'items':json.dumps(self.items), 'groups':self.items.keys(), 'id':self.fullId(),
+                """ % {'items':json.dumps(self.items), 'groups':json.dumps(self.items.keys()), 'id':self.fullId(),
                         'itemId':self.itemSelect.fullId(), 'groupId':self.userInput.fullId()}
 
     def jsPopulateItemSelect(self):
