@@ -58,7 +58,7 @@ class AutoAddScripts(type):
     """
     def __new__(cls, name, bases, dct):
         for name, attribute in dct.items():
-            if name in ("element", "id", "on") or name.startswith("_") or type(attribute) != FunctionType:
+            if name in ("element", "id") or name.startswith("_") or type(attribute) != FunctionType:
                 continue
 
             dct[name] = autoAddScript(attribute)
