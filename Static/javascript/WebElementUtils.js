@@ -38,10 +38,110 @@ Platform.IS_IE = navigator.appVersion.match(/\bMSIE\b/) && !!window.attachEvent 
 Platform.IS_WEBKIT = navigator.userAgent.indexOf('AppleWebKit/') > -1
 Platform.IS_GECKO = navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') === -1
 
+//Provides basic event handling
+var Events = Events || {}
+
+Events.addEvent = function(element, type, handler)
+{
+    if(typeof(type) != typeof([]))
+    {
+        return WebElements.forEach(type, function(eventType){Events.addEvent(element, eventType, handler);});
+    }
+    if(typeof(handler) != typeof([]))
+    {
+        return WebElements.forEach(handler, function(eventHandler){Events.addEvent(element, type, eventHandler);});
+    }
+    if (element.addEventListener)
+    {
+        element.addEventListener(type, handler, false);
+    }
+    else
+    {
+        if (!handler.$$guid)
+        {
+            handler.$$guid = addEvent.guid++;
+        }
+        if (!element.events)
+        {
+            element.events = {};
+        }
+
+        var handlers = element.events[type];
+        if (!handlers)
+        {
+            handlers = element.events[type] = {};
+            if (element["on" + type])
+            {
+                handlers[0] = element["on" + type];
+            }
+        }
+        handlers[handler.$$guid] = handler;
+        element["on" + type] = handleEvent;
+    }
+};
+Events.addEvent.guid = 1;
+
+Events.removeEvent = function(element, type, handler)
+{
+    if(typeof(type) == typeof([]))
+    {
+        return WebElements.forEach(type, function(eventType){Events.removeEvent(element, eventType, handler);});
+    }
+    if(typeof(handler) == typeof([]))
+    {
+        return WebElements.forEach(handler, function(eventHandler){Events.removeEvent(element, type, eventHandler);});
+    }
+    if (element.removeEventListener)
+    {
+        element.removeEventListener(type, handler, false);
+    }
+    else
+    {
+        if (element.events && element.events[type])
+        {
+            delete element.events[type][handler.$$guid];
+        }
+    }
+};
+
+Events.handleEvent = function(event)
+{
+    var returnValue = true;
+    event = event || Events.fixEvent(((this.ownerDocument || this.document || this).parentWindow || window).event);
+    var handlers = this.events[event.type];
+    for (var i in handlers)
+    {
+        this.$$handleEvent = handlers[i];
+        if (this.$$handleEvent(event) === false)
+        {
+            returnValue = false;
+        }
+    }
+    return returnValue;
+};
+
+Events.fixEvent = function(event)
+{
+    event.preventDefault = Events.preventDefault;
+    event.stopPropagation = Events.stopPropagation;
+    return event;
+};
+
+Events.preventDefault = function()
+{
+    this.returnValue = false;
+};
+
+Events.stopPropagation = function()
+{
+    this.cancelBubble = true;
+};
+
 //Create main WebElement name space - pulling in Keys and Platform name space's
 var WebElements = WebElements || {}
 WebElements.Keys = Keys;
 WebElements.Platform = Platform;
+WebElements.Events = Events;
 
 WebElements.Settings = {}
 WebElements.Settings.throbberImage = 'images/throbber.gif';

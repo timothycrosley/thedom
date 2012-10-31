@@ -40,7 +40,6 @@ def addChildProperties(propertiesDict, classDefinition, accessor):
         propertyDict['name'] = propertyDict.get('name', propertyName)
         propertiesDict[accessor + "." + propertyName] = propertyDict
 
-
 def autoAddScript(function):
     """
         Decorator to make method automatically add script to element script container
@@ -50,6 +49,7 @@ def autoAddScript(function):
         self(result)
         return result
     return autoAdd
+
 
 class AutoAddScripts(type):
     """
@@ -107,15 +107,7 @@ class WebElement(Connectable):
             self.element = element
 
         def on(self, event, action):
-            if type(event) in (types.ListType, types.TupleType):
-                event = ["on" + eventName for eventName in event]
-            else:
-                event = "on" + event
-
-            if type(action) in (types.ListType, types.TupleType):
-                action = ";".join([script.claim() for script in action]) + ";"
-
-            return self.element.addJavascriptEvent(event, action)
+            return ClientSide.addEvent(self, event, ClientSide.eventHandler(action))
 
         @property
         def id(self):

@@ -48,12 +48,24 @@ def inlineFunction(script, accepts=()):
     """
         returns a javascript inline function
     """
-    return Script("function(%s){%s}" % (",".join(accepts), var(script)))
+    return Script("function(%s){%s}" % (var(script), var(accepts)))
+
+def eventHandler(script):
+    """
+        returns a javascript inline function that takes an evt as its only argument
+    """
+    return inlineFunction(script, accepts=('evt',))
 
 THIS = Script("this")
 DOCUMENT = Script("document")
 
 ### WebElements.js bindings follow - doc strings are contained within javascript code
+
+def addEvent(element, eventType, handler):
+    return call("WebElements.Events.addEvent", element, eventType, handler)
+
+def removeEvent(element, eventType, handler):
+    return call("WebElements.Events.removeEvent", element, eventType, handler)
 
 def get(element):
     return call("WebElements.get", element)

@@ -201,12 +201,37 @@ class FieldSet(DOM.FieldSet):
 Factory.addProduct(FieldSet)
 
 
-class Fields(Box):
+class Fields(Vertical):
     """
-        Automatically lays out fields in a grid
+        Automatically lays out fields in a grid assuming a fixed label width and overall width
+    """
+
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Vertical.__init__(self, id, name, parent, **kwargs)
+        self.addClass("WFields")
+
+    def addChildElement(self, element):
+        if element.displayable:
+            element.addClass("WField")
+        if hasattr(element, 'label'):
+            element.label.addClass("WLabel")
+        if hasattr(element, 'inputContainer'):
+            element.inputContainer.addClass("WInput")
+        elif hasattr(element, 'userInput'):
+            element.inputContainer.addClass("WInput")
+
+        return Vertical.addChildElement(self, element)
+
+Factory.addProduct(Fields)
+
+
+class FieldsFixedHeight(Box):
+    """
+        Automatically lays out fields in a grid assuming a fixed height
     """
     __slots__ = ('fields', 'labels', 'inputs', 'fieldHeight', '__showErrorsOnRight__')
     properties = Box.properties.copy()
+
     properties['labelsStyle'] = {'action':'labels.setStyleFromString'}
     properties['inputsStyle'] = {'action':'inputs.setStyleFromString'}
     properties['showErrorsOnRight'] = {'action':'call', 'name':'showErrorsOnRight', 'type':'bool'}
