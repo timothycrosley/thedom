@@ -215,10 +215,10 @@ class Fields(Vertical):
             element.addClass("WField")
         if hasattr(element, 'label'):
             element.label.addClass("WLabel")
-        if hasattr(element, 'inputContainer'):
-            element.inputContainer.addClass("WInput")
+        if hasattr(element, 'inputAndActions'):
+            element.inputAndActions.addClass("WInput")
         elif hasattr(element, 'userInput'):
-            element.inputContainer.addClass("WInput")
+            element.userInput.addClass("WInput")
 
         return Vertical.addChildElement(self, element)
 
