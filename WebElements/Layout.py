@@ -216,9 +216,9 @@ class Fields(Vertical):
         if hasattr(element, 'label'):
             element.label.addClass("WLabel")
         if hasattr(element, 'inputAndActions'):
-            element.inputAndActions.addClass("WInput")
-        elif hasattr(element, 'userInput'):
-            element.userInput.addClass("WInput")
+            element.inputAndActions.addClass("WInputs")
+            if hasattr(element, 'userInput'):
+                element.userInput.addClass("WInput")
 
         return Vertical.addChildElement(self, element)
 
