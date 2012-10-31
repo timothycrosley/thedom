@@ -481,11 +481,11 @@ input.WAddFilterButton {
 
 /* line 96, ../sass/WebElementStructure.sass */
 .WFields .WLabel {
-  width: 20%;
+  width: 34%;
 }
 /* line 98, ../sass/WebElementStructure.sass */
 .WFields .WInputs {
-  width: 80%;
+  width: 65%;
 }
 /* line 100, ../sass/WebElementStructure.sass */
 .WFields .WInputs .WInput {

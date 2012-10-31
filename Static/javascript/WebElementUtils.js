@@ -43,6 +43,8 @@ var Events = Events || {}
 
 Events.addEvent = function(element, type, handler)
 {
+    var element = WebElements.get(element);
+
     if(typeof(type) == typeof([]))
     {
         return WebElements.forEach(type, function(eventType){Events.addEvent(element, eventType, handler);});
@@ -59,7 +61,7 @@ Events.addEvent = function(element, type, handler)
     {
         if (!handler.$$guid)
         {
-            handler.$$guid = addEvent.guid++;
+            handler.$$guid = Events.addEvent.guid++;
         }
         if (!element.events)
         {
@@ -83,6 +85,8 @@ Events.addEvent.guid = 1;
 
 Events.removeEvent = function(element, type, handler)
 {
+    var element = WebElements.get(element);
+
     if(typeof(type) == typeof([]))
     {
         return WebElements.forEach(type, function(eventType){Events.removeEvent(element, eventType, handler);});
