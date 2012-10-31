@@ -48,7 +48,7 @@ def inlineFunction(script, accepts=()):
     """
         returns a javascript inline function
     """
-    return Script("function(%s){%s}" % (var(script), var(accepts)))
+    return Script("function(%s){%s}" % (",".join(accepts), var(script)))
 
 def eventHandler(script):
     """
