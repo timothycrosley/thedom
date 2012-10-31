@@ -107,6 +107,8 @@ class WebElement(Connectable):
             self.element = element
 
         def on(self, event, action):
+            if type(action) in (types.ListType, types.TupleType):
+                action = ClientSide.Script(";".join([ClientSide.var(actionScript) for actionScript in action]))
             return ClientSide.addEvent(self, event, ClientSide.eventHandler(action))
 
         @property

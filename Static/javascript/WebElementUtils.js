@@ -43,11 +43,11 @@ var Events = Events || {}
 
 Events.addEvent = function(element, type, handler)
 {
-    if(typeof(type) != typeof([]))
+    if(typeof(type) == typeof([]))
     {
         return WebElements.forEach(type, function(eventType){Events.addEvent(element, eventType, handler);});
     }
-    if(typeof(handler) != typeof([]))
+    if(typeof(handler) == typeof([]))
     {
         return WebElements.forEach(handler, function(eventHandler){Events.addEvent(element, type, eventHandler);});
     }
