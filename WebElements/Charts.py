@@ -24,7 +24,7 @@ class GoogleChart(Image):
         self.__height__ = 100
         self.__width__ = 100
 
-        self.connect("beforeToHtml", None, self, "__updateSource__")
+        self.connect("rendering", None, self, "__updateSource__")
 
     def setWidth(self, width):
         """

@@ -201,10 +201,91 @@ class FieldSet(DOM.FieldSet):
 Factory.addProduct(FieldSet)
 
 
+class Field(Horizontal):
+    """
+        Defines how a single field should be layed out
+    """
+    __slots__ = ('label', '_image', '_required', 'userInput', 'inputAndActions', 'message')
+    properties = Horizontal.properties.copy()
+    Base.addChildProperties(properties, Display.Image, 'image')
+    Base.addChildProperties(properties, Vertical, 'inputAndActions')
+    Base.addChildProperties(properties, Display.Message, 'message')
+    properties['text'] = {'action':'setText'}
+    properties['required'] = {'action' : 'call' , 'name' : 'setRequired', 'type':'bool'}
+
+    def __init__(self, id, name, parent, **kwargs):
+        Horizontal.__init__(self, id, name, parent, **kwargs)
+
+        self.label = self.addChildElement(Display.Label())
+        self._image = None
+        self._required = None
+        self.inputAndActions = self.addChildElement(Vertical())
+        self.userInput = None
+        self.message = Display.Message()
+        self.addChildElementsTo = self.inputAndActions
+
+    @property
+    def image(self):
+        """
+            Lazy loads the image - so that it is only added if a property (such as its source) is set
+        """
+        if not self._image:
+            self._image = self.label.addChildElement(Display.Image())
+
+        return self._image
+
+    def setRequired(self, required=True):
+        """
+            Sets the field to required and changes the display to communicate that to the user
+        """
+        if required:
+            if not self._required:
+                self.addClass("WRequired")
+                self._required = Display.Label()
+                self._required.addClass("WRequiredSymbol")
+                self._required.setText('*')
+                self.label.addChildElement(self._required)
+        elif self._required:
+            self.removeClass("WRequired")
+            self._required.remove()
+            self._required = None
+
+    def render(self):
+        """
+            Builds connections between the input, label, and associated message
+        """
+        Horizontal.render(self)
+        self.label.attributes['for'] = self.userInput.id
+        self.message.id = self.userInput.fullId() + "Message"
+        self.inputAndActions.addChildElement(self.message)
+        if self._required:
+            self.label.addChildElement(self._required) # Ensures the symbol is farthest element right
+
+    def setText(self, text):
+        """
+            Sets the label text associated with the field
+        """
+        self.label.setText(text)
+
+    def addChildElement(self, element):
+        """
+            Handles the addition of child elements, making the first externally added element be the input associated
+            with the field
+        """
+        if self.addChildElementsTo != self and not self.userInput:
+            self.userInput = element
+            self.message.forElement = element
+
+        return Horizontal.addChildElement(self, element)
+
+Factory.addProduct(Field)
+
+
 class Fields(Vertical):
     """
         Automatically lays out fields in a grid assuming a fixed label width and overall width
     """
+    __slots__ = ()
 
     def __init__(self, id=None, name=None, parent=None, **kwargs):
         Vertical.__init__(self, id, name, parent, **kwargs)
@@ -221,66 +302,6 @@ class Fields(Vertical):
                 element.userInput.addClass("WInput")
 
         return Vertical.addChildElement(self, element)
-
-Factory.addProduct(Fields)
-
-
-class FieldsFixedHeight(Box):
-    """
-        Automatically lays out fields in a grid assuming a fixed height
-    """
-    __slots__ = ('fields', 'labels', 'inputs', 'fieldHeight', '__showErrorsOnRight__')
-    properties = Box.properties.copy()
-
-    properties['labelsStyle'] = {'action':'labels.setStyleFromString'}
-    properties['inputsStyle'] = {'action':'inputs.setStyleFromString'}
-    properties['showErrorsOnRight'] = {'action':'call', 'name':'showErrorsOnRight', 'type':'bool'}
-    properties['fieldHeight'] = {'action':'classAttribute'}
-
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Box.__init__(self, id, name, parent, **kwargs)
-        self.fields = self.addChildElement(Display.BlankRendered())
-
-        layout = self.addChildElement(Horizontal())
-        self.labels = layout.addChildElement(Vertical())
-        self.inputs = layout.addChildElement(Vertical())
-
-        self.fieldHeight = "3.5em"
-        self.__showErrorsOnRight__ = False
-
-    def showErrorsOnRight(self):
-        """
-            Moves errors over to the right (instead of directly below) the inputs
-        """
-        self.fieldHeight = "2em"
-        self.__showErrorsOnRight__ = True
-
-    def addChildElement(self, element):
-        if hasattr(element, 'label') and hasattr(element, 'userInput'):
-            fieldHeight = element.style.get('height', self.fieldHeight)
-            label = self.labels.addChildElement(element.label)
-            if not label.style.get('height'):
-                label.style['height'] = fieldHeight
-            if self.__showErrorsOnRight__:
-                inputWithErrorLayout = self.inputs.addChildElement(Horizontal())
-            else:
-                inputWithErrorLayout = self.inputs.addChildElement(Vertical())
-            inputLayout = inputWithErrorLayout.addChildElement(Horizontal())
-            inputLayout.addChildElement(element.userInput)
-            inputLayout.addChildElement(element.fieldActions)
-            inputWithErrorLayout.addChildElement(element.formError)
-            inputWithErrorLayout.style['height'] = fieldHeight
-            element.connect('hidden', None, label, 'hide')
-            element.connect('hidden', None, inputWithErrorLayout, 'hide')
-            element.connect('shown', None, label, 'show')
-            element.connect('shown', None, inputWithErrorLayout, 'show')
-            element.connect('editableChanged', None, label, 'setEditable')
-            element.connect('editableChanged', None, inputWithErrorLayout, 'setEditable')
-            if not element.shown():
-                element.emit("hidden")
-            return self.fields.addChildElement(element)
-
-        return Box.addChildElement(self, element)
 
 Factory.addProduct(Fields)
 
@@ -302,7 +323,7 @@ class Grid(Box):
         self.numberOfColumns = 2
         self.uniformStyle = ""
 
-        self.connect("beforeToHtml", None, self, "__applyLayout__")
+        self.connect("rendering", None, self, "__applyLayout__")
 
     def __applyLayout__(self):
         self.numberOfColumns = int(self.numberOfColumns)

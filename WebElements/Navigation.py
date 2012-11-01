@@ -101,7 +101,7 @@ class ItemPager(Layout.Vertical):
         self._index_ = self.addChildElement(HiddenInputs.HiddenIntValue(id + 'Index'))
         self._pages_ = None
 
-        self.connect('beforeToHtml', None, self, '_updateUI_')
+        self.connect('rendering', None, self, '_updateUI_')
         self.showAllButton.addJavascriptEvent('onclick', "WebElements.replace(this, WebElements.buildThrobber());")
         self.showAllButton.connect('jsToggled', None, self, 'jsSetNavigationIndex', 0)
         self.showAllButton.connect('toggled', True, self.showAllButton, 'setValue', 'Show in Pages')
@@ -205,7 +205,7 @@ class JumpToLetter(Layout.Vertical):
 
         self.selectedLetter.connect('valueChanged', None, self, "selectLetter")
 
-        self.connect("beforeToHtml", None, self, "__highlightSelectedLetter__")
+        self.connect("rendering", None, self, "__highlightSelectedLetter__")
         self.addScript("function letterJumpHover(letterJump){"
                        "    var letterJump = WebElements.get(letterJump);"
                        "    letterJump.paddingBottom = '4px';"
@@ -297,7 +297,7 @@ class BreadCrumb(Layout.Box):
 
         self.addScript(CallBack(self, 'jsSubmitLink'))
 
-        self.connect('beforeToHtml', None, self, 'highlightCurrentLink')
+        self.connect('rendering', None, self, 'highlightCurrentLink')
 
         self.trail = []
 
@@ -430,11 +430,11 @@ class UnrolledSelect(Display.List):
                        "    WebElements.stealClassFromFellowChild(option, 'WUnrolledSelect', 'selected');"
                        "}")
 
-        self.connect('beforeToHtml', None, self, '__addLast__')
+        self.connect('rendering', None, self, '__addLast__')
 
     def __addLast__(self):
         self.addChildElement(Display.Label()).addClass('last')
-        self.disconnect('beforeToHtml', None, self, '__addLast__')
+        self.disconnect('rendering', None, self, '__addLast__')
 
     def addOptions(self, options, displayKeys=False):
         """
@@ -570,7 +570,7 @@ class TimeFrame(Layout.Horizontal):
 
         self.days = self.addChildElement(HiddenInputs.HiddenIntValue(id + ":days"))
         self.days.addClass('Value')
-        self.connect('beforeToHtml', None, self, '__addScripts__')
+        self.connect('rendering', None, self, '__addScripts__')
 
     def disableAnyTime(self):
         """

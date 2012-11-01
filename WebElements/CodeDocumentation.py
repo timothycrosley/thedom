@@ -47,7 +47,7 @@ class CodeSnippet(DOM.Pre):
         self.lexer = "python"
         self.code = ""
 
-        self.connect("beforeToHtml", None, self, "_render")
+        self.connect("rendering", None, self, "_render")
 
     def _getCode(self):
         return self.code.replace("\\n", "\n")

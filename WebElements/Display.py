@@ -45,7 +45,7 @@ class HoverImage(Image):
     def __init__(self, id=None, name=None, parent=None, **kwargs):
         Image.__init__(self, id, name, parent, **kwargs)
 
-        self.connect("beforeToHtml", None, self, "__addEvents__")
+        self.connect("rendering", None, self, "__addEvents__")
 
     def __addEvents__(self):
         if self.imageOnHover:
@@ -94,7 +94,7 @@ class List(DOM.UL):
     def __init__(self, id=None, name=None, parent=None, **kwargs):
         DOM.UL.__init__(self, id=id, name=name, parent=parent)
         self.ordered = False
-        self.connect("beforeToHtml", None, self, "__updateTag__")
+        self.connect("rendering", None, self, "__updateTag__")
 
     def addChildElement(self, childElement):
         item = self.Item()
@@ -119,21 +119,21 @@ Item = List.Item
 Factory.addProduct(List)
 
 
-class Label(DOM.Span):
+class Label(DOM.Label):
     """
         Defines a label webelement, which will display a single string of text to the user
     """
     __slots__ = ('_textNode')
 
-    signals = DOM.Span.signals + ['textChanged']
-    properties = DOM.Span.properties.copy()
+    signals = DOM.Label.signals + ['textChanged']
+    properties = DOM.Label.properties.copy()
     properties['text'] = {'action':'setText'}
     properties['useNBSP'] = {'action':'call', 'type':'bool'}
     properties['strong'] = {'action':'call', 'name':'makeStrong', 'type':'bool'}
     properties['emphasis'] = {'action':'call', 'name':'addEmphasis', 'type':'bool'}
 
     def __init__(self, id=None, name=None, parent=None, **kwargs):
-        DOM.Span.__init__(self, id=id, name=name, parent=parent)
+        DOM.Label.__init__(self, id=id, name=name, parent=parent)
 
         self._textNode = self.addChildElement(Base.TextNode())
 
@@ -292,15 +292,46 @@ class FormError(Label):
         even when an error doesn't occur so that errors can be added
         by javascript as well as server side validators
     """
-    __slots__ = ()
+    __slots__ = ('forElement')
     tagName = "div"
 
     def __init__(self, id="", name=None, parent=None, **kwargs):
         Label.__init__(self, id  and id + "Error", name, parent, **kwargs)
 
         self.hide()
+        self.forElement = None
 
 Factory.addProduct(FormError)
+
+
+class Message(Label):
+    __slots__ = ('forElement')
+    ERROR = "error"
+    INFO = "info"
+    WARNING = "warning"
+    SUCCESS = "success"
+    MESSAGE_CLASSES = {ERROR:'WError', INFO:'WInfo', SUCCESS:'WSuccess', WARNING:'WWarning'}
+    properties = Label.properties.copy()
+    properties['messageType'] = {'action':'setMessageType'}
+
+
+    def __init__(self, id="", name=None, parent=None, **kwargs):
+        Label.__init__(self, id and id + "Message", name, parent, **kwargs)
+
+        self.forElement = None
+
+    def render(self):
+        Label.render(self)
+        if not self.text():
+            self.hide()
+
+        if self.forElement:
+            self.attributes['for'] = self.forElement.fullId()
+
+    def setMessageType(self, messageType):
+        self.chooseClass(self.MESSAGE_CLASSES.keys(), self.MESSAGE_CLASSES[messageType])
+
+Factory.addProduct(Message)
 
 
 class BlankRendered(Base.WebElement):

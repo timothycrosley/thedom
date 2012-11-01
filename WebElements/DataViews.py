@@ -62,7 +62,7 @@ class Table(Base.WebElement):
             if self.parent and self.parent.parent and getattr(self.parent.parent, 'uniformStyle', None):
                 self.setStyleFromString(self.parent.parent.uniformStyle)
             self._textNode = Base.TextNode()
-            self.connect("beforeToHtml", None, self, "addChildElement", self._textNode)
+            self.connect("rendering", None, self, "addChildElement", self._textNode)
 
         def setText(self, text):
             """

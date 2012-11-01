@@ -67,16 +67,22 @@ class BaseField(Layout.Box):
         self.formError = errorContainer.addChildElement(Display.FormError(id, parent=self))
         self.layout.addChildElement(errorContainer)
 
-        self.connect('beforeToHtml', None, self, '__checkIfNeedsValidation__')
-        self.connect('beforeToHtml', None, self, '__updateReadOnly__')
-
     def flip(self):
         self.inputAndActions.replaceWith(self.label)
         self.label.replaceWith(self.inputAndActions)
 
-    def __checkIfNeedsValidation__(self):
+    def render(self):
+        """
+            Remove form error placeholder if field is not validatable - update read only status - update label
+        """
+        Layout.Box.render(self)
+
         if not self.formError.name:
             self.formError.remove()
+
+        self.__updateReadOnly__()
+
+        self.label.attributes.setdefault('for', self.userInput.fullId())
 
     def __updateReadOnly__(self):
         if not self.editable() and self.submitIfDisabled:
@@ -443,7 +449,7 @@ class MultiField(SelectField):
 
         self.userInput.addClientSideEvent('onChange', 'multiField.addSelectedOption(this)')
 
-        self.connect('beforeToHtml', None,  self, 'sort')
+        self.connect('rendering', None,  self, 'sort')
 
     def sort(self):
         """
@@ -649,8 +655,8 @@ class IntegerField(BaseField):
         self.down.addClass("hidePrint")
         self.userInput.setValue(0)
 
-        self.connect("beforeToHtml", None, self, "__addEvents__")
-        self.connect("beforeToHtml", None, self, "__updateReadOnly__")
+        self.connect("rendering", None, self, "__addEvents__")
+        self.connect("rendering", None, self, "__updateReadOnly__")
 
     def __addEvents__(self):
         minimum = self.userInput.minimum
@@ -703,7 +709,7 @@ class DateField(TextField):
         self.setIsZulu(False)
         self.formatDisplay = layout.addChildElement(Display.Label())
 
-        self.connect('beforeToHtml', None, self, '__updateDisplay__')
+        self.connect('rendering', None, self, '__updateDisplay__')
 
     def setIsZulu(self, isZulu):
         """

@@ -99,7 +99,7 @@ class Button(InputElement):
         InputElement.__init__(self, id, name, parent, **kwargs)
         self.attributes['type'] = 'button'
 
-        self.connect('beforeToHtml', None, self, 'updateVisableState')
+        self.connect('rendering', None, self, 'updateVisableState')
 
     def updateVisableState(self):
         """

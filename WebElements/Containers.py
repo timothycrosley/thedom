@@ -90,7 +90,7 @@ class CollapsedText(DropDownMenu):
         self.label = self.addChildElement(Display.Label)
         self.__text = None
 
-        self.connect('beforeToHtml', None, self, '__updateUI__')
+        self.connect('rendering', None, self, '__updateUI__')
 
     def setText(self, text):
         """
@@ -242,7 +242,7 @@ class Tab(Layout.Box):
         self.imageName = None
         self.unselect()
 
-        self.tabLabel.connect('beforeToHtml', None, self, '__updateUI__')
+        self.tabLabel.connect('rendering', None, self, '__updateUI__')
 
     def __updateUI__(self):
         if self.imageName:

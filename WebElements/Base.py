@@ -77,7 +77,7 @@ class WebElement(Connectable):
     tagSelfCloses = False
     allowsChildren = True
     displayable = True
-    signals = ['hidden', 'shown', 'beforeToHtml', 'childAdded', 'editableChanged']
+    signals = ['hidden', 'shown', 'rendering', 'childAdded', 'editableChanged']
     properties = OrderedDict()
     properties['style'] = {'action':'setStyleFromString'}
     properties['class'] = {'action':'addClassesFromString'}
@@ -1048,12 +1048,17 @@ class WebElement(Connectable):
             if propertyValue != None and self.properties.has_key(propertyName):
                 self.setProperty(propertyName, propertyValue)
 
+    def render(self):
+        """
+            Performs actions that need to be preformed at rendering time
+        """
+        self.emit("rendering")
+
     def toHtml(self, formatted=False, *args, **kwargs):
         """
            Returns the element(including child elements) as standard html
         """
-
-        self.emit("beforeToHtml")
+        self.render()
 
         data = (self.startTag() or '', self.content(formatted, *args, **kwargs), self.endTag() or '')
 

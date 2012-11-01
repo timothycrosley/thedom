@@ -158,7 +158,7 @@ class InputElement(ValueElement):
     def __init__(self, id, name=None, parent=None, key=None):
         ValueElement.__init__(self, id, name, parent, key=key)
 
-        self.connect('beforeToHtml', None, self, '_updateReadOnly_')
+        self.connect('rendering', None, self, '_updateReadOnly_')
 
     def _updateReadOnly_(self):
         """
@@ -524,7 +524,7 @@ class Select(ValueElement):
     def __init__(self, id, name=None, parent=None, **kwargs):
         ValueElement.__init__(self, id, name, parent, **kwargs)
 
-        self.connect('beforeToHtml', None, self, '_updateReadOnly_')
+        self.connect('rendering', None, self, '_updateReadOnly_')
 
     def _updateReadOnly_(self):
         if not self.editable():
