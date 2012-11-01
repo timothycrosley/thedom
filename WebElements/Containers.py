@@ -205,6 +205,8 @@ class Tab(Layout.Box):
             The label used to represent the tab in the tab-bar
         """
         __slots__ = ()
+        tagName = "span"
+
         def __init__(self, id, name=None, parent=None, **kwargs):
             Display.Label.__init__(self, id=id, name=name, parent=parent)
             self.addClass("WTabLabel")
