@@ -5,6 +5,58 @@
 
 import json
 
+class Keys(object):
+    """
+        Defines a mapping of all clientside keys to their int values
+    """
+    SPACE = 32
+    ENTER = 13
+    TAB = 9
+    ESC = 27
+    BACKSPACE = 8
+    SHIFT = 16
+    CONTROL = 17
+    ALT = 18
+    CAPSLOCK = 20
+    NUMLOCK = 144
+    LEFT = 37
+    UP = 38
+    RIGHT = 39
+    DOWN = 40
+    HOME = 36
+    END = 35
+    PAGE_UP = 33
+    PAGE_DOWN = 34
+    INSERT = 45
+    DELETE = 46
+    FUNCTIONS = [112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123]
+    NUMBERS = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+
+
+class If(object):
+    __slots__ = ('script')
+
+    def __init__(self, script):
+        self.script = script
+
+    def __eq__(self, other):
+        return Script("if(%s === %s)" % (var(self.script), var(other)))
+
+    def __ne__(self, other):
+        return Script("if(%s !== %s)" % (var(self.script), var(other)))
+
+    def __lt__(self, other):
+        return Script("if(%s < %s)" % (var(self.script), var(other)))
+
+    def __le__(self, other):
+        return Script("if(%s <= %s)" % (var(self.script)), var(other))
+
+    def __gt__(self, other):
+        return Script("if(%s > %s)" % (var(self.script), var(other)))
+
+    def __ge__(self, other):
+        return Script("if(%s >= %s)" % (var(self.script), var(other)))
+
 class Script(object):
     __slots__ = ('content', 'container')
 
@@ -12,13 +64,58 @@ class Script(object):
         self.content = content
         self.container = container
 
+    def check(self):
+        return Block(self)
+
     def __str__(self):
         return self.content
+
+    def __len__(self, item):
+        return "%s.length" % item
+
+    def __enter__(self):
+        self.content += "{"
+        return self
+
+    def __exit__(self, type, value, traceback):
+        if self.content[-1] != "{":
+            self.content += ";"
+        self.content += "}"
+
+    def __getitem__(self, key):
+        return Script("%s[%s]" % (self.claim(), var(key)))
+
+    def __getattr__(self, name):
+        return Script("%s.%s" % (var(self), name))
+
+    def __setattr__(self, name, value):
+        if name in self.__class__.__slots__:
+            return object.__setattr__(self, name, value)
+        self.content = "%s.%s = %s" % (var(self), name, var(value))
+
+    def __contains__(self, item):
+        return Script(ClientSide.contains(self.claim(), var(item)))
+
+    def __call__(self, other):
+        if self.content and self.content[-1] != "{":
+            self.content += ";"
+        self.content += var(other)
+        return self
+
+    def do(self, name, *args):
+        return call(self.claim() + "." + name, *args)
+
+    @property
+    def IF(self):
+        return If(self)
 
     def claim(self):
         if self.container:
             self.container.removeScript(self)
         return self.content
+
+    def copy(self):
+        return self.__class__(self.claim())
 
 def var(variable):
     """
@@ -30,6 +127,8 @@ def var(variable):
         return json.dumps(variable.id)
     if type(variable) in (list, tuple, set):
         return "[" + ",".join(var(item) for item in variable) + "]"
+    if isinstance(variable, dict):
+        return "{" + ",".join(["%s:%s," % (var(key), var(value)) for key, value in variable.iteritems()]) + "}"
     return json.dumps(variable)
 
 def varList(*args):
@@ -50,11 +149,23 @@ def inlineFunction(script, accepts=()):
     """
     return Script("function(%s){%s}" % (",".join(accepts), var(script)))
 
+def check(script):
+    """
+        Creates a client side if conditional
+    """
+    return Script("if(%s)" % (var(script),))
+
 def eventHandler(script):
     """
         returns a javascript inline function that takes an evt as its only argument
     """
     return inlineFunction(script, accepts=('evt',))
+
+def assign(name, value):
+    return Script("%s = %s" % (name, var(value)))
+
+def regexp(value):
+    return Script("/%s/" % (value.pattern, ))
 
 THIS = Script("this")
 DOCUMENT = Script("document")
@@ -384,3 +495,23 @@ def showIfSelected(option, elementToShow, element=THIS):
 
 def showIfChecked(elementToShow, checkbox=THIS):
     return call("WebElements.showIfChecked", checkbox, elementToShow)
+
+def expandTemplate(template, valueDictionary):
+    return call("WebElements.expandDictionary", template, valueDictionary)
+
+class doClientSide(object):
+    """
+        A magical class that will run a method client side without knowledge of the method signature
+    """
+    __slots__ = "method"
+
+    def __init__(self, method=''):
+        self.method = method
+
+    def __getattr__(self, name):
+        return self.__class__((self.method and self.method + "." or "") + name)
+
+    def __call__(self, *args):
+        return call(self.method, *args)
+
+do = doClientSide()

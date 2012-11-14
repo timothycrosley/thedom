@@ -116,7 +116,14 @@ class WebElement(Connectable):
             return self.element.fullId()
 
         def __call__(self, script):
-            return self.element.addScript(script)
+            self.element.addScript(script)
+            return script
+
+        def assign(self, name, var):
+            return ClientSide.assign(name, var)
+
+        def __getattr__(self, name):
+            return ClientSide.Script(name)
 
         def alert(self, message):
             return ClientSide.call("alert", message)
@@ -360,6 +367,9 @@ class WebElement(Connectable):
 
         def redirect(self, to):
             return ClientSide.redirect(to)
+
+        def expandTemplate(self, template, valueDictionary):
+            return ClientSide.expandTemplate(template, valueDictionary)
 
     def __init__(self, id=None, name=None, parent=None, **kwargs):
         """

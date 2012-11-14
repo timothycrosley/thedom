@@ -968,6 +968,55 @@ div.WCenter div.WOuter div.WInner {
   overflow: hidden;
 }
 
+/* line 388, /home/timothy/Projects/OpenSource/WebElements/Static/sass/WebElementStructure.sass */
+label.WError {
+  background-color: #ffbaba;
+  -webkit-border-radius: 0px 0px 10px 10px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  -ms-border-radius: 0px 0px 10px 10px;
+  -o-border-radius: 0px 0px 10px 10px;
+  border-radius: 0px 0px 10px 10px;
+  border: 1px #ba0000 solid;
+  padding: 4px;
+  width: 100%;
+}
+/* line 390, /home/timothy/Projects/OpenSource/WebElements/Static/sass/WebElementStructure.sass */
+label.WSuccess {
+  background-color: #82db7e;
+  -webkit-border-radius: 0px 0px 10px 10px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  -ms-border-radius: 0px 0px 10px 10px;
+  -o-border-radius: 0px 0px 10px 10px;
+  border-radius: 0px 0px 10px 10px;
+  border: 1px #164614 solid;
+  padding: 4px;
+  width: 100%;
+}
+/* line 392, /home/timothy/Projects/OpenSource/WebElements/Static/sass/WebElementStructure.sass */
+label.WWarning {
+  background-color: #e7f2bc;
+  -webkit-border-radius: 0px 0px 10px 10px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  -ms-border-radius: 0px 0px 10px 10px;
+  -o-border-radius: 0px 0px 10px 10px;
+  border-radius: 0px 0px 10px 10px;
+  border: 1px #7b931c solid;
+  padding: 4px;
+  width: 100%;
+}
+/* line 394, /home/timothy/Projects/OpenSource/WebElements/Static/sass/WebElementStructure.sass */
+label.WInfo {
+  background-color: #aed0e7;
+  -webkit-border-radius: 0px 0px 10px 10px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  -ms-border-radius: 0px 0px 10px 10px;
+  -o-border-radius: 0px 0px 10px 10px;
+  border-radius: 0px 0px 10px 10px;
+  border: 1px #225374 solid;
+  padding: 4px;
+  width: 100%;
+}
+
 /* line 4, /home/timothy/Projects/OpenSource/WebElements/Static/sass/WebElementStructureWithButtons.sass */
 input[type=button], input[type=submit] {
   font-size: 19px;

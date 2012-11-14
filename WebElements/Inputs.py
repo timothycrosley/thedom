@@ -44,7 +44,7 @@ class ValueElement(DOM.Input):
             return ClientSide.setValue(self, value)
 
         def value(self):
-            return ClientSide.value(self)
+            return ClientSide.getValue(self)
 
         def increment(self, max=None):
             return ClientSide.increment(self, max)

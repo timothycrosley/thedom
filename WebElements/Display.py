@@ -132,6 +132,13 @@ class Label(DOM.Label):
     properties['strong'] = {'action':'call', 'name':'makeStrong', 'type':'bool'}
     properties['emphasis'] = {'action':'call', 'name':'addEmphasis', 'type':'bool'}
 
+    class ClientSide(DOM.Label.ClientSide):
+
+        def setText(self, text):
+            element = self.get()
+            element.innerHTML = text
+            return element
+
     def __init__(self, id=None, name=None, parent=None, **kwargs):
         DOM.Label.__init__(self, id=id, name=name, parent=parent)
 
@@ -313,7 +320,24 @@ class Message(Label):
     MESSAGE_CLASSES = {ERROR:'WError', INFO:'WInfo', SUCCESS:'WSuccess', WARNING:'WWarning'}
     properties = Label.properties.copy()
     properties['messageType'] = {'action':'setMessageType'}
+    class ClientSide(Label.ClientSide):
+        def setMessageType(self, messageType):
+            return self.chooseClass(self.element.MESSAGE_CLASSES.values(), self.element.MESSAGE_CLASSES[messageType])
 
+        def showMessage(self, messageType, messageText):
+            return self.setMessageType(messageType)(self.setText(messageText))
+
+        def showError(self, errorText):
+            return self.showMessage(self.element.ERROR, errorText)
+
+        def showInfo(self, infoText):
+            return self.showMessage(self.element.INFO, errorText)
+
+        def showWarning(self, warningText):
+            return self.showMessage(self.element.WARNING, errorText)
+
+        def showSuccess(self, successText):
+            return self.showMessage(self.element.SUCCESS, successText)
 
     def __init__(self, id="", name=None, parent=None, **kwargs):
         Label.__init__(self, id and id + "Message", name, parent, **kwargs)
@@ -321,6 +345,9 @@ class Message(Label):
         self.forElement = None
 
     def render(self):
+        """
+            Override the render to hide the element if no text is set on the message
+        """
         Label.render(self)
         if not self.text():
             self.hide()
@@ -329,7 +356,49 @@ class Message(Label):
             self.attributes['for'] = self.forElement.fullId()
 
     def setMessageType(self, messageType):
-        self.chooseClass(self.MESSAGE_CLASSES.keys(), self.MESSAGE_CLASSES[messageType])
+        """
+            Sets the type of message to be displayed
+        """
+        self.chooseClass(self.MESSAGE_CLASSES.values(), self.MESSAGE_CLASSES[messageType])
+
+    def showMessage(self, messageType, messageText):
+        """
+            Renders a message given the type of message, and associated text
+        """
+        self.setMessageType(messageType)
+        self.setText(messageText)
+
+    def showError(self, error):
+        """
+            Shows an error message
+        """
+        self.showMessage(self.ERROR, error)
+
+    def showInfo(self, info):
+        """
+            Shows an info message
+        """
+        self.showMessage(self.INFO, info)
+
+    def showWarning(self, warning):
+        """
+            Shows a warning message
+        """
+        self.showMessage(self.WARNING, warning)
+
+    def showSuccess(self, success):
+        """
+            Shows a success message
+        """
+        self.showMessage(self.SUCCESS, success)
+
+    def clearMessage(self):
+        """
+            Removes any messages from the label
+        """
+        self.setText("")
+        for messageClass in self.MESSAGE_CLASSES.keys():
+            self.removeClass(messageClass)
 
 Factory.addProduct(Message)
 

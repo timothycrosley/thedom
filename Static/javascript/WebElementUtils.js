@@ -1533,3 +1533,15 @@ WebElements.showIfChecked = function(checkbox, value, elementToShow)
         WebElements.hide(elementToShow);
     }
 }
+
+//Expands a template written in the form of a python template
+WebElements.expandTemplate = function(template, valueDictionary)
+{
+    var result = template;
+    for(key in valueDictionary)
+    {
+        result = WebElements.replaceAll("$" + key, valueDictionary[key]);
+    }
+
+    return result
+}

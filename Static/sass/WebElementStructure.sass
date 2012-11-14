@@ -377,3 +377,19 @@ div.WCenter
         span
             text-align: center
             overflow: hidden
+
+@mixin message($color)
+    background-color: $color
+    @include border-radius(0px 0px 10px 10px)
+    border: 1px darken($color, 50%) solid
+    padding: 4px
+    width: 100%
+label
+    &.WError
+        @include message(#FFBABA)
+    &.WSuccess
+        @include message(#82DB7E)
+    &.WWarning
+        @include message(#E7F2BC)
+    &.WInfo
+        @include message(#AED0E7)
