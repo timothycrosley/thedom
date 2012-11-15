@@ -61,7 +61,7 @@ class AutoAddScripts(type):
     """
     def __new__(cls, name, bases, dct):
         for name, attribute in dct.items():
-            if name in ("element", "id") or name.startswith("_") or type(attribute) != FunctionType:
+            if name in ("serverside", "id") or name.startswith("_") or type(attribute) != FunctionType:
                 continue
 
             dct[name] = autoAddScript(attribute)
@@ -104,7 +104,7 @@ class WebElement(Connectable):
             Defines the client side behavior, and actions of an element
         """
         __metaclass__ = AutoAddScripts
-        __slots__ = ('element',)
+        __slots__ = ('serverSide',)
 
         def __init__(self, element):
             self.serverSide = element
