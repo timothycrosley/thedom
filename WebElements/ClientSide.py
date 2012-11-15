@@ -106,7 +106,7 @@ class Script(object):
         return call(self.claim() + "." + name, *args)
 
     def RETURN(self, data):
-        return Script("return %s" % var(data))
+        return self(Script("return %s" % var(data)))
 
     @property
     def IF(self):
