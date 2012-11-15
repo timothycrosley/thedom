@@ -46,11 +46,11 @@ def autoAddScript(function):
     """
     def autoAdd(self, *args, **kwargs):
         result = function(self, *args, **kwargs)
-        if isinstance(result, Script):
+        if isinstance(result, ClientSide.Script):
             self(result)
             return result
         else:
-            return Script(var(result))
+            return ClientSide.Script(ClientSide.var(result))
     return autoAdd
 
 
