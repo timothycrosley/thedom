@@ -431,10 +431,10 @@ class Option(ValueElement):
     class ClientSide(ValueElement.ClientSide):
 
         def select(self):
-            return ClientSide.selectOption(self.element.parent.clientSide, self)
+            return ClientSide.selectOption(self.serverSide.parent.clientSide, self)
 
         def showIfSelected(self, elementToShow):
-            return ClientSide.showIfSelected(self.element.parent.clientSide, self, elementToShow)
+            return ClientSide.showIfSelected(self.serverSide.parent.clientSide, self, elementToShow)
 
     def __init__(self, id=None, name=None, parent=None, key=None):
         ValueElement.__init__(self, id, name, parent, key=key)

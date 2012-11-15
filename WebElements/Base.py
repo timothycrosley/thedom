@@ -46,8 +46,11 @@ def autoAddScript(function):
     """
     def autoAdd(self, *args, **kwargs):
         result = function(self, *args, **kwargs)
-        self(result)
-        return result
+        if isinstance(result, Script):
+            self(result)
+            return result
+        else:
+            return Script(var(result))
     return autoAdd
 
 
@@ -104,7 +107,7 @@ class WebElement(Connectable):
         __slots__ = ('element',)
 
         def __init__(self, element):
-            self.element = element
+            self.serverSide = element
 
         def on(self, event, action):
             if type(action) in (types.ListType, types.TupleType):
@@ -113,10 +116,10 @@ class WebElement(Connectable):
 
         @property
         def id(self):
-            return self.element.fullId()
+            return self.serverSide.fullId()
 
         def __call__(self, script):
-            self.element.addScript(script)
+            self.serverSide.addScript(script)
             return script
 
         def assign(self, name, var):

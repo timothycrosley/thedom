@@ -70,8 +70,8 @@ class Script(object):
     def __str__(self):
         return self.content
 
-    def __len__(self, item):
-        return "%s.length" % item
+    def __len__(self):
+        return "%s.length" % self
 
     def __enter__(self):
         self.content += "{"
@@ -104,6 +104,9 @@ class Script(object):
 
     def do(self, name, *args):
         return call(self.claim() + "." + name, *args)
+
+    def RETURN(self, data):
+        return Script("return %s" % var(data))
 
     @property
     def IF(self):

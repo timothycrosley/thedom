@@ -2,3 +2,4 @@
 *.swp
 *.pyc
 Tests/__pycache__
+.sass-cache/

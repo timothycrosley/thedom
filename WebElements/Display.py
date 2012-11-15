@@ -322,22 +322,22 @@ class Message(Label):
     properties['messageType'] = {'action':'setMessageType'}
     class ClientSide(Label.ClientSide):
         def setMessageType(self, messageType):
-            return self.chooseClass(self.element.MESSAGE_CLASSES.values(), self.element.MESSAGE_CLASSES[messageType])
+            return self.chooseClass(self.serverSide.MESSAGE_CLASSES.values(), self.serverSide.MESSAGE_CLASSES[messageType])
 
         def showMessage(self, messageType, messageText):
             return self.setMessageType(messageType)(self.setText(messageText))
 
         def showError(self, errorText):
-            return self.showMessage(self.element.ERROR, errorText)
+            return self.showMessage(self.serverSide.ERROR, errorText)
 
         def showInfo(self, infoText):
-            return self.showMessage(self.element.INFO, errorText)
+            return self.showMessage(self.serverSide.INFO, errorText)
 
         def showWarning(self, warningText):
-            return self.showMessage(self.element.WARNING, errorText)
+            return self.showMessage(self.serverSide.WARNING, errorText)
 
         def showSuccess(self, successText):
-            return self.showMessage(self.element.SUCCESS, successText)
+            return self.showMessage(self.serverSide.SUCCESS, successText)
 
     def __init__(self, id="", name=None, parent=None, **kwargs):
         Label.__init__(self, id and id + "Message", name, parent, **kwargs)
