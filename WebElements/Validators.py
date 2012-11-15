@@ -33,7 +33,6 @@ class Validation(Display.Message):
         childElement.control = self
 
 
-
 class Validator(Base.WebElement):
     """
         The base abstract validator that should be sub-classed to define new validators

@@ -97,7 +97,10 @@ class Script(object):
     def __contains__(self, item):
         return Script(ClientSide.contains(self.claim(), var(item)))
 
-    def __call__(self, other):
+    def __call__(self, other=None):
+        if not other:
+            return str(self)
+
         if self.content and self.content[-1] != "{":
             self.content += ";"
         self.content += var(other)
