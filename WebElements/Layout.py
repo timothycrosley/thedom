@@ -255,8 +255,8 @@ class Field(Horizontal):
             Builds connections between the input, label, and associated message
         """
         Horizontal.render(self)
-        self.label.attributes['for'] = self.userInput.id
-        self.message.id = self.userInput.fullId() + "Message"
+        self.label.attributes['for'] = (self.userInput or self).id
+        self.message.id = (self.userInput or self).fullId() + "Message"
         self.inputAndActions.addChildElement(self.message)
         if self._required:
             self.label.addChildElement(self._required) # Ensures the symbol is farthest element right
