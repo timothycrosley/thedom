@@ -30,6 +30,14 @@ Keys.DELETE = 46;
 Keys.FUNCTIONS = [112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123];
 Keys.NUMBERS = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
 
+var MessageTypes = MessageTypes || {}
+MessageTypes.ERROR = "error";
+MessageTypes.INFO = "info";
+MessageTypes.WARNING = "warning";
+MessageTypes.SUCCESS = "success";
+MessageTypes.CLASSES = {"error":"WError", "info":"WInfo", "warning":"WWarning", "success":"WSuccess"};
+MessageTypes.CLASS_LIST = ["WError", "WInfo", "WWarning", "WSuccess"];
+
 //Provide basic platform information under Platform name-space
 var Platform = Platform || {}
 Platform.IS_IOS = /Apple.*Mobile/.test(navigator.userAgent)
@@ -1540,7 +1548,7 @@ WebElements.expandTemplate = function(template, valueDictionary)
     var result = template;
     for(key in valueDictionary)
     {
-        result = WebElements.replaceAll("$" + key, valueDictionary[key]);
+        result = WebElements.replaceAll(template, "$" + key, valueDictionary[key]);
     }
 
     return result

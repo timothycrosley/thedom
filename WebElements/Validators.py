@@ -9,6 +9,7 @@ import Factory
 import Base
 import Display
 import Layout
+import ClientSide
 from ClientSide import do, regexp, var, Script
 from MethodUtils import CallBack
 
@@ -18,7 +19,39 @@ class Validation(Display.Message):
     """
         Processes child validators to render validation results
     """
-    __slots__ = ('userInput', )
+    __slots__ = ('_lastScript')
+
+    class ClientSide(Display.Message.ClientSide):
+
+        def validate(self):
+            stack = self.assign('value', self.serverSide.userInput.clientSide.value())
+            stack(self.hide())
+            for validator in self.serverSide:
+                if isinstance(validator, Validator):
+                    stack = stack(validator.clientSide.validate())
+
+            stack = self.assign('result', stack.inlineFunction().do())
+            with self.result.IF.exists as context:
+                context(self.showMessage(self.result[0], self.result[1]))
+                context(self.show())
+
+            return stack(context)
+
+    def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Display.Message.__init__(self, id=id, name=name, parent=parent, **kwargs)
+        self._lastScript = None
+
+    @property
+    def userInput(self):
+        return self.forElement
+
+    @userInput.setter
+    def userInput(self, userInput):
+        if self._lastScript:
+            self.removeScript(self._lastScript)
+
+        self.forElement = userInput
+        self._lastScript = userInput.clientSide.on(userInput.ClientSide.CHANGE_EVENT, self.clientSide.validate())
 
     def value(self):
         """
@@ -30,7 +63,18 @@ class Validation(Display.Message):
         """
             Adds the validation control to all child elements
         """
-        childElement.control = self
+        if isinstance(childElement, Validator):
+            childElement.control = self
+        return Display.Message.addChildElement(self, childElement, ensureUnique)
+
+    def validate(self):
+        self.hide()
+        for validator in (element for element in self if isinstance(element, Validator)):
+            message = validator.validate()
+            if message:
+                self.showMessage(*message)
+                self.show()
+                break
 
 
 class Validator(Base.WebElement):
@@ -46,7 +90,7 @@ class Validator(Base.WebElement):
 
     class ClientSide(Display.Message.ClientSide):
 
-        def validate(self, data):
+        def validate(self):
             pass
 
         def message(self, message):
@@ -56,19 +100,34 @@ class Validator(Base.WebElement):
             return self.expandTemplate(self.serverSide.messages[message], self.associatedData())
 
         def error(self, message):
-            return (self.serverSide.ERROR, self.message(message))
+            return (ClientSide.MessageTypes.ERROR, self.message(message))
 
         def info(self, message):
-            return (self.serverSide.INFO, self.message(message))
+            return (ClientSide.MessageTypes.INFO, self.message(message))
 
         def warning(self, message):
-            return (self.serverSide.WARNING, self.message(message))
+            return (ClientSide.MessageTypes.WARNING, self.message(message))
 
         def success(self, message):
-            return (self.serverSide.SUCCESS, self.message(message))
+            return (ClientSide.MessageTypes.SUCCESS, self.message(message))
+
+        def associatedData(self):
+            return {'field':self.value}
 
     def validate(self):
         pass
+
+    def error(self, message):
+        return (ClientSide.MessageTypes.ERROR, self.message(message))
+
+    def info(self, message):
+        return (ClientSide.MessageTypes.INFO, self.message(message))
+
+    def warning(self, message):
+        return (ClientSide.MessageTypes.WARNING, self.message(message))
+
+    def success(self, message):
+        return (ClientSide.MessageTypes.SUCCESS, self.message(message))
 
     def associatedData(self):
         """
@@ -95,12 +154,12 @@ class NotEmpty(Validator):
     class ClientSide(Validator.ClientSide):
         def validate(self):
             with self.value.IF == "" as context:
-                context(self.showError(self.serverSide.message('notEmpty')))
+                context(self.error('notEmpty').RETURN())
             return context
 
     def validate(self):
         if not self.forElement.value():
-            self.showError(self.message("notEmpty"))
+            return self.error("notEmpty")
 
 Factory.addProduct(NotEmpty)
 
@@ -110,17 +169,15 @@ class Int(Validator):
 
     class ClientSide(Validator.ClientSide):
         def validate(self):
-            assignment = self.assign('value', self.serverSide.forElement.clientSide.value())
             with self.value.IF != do.parseInt(self.value, 10) as context:
-                context(self.showError(self.serverSide.message("notInt")))
-
-            return assignment(context)
+                context(self.error('notInt').RETURN())
+            return context
 
     def validate(self):
         try:
             self.forElement.setValue(int(self.forElement.value()))
         except ValueError:
-            return self.showError(self.message("notInt"))
+            return self.error("notInt")
 
 Factory.addProduct(Int)
 
@@ -134,17 +191,16 @@ class PatternValidator(Validator):
 
     class ClientSide(Validator.ClientSide):
         def validate(self):
-            assignment = self.assign('value', self.serverSide.forElement.clientSide.value())
             with regexp(self.serverSide.pattern).do('test', self.value).IF != True as context:
-                context(self.showError(self.message("format")))
-            return assignment(context)
+                context(self.error("format").RETURN())
+            return context
 
     def validate(self):
-        if not self.pattern.match(self.forElement.value):
-            self.shorError(self.message("format"))
+        if not self.pattern.match(self.forElement.value()):
+            return self.error("format")
 
 
-class ValidEmail(PatternValidator):
+class Email(PatternValidator):
     """
         Validates that an email matches a specified format
     """
@@ -152,24 +208,16 @@ class ValidEmail(PatternValidator):
                          '''[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+''')
     messages = {'format':'Please enter an email in the form: email@domain.tld'}
 
-Factory.addProduct(ValidEmail)
+Factory.addProduct(Email)
 
 
-class ValidPhoneNumber(PatternValidator):
+class PhoneNumber(PatternValidator):
     """
         Validates that a phone number is defined with a valid format
     """
     pattern = re.compile(r'^\s*(?:1-)?(\d\d\d)[\- \.]?(\d\d\d)[\- \.]?(\d\d\d\d)(?:\s*ext\.?\s*(\d+))?\s*$', re.I)
     messages = {'format':'Please enter a number, with area code, in the form ###-###-####, optionally with "ext.####"'}
 
-class All(Validator):
-    """
-        Validates using short circuit logic with all defined validators
-    """
-    __slots__ = ('validators', )
+Factory.addProduct(PhoneNumber)
 
-    def __init__(self, id, name=None, parent=None, key=None, **kwargs):
-        Validator.__init__(self, id, name, parent, **kwargs)
-
-        self.validators = []
 

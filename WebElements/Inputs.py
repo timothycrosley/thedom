@@ -39,6 +39,7 @@ class ValueElement(DOM.Input):
     properties['onblur'] = {'action':'javascriptEvent'}
 
     class ClientSide(DOM.Input.ClientSide):
+        CHANGE_EVENT = "keyup"
 
         def setValue(self, value):
             return ClientSide.setValue(self, value)

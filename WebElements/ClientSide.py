@@ -5,6 +5,86 @@
 
 import json
 
+
+class Script(object):
+    __slots__ = ('content', 'container')
+
+    def __init__(self, content, container=None):
+        self.content = content
+        self.container = container
+
+    def check(self):
+        return Block(self)
+
+    def inlineFunction(self, accepts=()):
+        return inlineFunction(self, accepts)
+
+    def __str__(self):
+        return self.content
+
+    @property
+    def length(self):
+        return Script("%s.length" % var(self))
+
+    def __enter__(self):
+        self.content += "{"
+        return self
+
+    def __exit__(self, type, value, traceback):
+        if self.content[-1] != "{":
+            self.content += ";"
+        self.content += "}"
+
+    def push(self, value):
+        return call(self.claim() + "." + push, value)
+
+    def pop(self):
+        return call(self.claim() + "." + pop)
+
+    def __getitem__(self, key):
+        return Script("%s[%s]" % (self.claim(), var(key)))
+
+    def __getattr__(self, name):
+        return Script("%s.%s" % (var(self), name))
+
+    def __setattr__(self, name, value):
+        if name in self.__class__.__slots__:
+            return object.__setattr__(self, name, value)
+        self.content = "%s.%s = %s" % (var(self), name, var(value))
+
+    def __contains__(self, item):
+        return Script(ClientSide.contains(self.claim(), var(item)))
+
+    def __call__(self, other=None):
+        if not other:
+            return str(self)
+
+        if self.content and self.content[-1] != "{":
+            self.content += ";"
+        self.content += var(other)
+        return self
+
+    def do(self, name=None, *args):
+        return call(self.claim() + (name and "." + name or ""), *args)
+
+    def RETURN(self, data=None):
+        if data:
+            return self(Script("return %s" % var(data)))
+        return Script("return %s" % var(self))
+
+    @property
+    def IF(self):
+        return If(self)
+
+    def claim(self):
+        if self.container:
+            self.container.removeScript(self)
+        return self.content
+
+    def copy(self):
+        return self.__class__(self.claim())
+
+
 class Keys(object):
     """
         Defines a mapping of all clientside keys to their int values
@@ -33,17 +113,31 @@ class Keys(object):
     NUMBERS = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
 
 
+class MessageTypes(object):
+    ERROR = "error"
+    INFO = "info"
+    WARNING = "warning"
+    SUCCESS = "success"
+    CLASS_MAP= {ERROR:'WError', INFO:'WInfo', WARNING:'WWarning', SUCCESS:'WSuccess'}
+    CLASSES = Script("MessageTypes.CLASSES")
+    CLASS_LIST = Script("MessageTypes.CLASS_LIST")
+
+
 class If(object):
     __slots__ = ('script')
 
     def __init__(self, script):
         self.script = script
 
+    @property
+    def exists(self):
+        return Script("if(%s)" % (var(self.script)))
+
     def __eq__(self, other):
-        return Script("if(%s === %s)" % (var(self.script), var(other)))
+        return Script("if(%s == %s)" % (var(self.script), var(other)))
 
     def __ne__(self, other):
-        return Script("if(%s !== %s)" % (var(self.script), var(other)))
+        return Script("if(%s != %s)" % (var(self.script), var(other)))
 
     def __lt__(self, other):
         return Script("if(%s < %s)" % (var(self.script), var(other)))
@@ -57,72 +151,6 @@ class If(object):
     def __ge__(self, other):
         return Script("if(%s >= %s)" % (var(self.script), var(other)))
 
-class Script(object):
-    __slots__ = ('content', 'container')
-
-    def __init__(self, content, container=None):
-        self.content = content
-        self.container = container
-
-    def check(self):
-        return Block(self)
-
-    def __str__(self):
-        return self.content
-
-    @property
-    def length(self):
-        return Script("%s.length" % var(self))
-
-    def __enter__(self):
-        self.content += "{"
-        return self
-
-    def __exit__(self, type, value, traceback):
-        if self.content[-1] != "{":
-            self.content += ";"
-        self.content += "}"
-
-    def __getitem__(self, key):
-        return Script("%s[%s]" % (self.claim(), var(key)))
-
-    def __getattr__(self, name):
-        return Script("%s.%s" % (var(self), name))
-
-    def __setattr__(self, name, value):
-        if name in self.__class__.__slots__:
-            return object.__setattr__(self, name, value)
-        self.content = "%s.%s = %s" % (var(self), name, var(value))
-
-    def __contains__(self, item):
-        return Script(ClientSide.contains(self.claim(), var(item)))
-
-    def __call__(self, other=None):
-        if not other:
-            return str(self)
-
-        if self.content and self.content[-1] != "{":
-            self.content += ";"
-        self.content += var(other)
-        return self
-
-    def do(self, name, *args):
-        return call(self.claim() + "." + name, *args)
-
-    def RETURN(self, data):
-        return self(Script("return %s" % var(data)))
-
-    @property
-    def IF(self):
-        return If(self)
-
-    def claim(self):
-        if self.container:
-            self.container.removeScript(self)
-        return self.content
-
-    def copy(self):
-        return self.__class__(self.claim())
 
 def var(variable):
     """
@@ -504,7 +532,7 @@ def showIfChecked(elementToShow, checkbox=THIS):
     return call("WebElements.showIfChecked", checkbox, elementToShow)
 
 def expandTemplate(template, valueDictionary):
-    return call("WebElements.expandDictionary", template, valueDictionary)
+    return call("WebElements.expandTemplate", template, valueDictionary)
 
 class doClientSide(object):
     """

@@ -9,6 +9,7 @@
 """
 
 import Base
+import ClientSide
 import DictUtils
 import DOM
 import Factory
@@ -313,31 +314,26 @@ Factory.addProduct(FormError)
 
 class Message(Label):
     __slots__ = ('forElement')
-    ERROR = "error"
-    INFO = "info"
-    WARNING = "warning"
-    SUCCESS = "success"
-    MESSAGE_CLASSES = {ERROR:'WError', INFO:'WInfo', SUCCESS:'WSuccess', WARNING:'WWarning'}
     properties = Label.properties.copy()
     properties['messageType'] = {'action':'setMessageType'}
     class ClientSide(Label.ClientSide):
         def setMessageType(self, messageType):
-            return self.chooseClass(self.serverSide.MESSAGE_CLASSES.values(), self.serverSide.MESSAGE_CLASSES[messageType])
+            return self.chooseClass(ClientSide.MessageTypes.CLASS_LIST, ClientSide.MessageTypes.CLASSES[messageType])
 
         def showMessage(self, messageType, messageText):
             return self.setMessageType(messageType)(self.setText(messageText))
 
         def showError(self, errorText):
-            return self.showMessage(self.serverSide.ERROR, errorText)
+            return self.showMessage(ClientSide.MessageTypes.ERROR, errorText)
 
         def showInfo(self, infoText):
-            return self.showMessage(self.serverSide.INFO, errorText)
+            return self.showMessage(ClientSide.MessageTypes.INFO, errorText)
 
         def showWarning(self, warningText):
-            return self.showMessage(self.serverSide.WARNING, errorText)
+            return self.showMessage(ClientSide.MessageTypes.WARNING, errorText)
 
         def showSuccess(self, successText):
-            return self.showMessage(self.serverSide.SUCCESS, successText)
+            return self.showMessage(ClientSide.MessageTypes.SUCCESS, successText)
 
     def __init__(self, id="", name=None, parent=None, **kwargs):
         Label.__init__(self, id and id + "Message", name, parent, **kwargs)
@@ -359,7 +355,7 @@ class Message(Label):
         """
             Sets the type of message to be displayed
         """
-        self.chooseClass(self.MESSAGE_CLASSES.values(), self.MESSAGE_CLASSES[messageType])
+        self.chooseClass(ClientSide.MessageTypes.CLASS_MAP.values(), ClientSide.MessageTypes.CLASS_MAP[messageType])
 
     def showMessage(self, messageType, messageText):
         """
@@ -372,32 +368,32 @@ class Message(Label):
         """
             Shows an error message
         """
-        self.showMessage(self.ERROR, error)
+        self.showMessage(ClientSide.MessageTypes.ERROR, error)
 
     def showInfo(self, info):
         """
             Shows an info message
         """
-        self.showMessage(self.INFO, info)
+        self.showMessage(ClientSide.MessageTypes.INFO, info)
 
     def showWarning(self, warning):
         """
             Shows a warning message
         """
-        self.showMessage(self.WARNING, warning)
+        self.showMessage(ClientSide.MessageTypes.WARNING, warning)
 
     def showSuccess(self, success):
         """
             Shows a success message
         """
-        self.showMessage(self.SUCCESS, success)
+        self.showMessage(ClientSide.MessageTypes.SUCCESS, success)
 
     def clearMessage(self):
         """
             Removes any messages from the label
         """
         self.setText("")
-        for messageClass in self.MESSAGE_CLASSES.keys():
+        for messageClass in ClientSide.MessageTypes.CLASS_MAP.keys():
             self.removeClass(messageClass)
 
 Factory.addProduct(Message)

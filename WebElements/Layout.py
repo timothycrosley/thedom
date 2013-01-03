@@ -12,6 +12,7 @@ import Base
 import DOM
 import Display
 import Factory
+import Validators
 from MethodUtils import CallBack
 
 Factory = Factory.Factory("Layout")
@@ -205,7 +206,7 @@ class Field(Horizontal):
     """
         Defines how a single field should be layed out
     """
-    __slots__ = ('label', '_image', '_required', 'userInput', 'inputAndActions', 'message')
+    __slots__ = ('label', '_image', '_required', 'userInput', 'inputAndActions', 'message', 'validation')
     properties = Horizontal.properties.copy()
     Base.addChildProperties(properties, Display.Image, 'image')
     Base.addChildProperties(properties, Vertical, 'inputAndActions')
@@ -213,7 +214,7 @@ class Field(Horizontal):
     properties['text'] = {'action':'setText'}
     properties['required'] = {'action' : 'call' , 'name' : 'setRequired', 'type':'bool'}
 
-    def __init__(self, id, name, parent, **kwargs):
+    def __init__(self, id, name=None, parent=None, **kwargs):
         Horizontal.__init__(self, id, name, parent, **kwargs)
 
         self.label = self.addChildElement(Display.Label())
@@ -222,6 +223,7 @@ class Field(Horizontal):
         self.inputAndActions = self.addChildElement(Vertical())
         self.userInput = None
         self.message = Display.Message()
+        self.validation = Validators.Validation()
         self.addChildElementsTo = self.inputAndActions
 
     @property
@@ -255,11 +257,18 @@ class Field(Horizontal):
             Builds connections between the input, label, and associated message
         """
         Horizontal.render(self)
-        self.label.attributes['for'] = self.userInput.id
-        self.message.id = self.userInput.fullId() + "Message"
+        if self.userInput:
+            self.label.attributes['for'] = self.userInput.id
+            self.message.id = self.userInput.fullId() + "Message"
+            self.validation.id = self.userInput.fullId() + "Validation"
+            self.validation.userInput = self.userInput
         self.inputAndActions.addChildElement(self.message)
+        self.inputAndActions.addChildElement(self.validation)
+
         if self._required:
             self.label.addChildElement(self._required) # Ensures the symbol is farthest element right
+        for validator in self.validation:
+            self.validation.validate()
 
     def setText(self, text):
         """
@@ -275,6 +284,9 @@ class Field(Horizontal):
         if self.addChildElementsTo != self and not self.userInput:
             self.userInput = element
             self.message.forElement = element
+        elif isinstance(element, Validators.Validator):
+            element.forElement = self.message.forElement
+            return self.validation.addChildElement(element)
 
         return Horizontal.addChildElement(self, element)
 
