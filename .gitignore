@@ -1,3 +1,7 @@
 *.kate-swp
 *.sass-cache
 *.pyc
+*~
+*.swp
+Tests/__pycache__
+.sass-cache/
