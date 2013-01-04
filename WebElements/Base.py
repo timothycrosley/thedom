@@ -375,12 +375,16 @@ class WebElement(Connectable):
             return ClientSide.expandTemplate(template, valueDictionary)
 
     def __init__(self, id=None, name=None, parent=None, **kwargs):
+        Connectable.__init__(self)
+        self._create(id, name, parent, **kwargs)
+        if kwargs:
+            self.setProperties(kwargs)
+
+    def _create(self, id=None, name=None, parent=None, **kwargs):
         """
             Initiates a WebElement object
             (if no name is passed in it will default to id)
         """
-        Connectable.__init__(self)
-
         self._tagName = self.__class__.tagName
         self._tagSelfCloses = self.tagSelfCloses
         self._prefix = None
@@ -403,9 +407,6 @@ class WebElement(Connectable):
         self.__objectTemp__ = None
         self._editable = None
         self.validator = None
-
-        if kwargs:
-            self.setProperties(kwargs)
 
     @property
     def attributes(self):

@@ -49,8 +49,8 @@ class BaseField(Layout.Box):
     properties['submitIfDisabled'] = {'action':'setSubmitIfDisabled', 'type':'bool'}
     properties['flip'] = {'action':'call', 'type':'bool'}
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Box.__init__(self, id + "Field", name, parent)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Box._create(self, id + "Field", name, parent)
         self.submitIfDisabled = False
 
         self.layout = self.addChildElement(Layout.Vertical(id + "Container"))
@@ -260,8 +260,8 @@ class AutoField(Layout.Vertical):
     properties['setApart'] = {'action':'call', 'type':'bool'}
     properties['value'] = {'action':'setValue'}
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Vertical.__init__(self, id, name, parent=parent)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Vertical._create(self, id, name, parent=parent)
 
         self.inputContainer = self.addChildElement(Layout.Horizontal())
 
@@ -337,9 +337,9 @@ class SelectField(BaseField):
     properties = BaseField.properties.copy()
     Base.addChildProperties(properties, Inputs.Select, 'userInput')
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
+    def _create(self, id, name=None, parent=None, **kwargs):
         self.fieldActions = None
-        BaseField.__init__(self, id, name, parent, **kwargs)
+        BaseField._create(self, id, name, parent, **kwargs)
         self.addChildElementsTo = self
 
     def addChildElement(self, childElement):
@@ -432,8 +432,8 @@ class MultiField(SelectField):
 
         return new
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        SelectField.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        SelectField._create(self, id, name, parent, **kwargs)
         self.sortBy = "innerHTML"
         self.userInput.id = id + "MultiField"
         self.userInput.name = (name or id) + "MultiField"
@@ -492,9 +492,9 @@ class MultiSelectField(BaseField):
     properties = BaseField.properties.copy()
     Base.addChildProperties(properties, Inputs.MultiSelect, 'userInput')
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
+    def _create(self, id, name=None, parent=None, **kwargs):
         self.fieldActions = None
-        BaseField.__init__(self, id, name, parent, **kwargs)
+        BaseField._create(self, id, name, parent, **kwargs)
         self.addChildElementsTo = self
         self.userInput.attributes['multiple'] = True
 
@@ -547,8 +547,8 @@ class CheckboxField(BaseField):
     properties['checked'] = {'action':'setValue', 'type':'bool'}
     inputElement = Inputs.CheckBox
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        BaseField.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        BaseField._create(self, id, name, parent, **kwargs)
 
         inputContainer = Layout.Box(id + "_inputContainer", '', self)
         inputContainer.style['float'] = 'left'
@@ -640,8 +640,8 @@ class IntegerField(BaseField):
     properties = TextField.properties.copy()
     Base.addChildProperties(properties, Inputs.IntegerTextBox, 'userInput')
 
-    def __init__(self, id, name, parent, **kwargs):
-        BaseField.__init__(self, id, name=None, parent=None, **kwargs)
+    def _create(self, id, name, parent, **kwargs):
+        BaseField._create(self, id, name=None, parent=None, **kwargs)
 
         self.toggleLayout = self.addChildElement(Layout.Vertical())
         self.toggleLayout.style["font-size"] = "75%"
@@ -688,8 +688,8 @@ class DateField(TextField):
     properties['hideTypeLabel'] = {'action':'formatDisplay.call', 'name':'hide', 'type':'bool'}
     properties['dateFormat'] = {'action':'classAttribute'}
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        TextField.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        TextField._create(self, id, name, parent, **kwargs)
         self.userInput.style['width'] = '7.5em'
         self.dateFormat = "dd-mmm-yyyy"
 
@@ -750,8 +750,8 @@ class NestedSelect(SelectField):
     properties = SelectField.properties.copy()
     properties['groupData'] = {'action':'setGroupData'}
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        SelectField.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        SelectField._create(self, id, name, parent, **kwargs)
 
         self.userInput.addJavascriptEvent('onclick', CallBack(self, "jsPopulateItemSelect"))
         self.userInput.connect('selectionChanged', None, self, 'updateItems')
@@ -815,8 +815,8 @@ class Filter(Layout.Box):
 
     jsFunctions = ["javascriptAddFilter", "javascriptRemoveFilter"]
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Box.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Box._create(self, id, name, parent, **kwargs)
 
         self.searchFieldList = []
         self.filters = [self, ]

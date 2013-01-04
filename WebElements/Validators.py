@@ -37,8 +37,8 @@ class Validation(Display.Message):
 
             return stack(context)
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Display.Message.__init__(self, id=id, name=name, parent=parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Display.Message._create(self, id=id, name=name, parent=parent, **kwargs)
         self._lastScript = None
 
     @property

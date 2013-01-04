@@ -43,8 +43,8 @@ class HoverImage(Image):
     imageOnHover = None
     imageOnClick = None
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Image.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Image._create(self, id, name, parent, **kwargs)
 
         self.connect("rendering", None, self, "__addEvents__")
 
@@ -75,8 +75,8 @@ class List(DOM.UL):
         """
         __slots__ = ('_textNode')
 
-        def __init__(self, id=None, name=None, parent=None, **kwargs):
-            DOM.LI.__init__(self, id=id, name=name, parent=parent)
+        def _create(self, id=None, name=None, parent=None, **kwargs):
+            DOM.LI._create(self, id=id, name=name, parent=parent)
 
             self._textNode = self.addChildElement(Base.TextNode())
 
@@ -92,8 +92,8 @@ class List(DOM.UL):
             """
             return self._textNode.text()
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        DOM.UL.__init__(self, id=id, name=name, parent=parent)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        DOM.UL._create(self, id=id, name=name, parent=parent)
         self.ordered = False
         self.connect("rendering", None, self, "__updateTag__")
 
@@ -140,8 +140,8 @@ class Label(DOM.Label):
             element.innerHTML = text
             return element
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        DOM.Label.__init__(self, id=id, name=name, parent=parent)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        DOM.Label._create(self, id=id, name=name, parent=parent)
 
         self._textNode = self.addChildElement(Base.TextNode())
 
@@ -236,8 +236,8 @@ class HeaderLabel(Label):
     properties = Label.properties.copy()
     properties['level'] = {'action':'classAttribute', 'type':'int'}
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Label.__init__(self, id, name, parent=parent)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Label._create(self, id, name, parent=parent)
         self.level = 2
 
     def toHtml(self, formatted=False, *args, **kwargs):
@@ -271,8 +271,8 @@ class LabeledData(Label):
     properties['label'] = {'action':'setText'}
     properties['data'] = {'action':'setData'}
 
-    def __init__(self, id=None, name=None, parent=None, label=""):
-        Label.__init__(self, id, name, parent=parent)
+    def _create(self, id=None, name=None, parent=None, label=""):
+        Label._create(self, id, name, parent=parent)
         self.style['vertical-align'] = "middle"
         self.__data__ = self.addChildElement(Label)
         self.__data__.addClass('WDataLabeled')
@@ -303,8 +303,8 @@ class FormError(Label):
     __slots__ = ('forElement')
     tagName = "div"
 
-    def __init__(self, id="", name=None, parent=None, **kwargs):
-        Label.__init__(self, id  and id + "Error", name, parent, **kwargs)
+    def _create(self, id="", name=None, parent=None, **kwargs):
+        Label._create(self, id  and id + "Error", name, parent, **kwargs)
 
         self.hide()
         self.forElement = None
@@ -335,8 +335,8 @@ class Message(Label):
         def showSuccess(self, successText):
             return self.showMessage(ClientSide.MessageTypes.SUCCESS, successText)
 
-    def __init__(self, id="", name=None, parent=None, **kwargs):
-        Label.__init__(self, id and id + "Message", name, parent, **kwargs)
+    def _create(self, id="", name=None, parent=None, **kwargs):
+        Label._create(self, id and id + "Message", name, parent, **kwargs)
 
         self.forElement = None
 
@@ -423,8 +423,8 @@ class Empty(Base.WebElement):
     __slots__ = ()
     displayable = False
 
-    def __init__(self, name=None, id=None, parent=None):
-        Base.WebElement.__init__(self, None, None, parent)
+    def _create(self, name=None, id=None, parent=None):
+        Base.WebElement._create(self, None, None, parent)
 
     def toHtml(self, formatted=False, *args, **kwargs):
         return ""
@@ -443,8 +443,8 @@ class StraightHTML(Base.WebElement):
     properties = Base.WebElement.properties.copy()
     properties['html'] = {'action':'classAttribute'}
 
-    def __init__(self, name=None, id=None, parent=None, html=""):
-        Base.WebElement.__init__(self, None, None, parent)
+    def _create(self, name=None, id=None, parent=None, html=""):
+        Base.WebElement._create(self, None, None, parent)
 
         self.html = html
 
@@ -467,8 +467,8 @@ class StatusIndicator(DOM.Div):
     properties = DOM.Div.properties.copy()
     properties['setStatus'] = {'action':'setStatus', 'type':'int'}
 
-    def __init__(self, name=None, id=None, parent=None):
-        DOM.Div.__init__(self, name=name, id=id, parent=parent)
+    def _create(self, name=None, id=None, parent=None):
+        DOM.Div._create(self, name=name, id=id, parent=parent)
         self.setStatus(StatusIndicator.Incomplete)
         self.style['height'] = "100%"
         self.addClass('hidePrint')
@@ -491,8 +491,8 @@ class CacheElement(Base.WebElement):
     """
     __slots__ = ('__cachedHTML__')
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement._create(self, id, name, parent, **kwargs)
         self.__cachedHTML__ = None
 
     def toHtml(self, formatted=False, *args, **kwargs):

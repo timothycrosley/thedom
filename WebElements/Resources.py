@@ -31,8 +31,8 @@ class ResourceFile(Base.WebElement):
     properties['media'] = {'action':'attribute'}
     displayable = False
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement.__init__(self, id, name)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement._create(self, id, name)
         self.resourceFile = self.addChildElement(Base.TextNode())
         self.setFile("")
 
@@ -86,8 +86,8 @@ class ScriptContainer(DOM.Script):
     properties = DOM.Script.properties.copy()
     properties['script'] = {'action':'addScript'}
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement.__init__(self)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement._create(self)
         self.attributes['language'] = 'javascript'
         self.attributes['type']  = 'text/javascript'
         self._scripts = []

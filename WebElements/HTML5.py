@@ -13,8 +13,8 @@ Factory = Factory.Factory("HTML5")
 class FileUploader(Layout.Vertical):
     __slots__ = ('dropArea', 'dropLabel', 'preview', 'dropIndicator', 'files', 'statusBar')
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Vertical.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Vertical._create(self, id, name, parent, **kwargs)
         self.addClass("WDropArea")
         self.addClass("WEmpty")
 

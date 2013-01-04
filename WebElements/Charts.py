@@ -18,8 +18,8 @@ class GoogleChart(Image):
     properties['height'] = {'action':'setHeight', 'type':'int'}
     properties['width'] = {'action':'setWidth', 'type':'int'}
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        super(GoogleChart, self).__init__(id, name, parent)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        super(GoogleChart, self)._create(id, name, parent)
         self.__dataPoints__ = {}
         self.__height__ = 100
         self.__width__ = 100

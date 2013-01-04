@@ -5,3 +5,4 @@
 *.swp
 Tests/__pycache__
 .sass-cache/
+Tests/.test_WebElements_Benchmark.results

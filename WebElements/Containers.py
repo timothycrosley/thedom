@@ -32,8 +32,8 @@ class DropDownMenu(Layout.Box):
     properties['parentElement'] = {'action':'classAttribute'}
 
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Layout.Box.__init__(self, id  and (id + "Container") or "", name, parent)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Layout.Box._create(self, id  and (id + "Container") or "", name, parent)
         self.toggle = None
         self.menu = None
         self.openOnly = False
@@ -83,8 +83,8 @@ class CollapsedText(DropDownMenu):
     properties['lengthLimit'] = {'action':'classAttribute', 'type':'int'}
     properties['text'] = {'action':'setText'}
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        DropDownMenu.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        DropDownMenu._create(self, id, name, parent, **kwargs)
 
         self.lengthLimit = 40
         self.label = self.addChildElement(Display.Label)
@@ -127,8 +127,8 @@ class Autocomplete(Layout.Box):
     properties = Layout.Box.properties.copy()
     properties['blockTab'] = {'action':'classAttribute', 'type':'bool'}
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Box.__init__(self, id + "Container", name, parent)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Box._create(self, id + "Container", name, parent)
 
         self.blockTab = True
         self.menu = None
@@ -207,8 +207,8 @@ class Tab(Layout.Box):
         __slots__ = ()
         tagName = "span"
 
-        def __init__(self, id, name=None, parent=None, **kwargs):
-            Display.Label.__init__(self, id=id, name=name, parent=parent)
+        def _create(self, id, name=None, parent=None, **kwargs):
+            Display.Label._create(self, id=id, name=name, parent=parent)
             self.addClass("WTabLabel")
 
         def select(self):
@@ -235,8 +235,8 @@ class Tab(Layout.Box):
             return ("WebElements.removeClass(%(tab)s, 'WSelected');"
                     "WebElements.addClass(%(tab)s, 'WUnselected');") % {'tab':tab}
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Box.__init__(self, id=id, name=name, parent=parent)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Box._create(self, id=id, name=name, parent=parent)
 
         self.text = None
         self._textNode = Base.TextNode()
@@ -285,8 +285,8 @@ class TabContainer(Base.WebElement):
     __layoutElement__ = Layout.Vertical
     __tabLayoutElement__ = Layout.Horizontal
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Base.WebElement.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Base.WebElement._create(self, id, name, parent, **kwargs)
 
         self.tabs = {}
         self.selectedTab = None
@@ -367,8 +367,8 @@ class Accordion(Layout.Vertical):
     properties['open'] = {'action':'call', 'type':'bool'}
     properties['label'] = {'action':'setLabel'}
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Vertical.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Vertical._create(self, id, name, parent, **kwargs)
         self.addClass("WAccordion")
 
         self.toggle = self.addChildElement(Layout.Horizontal())
@@ -462,8 +462,8 @@ class FormContainer(DOM.Form):
     """
     __slots__ = ()
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        DOM.Form.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        DOM.Form._create(self, id, name, parent, **kwargs)
         self.setProperty('method', 'POST')
 
     def validators(self, useFullId=True):
@@ -492,8 +492,8 @@ class ActionBox(Layout.Vertical):
     properties = Layout.Vertical.properties.copy()
     properties['header'] = {'action':'header.setText'}
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Layout.Vertical.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Layout.Vertical._create(self, id, name, parent, **kwargs)
         self.addClass("WActionBox")
 
         self.header = self.addChildElement(Display.Label())

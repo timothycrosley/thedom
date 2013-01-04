@@ -54,8 +54,8 @@ class Table(Base.WebElement):
         tagName = "td"
         signals = Base.WebElement.signals + ['textChanged']
 
-        def __init__(self, id=None, name=None, parent=None, **kwargs):
-            Base.WebElement.__init__(self, id, name, parent, **kwargs)
+        def _create(self, id=None, name=None, parent=None, **kwargs):
+            Base.WebElement._create(self, id, name, parent, **kwargs)
             self.addClass((id or "").replace(" ", "") + "Column")
             self.addClass("WColumn")
             self.element = self.addChildElement(Display.FreeText())
@@ -128,8 +128,8 @@ class Table(Base.WebElement):
 
             return False
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement._create(self, id, name, parent, **kwargs)
 
         header = self.Row('WTableHeader', parent=self)
         self.alignHeaders = ""
@@ -252,8 +252,8 @@ class StoredValue(Layout.Box):
         Defines a label:value pair that will be passed into the request
     """
     __slots__ = ('label', 'value', 'valueDisplay')
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Layout.Box.__init__(self, name=name + "Container", parent=parent)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Layout.Box._create(self, name=name + "Container", parent=parent)
 
         self.addClass("WStoredValue")
         label = Display.Label()

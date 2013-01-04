@@ -39,8 +39,8 @@ class ItemPager(Layout.Vertical):
     properties['itemsPerPage'] = {'action':'classAttribute', 'type':'int'}
     properties['pagesShownAtOnce'] = {'action':'classAttribute', 'type':'int'}
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Vertical.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Vertical._create(self, id, name, parent, **kwargs)
 
         positionLayout = self.addChildElement(Layout.Horizontal())
         positionLayout.addClass("WActions")
@@ -189,8 +189,8 @@ class JumpToLetter(Layout.Vertical):
     __slots__ = ('__letterMap__', 'selectedLetter')
     letters = map(chr, xrange(ord('A'), ord('Z') + 1))
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Vertical.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Vertical._create(self, id, name, parent, **kwargs)
         self.addClass("WJumpToLetter")
         self.style['float'] = "left"
 
@@ -263,8 +263,8 @@ class BreadCrumb(Layout.Box):
     properties = Layout.Box.properties.copy()
     properties['formName'] = {'action':'classAttribute'}
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Box.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Box._create(self, id, name, parent, **kwargs)
         self.addClass("WBreadCrumb")
 
         hiddenData = Inputs.TextBox(id + ':HiddenData')
@@ -413,8 +413,8 @@ class UnrolledSelect(Display.List):
     """
     __slots__ = ('userInput', 'optionList')
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Display.List.__init__(self, None, None, parent)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Display.List._create(self, None, None, parent)
         self.addChildElement(Display.Label()).addClass('first')
         self.addClass('WUnrolledSelect')
         self.userInput = HiddenInputs.HiddenValue(id, parent=self)
@@ -536,8 +536,8 @@ class TimeFrame(Layout.Horizontal):
     properties['help'] = {'action':'help.setText'}
     properties['disableAnyTime'] = {'action':'call', 'type':'bool'}
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Layout.Horizontal.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Layout.Horizontal._create(self, id, name, parent, **kwargs)
         self.style['margin-top'] = '2px'
         self.addClass("WTimeFrame")
 

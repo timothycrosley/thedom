@@ -27,8 +27,8 @@ class Stack(Base.WebElement):
     properties = Base.WebElement.properties.copy()
     properties['index'] = {'action':'classAttribute', 'type':'int'}
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement._create(self, id, name, parent, **kwargs)
         self.index = 0
         self.stackElements = []
 
@@ -103,8 +103,8 @@ class Horizontal(Box):
         A container element that adds child elements horizontally.
     """
     __slots__ = ()
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Box.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Box._create(self, id, name, parent, **kwargs)
         self.addClass("WClear")
 
     def __modifyChild__(self, childElement):
@@ -141,8 +141,8 @@ class Vertical(Box):
         A container that encourage elements to be added vertically with minimum html
     """
     __slots__ = ()
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Box.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Box._create(self, id, name, parent, **kwargs)
         self.addClass("WClear")
 
     def __modifyChild__(self, childElement):
@@ -179,8 +179,8 @@ class FieldSet(DOM.FieldSet):
     properties = DOM.FieldSet.properties.copy()
     properties['legend'] = {'action':'setLegendText'}
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        DOM.FieldSet.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        DOM.FieldSet._create(self, id, name, parent, **kwargs)
         self.legend = None
 
     def getLegend(self):
@@ -216,8 +216,8 @@ class Field(Horizontal):
     properties['required'] = {'action':'call', 'name':'setRequired', 'type':'bool'}
     properties['manualValidate'] = {'type':'bool', 'action':'classAttribute'}
 
-    def __init__(self, id, name=None, parent=None, **kwargs):
-        Horizontal.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, **kwargs):
+        Horizontal._create(self, id, name, parent, **kwargs)
 
         self.label = self.addChildElement(Display.Label())
         self._image = None
@@ -303,8 +303,8 @@ class Fields(Vertical):
     """
     __slots__ = ()
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Vertical.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Vertical._create(self, id, name, parent, **kwargs)
         self.addClass("WFields")
 
     def addChildElement(self, element):
@@ -332,8 +332,8 @@ class Grid(Box):
     properties['uniformStyle'] = {'action':'classAttribute'}
     properties['numberOfColumns'] = {'action':'classAttribute', 'type':'int'}
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Box.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Box._create(self, id, name, parent, **kwargs)
 
         self.rowHeight = None
         self.numberOfColumns = 2
@@ -376,8 +376,8 @@ class LineBreak(Box):
     """
     __slots__ = ()
 
-    def __init__(self, name=None, id=None, parent=None):
-        Box.__init__(self, '', None, parent)
+    def _create(self, name=None, id=None, parent=None):
+        Box._create(self, '', None, parent)
         self.addChildElement(Base.TextNode("&nbsp;"))
         self.style['clear'] = 'both'
         self.style['height'] = '0px'
@@ -401,8 +401,8 @@ class VerticalRule(Box):
     __slots__ = ()
     allowsChildren = False
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Box.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Box._create(self, id, name, parent, **kwargs)
         self.addClass("WVerticalRule")
 
 Factory.addProduct(VerticalRule)
@@ -414,8 +414,8 @@ class Center(Box):
     """
     __slots__ = ()
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
-        Box.__init__(self, id, name, parent, **kwargs)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Box._create(self, id, name, parent, **kwargs)
         self.addClass("WCenter")
         outer = self.addChildElement(Box())
         outer.addClass("WOuter")

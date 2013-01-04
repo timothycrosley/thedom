@@ -24,8 +24,8 @@ class HiddenValue(InputElement):
     signals = InputElement.signals + ['textChanged']
     displayable = False
 
-    def __init__(self, id=None, name=None, parent=None, key=None):
-        InputElement.__init__(self, id, name, parent, key=key)
+    def _create(self, id=None, name=None, parent=None, key=None):
+        InputElement._create(self, id, name, parent, key=key)
         self.attributes['type'] = "hidden"
 
         self.width = "hidden"
@@ -59,8 +59,8 @@ class HiddenBooleanValue(HiddenValue):
     """
     __slots__ = ()
 
-    def __init__(self, id=None, name=None, parent=None, key=None):
-        HiddenValue.__init__(self, id, name, parent, key=key)
+    def _create(self, id=None, name=None, parent=None, key=None):
+        HiddenValue._create(self, id, name, parent, key=key)
         self.attributes['value'] = ''
 
     def setValue(self, value):
@@ -89,8 +89,8 @@ class HiddenIntValue(HiddenValue):
     """
     __slots__ = ()
 
-    def __init__(self, id=None, name=None, parent=None, key=None):
-        HiddenValue.__init__(self, id, name, parent, key=key)
+    def _create(self, id=None, name=None, parent=None, key=None):
+        HiddenValue._create(self, id, name, parent, key=key)
         self.attributes['value'] = 0
 
     def setValue(self, value):
