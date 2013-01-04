@@ -206,13 +206,15 @@ class Field(Horizontal):
     """
         Defines how a single field should be layed out
     """
-    __slots__ = ('label', '_image', '_required', 'userInput', 'inputAndActions', 'message', 'validation')
+    __slots__ = ('label', '_image', '_required', 'userInput', 'inputAndActions', 'message', 'validation',
+                 'manualValidate')
     properties = Horizontal.properties.copy()
     Base.addChildProperties(properties, Display.Image, 'image')
     Base.addChildProperties(properties, Vertical, 'inputAndActions')
     Base.addChildProperties(properties, Display.Message, 'message')
     properties['text'] = {'action':'setText'}
-    properties['required'] = {'action' : 'call' , 'name' : 'setRequired', 'type':'bool'}
+    properties['required'] = {'action':'call', 'name':'setRequired', 'type':'bool'}
+    properties['manualValidate'] = {'type':'bool', 'action':'classAttribute'}
 
     def __init__(self, id, name=None, parent=None, **kwargs):
         Horizontal.__init__(self, id, name, parent, **kwargs)
@@ -225,6 +227,7 @@ class Field(Horizontal):
         self.message = Display.Message()
         self.validation = Validators.Validation()
         self.addChildElementsTo = self.inputAndActions
+        self.manualValidate = False
 
     @property
     def image(self):
@@ -267,8 +270,9 @@ class Field(Horizontal):
 
         if self._required:
             self.label.addChildElement(self._required) # Ensures the symbol is farthest element right
-        for validator in self.validation:
-            self.validation.validate()
+        if not self.manualValidate:
+            for validator in self.validation:
+                self.validation.validate()
 
     def setText(self, text):
         """

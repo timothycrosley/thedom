@@ -150,6 +150,7 @@ class Validator(Base.WebElement):
 
 class NotEmpty(Validator):
     messages = {'notEmpty':'Please enter a value'}
+    slots = ()
 
     class ClientSide(Validator.ClientSide):
         def validate(self):
@@ -166,6 +167,7 @@ Factory.addProduct(NotEmpty)
 
 class Int(Validator):
     messages = {'notInt':'Please enter an integer value'}
+    slots = ()
 
     class ClientSide(Validator.ClientSide):
         def validate(self):
@@ -188,6 +190,7 @@ class PatternValidator(Validator):
     """
     pattern = r''
     messages = {'format':'Please enter a value using the specified format'}
+    slots = ()
 
     class ClientSide(Validator.ClientSide):
         def validate(self):
@@ -207,6 +210,7 @@ class Email(PatternValidator):
     pattern = re.compile('''[a-z0-9!#$%&*+/=?^_`{|}~-]+(?:[\.a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*''' \
                          '''[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+''')
     messages = {'format':'Please enter an email in the form: email@domain.tld'}
+    slots = ()
 
 Factory.addProduct(Email)
 
@@ -217,6 +221,7 @@ class PhoneNumber(PatternValidator):
     """
     pattern = re.compile(r'^\s*(?:1-)?(\d\d\d)[\- \.]?(\d\d\d)[\- \.]?(\d\d\d\d)(?:\s*ext\.?\s*(\d+))?\s*$', re.I)
     messages = {'format':'Please enter a number, with area code, in the form ###-###-####, optionally with "ext.####"'}
+    slots = ()
 
 Factory.addProduct(PhoneNumber)
 
