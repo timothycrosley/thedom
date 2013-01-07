@@ -28,7 +28,12 @@ class Validation(Display.Message):
             stack(self.hide())
             for validator in self.serverSide:
                 if isinstance(validator, Validator):
-                    stack = stack(validator.clientSide.validate())
+                    if not validator.required:
+                        with self.value.IF.exists as condition:
+                            condition(validator.clientSide.validate())
+                        stack(condition)
+                    else:
+                        stack = stack(validator.clientSide.validate())
 
             stack = self.assign('result', stack.inlineFunction().do())
             with self.result.IF.exists as context:
@@ -70,23 +75,26 @@ class Validation(Display.Message):
     def validate(self):
         self.hide()
         for validator in (element for element in self if isinstance(element, Validator)):
-            message = validator.validate()
-            if message:
-                self.showMessage(*message)
-                self.show()
-                break
+            if validator.required or self.userInput.value():
+                message = validator.validate()
+                if message:
+                    self.showMessage(*message)
+                    self.show()
+                    break
 
 
 class Validator(Base.WebElement):
     """
         The base abstract validator that should be sub-classed to define new validators
     """
-    __slots__ = ('control', )
+    __slots__ = ('control', 'required')
     ERROR = "error"
     INFO = "info"
     WARNING = "warning"
     SUCCESS = "success"
     messages = {'empty':'A value is required for this field'}
+    properties = Base.WebElement.properties.copy()
+    properties['required'] = {'action':'classAttribute'}
 
     class ClientSide(Display.Message.ClientSide):
 
@@ -113,6 +121,11 @@ class Validator(Base.WebElement):
 
         def associatedData(self):
             return {'field':self.value}
+
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement._create(self, id=id, name=name, parent=parent, **kwargs)
+        self.required = False
+        self.control = None
 
     def validate(self):
         pass
@@ -147,10 +160,86 @@ class Validator(Base.WebElement):
         """
         return self.control.value()
 
+    @property
+    def forElement(self):
+        return self.control.forElement
+
+
+class Or(Validator):
+
+    def render(self):
+        Validator.render(self)
+        for element in self:
+            element.control = self.control
+
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Validator._create(self, id=id, name=name, parent=parent, **kwargs)
+        self.required = True
+
+    def addChildElement(self, element):
+        element.control = self.control
+        return Validator.addChildElement(self, element)
+
+    class ClientSide(Validator.ClientSide):
+        def validate(self):
+            stack = self.assign('messageResult', None)
+            for validator in self.serverSide:
+                if not validator.required:
+                    with self.value.IF.exists as condition:
+                        condition(validator.clientSide.validate())
+                    stack(self.assign('result', condition.inlineFunction().do()))
+                else:
+                    stack(self.assign('result', validator.clientSide.validate().inlineFunction().do()))
+
+                with self.result.IF.notExists as condition:
+                    condition(Script("return;"))
+                stack(condition)
+
+                stack(self.assign('messageResult', self.result))
+            return stack.RETURN(self.messageResult)
+
+    def validate(self):
+        for element in self:
+            element.control = self
+        return self.validateAll()
+
+    def validateAll(self):
+        message = None
+        for validator in self:
+            result = validator.validate()
+            if not result:
+                return
+            message = message or result
+        return message
+
+Factory.addProduct(Or)
+
+
+class And(Or):
+
+    class ClientSide(Validator.ClientSide):
+        def validate(self):
+            stack = Script("")
+            for validator in self.serverSide:
+                stack(validator.clientSide.validate())
+            return stack
+
+    def validateAll(self):
+        for validator in self:
+            result = validator.validate()
+            if result:
+                return result
+
+Factory.addProduct(And)
+
 
 class NotEmpty(Validator):
     messages = {'notEmpty':'Please enter a value'}
-    slots = ()
+    __slots__ = ()
+
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Validator._create(self, id=id, name=name, parent=parent, **kwargs)
+        self.required = True
 
     class ClientSide(Validator.ClientSide):
         def validate(self):
@@ -167,7 +256,7 @@ Factory.addProduct(NotEmpty)
 
 class Int(Validator):
     messages = {'notInt':'Please enter an integer value'}
-    slots = ()
+    __slots__ = ()
 
     class ClientSide(Validator.ClientSide):
         def validate(self):
@@ -190,7 +279,7 @@ class PatternValidator(Validator):
     """
     pattern = r''
     messages = {'format':'Please enter a value using the specified format'}
-    slots = ()
+    __slots__ = ()
 
     class ClientSide(Validator.ClientSide):
         def validate(self):
@@ -210,7 +299,7 @@ class Email(PatternValidator):
     pattern = re.compile('''[a-z0-9!#$%&*+/=?^_`{|}~-]+(?:[\.a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*''' \
                          '''[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+''')
     messages = {'format':'Please enter an email in the form: email@domain.tld'}
-    slots = ()
+    __slots__ = ()
 
 Factory.addProduct(Email)
 
@@ -221,7 +310,7 @@ class PhoneNumber(PatternValidator):
     """
     pattern = re.compile(r'^\s*(?:1-)?(\d\d\d)[\- \.]?(\d\d\d)[\- \.]?(\d\d\d\d)(?:\s*ext\.?\s*(\d+))?\s*$', re.I)
     messages = {'format':'Please enter a number, with area code, in the form ###-###-####, optionally with "ext.####"'}
-    slots = ()
+    __slots__ = ()
 
 Factory.addProduct(PhoneNumber)
 

@@ -288,8 +288,8 @@ class Field(Horizontal):
         if self.addChildElementsTo != self and not self.userInput:
             self.userInput = element
             self.message.forElement = element
+            self.validation.forElement = element
         elif isinstance(element, Validators.Validator):
-            element.forElement = self.message.forElement
             return self.validation.addChildElement(element)
 
         return Horizontal.addChildElement(self, element)

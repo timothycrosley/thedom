@@ -133,6 +133,16 @@ class If(object):
     def exists(self):
         return Script("if(%s)" % (var(self.script)))
 
+    @property
+    def notExists(self):
+        return Script("if(!%s)" % (var(self.script)))
+
+    def IS(self, other):
+        return Script("if(%s === %s)" % (var(self.script), var(other)))
+
+    def IS_NOT(self, other):
+        return Script("if(%s !== %s)" % (var(self.script), var(other)))
+
     def __eq__(self, other):
         return Script("if(%s == %s)" % (var(self.script), var(other)))
 

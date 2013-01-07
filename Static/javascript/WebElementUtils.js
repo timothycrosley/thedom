@@ -332,14 +332,14 @@ WebElements.buildThrobber = function()
 WebElements.getElementsByClassName = function(className, parentNode, stopOnFirstMatch)
 {
     parentNode = WebElements.get(parentNode);
-    if(document.getElementByClassName){
+    if(document.getElementsByClassName){
         if(parentNode)
         {
-            return parentNode.getElementByClassName(className);
+            return parentNode.getElementsByClassName(className);
         }
         else
         {
-            return document.getElementByClassName(className);
+            return document.getElementsByClassName(className);
         }
     }
     if(!parentNode)
@@ -354,7 +354,7 @@ WebElements.getElementsByClassName = function(className, parentNode, stopOnFirst
 //Gets the first element in parent node with a certain class name
 WebElements.getElementByClassName = function(className, parentNode)
 {
-    return WebElements.getElementsByClassName(className, parentNode, true);
+    return WebElements.getElementsByClassName(className, parentNode, true)[0];
 }
 
 //Returns all children with a particular attribute value
@@ -480,7 +480,7 @@ WebElements.setAbsoluteRelativeToParent = function(element, pixelsDown, pixelsTo
     if(!pixelsToRight){pixelsToRight = 0;}
 
     var parentElement = WebElements.get(parentElement);
-    element.style.left = WebElements.plixelsToLeft(parentElement) + pixelsToRight;
+    element.style.left = WebElements.pixelsToLeft(parentElement) + pixelsToRight;
     element.style.top = WebElements.pixelsAbove(parentElement) + pixelsDown;
 }
 
@@ -493,7 +493,7 @@ WebElements.displayDropDown = function(dropDown, parentElement)
 
     WebElements.setAbsoluteRelativeToParent(dropDownElement, parentElement.offsetHeight -1,
                                   0, parentElement);
-    WebElements.showElement(dropDownElement);
+    WebElements.show(dropDownElement);
 }
 
 //Toggles the displayed state of a drop down menu
@@ -715,7 +715,8 @@ WebElements.toggleVisibility = function(element)
 //return if the element is visable or not
 WebElements.shown = function(element)
 {
-    if(WebElements.get(element).style.display == "none")
+    element = WebElements.get(element);
+    if(!element || element.style.display == "none")
     {
         return false;
     }
@@ -1381,13 +1382,13 @@ WebElements.clickDropDown = function(menu, openOnly, button, parentElement)
     WebElements.State.dropDownOpen = true;
     if(WebElements.State.currentDropDown && WebElements.State.currentDropDown != menu)
     {
-        WebElements.hide(currentDropDown);
-        WebElements.removeClass(currentButton, 'SelectedDropDown');
+        WebElements.hide(WebElements.State.currentDropDown);
+        WebElements.removeClass(WebElements.State.currentButton, 'SelectedDropDown');
     }
     WebElements.State.currentDropDown = menu;
     WebElements.State.currentButton = button;
-    if(!openOnly || !WebElements.shown(currentDropDown)){
-        if(WebElements.toggleDropDown(currentDropDown, parentElement)){
+    if(!openOnly || !WebElements.shown(WebElements.State.currentDropDown)){
+        if(WebElements.toggleDropDown(WebElements.State.currentDropDown, parentElement)){
             WebElements.addClass(button, 'SelectedDropDown');
         }
         else{

@@ -74,6 +74,25 @@ class DropDownMenu(Layout.Box):
 Factory.addProduct(DropDownMenu)
 
 
+class Help(DropDownMenu):
+    """
+        Shows help info or text
+    """
+    __slots__ = ('label', )
+    properties = DropDownMenu.properties.copy()
+    properties['text'] = {'action':'label.setText'}
+
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        DropDownMenu._create(self, id, name, parent, **kwargs)
+        self.addChildElement(Display.Image(src=Base.IMAGES_URL + "help.png"))
+        layout = self.addChildElement(Layout.Vertical())
+        self.label = layout.addChildElement(Display.Label)
+        self.addChildElementsTo = layout
+
+
+Factory.addProduct(Help)
+
+
 class CollapsedText(DropDownMenu):
     """
         Shows a limited amount of text revealing the rest when the user hovers over

@@ -30,8 +30,8 @@ import CodeDocumentation
 import Validators
 
 FactoryClasses = Factory
-Factory = Factory.Composite((DOM.Factory, Buttons.Factory, DataViews.Factory,
+Factory = Factory.Composite((Validators.Factory, DOM.Factory, Buttons.Factory, DataViews.Factory,
                              Display.Factory, Fields.Factory, HiddenInputs.Factory, Inputs.Factory,
                              Layout.Factory, Navigation.Factory, Resources.Factory, Containers.Factory,
                              Charts.Factory, Printing.Factory, Document.Factory, CodeDocumentation.Factory,
-                             HTML5.Factory, Validators.Factory))
+                             HTML5.Factory))
