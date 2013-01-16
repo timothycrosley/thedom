@@ -1,15 +1,27 @@
-"""
-    Name:
-        PositionController.py
+'''
+    PositionController.py
 
-    Description:
-        Provides a simple way to apply paging to any problem.
-            Examples include:
-                Database queries, lists, etc.
+    Provides a class that isolates the logic of paging through long sets of data such as a db query
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
 
-from IteratorUtils import iterableLength
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
+from .IteratorUtils import iterableLength
+from .MultiplePythonSupport import *
 
 class PositionController(object):
     """A simple way to control paging and positon within lists
@@ -42,8 +54,8 @@ class PositionController(object):
         self.empty = not self.length
         self.itemsPerPage = itemsPerPage
 
-        self.numberOfPages = self.length / self.itemsPerPage
-        if self.numberOfPages < (float(self.length) / float(self.itemsPerPage)):
+        self.numberOfPages = self.length // self.itemsPerPage
+        if self.numberOfPages < (float(self.length) // float(self.itemsPerPage)):
             self.numberOfPages += 1
 
         self.allPages = []
@@ -68,7 +80,7 @@ class PositionController(object):
         self.startPosition = self.startIndex + 1
         self.arePrev = bool(self.startPosition > 1)
 
-        self.page = self.startIndex / self.itemsPerPage
+        self.page = self.startIndex // self.itemsPerPage
         if self.empty:
             self.pageNumber = 0
         else:
@@ -126,8 +138,8 @@ class PositionController(object):
         """
         pageStart = 0
 
-        if self.page > self.pagesShownAtOnce / 2:
-            pageStart = self.page - self.pagesShownAtOnce / 2
+        if self.page > self.pagesShownAtOnce // 2:
+            pageStart = self.page - self.pagesShownAtOnce // 2
 
         pageEnd = pageStart + self.pagesShownAtOnce
         if pageEnd > self.numberOfPages - 1:

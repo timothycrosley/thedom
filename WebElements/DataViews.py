@@ -1,24 +1,38 @@
-#!/usr/bin/python
-"""
-   Name:
-       Dataviews
+'''
+    Dataviews.py
 
-   Description:
-       Widgets that allow you to view data
+    Contains Elements that combine several base elements to enable complex views of data such as
+    automatically building tables
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
 
 import os
 
-import Base
-import Buttons
-import Display
-import HiddenInputs
-import Inputs
-import Layout
-import UITemplate
-from Factory import Composite, Factory
-from MethodUtils import CallBack
+from . import Base
+from . import Buttons
+from . import Display
+from . import HiddenInputs
+from . import Inputs
+from . import Layout
+from . import UITemplate
+from .Factory import Composite, Factory
+from .MethodUtils import CallBack
+from .MultiplePythonSupport import *
 
 Factory = Factory("DataViews")
 
@@ -62,7 +76,13 @@ class Table(Base.WebElement):
             if self.parent and self.parent.parent and getattr(self.parent.parent, 'uniformStyle', None):
                 self.setStyleFromString(self.parent.parent.uniformStyle)
             self._textNode = Base.TextNode()
-            self.connect("rendering", None, self, "addChildElement", self._textNode)
+
+        def render(self):
+            """
+                Ensures that the text node is the last element upon rendering
+            """
+            Base.WebElement.render(self)
+            self.addChildElement(self._textNode)
 
         def setText(self, text):
             """

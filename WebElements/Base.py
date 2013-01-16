@@ -1,29 +1,37 @@
 '''
-    Name:
-        Base.py
+    Base.py
 
-    Description:
-        The BaseElements used by WebElements
+    This library defines the most basic (abstract) Web Element from which all other elements are derived
 
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
 import re
-import types
-import ClientSide
+from . import ClientSide
 from itertools import chain
 from types import FunctionType
 
-import DictUtils
-import ToClientSide
-from Connectable import Connectable
-from IteratorUtils import Queryable
-from MethodUtils import acceptsArguments, CallBack
-from StringUtils import interpretAsString
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    from DictUtils import OrderedDict
+from . import DictUtils
+from . import ToClientSide
+from .MultiplePythonSupport import *
+from .Connectable import Connectable
+from .IteratorUtils import Queryable
+from .MethodUtils import acceptsArguments, CallBack
+from .StringUtils import interpretAsString
 
 BLOCK_TAGS = ('address', 'blockquote', 'center', 'dir', 'div', 'dl', 'fieldset', 'form', 'h1',
               'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'isindex', 'menu', 'noframes', 'noscript', 'ol',
@@ -110,7 +118,7 @@ class WebElement(Connectable):
             self.serverSide = element
 
         def on(self, event, action):
-            if type(action) in (types.ListType, types.TupleType):
+            if type(action) in (list, tuple):
                 action = ClientSide.Script(";".join([ClientSide.var(actionScript) for actionScript in action]))
             return ClientSide.addEvent(self, event, ClientSide.eventHandler(action))
 
@@ -411,7 +419,7 @@ class WebElement(Connectable):
     @property
     def attributes(self):
         if self._attributes is None:
-            self._attributes = {}
+            self._attributes = dict()
 
         return self._attributes
 
@@ -425,7 +433,7 @@ class WebElement(Connectable):
     @property
     def style(self):
         if self._style is None:
-            self._style = {}
+            self._style = dict()
 
         return self._style
 
@@ -572,7 +580,7 @@ class WebElement(Connectable):
         """
             Returns the prefix set for this element or the first parent element with one set
         """
-        if self._prefix == None and self.parent:
+        if self._prefix is None and self.parent:
             prefix = self.parent.prefix()
         elif self._prefix == " ":
             return ''
@@ -668,7 +676,7 @@ class WebElement(Connectable):
             Returns a list of all validators associated with this element and all child elements:
                 useFullId - if set to True the validators are set against the prefix + id
         """
-        validatorDict = {}
+        validatorDict = dict()
         validator = self.validator
         if self.editable() and validator:
             if useFullId:
@@ -729,7 +737,7 @@ class WebElement(Connectable):
             Returns true if the input-type field in the element are editable
         """
         editable = self._editable
-        if editable == None:
+        if editable is None:
             if self.parent:
                 return self.parent.editable()
             else:
@@ -852,7 +860,7 @@ class WebElement(Connectable):
         """
         if hasattr(javascript, 'claim'):
             javascript = javascript.claim() + ";"
-        if type(event) in (types.ListType, types.TupleType):
+        if type(event) in (list, tuple):
             for eventName in event:
                 self.attributes.setdefault(eventName, []).append(javascript)
         else:
@@ -894,7 +902,7 @@ class WebElement(Connectable):
                 for example '<span class="whateverclass">'
         """
         if not self._tagName:
-            return u''
+            return u('')
 
         nativeAttributes = (('name', self.fullName()),
                             ('id', self.fullId()),
@@ -929,7 +937,7 @@ class WebElement(Connectable):
             Returns the elements html end tag, for example '</span>'
         """
         if self._tagSelfCloses or not self._tagName:
-            return u''
+            return u('')
 
         return unicode("".join(("</", self._tagName, ">")))
 
@@ -953,8 +961,8 @@ class WebElement(Connectable):
             Populate webElement and child webElements with (id/name/key):value dictionary:
                 variableDict - the dictionary to use to populate the elements
         """
-        if variableDict == None:
-            variableDict = {}
+        if variableDict is None:
+            variableDict = dict()
 
         for child in self.childElements:
             child.insertVariables(variableDict)
@@ -964,8 +972,8 @@ class WebElement(Connectable):
             Export WebElement input field values as a nested key:value dictionary:
                 exportedVariables - the dictionary to add exported variables to
         """
-        if exportedVariables == None:
-            exportedVariables = {}
+        if exportedVariables is None:
+            exportedVariables = dict()
 
         for child in self.childElements:
             child.exportVariables(exportedVariables, flat)
@@ -989,7 +997,7 @@ class WebElement(Connectable):
 
     @staticmethod
     def __getStyleDictFromString(styleString):
-        styleDict = {}
+        styleDict = dict()
 
         styleDefinitions = styleString.split(';')
         for definition in styleDefinitions:
@@ -1059,7 +1067,7 @@ class WebElement(Connectable):
         if isinstance(properties, dict):
             properties = properties.iteritems()
         for propertyName, propertyValue in properties:
-            if propertyValue != None and self.properties.has_key(propertyName):
+            if propertyValue is not None and self.properties.has_key(propertyName):
                 self.setProperty(propertyName, propertyValue)
 
     def render(self):
@@ -1090,9 +1098,6 @@ class WebElement(Connectable):
         if self._tagName in BLOCK_TAGS or self.hasClass("WBlock"):
             return True
         return False
-
-    ##def __len__(self):
-    ##    return len(self.childElements)
 
     def __iter__(self):
         return self.childElements.__iter__()
@@ -1226,7 +1231,7 @@ class TemplateElement(WebElement):
         if factory:
             self.factory = factory
 
-        accessors = {}
+        accessors = dict()
         instance = self.factory.buildFromTemplate(self.template, accessors=accessors, parent=self)
         for accessor, element in accessors.iteritems():
             if hasattr(self, accessor):

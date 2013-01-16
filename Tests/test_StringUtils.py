@@ -1,8 +1,27 @@
 '''
-    Test string utility functions to ensure expected behavior
+    test_StringUtils.py
+
+    Tests the functionality of WebElements/StringUtils.py
+
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
 from WebElements import StringUtils
+from WebElements.MultiplePythonSupport import *
 
 def test_removeAlphas():
     """ Ensure that the utility function to remove alpha characters works successfully """
@@ -36,7 +55,7 @@ def test_interpretAsString():
         return "hello"
     assert StringUtils.interpretAsString(testFunction) == "hello"
 
-    assert StringUtils.interpretAsString("") == u""
+    assert StringUtils.interpretAsString("") == u("")
 
 def test_interpretFromString():
     """Ensure the interpret from string utility method correctly takes strings and turns them into

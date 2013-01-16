@@ -1,4 +1,29 @@
-import cPickle as pickle
+'''
+    test_Base.py
+
+    Tests the functionality of WebElements/Base.py
+
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 from WebElements.All import Factory
 from WebElements.Base import Invalid, TemplateElement, WebElement
@@ -250,8 +275,8 @@ class ElementTester(object):
             root = etree.fromstring(element.toHtml().replace("&amp;", "&").replace("&", "&amp;"). \
                                                      replace("&nbsp;", " ").replace("form:error", "span").
                                                      replace("error", "span"), parser)
-        except Exception, e:
-            print element.toHtml()
+        except Exception as e:
+            print(element.toHtml())
             raise e
 
     def test_isValid(self):

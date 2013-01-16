@@ -1,12 +1,25 @@
-#!/usr/bin/python
-"""
-   Name:
-       CodeDocumentation
+'''
+    CodeDocumentation.py
 
-   Description:
-       Contains elements that are used for displaying and documenting code
+    Contains elements that are used for displaying and documenting code
+    uses pygments to enable code highlighting
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
 
 try:
     hasPygments = True
@@ -16,12 +29,13 @@ try:
 except ImportError:
     hasPygments = False
 
-import Base
-import DOM
-import DictUtils
-import Factory
-from Inputs import ValueElement
-from MethodUtils import CallBack
+from . import Base
+from . import DOM
+from . import DictUtils
+from . import Factory
+from .Inputs import ValueElement
+from .MethodUtils import CallBack
+from .MultiplePythonSupport import *
 
 
 Factory = Factory.Factory("CodeDocumentation")
@@ -47,18 +61,17 @@ class CodeSnippet(DOM.Pre):
         self.lexer = "python"
         self.code = ""
 
-        self.connect("rendering", None, self, "_render")
-
     def _getCode(self):
         return self.code.replace("\\n", "\n")
 
     def _getLexer(self):
         return get_lexer_by_name(self.lexer)
 
-    def _render(self):
+    def render(self):
         """
            Renders the code with pygments if it is available otherwise with a simple pre-tag
         """
+        DOM.Pre.render(self)
         if not hasPygments:
             self._textNode.setText(self.code)
             return

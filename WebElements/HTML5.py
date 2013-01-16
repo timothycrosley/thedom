@@ -1,12 +1,32 @@
-"""
-    Contains elements that only work in HTML5 compatible browsers
-"""
+'''
+    HTML5.py
 
-import Factory
-from WebElements import Base
-from WebElements import Display
-from WebElements import Layout
-from MethodUtils import CallBack
+    Contains complex elements that take advantage of features unique to modern HTML5 browsers,
+    and therefore will only work on more recent systems
+
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
+from . import Factory
+from . import Base
+from . import Display
+from . import Layout
+from .MethodUtils import CallBack
+from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("HTML5")
 

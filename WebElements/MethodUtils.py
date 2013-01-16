@@ -1,26 +1,41 @@
-"""
-    Name:
-        MethodUtils.py
+'''
+    MethodUtils.py
 
-    Description:
-        A collection of functions to aid in method introspection and usage
+    A collection of functions to aid in method introspection and usage
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
 
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
+from .MultiplePythonSupport import *
 
 def acceptsArguments(method, numberOfArguments):
     """Returns True if the given method will accept the given number of arguments:
             method - the method to perform introspection on
             numberOfArguments - the numberOfArguments
     """
+    numberOfDefaults = 0
     if method.__class__.__name__ == 'instancemethod':
         numberOfArguments += 1
         numberOfDefaults = method.im_func.func_defaults and len(method.im_func.func_defaults) or 0
     elif method.__class__.__name__ == 'function':
         # static method being passed in
         numberOfDefaults = method.func_defaults and len(method.func_defaults) or 0
-    if(method.func_code.co_argcount >= numberOfArguments and
-       method.func_code.co_argcount - numberOfDefaults <= numberOfArguments):
+    coArgCount = getattr(method, 'func_code', getattr(method, '__code__')).co_argcount
+    if(coArgCount >= numberOfArguments and coArgCount - numberOfDefaults <= numberOfArguments):
         return True
 
     return False

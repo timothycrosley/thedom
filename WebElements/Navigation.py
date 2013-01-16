@@ -1,27 +1,40 @@
-#!/usr/bin/python
-"""
-   Name:
-       Navigation Elements
+'''
+    Navigation.py
 
-   Description:
-       Contains reusable WebElements that aid in page navigation.
+    Contains elements that aid in page navigation
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
 
-import Base
-import Buttons
-import ClientSide
-import Containers
-import Display
-import HiddenInputs
-import Inputs
-import Layout
-import UITemplate
-from Factory import Factory
-from IteratorUtils import iterableLength
-from MethodUtils import CallBack
-from PositionController import PositionController
-from StringUtils import interpretAsString
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
+from . import Base
+from . import Buttons
+from . import ClientSide
+from . import Containers
+from . import Display
+from . import HiddenInputs
+from . import Inputs
+from . import Layout
+from . import UITemplate
+from .Factory import Factory
+from .IteratorUtils import iterableLength
+from .MethodUtils import CallBack
+from .PositionController import PositionController
+from .StringUtils import interpretAsString
+from .MultiplePythonSupport import *
 
 Factory = Factory("Navigation")
 
@@ -101,7 +114,6 @@ class ItemPager(Layout.Vertical):
         self._index_ = self.addChildElement(HiddenInputs.HiddenIntValue(id + 'Index'))
         self._pages_ = None
 
-        self.connect('rendering', None, self, '_updateUI_')
         self.showAllButton.addJavascriptEvent('onclick', "WebElements.replace(this, WebElements.buildThrobber());")
         self.showAllButton.connect('jsToggled', None, self, 'jsSetNavigationIndex', 0)
         self.showAllButton.connect('toggled', True, self.showAllButton, 'setValue', 'Show in Pages')
@@ -137,10 +149,11 @@ class ItemPager(Layout.Vertical):
                 {'id':self.fullId(), 'index':index, 'handlers':"\n".join([ClientSide.var(result) for result in
                                                                           self.emit('jsIndexChanged')])})
 
-    def _updateUI_(self):
+    def render(self):
         """
             Updates the ui to reflect the currently selected page and provide links to other pages
         """
+        Layout.Vertical.render(self)
         if not self._pages_:
             return
         elif not self.currentPageItems():
@@ -205,7 +218,6 @@ class JumpToLetter(Layout.Vertical):
 
         self.selectedLetter.connect('valueChanged', None, self, "selectLetter")
 
-        self.connect("rendering", None, self, "__highlightSelectedLetter__")
         self.addScript("function letterJumpHover(letterJump){"
                        "    var letterJump = WebElements.get(letterJump);"
                        "    letterJump.paddingBottom = '4px';"
@@ -220,7 +232,8 @@ class JumpToLetter(Layout.Vertical):
                        "    WebElements.get(letterJump).value = letter;"
                        "}")
 
-    def __highlightSelectedLetter__(self):
+    def render(self):
+        Layout.Vertical.render(self)
         fullId = self.fullId()
         for letter, link in self.__letterMap__.iteritems():
             if letter == self.selectedLetter.value():
@@ -297,9 +310,11 @@ class BreadCrumb(Layout.Box):
 
         self.addScript(CallBack(self, 'jsSubmitLink'))
 
-        self.connect('rendering', None, self, 'highlightCurrentLink')
-
         self.trail = []
+
+    def render(self):
+        Layout.Box.render(self)
+        self.highlightCurrentLink()
 
     def addLink(self, text, location, key=None):
         """
@@ -411,7 +426,7 @@ class UnrolledSelect(Display.List):
     """
          A select input implementation where all options are visible at once but only one is selectable
     """
-    __slots__ = ('userInput', 'optionList')
+    __slots__ = ('userInput', 'optionList', '_lastAdded')
 
     def _create(self, id, name=None, parent=None, **kwargs):
         Display.List._create(self, None, None, parent)
@@ -430,11 +445,12 @@ class UnrolledSelect(Display.List):
                        "    WebElements.stealClassFromFellowChild(option, 'WUnrolledSelect', 'selected');"
                        "}")
 
-        self.connect('rendering', None, self, '__addLast__')
+        self._lastAdded = False
 
-    def __addLast__(self):
-        self.addChildElement(Display.Label()).addClass('last')
-        self.disconnect('rendering', None, self, '__addLast__')
+    def render(self):
+        if not self._lastAdded:
+            self.addChildElement(Display.Label()).addClass('last')
+            self._lastAdded = True
 
     def addOptions(self, options, displayKeys=False):
         """
@@ -570,7 +586,6 @@ class TimeFrame(Layout.Horizontal):
 
         self.days = self.addChildElement(HiddenInputs.HiddenIntValue(id + ":days"))
         self.days.addClass('Value')
-        self.connect('rendering', None, self, '__addScripts__')
 
     def disableAnyTime(self):
         """
@@ -580,7 +595,8 @@ class TimeFrame(Layout.Horizontal):
         if self.days.value() == 0:
             self.days.setValue(1)
 
-    def __addScripts__(self):
+    def render(self):
+        Layout.Horizontal.render(self)
         setTimeFrame = ("WebElements.stealClassFromPeer(this, 'selected');WebElements.peer(this, 'Value').value = '%d';" +
                         "".join(self.emit("jsTimeFrameChanged")))
         valueMap = {0:self.anyTime, 1:self.hours24, 7:self.days7, 14:self.days14}

@@ -1,3 +1,26 @@
+'''
+    benchmark_WebElements.py
+
+    Benchmarks the performance of the WebElements library, specifically how fast
+    it will generate complex HTML pages
+
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
 import cPickle as pickle
 import gc
 import sys
@@ -130,33 +153,33 @@ if __name__ == "__main__":
     doneSection()
     getBigTableGenerationTime()
 
-    print "."
+    print(".")
 
-    print "######## Indvidual element generation times ########"
+    print("######## Indvidual element generation times ########")
     results['generationTimes'].orderedKeys.sort()
     for generationTime, info in results['generationTimes'].iteritems():
-        print "    Generating html for %s took %s seconds and produced %d len html" % (info[0], generationTime, info[1])
-    print "    Total Time: %s" % results['createAllOnce']
+        print("    Generating html for %s took %s seconds and produced %d len html" % (info[0], generationTime, info[1]))
+    print("    Total Time: %s" % results['createAllOnce'])
 
-    print "######## Looped creation time (%d elements) ########" %  len(Factory.products.keys() * 100)
-    print "    Instantiating Elements: " + str(results['loopedInit'])
-    print "    Generating Html: " + str(results['loopedToHtml'])
-    print "    Html Size: " + str(results['loopedToHtmlSize'] / 1024.0 / 1024.0) + " MB"
-    print "    Total Time:" + str(results['loopedCreate'])
+    print("######## Looped creation time (%d elements) ########" %  len(Factory.products.keys() * 100))
+    print("    Instantiating Elements: " + str(results['loopedInit']))
+    print("    Generating Html: " + str(results['loopedToHtml']))
+    print("    Html Size: " + str(results['loopedToHtmlSize'] / 1024.0 / 1024.0) + " MB")
+    print("    Total Time:" + str(results['loopedCreate']))
 
-    print "######## Template creation time (%d elements) ########" %  len(Factory.products.keys() * 100)
-    print "    Instantiating Template: " + str(results['templateInit'])
-    print "    Generating Html: " + str(results['templateToHtml'])
-    print "    Html Size: " + str(results['templateToHtmlSize'] / 1024.0 / 1024.0) + " MB"
-    print "    Total Time:" + str(results['templateCreate'])
+    print("######## Template creation time (%d elements) ########" %  len(Factory.products.keys() * 100))
+    print("    Instantiating Template: " + str(results['templateInit']))
+    print("    Generating Html: " + str(results['templateToHtml']))
+    print("    Html Size: " + str(results['templateToHtmlSize'] / 1024.0 / 1024.0) + " MB")
+    print("    Total Time:" + str(results['templateCreate']))
 
-    print "######## Nested element generation #########"
-    print "    Generating 900 nested elements took: " + str(generationTime)
-    print "    Html Size: ", results['nestedNodeSize']
+    print("######## Nested element generation #########")
+    print("    Generating 900 nested elements took: " + str(generationTime))
+    print("    Html Size: " + str(results['nestedNodeSize']))
 
-    print "######## Big table generation #########"
-    print "    Generating a 10X1000 table took: " + str(results['bigTable'])
-    print "    Html Size: ", str(results['bigTableSize'] / 1024.0 / 1024.0) + " MB"
+    print("######## Big table generation #########")
+    print("    Generating a 10X1000 table took: " + str(results['bigTable']))
+    print("    Html Size: " + str(results['bigTableSize'] / 1024.0 / 1024.0) + " MB")
     results['nestedGeneration'] = generationTime
 
     with open(".test_WebElements_Benchmark.results", 'w') as resultFile:

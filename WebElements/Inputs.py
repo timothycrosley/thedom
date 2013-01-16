@@ -1,22 +1,35 @@
-#!/usr/bin/python
-"""
-   Name:
-       Inputs
+'''
+    Inputs.py
 
-   Description:
-       Contains Elements that make data entry easy by providing reusable input elements
+    Contains Elements that make data entry easy by providing reusable input elements
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
 
 import types
 
-import DOM
-import Base
-import ClientSide
-import DictUtils
-import Factory
-from MethodUtils import CallBack
-from StringUtils import interpretAsString
+from . import DOM
+from . import Base
+from . import ClientSide
+from . import DictUtils
+from . import Factory
+from .MethodUtils import CallBack
+from .StringUtils import interpretAsString
+from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("Inputs")
 
@@ -67,7 +80,7 @@ class ValueElement(DOM.Input):
         """
             Updates the value based on a dictionary, popping it out afterwards
         """
-        if variableDict == None:
+        if variableDict is None:
             variableDict = {}
 
         DOM.Input.insertVariables(self, variableDict)
@@ -76,28 +89,28 @@ class ValueElement(DOM.Input):
         removeFromDictionary = True
         if self.key:
             value = DictUtils.getNestedValue(variableDict, self.key)
-        if self.fullId() and value == None:
+        if self.fullId() and value is None:
             value = variableDict.get(self.fullId(), None)
-            if value and type(value) in (types.ListType, types.TupleType):
+            if value and type(value) in (list, tuple):
                 if len(value) > 1:
                     removeFromDictionary = False
                 value = value.pop(0)
-        if self.id and value == None:
+        if self.id and value is None:
             value = variableDict.get(self.id, None)
-            if value and type(value) in (types.ListType, types.TupleType):
+            if value and type(value) in (list, tuple):
                 if len(value) > 1:
                     removeFromDictionary = False
                 value = value.pop(0)
-        if self.name and value == None:
+        if self.name and value is None:
             value = variableDict.get(self.fullName(), None)
-            if value == None:
+            if value is None:
                 value = variableDict.get(self.name, None)
 
-            if value and type(value) in (types.ListType, types.TupleType):
+            if value and type(value) in (list, tuple):
                 if len(value) > 1:
                     removeFromDictionary = False
                 value = value.pop(0)
-        if value != None:
+        if value is not None:
             self.setValue(value)
 
         if removeFromDictionary:
@@ -111,7 +124,7 @@ class ValueElement(DOM.Input):
         """
             return the used webelements variables as a dictionary
         """
-        if exportedVariables == None:
+        if exportedVariables is None:
             exportedVariables = {}
 
         if flat:
@@ -119,7 +132,7 @@ class ValueElement(DOM.Input):
                 prevValue = exportedVariables.get(self.name, None)
                 if type(prevValue) == list:
                     prevValue.append(self.value)
-                elif prevValue != None:
+                elif prevValue is not None:
                     exportedVariables[self.name] = [prevValue, self.value()]
                 else:
                     exportedVariables[self.name] = self.value()
@@ -159,12 +172,11 @@ class InputElement(ValueElement):
     def _create(self, id, name=None, parent=None, key=None):
         ValueElement._create(self, id, name, parent, key=key)
 
-        self.connect('rendering', None, self, '_updateReadOnly_')
-
-    def _updateReadOnly_(self):
+    def render(self):
         """
             Update readonly attribute to reflect editable status
         """
+        ValueElement.render(self)
         if not self.editable():
             self.attributes['readonly'] = 'readonly'
 
@@ -260,7 +272,7 @@ class Radio(CheckBox):
         self.setId(id)
 
     def insertVariables(self, variableDict=None):
-        if variableDict == None:
+        if variableDict is None:
             variableDict = {}
 
         selected = variableDict.get(self.fullName(), variableDict.get(self.name, None))
@@ -525,9 +537,8 @@ class Select(ValueElement):
     def _create(self, id, name=None, parent=None, **kwargs):
         ValueElement._create(self, id, name, parent, **kwargs)
 
-        self.connect('rendering', None, self, '_updateReadOnly_')
-
-    def _updateReadOnly_(self):
+    def render(self):
+        ValueElement.render(self)
         if not self.editable():
             self.attributes['disabled'] = 'True'
 
@@ -659,7 +670,7 @@ class MultiSelect(Select):
         """
             Selects a child select option
         """
-        if type(value) in types.StringTypes:
+        if type(value) in (str, unicode):
             value = [value]
 
         for obj in self.childElements:
@@ -670,19 +681,19 @@ class MultiSelect(Select):
                 obj.unselect()
 
     def insertVariables(self, variableDict=None):
-        if variableDict == None:
+        if variableDict is None:
             variableDict = {}
 
         value = None
         if self.key:
             value = DictUtils.getNestedValue(variableDict, self.key)
-        if self.fullId() and value == None:
+        if self.fullId() and value is None:
             value = variableDict.get(self.fullId(), None)
-        if self.id and value == None:
+        if self.id and value is None:
             value = variableDict.get(self.id, None)
-        if self.name and value == None:
+        if self.name and value is None:
             value = variableDict.get(self.fullName(), None)
-        if value != None:
+        if value is not None:
             self.setValue(value)
 
         self._removeFromDictionary(variableDict)

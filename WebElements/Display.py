@@ -1,20 +1,33 @@
-#!/usr/bin/python
-"""
-   Name:
-       Display
+'''
+    Display.py
 
-   Description:
-       Contains elements that are used solely to display information on the screen
+    Contains elements such as Labels, whose primary purpose are to display information to the user
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
 
-import Base
-import ClientSide
-import DictUtils
-import DOM
-import Factory
-from Inputs import ValueElement
-from MethodUtils import CallBack
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
+from . import Base
+from . import ClientSide
+from . import DictUtils
+from . import DOM
+from . import Factory
+from .Inputs import ValueElement
+from .MethodUtils import CallBack
+from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("Display")
 
@@ -46,9 +59,8 @@ class HoverImage(Image):
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Image._create(self, id, name, parent, **kwargs)
 
-        self.connect("rendering", None, self, "__addEvents__")
-
-    def __addEvents__(self):
+    def render(self):
+        Image.render(self)
         if self.imageOnHover:
             self.addJavascriptEvent('onmouseover', "this.src = '%s';" % self.imageOnHover)
             self.addJavascriptEvent('onmouseout', "this.src = '%s';" % self.attributes['src'])
@@ -95,7 +107,6 @@ class List(DOM.UL):
     def _create(self, id=None, name=None, parent=None, **kwargs):
         DOM.UL._create(self, id=id, name=name, parent=parent)
         self.ordered = False
-        self.connect("rendering", None, self, "__updateTag__")
 
     def addChildElement(self, childElement):
         item = self.Item()
@@ -112,7 +123,8 @@ class List(DOM.UL):
         item.setText(name)
         return Base.WebElement.addChildElement(self, item)
 
-    def __updateTag__(self):
+    def render(self):
+        DOM.UL.render(self)
         if self.ordered:
             self._tagName = "ol"
 
@@ -496,7 +508,7 @@ class CacheElement(Base.WebElement):
         self.__cachedHTML__ = None
 
     def toHtml(self, formatted=False, *args, **kwargs):
-        if self.__cachedHTML__ == None:
+        if self.__cachedHTML__ is None:
             self.__cachedHTML__ = Base.WebElement.toHtml(self, formatted, *args, **kwargs)
         return self.__cachedHTML__
 

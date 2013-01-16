@@ -1,17 +1,35 @@
 """
-    Contains basic web validators - that validate both ClientSide and server side.
+    Validators.py
+
+    Contains elements that validate data both server-side and client-side for a unique all-in-one solution
+
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
 import re
 import string
 
-import Factory
-import Base
-import Display
-import Layout
-import ClientSide
-from ClientSide import do, regexp, var, Script
-from MethodUtils import CallBack
+from . import Factory
+from . import Base
+from . import Display
+from . import ClientSide
+from .ClientSide import do, regexp, var, Script
+from .MethodUtils import CallBack
+from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("Validators")
 

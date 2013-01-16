@@ -1,30 +1,43 @@
-#!/usr/bin/python
-"""
-   Name:
-       Fields
+'''
+   Fields.py
 
-   Description:
-       Complex input elements
+   Defines complex fields that are created using multiple WebElements
 
-"""
+   Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
 
 import json
 import operator
 import types
 
-import Base
-import Buttons
-import Display
-import DOM
-import Factory
-import HiddenInputs
-import Inputs
-import Layout
-import ToClientSide
-import UITemplate
-from Factory import Composite
-from MethodUtils import CallBack
-from StringUtils import interpretAsString, listReplace
+from . import Base
+from . import Buttons
+from . import Display
+from . import DOM
+from . import Factory
+from . import HiddenInputs
+from . import Inputs
+from . import Layout
+from . import ToClientSide
+from . import UITemplate
+from .Factory import Composite
+from .MethodUtils import CallBack
+from .StringUtils import interpretAsString, listReplace
+from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("Fields")
 
@@ -89,7 +102,7 @@ class BaseField(Layout.Box):
             # Creates a hidden input for a disabled field so that the field value
             # is still submitted even if the field is set as read-only
             value = self.value()
-            if type(value) != types.ListType:
+            if type(value) != list:
                 value = [value,]
             for val in value:
                 hiddenValue = HiddenInputs.HiddenValue(name=self.name)
@@ -449,7 +462,9 @@ class MultiField(SelectField):
 
         self.userInput.addClientSideEvent('onChange', 'multiField.addSelectedOption(this)')
 
-        self.connect('rendering', None,  self, 'sort')
+    def render(self):
+        SelectField.render(self)
+        self.sort()
 
     def sort(self):
         """
@@ -468,7 +483,7 @@ class MultiField(SelectField):
         """
             Overrides the insertVariable call to create the new selection objects and populate the hidden multiselect
         """
-        if valueDict == None: valueDict = {}
+        if valueDict is None: valueDict = {}
         selectedOptions = valueDict.pop(self.hiddenMultiSelect.id, [])
         if type(selectedOptions) != list:
             selectedOptions = [selectedOptions]
@@ -619,7 +634,7 @@ class CheckboxField(BaseField):
         return BaseField.validators(self, useFullId)
 
     def exportVariables(self, exportedVariables=None, flat=False):
-        if exportedVariables == None: exportedVariables = {}
+        if exportedVariables is None: exportedVariables = {}
 
         # Only export child values when thet checkbox is clicked
         if not self.userInput.value():
@@ -655,15 +670,17 @@ class IntegerField(BaseField):
         self.down.addClass("hidePrint")
         self.userInput.setValue(0)
 
-        self.connect("rendering", None, self, "__addEvents__")
-        self.connect("rendering", None, self, "__updateReadOnly__")
+    def render(self):
+        BaseField.render(self)
+        self.__addEvents__()
+        self.__updateReadOnly__()
 
     def __addEvents__(self):
         minimum = self.userInput.minimum
-        if minimum == None:
+        if minimum is None:
             minimum = "undefined"
         maximum = self.userInput.maximum
-        if maximum == None:
+        if maximum is None:
             maximum = "undefined"
         self.up.addJavascriptEvent('onclick', "WebElements.increment('%s', %s);" %
                                  (self.userInput.fullId(), str(maximum)))
@@ -709,8 +726,6 @@ class DateField(TextField):
         self.setIsZulu(False)
         self.formatDisplay = layout.addChildElement(Display.Label())
 
-        self.connect('rendering', None, self, '__updateDisplay__')
-
     def setIsZulu(self, isZulu):
         """
             If set to true the calender will use the zulu date
@@ -721,7 +736,8 @@ class DateField(TextField):
         else:
             self.calendarTypeLabel.setText("LCL")
 
-    def __updateDisplay__(self):
+    def render(self):
+        TextField.render(self)
         if not self.editable():
             self.calendarLink.hide()
         self.formatDisplay.setText(self.dateFormat)
@@ -1001,7 +1017,7 @@ class Filter(Layout.Box):
         self.searchFields.addChildElement(field)
 
     def insertVariables(self, valueDict=None):
-        if valueDict == None: valueDict = {}
+        if valueDict is None: valueDict = {}
 
         if self.isSubFilter:
             return Layout.Box.insertVariables(self, valueDict)

@@ -1,23 +1,39 @@
-"""
-   Name:
-       Boxs
+'''
+    Containers.py
 
-   Description:
-       Elements that allow you to contain elements on the page
-"""
+    Elements that combine several base elements to enable containing elements in pop-up menus,
+    tabs, or other complex layouts
 
-import DOM
-import Base
-import Buttons
-import Display
-import Factory
-import Fields
-import HiddenInputs
-import Inputs
-import Layout
-import UITemplate
-from Factory import Composite
-from MethodUtils import CallBack
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
+from . import DOM
+from . import Base
+from . import Buttons
+from . import Display
+from . import Factory
+from . import Fields
+from . import HiddenInputs
+from . import Inputs
+from . import Layout
+from . import UITemplate
+from .Factory import Composite
+from .MethodUtils import CallBack
+from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("Containers")
 
@@ -109,15 +125,15 @@ class CollapsedText(DropDownMenu):
         self.label = self.addChildElement(Display.Label)
         self.__text = None
 
-        self.connect('rendering', None, self, '__updateUI__')
-
     def setText(self, text):
         """
             Sets the collapse able text
         """
         self.__text = text
 
-    def __updateUI__(self):
+    def render(self):
+        DropDownMenu.render(self)
+
         text = self.text()
         if len(text or '') > int(self.lengthLimit or 0):
             self.label.parent.addJavascriptEvent('onmouseover',
@@ -263,9 +279,9 @@ class Tab(Layout.Box):
         self.imageName = None
         self.unselect()
 
-        self.tabLabel.connect('rendering', None, self, '__updateUI__')
+    def render(self):
+        Layout.Box.render(self)
 
-    def __updateUI__(self):
         if self.imageName:
             image = self.tabLabel.addChildElement(Layout.Box())
             image.addClass(self.imageName)

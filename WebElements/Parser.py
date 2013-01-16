@@ -1,16 +1,28 @@
 '''
-    Name:
-        Parser.py
+    Parser.py
 
-    Description:
-        Creates a webelement tree from plain html
+    Contains an object that will create a tree of WebElement objects when initialized with HTML
 
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from types import StringTypes
-
-import Base
-from Base import WebElement, TextNode
+from . import Base
+from .Base import WebElement, TextNode
+from .MultiplePythonSupport import *
 
 class WebElementTree(WebElement):
     """
@@ -120,11 +132,11 @@ class WebElementTree(WebElement):
                 if((tagName in self.forceTagEndBefore and not self._tagName in ["html", '']) or
                    (self._tagName == tagName and (tagName in self.dontNest or tagName in self.closeIfNested))):
 
-                    print self.incorrectPlacement % {'tag':self._tagName,
+                    print(self.incorrectPlacement % {'tag':self._tagName,
                                                      'startChar':self.startChar,
                                                      'startLine':len(self.html()[:self.startChar].split("\n")),
                                                      'forcedTag':tagName,
-                                                     'endChar':self.index()}
+                                                     'endChar':self.index()})
                     if not tagName in self.closeIfNested:
                         self.setIndex(prevChar)
                     break
@@ -157,11 +169,11 @@ class WebElementTree(WebElement):
                 endTag = endTag.lower().strip()
                 if endTag != self._tagName and not self._tagName in self.forceTagEndBefore:
 
-                    print self.missedEndTag % {'startTag':self._tagName,
+                    print(self.missedEndTag % {'startTag':self._tagName,
                                                'endTag':endTag.strip(),
                                                'startChar':self.startChar,
                                                'startLine':len(self.html()[:self.startChar].split("\n")),
-                                               'endChar':self.index()}
+                                               'endChar':self.index()})
                     self.setIndex(prevChar)
                     break
 
@@ -257,7 +269,7 @@ class WebElementTree(WebElement):
         """
             Returns all text till it encounters the given string (or one of the given strings)
         """
-        if type(strings) in StringTypes:
+        if type(strings) in (str, unicode):
             strings = [strings]
 
         text = ""

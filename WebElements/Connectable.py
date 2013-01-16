@@ -1,16 +1,28 @@
-#!/usr/bin/python
 '''
-   Name:
-       Connectable.py
+    Connectable.py
 
-   Description:
-       Connectable enables child object to create dynamic connections
-       (via signals/slots) at run-time.
+    Connectable enables child object to create dynamic connections
+    (via signals/slots) at run-time. Inspired by QT's signal / slot mechanism
+
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-import types
-
-import MethodUtils
+from . import MethodUtils
+from .MultiplePythonSupport import *
 
 
 class Connectable(object):
@@ -33,11 +45,11 @@ class Connectable(object):
         if self.connections and signal in self.connections:
             for obj, conditions in self.connections[signal].iteritems():
                 for condition, values in conditions.iteritems():
-                    if condition == None or condition == value:
+                    if condition is None or condition == value:
                         for overrideValue, slots in values.iteritems():
-                            if overrideValue != None:
+                            if overrideValue is not None:
                                 usedValue = overrideValue
-                                if type(overrideValue) in types.StringTypes:
+                                if type(overrideValue) in (str, unicode):
                                     usedValue = usedValue.replace('${value}', str(value))
                             else:
                                 usedValue = value
@@ -48,8 +60,8 @@ class Connectable(object):
                                             " slot not defined: " + slot)
                                     return False
 
-                                slotMethod = obj.__getattribute__(slot)
-                                if usedValue != None:
+                                slotMethod = getattr(obj, slot)
+                                if usedValue is not None:
                                     if(MethodUtils.acceptsArguments(slotMethod, 1)):
                                         results.append(slotMethod(usedValue))
                                     elif(MethodUtils.acceptsArguments(slotMethod, 0)):
@@ -79,10 +91,10 @@ class Connectable(object):
             return
 
         if self.connections is None:
-            self.connections = {}
-        connections = self.connections.setdefault(signal, {})
-        connection = connections.setdefault(receiver, {})
-        connection = connection.setdefault(condition, {})
+            self.connections = dict()
+        connections = self.connections.setdefault(signal, dict())
+        connection = connections.setdefault(receiver, dict())
+        connection = connection.setdefault(condition, dict())
         connection = connection.setdefault(value, [])
         if not slot in connection:
             connection.append(slot)

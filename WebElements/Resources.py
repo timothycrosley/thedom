@@ -1,22 +1,35 @@
-#!/usr/bin/python
-"""
-   Name:
-       Resources
+'''
+    Resources.py
 
-   Description:
-       Elements that allow you to use external resources
+    Contains elements that enable use of external resources such as CSS files
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
 
 import types
 
-import DOM
-import Base
-import Factory
-import ClientSide
-from MethodUtils import CallBack
-from StringUtils import interpretAsString
-from DOM import Link, Script, H2
+from . import DOM
+from . import Base
+from . import Factory
+from . import ClientSide
+from .MethodUtils import CallBack
+from .StringUtils import interpretAsString
+from .DOM import Link, Script, H2
+from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("Resources")
 
@@ -129,7 +142,7 @@ class ScriptContainer(DOM.Script):
 
         defaults = {}
         for index, default in enumerate(methodDefaults):
-            if type(default) in types.StringTypes:
+            if type(default) in (str, unicode):
                 default = "'" + default + "'"
             else:
                 default = interpretAsString(default)
@@ -137,7 +150,7 @@ class ScriptContainer(DOM.Script):
 
         attributeValues = {}
         for attribute in attributes:
-            if defaults.get(attribute, None) == None:
+            if defaults.get(attribute, None) is None:
                 attributeValues[attribute] = None
 
         attributes.reverse()

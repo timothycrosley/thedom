@@ -1,17 +1,31 @@
-#!/usr/bin/python
-"""
-   Name:
-       StringUtils.py
+'''
+    StringUtils.py
 
-   Description:
-   String Utils -- provides utilities for string's
+    Provides methods that ease complex python string operations
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
 
 import random
 import re
 import string
 import types
+
+from .MultiplePythonSupport import *
 
 INVALID_CONTROL_CHARACTERS = [
     chr(0x00),
@@ -76,17 +90,19 @@ def convertFloatToString(value):
     return "%f%%" % (value * 100.0)
 
 typeDict = {bool:convertBoolToString, float:convertFloatToString}
-for pythonType in types.StringTypes + (types.IntType, types.LongType):
+for pythonType in (str, unicode) + (int, long):
     typeDict[pythonType] = unicode
-for pythonType in (types.GeneratorType, types.ListType, types.TupleType, set):
+for pythonType in (types.GeneratorType, list, tuple, set):
     typeDict[pythonType] = convertIterableToString
+
+getTypeDict = typeDict.get
 
 def interpretAsString(value):
     """returns a string from lists, booleans, dictionaries or a
         callbacks, or function/instance methods"""
     if value is None:
         return ''
-    call = typeDict.get(type(value), None)
+    call = getTypeDict(type(value), None)
     if call:
         return call(value)
     elif not value:
@@ -126,7 +142,7 @@ def listReplace(inString, listOfItems, replacement):
            listOfItems - a list of strings to replace
            replacement - what to replace it with (or a list of replacements the same lenght as the list of items)
     """
-    isStringReplace = type(replacement) in types.StringTypes
+    isStringReplace = type(replacement) in (str, unicode)
     for item in listOfItems:
         if isStringReplace:
             inString = inString.replace(item, replacement)
@@ -167,7 +183,7 @@ def findIndexes(text, subString):
     return indexes
 
 def encodeAnything(anything, encoding='utf8'):
-    if type(anything) in types.StringTypes:
+    if type(anything) in (str, unicode):
         return unicode(anything).encode(encoding)
     if isinstance(anything, list):
         for index, thing in enumerate(anything):

@@ -1,35 +1,52 @@
-#!/usr/bin/python
-"""
-   Name:
-       Resources
+'''
+    Resources.py
 
-   Description:
-       Elements that allow you to use external resources
+    Contains elements that enable use of external resources such as CSS files
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
 
 import types
 
+import DOM
 import Base
 import Factory
+import ClientSide
 from MethodUtils import CallBack
 from StringUtils import interpretAsString
+from DOM import Link, Script, H2
+from MultiplePythonSupport import *
 
-Factory = Factory.Factory(Base.Invalid, name="Resources")
+Factory = Factory.Factory("Resources")
 
 
 class ResourceFile(Base.WebElement):
     """
         Enables you to add resource files (javascript, css, etc..) to a page
     """
-    tagName = 'link'
+    __slots__ = ('resourceFile', 'fileName', 'resourceFile', 'resourceType')
     properties = Base.WebElement.properties.copy()
     properties['file'] = {'action':'setFile'}
     properties['media'] = {'action':'attribute'}
     displayable = False
 
-    def __init__(self, id=None, name=None, parent=None):
-        Base.WebElement.__init__(self, id, name)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement._create(self, id, name)
+        self.resourceFile = self.addChildElement(Base.TextNode())
         self.setFile("")
 
     def shown(self):
@@ -44,65 +61,60 @@ class ResourceFile(Base.WebElement):
                 fileName - the disk name of the file.
         """
         self.fileName = fileName
-        self.textBeforeChildren = ""
 
         extension = fileName.split("?")[0][-3:]
         if ":" in fileName:
             rel, href = fileName.split(":")
-            self.tagName = "link"
-            self.attributes['src'] = href
-            self.attributes['rel'] = rel
+            resource = Link()
+            resource.setProperties((('rel', rel), ('src', href)))
             self.resourceType = rel
-            self.tagSelfCloses = True
         elif extension == ".js":
-            self.tagName = "script"
-            self.attributes['src'] = fileName
+            resource = Script()
+            resource.setProperties((('src', fileName), ))
             self.resourceType = "javascript"
-            self.tagSelfCloses = False
         elif extension == "css":
-            self.tagName = "link"
-            self.attributes['rel'] = "stylesheet"
-            self.attributes['type'] = "text/css"
-            self.attributes['href'] = fileName
+            resource = Link()
+            resource.setProperties((('rel', 'stylesheet'), ('type','text/css'), ('href', fileName)))
             self.resourceType = "css"
-            self.tagSelfCloses = True
+        elif extension == "png":
+            resource = Link()
+            resource.setProperties((('rel', 'icon'), ('type','image/png'), ('href', fileName)))
+            self.resourceType = "favicon"
         else:
-            self.tagName = "h2"
-            self.textBeforeChildren = "Invalid Resource: %s" % fileName
+            resource = H2()
+            resource.addChildElement(Base.TextNode("Invalid Resource: %s" % fileName))
             self.resourceType = None
-            self.tagSelfCloses = False
+
+        self.resourceFile = self.resourceFile.replaceWith(resource)
 
 Factory.addProduct(ResourceFile)
 
 
-class ScriptContainer(Base.WebElement):
+class ScriptContainer(DOM.Script):
     """
         All scripts should be stored in a Script Box object
     """
+    __slots__ = ('_scripts', 'usedObjects')
     displayable = False
-    tagName = "script"
-    properties = Base.WebElement.properties.copy()
+    properties = DOM.Script.properties.copy()
     properties['script'] = {'action':'addScript'}
 
-    def __init__(self, id=None, name=None, parent=None):
-        Base.WebElement.__init__(self)
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Base.WebElement._create(self)
         self.attributes['language'] = 'javascript'
         self.attributes['type']  = 'text/javascript'
         self._scripts = []
         self.usedObjects = []
 
-    def content(self, variableDict=None, formatted=False):
+    def content(self, formatted=False, *args, **kwargs):
         """
             Overrides the base content method to return the javascript associated with the scriptcontainer
         """
-        scriptContent = ""
-        for script in self.scripts():
-            scriptContent += interpretAsString(script) + "\n"
+        scriptContent = ";".join([interpretAsString(script) for script in self.scripts()])
 
         for objectType in self.usedObjects:
             for function in objectType.jsFunctions:
-                scriptContent += self.jsFunctionAsString(getattr(objectType,
-                                                                 function))
+                scriptContent += self.jsFunctionAsString(getattr(objectType, function))
 
         return scriptContent
 
@@ -130,7 +142,7 @@ class ScriptContainer(Base.WebElement):
 
         defaults = {}
         for index, default in enumerate(methodDefaults):
-            if type(default) in types.StringTypes:
+            if type(default) in (str, unicode):
                 default = "'" + default + "'"
             else:
                 default = interpretAsString(default)
@@ -138,7 +150,7 @@ class ScriptContainer(Base.WebElement):
 
         attributeValues = {}
         for attribute in attributes:
-            if defaults.get(attribute, None) == None:
+            if defaults.get(attribute, None) is None:
                 attributeValues[attribute] = None
 
         attributes.reverse()
@@ -149,7 +161,7 @@ class ScriptContainer(Base.WebElement):
 
         for var in attributes:
             if var.startswith("element"):
-                script.append('\tvar %s = JUGetElement(%s);' % (var, var))
+                script.append('\tvar %s = WebElements.get(%s);' % (var, var))
         script.append(interpretAsString(jsFunction(**attributeValues)))
         script.append("}\n")
 

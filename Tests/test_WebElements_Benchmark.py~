@@ -1,3 +1,25 @@
+'''
+    test_Benchmark.py
+
+    Tests the results of benchmark_WebElements.py against project performance metrics
+
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
 import cPickle as pickle
 import os
 import subprocess
@@ -10,13 +32,10 @@ class TestWebElements_Benchmark(object):
             results = pickle.loads(resultFile.read())
         os.remove(".test_WebElements_Benchmark.results")
         return results
-        
+
     def test_benchmark(self):
         results = self.run_benchmark()
         assert(results['loopedCreate'] < 20.0)
         assert(results['longestCreationTime'] < 0.010)
         assert(results['createAllOnce'] < 0.250)
 
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("py.test test_WebElements_Benchmark.py", shell=True).wait()

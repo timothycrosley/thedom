@@ -1,16 +1,31 @@
-#!/usr/bin/python
-"""
-   Name:
-       Layout Elements
+'''
+    Factory.py
 
-   Description:
-       Contains Elements that make it easy to layout pages exactly like you want.
+    The WebElement Factory provides a mechanism for building any element the factory has knowledge of
+    simply by defining its name (as a string) and its main attributes, as well as providing the ability
+    to combine multiple factories into one
 
-"""
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
 
 import types
 
-from Base import Invalid, TextNode
+from .Base import Invalid, TextNode
+from .MultiplePythonSupport import *
 
 class Factory(object):
     def __init__(self, name=""):
@@ -57,7 +72,7 @@ class Factory(object):
         if not template:
             return Invalid()
 
-        if type(template) in types.StringTypes:
+        if type(template) in (str, unicode):
             return TextNode(template)
 
         ID = template.id
@@ -68,7 +83,7 @@ class Factory(object):
             elementObject.setPrefix(idPrefix)
         elementObject.setScriptContainer(scriptContainer)
         elementObject.setProperties(template.properties)
-        if accessors != None:
+        if accessors is not None:
             if accessor:
                 accessors[accessor] = elementObject
             elif ID:

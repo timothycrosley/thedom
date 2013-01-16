@@ -1,8 +1,34 @@
-import cPickle as pickle
+'''
+    test_Base.py
+
+    Tests the functionality of WebElements/Base.py
+
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 from WebElements.All import Factory
 from WebElements.Base import Invalid, TemplateElement, WebElement
 from WebElements.Resources import ScriptContainer
+from WebElements.UITemplate import Template
 from lxml import etree
 
 parser = etree.XMLParser()
@@ -91,9 +117,6 @@ class TestWebElement(object):
         assert self.container.fullId() == "IdPrefix1-NewId1"
         assert self.firstChild.fullId() == "IdPrefix2-NewId2"
 
-    def test_jsId(self):
-        assert self.container.jsId() == "1"
-
     def test_reset(self):
         assert len(self.container.childElements) > 0
         self.container.reset()
@@ -169,33 +192,33 @@ class TestWebElement(object):
         assert self.firstChild.prefix() == ""
         assert self.firstChild.fullId() == "2"
 
-
-
     def test_startTag(self):
         """Test to ensure startTag() works correctly"""
         assert self.container.startTag() == '<div name="1" id="1">'
-        assert self.firstChild.startTag() == '<input name="2" id="2" type="text" class="WETextBox" />'
+        assert self.firstChild.startTag() == '<input name="2" id="2" type="text" />'
 
     def test_endTag(self):
         """Test to ensure endTag() works correctly"""
-        self.container.tagName = 'div'
+        self.container._tagName = 'div'
         assert self.container.endTag() == '</div>'
         assert self.firstChild.endTag() == ''
 
     def test_content(self):
         """Test to ensure content() works correctly"""
-        assert self.container.content() == '<input name="2" id="2" type="text" class="WETextBox" />'
+        assert self.container.content() == '<input name="2" id="2" type="text" />'
         assert self.firstChild.content() == ''
 
     def test_toHtml(self):
         """Test to ensure toHtml() works correctly"""
         assert self.container.toHtml() == '<div name="1" id="1"><input' + \
-                                          ' name="2" id="2" type="text" class="WETextBox" /></div>'
-        assert self.firstChild.toHtml({}) == '<input name="2" id="2" type="text" class="WETextBox" />'
+                                          ' name="2" id="2" type="text" /></div>'
+        assert self.firstChild.toHtml({}) == '<input name="2" id="2" type="text" />'
 
     def test_insertExportVariables(self):
-        """Test to ensure inserting variables updates a webElement correctly,
-            so that it can then export those same variables"""
+        """
+          Test to ensure inserting variables updates a webElement correctly,
+            so that it can then export those same variables
+        """
 
         self.container.setPrefix("MyPrefix-")
         self.firstChild.name = "name"
@@ -249,27 +272,32 @@ class ElementTester(object):
             element.scriptContainer().toHtml()
 
         try:
-            root = etree.fromstring(element.toHtml().replace("&amp;", "&").replace("&", "&amp;") \
-                                     .replace("&nbsp;", " "), parser)
+            root = etree.fromstring(element.toHtml().replace("&amp;", "&").replace("&", "&amp;"). \
+                                                     replace("&nbsp;", " ").replace("form:error", "span").
+                                                     replace("error", "span"), parser)
         except Exception, e:
-            print element.toHtml()
-            raise
+            print(element.toHtml())
+            raise e
 
     def test_isValid(self):
         assert not isinstance(self.element, Invalid)
 
+    def test_childAddingBehavior(self):
+        link = Factory.build("a")
+        if self.element.allowsChildren == True:
+            assert self.element.addChildElement(link) != False
+            link.remove()
+        else:
+            assert self.element.addChildElement(link) == False
+
     def test_pickleable(self):
-        pickled = pickle.dumps(self.element)
+        pickled = pickle.dumps(self.element, -1)
         self._parseElement(pickle.loads(pickled))
 
 
 class TestTemplateElement(ElementTester):
 
     def setup_class(self):
-        self.element = TemplateElement(template={'create':'box',
-                                                 'accessor':'container'},
+        self.element = TemplateElement(template=Template('box', accessor='container'),
                                        factory=Factory)
 
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen("GoodTests.py test_WebElement_Base.py", shell=True).wait()

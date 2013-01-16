@@ -1,6 +1,29 @@
-import Base
-import Factory
-from Display import Image
+'''
+    Charts.py
+
+    Contains elements that utilize the google charts public api to produce charts based on common data
+
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
+from . import Base
+from . import Factory
+from .Display import Image
+from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("Charts")
 
@@ -19,12 +42,10 @@ class GoogleChart(Image):
     properties['width'] = {'action':'setWidth', 'type':'int'}
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
-        super(GoogleChart, self)._create(id, name, parent)
+        Image._create(self, id, name, parent)
         self.__dataPoints__ = {}
         self.__height__ = 100
         self.__width__ = 100
-
-        self.connect("rendering", None, self, "__updateSource__")
 
     def setWidth(self, width):
         """
@@ -64,7 +85,10 @@ class GoogleChart(Image):
         """
         self.__dataPoints__[str(label)] = value
 
-    def __updateSource__(self):
+    def render(self):
+        Image.render(self)
+
+        # Update Source data
         data = self.__dataPoints__ or {'No Data!':'100'}
         self.style['width'] = self.__width__
 

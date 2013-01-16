@@ -1,14 +1,28 @@
 '''
-    Name:
-        JsonParser.py
+    JsonParser.py
 
-    Description:
-        Creates a WebElement tree from a python data structure
+    Creates a WebElement tree from a python data structure (presumably originating from a JSON string)
 
+    Copyright (C) 2013  Timothy Edmund Crosley
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from Base import WebElement, TextNode
-from Layout import Flow
+from .Base import WebElement, TextNode
+from .Layout import Flow
+from .MultiplePythonSupport import *
 
 TYPE_MAP = {str:'string', unicode:'string', int:'integer'}
 
@@ -34,7 +48,7 @@ def __parse__(data, parentElement):
         elif type(value) in (list, tuple):
             for item in value:
                 newElement.addChildElement(__Tag__(TYPE_MAP[type(item)], newElement)).addChildElement(TextNode(item))
-        elif value == None:
+        elif value is None:
             newElement.tagSelfCloses = newElement.attributes['xsi:nil'] = True
         else:
             newElement.addChildElement(TextNode(value))
