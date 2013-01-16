@@ -1,0 +1,15 @@
+The PEP8 coding standard will be followed throughout this project with the following modifications
+
+- 120 length line limit (With wider monitors and higher resolution displays, code flows better at this length IMO)
+- function names and local variables use camel case instead of underscores, unless the variable is constant in which
+  case all capital letters will be used separated by underscores
+- Each module will have a comment at the beginning of the file following this pattern:
+    '''
+        Module Name
+
+        Module Description
+
+        License Information
+    '''
+
+Timothy Crosley
