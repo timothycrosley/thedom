@@ -28,6 +28,8 @@
 import sys
 
 if sys.version > '3':
+    import urllib
+
     from collections import OrderedDict
 
     long = int
@@ -47,6 +49,12 @@ if sys.version > '3':
 
     def xrange(*args):
         return range(*args)
+
+    urllib.quote = urllib.parse.quote
+    urllib.quote_plus = urllib.parse.quote_plus
+    urllib.unquote = urllib.parse.unquote
+    urllib.unquote_plus = urllib.parse.unquote_plus
+    urllib.urlencode = urllib.parse.urlencode
 else:
     try:
         from collections import OrderedDict
