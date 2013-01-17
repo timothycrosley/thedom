@@ -21,8 +21,26 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import (Base, Buttons, Charts, Containers, DataViews, Display, Document, DOM, Factory, Fields, HiddenInputs,
-               Inputs, Layout, Navigation, Printing, Resources, HTML5, UITemplate, CodeDocumentation, Validators)
+from . import (Base,
+               Buttons,
+               Charts,
+               CodeDocumentation,
+               Containers,
+               DataViews,
+               Display,
+               Document,
+               DOM,
+               Factory,
+               Fields,
+               HiddenInputs,
+               HTML5,
+               Inputs,
+               Layout,
+               Navigation,
+               Printing,
+               Resources,
+               UITemplate,
+               Validators)
 
 FactoryClasses = Factory
 Factory = Factory.Composite((Validators.Factory, DOM.Factory, Buttons.Factory, DataViews.Factory,

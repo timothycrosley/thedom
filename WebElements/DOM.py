@@ -21,9 +21,8 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
+from . import DictUtils, Factory
 from .Base import WebElement
-from . import DictUtils
-from . import Factory
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 

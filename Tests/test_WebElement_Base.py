@@ -208,11 +208,11 @@ class TestWebElement(object):
         assert self.container.content() == '<input name="2" id="2" type="text" />'
         assert self.firstChild.content() == ''
 
-    def test_toHtml(self):
-        """Test to ensure toHtml() works correctly"""
-        assert self.container.toHtml() == '<div name="1" id="1"><input' + \
+    def test_toHTML(self):
+        """Test to ensure toHTML() works correctly"""
+        assert self.container.toHTML() == '<div name="1" id="1"><input' + \
                                           ' name="2" id="2" type="text" /></div>'
-        assert self.firstChild.toHtml({}) == '<input name="2" id="2" type="text" />'
+        assert self.firstChild.toHTML({}) == '<input name="2" id="2" type="text" />'
 
     def test_insertExportVariables(self):
         """
@@ -269,14 +269,14 @@ class ElementTester(object):
     def _parseElement(self, element):
         if not element.scriptContainer():
             element.setScriptContainer(ScriptContainer())
-            element.scriptContainer().toHtml()
+            element.scriptContainer().toHTML()
 
         try:
-            root = etree.fromstring(element.toHtml().replace("&amp;", "&").replace("&", "&amp;"). \
+            root = etree.fromstring(element.toHTML().replace("&amp;", "&").replace("&", "&amp;"). \
                                                      replace("&nbsp;", " ").replace("form:error", "span").
                                                      replace("error", "span"), parser)
         except Exception as e:
-            print(element.toHtml())
+            print(element.toHTML())
             raise e
 
     def test_isValid(self):

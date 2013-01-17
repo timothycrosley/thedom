@@ -4,6 +4,9 @@
     Convenience python functions that return JavaScript code -
     including complete python bindings for WebElements.js
 
+    NOTE: documentation for the binding functions is defined in WebElement.js and not as doc strings on the binding
+    methods themselves.
+
     Copyright (C) 2013  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
@@ -22,8 +25,8 @@
 '''
 
 import json
-from .MultiplePythonSupport import *
 
+from .MultiplePythonSupport import *
 
 class Script(object):
     __slots__ = ('content', 'container')
@@ -192,7 +195,7 @@ def var(variable):
     if type(variable) in (list, tuple, set):
         return "[" + ",".join(var(item) for item in variable) + "]"
     if isinstance(variable, dict):
-        return "{" + ",".join(["%s:%s," % (var(key), var(value)) for key, value in variable.iteritems()]) + "}"
+        return "{" + ",".join(["%s:%s," % (var(key), var(value)) for key, value in iteritems(variable)]) + "}"
     return json.dumps(variable)
 
 def varList(*args):

@@ -16,7 +16,6 @@ WebElements/Display.py
 WebElements/Document.py
 WebElements/Factory.py
 WebElements/Fields.py
-WebElements/Future.py
 WebElements/HTML5.py
 WebElements/HiddenInputs.py
 WebElements/Inputs.py
@@ -24,6 +23,7 @@ WebElements/IteratorUtils.py
 WebElements/JsonParser.py
 WebElements/Layout.py
 WebElements/MethodUtils.py
+WebElements/MultiplePythonSupport.py
 WebElements/Navigation.py
 WebElements/Parser.py
 WebElements/PositionController.py

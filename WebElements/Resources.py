@@ -130,11 +130,12 @@ class ScriptContainer(DOM.Script):
             Creates and returns a jsFunction implementation based on a pased in python function representation
         """
         methodName = jsFunction.__name__
-        attributes = list(jsFunction.func_code.co_varnames)
+        attributes = list(getattr(jsFunction, 'func_code', getattr(jsFunction, '__code__')).co_varnames)
         attributes.reverse()
 
-        if jsFunction.func_defaults:
-            methodDefaults = list(jsFunction.func_defaults)
+        functionDefaults = getattr(jsFunction, 'func_defaults', getattr(jsFunction, '__defaults__'))
+        if functionDefaults:
+            methodDefaults = list(functionDefaults)
         else:
             methodDefaults = []
 
@@ -156,7 +157,7 @@ class ScriptContainer(DOM.Script):
         attributes.reverse()
         script = ["\nfunction %s(%s)" % (methodName, ', '.join(attributes))]
         script.append("{")
-        for var, default in defaults.iteritems():
+        for var, default in iteritems(defaults):
             script.append("\tif(%s == null) var %s = %s;" % (var, var, default))
 
         for var in attributes:

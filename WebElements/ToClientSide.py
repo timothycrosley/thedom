@@ -261,16 +261,19 @@ class JS(object):
 
             js_args = []
             js_defaults = []
-            self._scope = [arg.id for arg in node.args.args]
+            self._scope = [getattr(arg, 'id', getattr(arg, 'arg', None)) for arg in node.args.args]
 
             for arg, default in zip(node.args.args, defaults):
-                if not isinstance(arg, ast.Name):
-                    raise JSError("tuples in argument list are not supported")
+                argID = getattr(arg, 'id', getattr(arg, 'arg', None))
+                if sys.version < "3":
+                    if not isinstance(arg, ast.Name) and argID != 'self':
+                        import pdb;pdb.set_trace()
+                        raise JSError("tuples in argument list are not supported")
 
-                js_args.append(arg.id)
+                js_args.append(argID)
 
                 if default is not None:
-                    js_defaults.append("%(id)s = typeof(%(id)s) != 'undefined' ? %(id)s : %(def)s;\n" % { 'id': arg.id, 'def': self.visit(default) })
+                    js_defaults.append("%(id)s = typeof(%(id)s) != 'undefined' ? %(id)s : %(def)s;\n" % { 'id': argID, 'def': self.visit(default) })
 
             if self._class_name:
                 prep = "%s.prototype.%s = function(" % \
@@ -309,6 +312,7 @@ class JS(object):
             defaults2 = []
             for arg, default in zip(node.args.args, defaults):
                 if not isinstance(arg, ast.Name):
+                    import pdb;pdb.set_trace()
                     raise JSError("tuples in argument list are not supported")
                 if default:
                     defaults2.append("%s: %s" % (arg.id, self.visit(default)))

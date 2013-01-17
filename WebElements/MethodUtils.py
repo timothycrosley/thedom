@@ -23,17 +23,19 @@
 from .MultiplePythonSupport import *
 
 def acceptsArguments(method, numberOfArguments):
-    """Returns True if the given method will accept the given number of arguments:
+    """
+        Returns True if the given method will accept the given number of arguments:
             method - the method to perform introspection on
             numberOfArguments - the numberOfArguments
     """
-    numberOfDefaults = 0
-    if method.__class__.__name__ == 'instancemethod':
+    if 'method' in method.__class__.__name__:
         numberOfArguments += 1
-        numberOfDefaults = method.im_func.func_defaults and len(method.im_func.func_defaults) or 0
+        func = getattr(method, 'im_func', getattr(method, '__func__'))
+        funcDefaults = getattr(func, 'func_defaults', getattr(func, '__defaults__'))
+        numberOfDefaults = funcDefaults and len(funcDefaults) or 0
     elif method.__class__.__name__ == 'function':
-        # static method being passed in
-        numberOfDefaults = method.func_defaults and len(method.func_defaults) or 0
+        funcDefaults = getattr(method, 'func_defaults', getattr(method, '__defaults__'))
+        numberOfDefaults = funcDefaults and len(funcDefaults) or 0
     coArgCount = getattr(method, 'func_code', getattr(method, '__code__')).co_argcount
     if(coArgCount >= numberOfArguments and coArgCount - numberOfDefaults <= numberOfArguments):
         return True
@@ -42,10 +44,13 @@ def acceptsArguments(method, numberOfArguments):
 
 
 class CallBack(object):
-    """ Enables objects to be passed around in a copyable/pickleable way """
+    """
+        Enables objects to be passed around in a copyable/pickleable way
+    """
 
     def __init__(self, obj, method, argumentDict=None):
-        """ Creates the call back object:
+        """
+            Creates the call back object:
                 obj - the actual object that the method will be called on
                 method - the name of the method to call
         """
@@ -57,7 +62,9 @@ class CallBack(object):
         return self.call()
 
     def call(self):
-        """ Calls the method """
+        """
+            Calls the method
+        """
         if self.argumentDict:
             return self.obj.__getattribute__(self.toCall)(**self.argumentDict)
         else:

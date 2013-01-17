@@ -33,7 +33,7 @@ class TestLink(ElementTester):
 
         self.element.setDestination("www.google.com")
         assert self.element.destination() == "www.google.com"
-        assert self.element.toHtml().find("www.google.com") > 0
+        assert self.element.toHTML().find("www.google.com") > 0
 
     def test_text(self):
         assert not self.element.text()

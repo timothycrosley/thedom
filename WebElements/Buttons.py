@@ -20,14 +20,9 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
-from . import DOM
-from . import Base
-from . import ClientSide
-from . import Display
-from . import Factory
-from . import Layout
-from .Inputs import InputElement
+from . import Base, ClientSide, Display, DOM, Factory, Layout
 from .HiddenInputs import HiddenValue
+from .Inputs import InputElement
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 
@@ -52,16 +47,28 @@ class Link(DOM.A):
         self._textNode = self.addChildElement(Base.TextNode())
 
     def setDestination(self, destination):
+        """
+            Sets the URL the link points to.
+        """
         self.attributes['href'] = destination
 
     def destination(self):
+        """
+            Returns the URL the link points to.
+        """
         return self.attributes.get('href', "")
 
     def setText(self, text):
+        """
+            Sets the text associated with the link.
+        """
         self._textNode.setText(text)
         self.emit('textChanged', text)
 
     def text(self):
+        """
+            Returns the text associated with the link.
+        """
         return self._textNode.text()
 
 Factory.addProduct(Link)
@@ -75,7 +82,6 @@ class PopupLink(Link):
     properties = Link.properties.copy()
     properties['width'] = {'action':'classAttribute'}
     properties['height'] = {'action':'classAttribute'}
-    # the 'normal' flag allows you to retain the menu/toolbar
     properties['normal'] = {'action':'classAttribute'}
     properties['windowTitle'] = {'action':'classAttribute'}
     properties['popupOptions'] = {'action':'classAttribute'}
@@ -112,8 +118,8 @@ class Button(InputElement):
         InputElement._create(self, id, name, parent, **kwargs)
         self.attributes['type'] = 'button'
 
-    def render(self):
-        InputElement.render(self)
+    def _render(self):
+        InputElement._render(self)
 
         # Update visible state
         if self.shown():
@@ -161,9 +167,15 @@ class PopupButton(PopupLink):
         self.addClass("PopupButton")
 
     def setText(self, text):
+        """
+            Sets the text associated with the pop-up button.
+        """
         return self.button.setText(text)
 
     def text(self):
+        """
+            Returns the text associated with the pop-up button.
+        """
         return self.button.text()
 
 Factory.addProduct(PopupButton)
@@ -220,6 +232,7 @@ class PrintButton(Button):
         Defines a button thats sole purpose in life is to print the current page
     """
     __slots__ = ()
+
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Button._create(self, id, name, parent, **kwargs)
         self.setValue("Print")
@@ -233,6 +246,7 @@ class SubmitButton(Button):
         Defines a button that when clicked will submit the current page back to the server (if contained in a form)
     """
     __slots__ = ()
+
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Button._create(self, id, name, parent, **kwargs)
         self.attributes['type'] = 'submit'
@@ -348,10 +362,16 @@ class ToggleButton(Layout.Box):
         return self.button.value()
 
     def setProperties(self, valueDict=None):
+        """
+            Fowards the properties to the button, in case it is not a child element.
+        """
         Layout.Box.setProperties(self, valueDict)
         self.button.setProperties(valueDict)
 
     def insertVariables(self, valueDict=None):
+        """
+            Updates the display status based on the passed in variables
+        """
         if valueDict is None:
             valueDict = {}
 

@@ -20,7 +20,12 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
+import sys
 import os
 import subprocess
 
@@ -29,7 +34,10 @@ class TestWebElements_Benchmark(object):
     def run_benchmark(self):
         subprocess.Popen("python benchmark_WebElements.py", shell=True).wait()
         with open(".test_WebElements_Benchmark.results") as resultFile:
-            results = pickle.loads(resultFile.read())
+            if sys.version >= "3":
+                results = pickle.loads(bytes(resultFile.read(), 'utf8'))
+            else:
+                results = pickle.loads(resultFile.read())
         os.remove(".test_WebElements_Benchmark.results")
         return results
 

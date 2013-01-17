@@ -28,27 +28,25 @@
 import sys
 
 if sys.version > '3':
+    from collections import OrderedDict
+
     long = int
     unicode = str
 
     def u(string):
         return string
 
-    class dict(dict):
-        def iteritems(self):
-            return self.items()
+    def iteritems(collection):
+        return collection.items()
 
-        def itervalues(self):
-            return self.values()
+    def itervalues(collection):
+        return collection.values()
 
-    from collections import OrderedDict
+    def iterkeys(collection):
+        return collection.keys()
 
-    class OrderedDict(OrderedDict):
-        def iteritems(self):
-            return self.items()
-
-        def itervalues(self):
-            return self.values()
+    def xrange(*args):
+        return range(*args)
 else:
     try:
         from collections import OrderedDict
@@ -59,3 +57,12 @@ else:
 
     def u(string):
         return codecs.unicode_escape_decode(string)[0]
+
+    def iteritems(collection):
+        return collection.iteritems()
+
+    def itervalues(collection):
+        return collection.itervalues()
+
+    def iterkeys(collection):
+        return collection.iterkeys()

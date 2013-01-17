@@ -37,7 +37,7 @@ def test_tree():
     """
         Test that WebElementTree correctly produces a parse-able tree of elements
     """
-    TREE.toHtml()
+    TREE.toHTML()
     assert TREE[0]._tagName == "html"
     assert TREE[0].count() == 2
     assert TREE[0][0]._tagName == "head"
@@ -55,12 +55,12 @@ def test_condensedOutput():
     """
         Test that the WebElement tree correctly produces condensed html
     """
-    output = TREE.toHtml()
+    output = TREE.toHTML()
     assert output == '<html><head></head><body><br /><div id="myDiv"></div></body></html>'
 
 def test_formattedOutput():
     """
         Test that the WebElement tree correctly produces formatted (pretty) html
     """
-    output = TREE.toHtml(formatted=True)
+    output = TREE.toHTML(formatted=True)
     assert output == EXPECTED_FORMATTED_OUTPUT

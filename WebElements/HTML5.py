@@ -21,16 +21,16 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Factory
-from . import Base
-from . import Display
-from . import Layout
+from . import Base, Display, Factory, Layout
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("HTML5")
 
 class FileUploader(Layout.Vertical):
+    """
+        An HTML5 brower only file-uploader - allows dragging and dropping files to upload them. :: IN DEVELOPMENT ::
+    """
     __slots__ = ('dropArea', 'dropLabel', 'preview', 'dropIndicator', 'files', 'statusBar')
 
     def _create(self, id, name=None, parent=None, **kwargs):
@@ -66,6 +66,9 @@ class FileUploader(Layout.Vertical):
         self.addScript(CallBack(self, 'jsConnections'))
 
     def jsConnections(self):
+        """
+            Adds the necessary javascript to set up the file uploader client-side.
+        """
         return "WebElements.buildFileOpener('%s');" % self.fullId()
 
 Factory.addProduct(FileUploader)

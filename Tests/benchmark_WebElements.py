@@ -21,17 +21,23 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 import gc
 import sys
 import time
 
 from WebElements import UITemplate
-from WebElements.DictUtils import OrderedDict
+from WebElements.MultiplePythonSupport import *
+from WebElements import DictUtils
 from WebElements.All import Factory, DOM
 from WebElements.Base import WebElement, TemplateElement, TextNode
 from WebElements.Layout import Box
 from WebElements.Resources import ScriptContainer
+
 
 results = {'loopedCreate':0.0, 'loopedInit':0.0, 'loopedToHtml':0.0, 'bigTable':0.0, 'bigTableSize':0.0,
            'createAllOnce':0.0, 'longestCreationTime':0.0, 'nestedNodeCreation':0.0,
@@ -42,7 +48,7 @@ def doneSection():
     sys.stdout.flush()
 
 def getSingleElementGenerationTimes():
-    generationTimes = OrderedDict()
+    generationTimes = DictUtils.OrderedDict()
     for product in Factory.products.keys():
         if "." in product:
             continue
@@ -51,8 +57,8 @@ def getSingleElementGenerationTimes():
         scripts = ScriptContainer()
         element = Factory.build(product, 'Test', 'Product')
         element.setScriptContainer(scripts)
-        html = element.toHtml()
-        html += scripts.toHtml()
+        html = element.toHTML()
+        html += scripts.toHTML()
 
         generationTime = time.time() - startTime
         results['createAllOnce'] += generationTime
@@ -74,8 +80,8 @@ def getGenerationTimeForAllElementsLooped100Times():
     results['loopedInit'] = instantiationTime
 
     startTime = time.time()
-    html = allProducts.toHtml()
-    html += scripts.toHtml()
+    html = allProducts.toHTML()
+    html += scripts.toHTML()
     generationTime = (time.time() - startTime)
     results['loopedToHtml'] = generationTime
     results['loopedToHtmlSize'] = len(html)
@@ -99,7 +105,7 @@ def getTemplateGenerationTimes():
     html = ""
     startTime = time.time()
     for templateElement in templateElements:
-        html += templateElement.toHtml()
+        html += templateElement.toHTML()
         doneSection()
 
     generationTime = (time.time() - startTime)
@@ -115,10 +121,10 @@ def getBigTableGenerationTime():
     templateElement = TemplateElement(template=template, factory=Factory)
     for rowData in table:
         row = templateElement.bigTableTest.addChildElement(DOM.TR())
-        for data in rowData.itervalues():
+        for data in itervalues(rowData):
             row.addChildElement(DOM.TD()).addChildElement(TextNode(data))
         doneSection()
-    html = templateElement.toHtml()
+    html = templateElement.toHTML()
     results['bigTable'] = time.time() - startTime
     results['bigTableSize'] = len(html)
 
@@ -132,7 +138,7 @@ def getNestedElementTime():
         doneSection()
         element = element.addChildElement(WebElement("element" + str(x)))
         element._tagName = 'tag' + str(x)
-        html += element.toHtml()
+        html += element.toHTML()
 
     results['nestedNodeCreation'] = time.time() - startTime
     results['nestedNodeSize'] = len(html)
@@ -157,17 +163,17 @@ if __name__ == "__main__":
 
     print("######## Indvidual element generation times ########")
     results['generationTimes'].orderedKeys.sort()
-    for generationTime, info in results['generationTimes'].iteritems():
+    for generationTime, info in iteritems(results['generationTimes']):
         print("    Generating html for %s took %s seconds and produced %d len html" % (info[0], generationTime, info[1]))
     print("    Total Time: %s" % results['createAllOnce'])
 
-    print("######## Looped creation time (%d elements) ########" %  len(Factory.products.keys() * 100))
+    print("######## Looped creation time (%d elements) ########" %  (len(Factory.products.keys()) * 100))
     print("    Instantiating Elements: " + str(results['loopedInit']))
     print("    Generating Html: " + str(results['loopedToHtml']))
     print("    Html Size: " + str(results['loopedToHtmlSize'] / 1024.0 / 1024.0) + " MB")
     print("    Total Time:" + str(results['loopedCreate']))
 
-    print("######## Template creation time (%d elements) ########" %  len(Factory.products.keys() * 100))
+    print("######## Template creation time (%d elements) ########" %  (len(Factory.products.keys()) * 100))
     print("    Instantiating Template: " + str(results['templateInit']))
     print("    Generating Html: " + str(results['templateToHtml']))
     print("    Html Size: " + str(results['templateToHtmlSize'] / 1024.0 / 1024.0) + " MB")
@@ -183,4 +189,4 @@ if __name__ == "__main__":
     results['nestedGeneration'] = generationTime
 
     with open(".test_WebElements_Benchmark.results", 'w') as resultFile:
-        resultFile.write(pickle.dumps(results))
+        resultFile.write(str(pickle.dumps(results)))

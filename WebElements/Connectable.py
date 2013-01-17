@@ -24,7 +24,6 @@
 from . import MethodUtils
 from .MultiplePythonSupport import *
 
-
 class Connectable(object):
     __slots__ = ("connections")
 
@@ -43,10 +42,10 @@ class Connectable(object):
         """
         results = []
         if self.connections and signal in self.connections:
-            for obj, conditions in self.connections[signal].iteritems():
-                for condition, values in conditions.iteritems():
+            for obj, conditions in iteritems(self.connections[signal]):
+                for condition, values in iteritems(conditions):
                     if condition is None or condition == value:
-                        for overrideValue, slots in values.iteritems():
+                        for overrideValue, slots in iteritems(values):
                             if overrideValue is not None:
                                 usedValue = overrideValue
                                 if type(overrideValue) in (str, unicode):
@@ -91,10 +90,10 @@ class Connectable(object):
             return
 
         if self.connections is None:
-            self.connections = dict()
-        connections = self.connections.setdefault(signal, dict())
-        connection = connections.setdefault(receiver, dict())
-        connection = connection.setdefault(condition, dict())
+            self.connections = {}
+        connections = self.connections.setdefault(signal, {})
+        connection = connections.setdefault(receiver, {})
+        connection = connection.setdefault(condition, {})
         connection = connection.setdefault(value, [])
         if not slot in connection:
             connection.append(slot)

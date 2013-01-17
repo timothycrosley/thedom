@@ -21,23 +21,14 @@
 '''
 
 import json
-import operator
 import types
 
-from . import Base
-from . import Buttons
-from . import Display
-from . import DOM
-from . import Factory
-from . import HiddenInputs
-from . import Inputs
-from . import Layout
-from . import ToClientSide
-from . import UITemplate
+import operator
+from . import Base, Buttons, Display, DOM, Factory, HiddenInputs, Inputs, Layout, ToClientSide, UITemplate
 from .Factory import Composite
 from .MethodUtils import CallBack
-from .StringUtils import interpretAsString, listReplace
 from .MultiplePythonSupport import *
+from .StringUtils import interpretAsString, listReplace
 
 Factory = Factory.Factory("Fields")
 
@@ -84,11 +75,11 @@ class BaseField(Layout.Box):
         self.inputAndActions.replaceWith(self.label)
         self.label.replaceWith(self.inputAndActions)
 
-    def render(self):
+    def _render(self):
         """
             Remove form error placeholder if field is not validatable - update read only status - update label
         """
-        Layout.Box.render(self)
+        Layout.Box._render(self)
 
         if not self.formError.name:
             self.formError.remove()
@@ -462,8 +453,8 @@ class MultiField(SelectField):
 
         self.userInput.addClientSideEvent('onChange', 'multiField.addSelectedOption(this)')
 
-    def render(self):
-        SelectField.render(self)
+    def _render(self):
+        SelectField._render(self)
         self.sort()
 
     def sort(self):
@@ -476,7 +467,7 @@ class MultiField(SelectField):
         SelectField.setProperties(self, valueDict)
 
         new = self.__createNewSelection__("' + selected.innerHTML + '")
-        self.addScript(str(MultiFieldClientSide) % listReplace(new.toHtml(), ('"', '<', '>'), ('\\"', '&lt;', '&gt;')))
+        self.addScript(str(MultiFieldClientSide) % listReplace(new.toHTML(), ('"', '<', '>'), ('\\"', '&lt;', '&gt;')))
         self.runClientSide("multiField = MultiFieldClientSide()")
 
     def insertVariables(self, valueDict=None):
@@ -670,8 +661,8 @@ class IntegerField(BaseField):
         self.down.addClass("hidePrint")
         self.userInput.setValue(0)
 
-    def render(self):
-        BaseField.render(self)
+    def _render(self):
+        BaseField._render(self)
         self.__addEvents__()
         self.__updateReadOnly__()
 
@@ -736,8 +727,8 @@ class DateField(TextField):
         else:
             self.calendarTypeLabel.setText("LCL")
 
-    def render(self):
-        TextField.render(self)
+    def _render(self):
+        TextField._render(self)
         if not self.editable():
             self.calendarLink.hide()
         self.formatDisplay.setText(self.dateFormat)
@@ -807,8 +798,8 @@ class NestedSelect(SelectField):
         if self.items:
             return """document.%(groupId)s = %(groups)s;
                     document.%(itemId)s = %(items)s;
-                """ % {'items':json.dumps(self.items), 'groups':json.dumps(self.items.keys()), 'id':self.fullId(),
-                        'itemId':self.itemSelect.fullId(), 'groupId':self.userInput.fullId()}
+                """ % {'items':json.dumps(self.items), 'groups':json.dumps(list(self.items.keys())),
+                       'id':self.fullId(), 'itemId':self.itemSelect.fullId(), 'groupId':self.userInput.fullId()}
 
     def jsPopulateItemSelect(self):
         """

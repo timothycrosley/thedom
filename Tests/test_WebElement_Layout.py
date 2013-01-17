@@ -50,7 +50,7 @@ class TestHorizontal(ElementTester):
     def setup_class(self):
         self.element = Factory.build("Horizontal", name="Test")
         self.element.addChildElement(Factory.build("Button", name="Button"))
-        self.element.addChildElement(Factory.build("Container", name="Container"))
+        self.element.addChildElement(Factory.build("Flow", name="Container"))
 
 
 class TestVertical(ElementTester):
@@ -58,7 +58,7 @@ class TestVertical(ElementTester):
     def setup_class(self):
         self.element = Factory.build("Vertical", name="Test")
         self.element.addChildElement(Factory.build("Button", name="Button"))
-        self.element.addChildElement(Factory.build("Container", name="Container"))
+        self.element.addChildElement(Factory.build("Flow", name="Container"))
 
 
 class TestFields(ElementTester):

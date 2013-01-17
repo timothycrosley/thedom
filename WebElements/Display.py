@@ -20,11 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Base
-from . import ClientSide
-from . import DictUtils
-from . import DOM
-from . import Factory
+from . import Base, ClientSide, DictUtils, DOM, Factory
 from .Inputs import ValueElement
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
@@ -59,8 +55,8 @@ class HoverImage(Image):
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Image._create(self, id, name, parent, **kwargs)
 
-    def render(self):
-        Image.render(self)
+    def _render(self):
+        Image._render(self)
         if self.imageOnHover:
             self.addJavascriptEvent('onmouseover', "this.src = '%s';" % self.imageOnHover)
             self.addJavascriptEvent('onmouseout', "this.src = '%s';" % self.attributes['src'])
@@ -109,6 +105,9 @@ class List(DOM.UL):
         self.ordered = False
 
     def addChildElement(self, childElement):
+        """
+            Overrides the add childelement behavior to nest child elements in Item elements.
+        """
         item = self.Item()
         item.addChildElement(childElement)
         Base.WebElement.addChildElement(self, item)
@@ -123,8 +122,8 @@ class List(DOM.UL):
         item.setText(name)
         return Base.WebElement.addChildElement(self, item)
 
-    def render(self):
-        DOM.UL.render(self)
+    def _render(self):
+        DOM.UL._render(self)
         if self.ordered:
             self._tagName = "ol"
 
@@ -252,13 +251,16 @@ class HeaderLabel(Label):
         Label._create(self, id, name, parent=parent)
         self.level = 2
 
-    def toHtml(self, formatted=False, *args, **kwargs):
+    def toHTML(self, formatted=False, *args, **kwargs):
+        """
+            Override toHTML to complain if an invalid header level is given.
+        """
         self.level = int(self.level)
         if self.level > 6 or self.level < 1:
             raise ValueError("Valid levels for headers are 1-6 (h1-6)")
 
         self._tagName = "h%d" % self.level
-        return Label.toHtml(self, formatted, *args, **kwargs)
+        return Label.toHTML(self, formatted, *args, **kwargs)
 
 Factory.addProduct(HeaderLabel)
 
@@ -325,26 +327,48 @@ Factory.addProduct(FormError)
 
 
 class Message(Label):
+    """
+        Defines a label that contains a status, and is styled based on that status.
+    """
     __slots__ = ('forElement')
     properties = Label.properties.copy()
     properties['messageType'] = {'action':'setMessageType'}
+
     class ClientSide(Label.ClientSide):
         def setMessageType(self, messageType):
+            """
+                Sets the type of message to be displayed
+            """
             return self.chooseClass(ClientSide.MessageTypes.CLASS_LIST, ClientSide.MessageTypes.CLASSES[messageType])
 
         def showMessage(self, messageType, messageText):
+            """
+                Renders a message given the type of message, and associated text
+            """
             return self.setMessageType(messageType)(self.setText(messageText))
 
         def showError(self, errorText):
+            """
+                Shows an error message
+            """
             return self.showMessage(ClientSide.MessageTypes.ERROR, errorText)
 
         def showInfo(self, infoText):
+            """
+                Shows an info message
+            """
             return self.showMessage(ClientSide.MessageTypes.INFO, errorText)
 
         def showWarning(self, warningText):
+            """
+                Shows a warning message
+            """
             return self.showMessage(ClientSide.MessageTypes.WARNING, errorText)
 
         def showSuccess(self, successText):
+            """
+                Shows a success message
+            """
             return self.showMessage(ClientSide.MessageTypes.SUCCESS, successText)
 
     def _create(self, id="", name=None, parent=None, **kwargs):
@@ -352,11 +376,11 @@ class Message(Label):
 
         self.forElement = None
 
-    def render(self):
+    def _render(self):
         """
             Override the render to hide the element if no text is set on the message
         """
-        Label.render(self)
+        Label._render(self)
         if not self.text():
             self.hide()
 
@@ -418,11 +442,17 @@ class BlankRendered(Base.WebElement):
     __slots__ = ()
     displayable = False
 
-    def toHtml(self, formatted=False, *args, **kwargs):
-        Base.WebElement.toHtml(self, False, *args, **kwargs)
+    def toHTML(self, formatted=False, *args, **kwargs):
+        """
+            Overrides toHTML to render the element server-side but not return any html.
+        """
+        Base.WebElement.toHTML(self, False, *args, **kwargs)
         return ""
 
     def shown(self):
+        """
+            Overrides shown to always return False.
+        """
         return False
 
 Factory.addProduct(BlankRendered)
@@ -438,10 +468,16 @@ class Empty(Base.WebElement):
     def _create(self, name=None, id=None, parent=None):
         Base.WebElement._create(self, None, None, parent)
 
-    def toHtml(self, formatted=False, *args, **kwargs):
+    def toHTML(self, formatted=False, *args, **kwargs):
+        """
+            Overrides toHTML to always return an empty string.
+        """
         return ""
 
     def shown(self):
+        """
+            Overrides shown to always return False.
+        """
         return False
 
 Factory.addProduct(Empty)
@@ -460,7 +496,10 @@ class StraightHTML(Base.WebElement):
 
         self.html = html
 
-    def toHtml(self, formatted=False, *args, **kwargs):
+    def toHTML(self, formatted=False, *args, **kwargs):
+        """
+            Overrides toHTML to return the given html.
+        """
         return self.html
 
 Factory.addProduct(StraightHTML)
@@ -507,9 +546,12 @@ class CacheElement(Base.WebElement):
         Base.WebElement._create(self, id, name, parent, **kwargs)
         self.__cachedHTML__ = None
 
-    def toHtml(self, formatted=False, *args, **kwargs):
+    def toHTML(self, formatted=False, *args, **kwargs):
+        """
+            Overrides toHTML to only render itself once, and return a cached copy on subsequent calls.
+        """
         if self.__cachedHTML__ is None:
-            self.__cachedHTML__ = Base.WebElement.toHtml(self, formatted, *args, **kwargs)
+            self.__cachedHTML__ = Base.WebElement.toHTML(self, formatted, *args, **kwargs)
         return self.__cachedHTML__
 
 Factory.addProduct(CacheElement)

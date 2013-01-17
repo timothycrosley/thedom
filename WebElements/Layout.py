@@ -73,15 +73,19 @@ class Stack(Base.WebElement):
             return self.stackElements[0]
         return None
 
-    def toHtml(self, formatted=False, *args, **kwargs):
+    def toHTML(self, formatted=False, *args, **kwargs):
         """
-            Changes toHtml behavior to only generate the html for the visible element
+            Changes toHTML behavior to only generate the html for the visible element
         """
         if self.stackElements:
-            return self.visibleElement().toHtml(formatted=formatted, *args, **kwargs) or ""
+            return self.visibleElement().toHTML(formatted=formatted, *args, **kwargs) or ""
         return ""
 
     def addChildElement(self, childElement, ensureUnique=True):
+        """
+            Overrides addChildElement to check if the added element is the first and therefore the default
+            displayed item within the stack.
+        """
         self.stackElements.append(childElement)
         childElement.parent = self
         if len(self.stackElements) == 1:
@@ -116,6 +120,7 @@ class Horizontal(Box):
         A container element that adds child elements horizontally.
     """
     __slots__ = ()
+
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Box._create(self, id, name, parent, **kwargs)
         self.addClass("WClear")
@@ -137,12 +142,15 @@ class Horizontal(Box):
                (container._style and container.style.get("float", None)):
             container.addClass("WLeft")
 
-    def toHtml(self, formatted=False, *args, **kwargs):
+    def toHTML(self, formatted=False, *args, **kwargs):
+        """
+            Overrides toHTML to modify each child and force it into a horizontal layout.
+        """
         oldChildElements = self.childElements
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
-        returnValue = Box.toHtml(self, formatted=formatted, *args, **kwargs)
+        returnValue = Box.toHTML(self, formatted=formatted, *args, **kwargs)
         self._childElements = oldChildElements
         return returnValue
 
@@ -154,6 +162,7 @@ class Vertical(Box):
         A container that encourage elements to be added vertically with minimum html
     """
     __slots__ = ()
+
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Box._create(self, id, name, parent, **kwargs)
         self.addClass("WClear")
@@ -172,12 +181,15 @@ class Vertical(Box):
             container.addChildElement(childElement)
             return Box.addChildElement(self, container)
 
-    def toHtml(self, formatted=False, *args, **kwargs):
+    def toHTML(self, formatted=False, *args, **kwargs):
+        """
+            Overrides toHTML to modify each child and force it into a vertical layout.
+        """
         oldChildElements = self.childElements
         self.reset()
         for childElement in oldChildElements:
             self.__modifyChild__(childElement)
-        returnValue = Box.toHtml(self, formatted=formatted, *args, **kwargs)
+        returnValue = Box.toHTML(self, formatted=formatted, *args, **kwargs)
         self._childElements = oldChildElements
         return returnValue
 
@@ -268,11 +280,11 @@ class Field(Horizontal):
             self._required.remove()
             self._required = None
 
-    def render(self):
+    def _render(self):
         """
             Builds connections between the input, label, and associated message
         """
-        Horizontal.render(self)
+        Horizontal._render(self)
         if self.userInput:
             self.label.attributes['for'] = self.userInput.id
             self.message.id = self.userInput.fullId() + "Message"
@@ -321,6 +333,10 @@ class Fields(Vertical):
         self.addClass("WFields")
 
     def addChildElement(self, element):
+        """
+            Overrides addChildElement to automatically add the appropriate classes to fields, labels, and inputs
+            to enable styling them with CSS.
+        """
         if element.displayable:
             element.addClass("WField")
         if hasattr(element, 'label'):
@@ -352,8 +368,8 @@ class Grid(Box):
         self.numberOfColumns = 2
         self.uniformStyle = ""
 
-    def render(self):
-        Box.render(self)
+    def _render(self):
+        Box._render(self)
         self.numberOfColumns = int(self.numberOfColumns)
 
         columns = []
@@ -376,7 +392,7 @@ class Grid(Box):
             self.layout += column
 
     def content(self, formatted=False, *args, **kwargs):
-        return self.layout.toHtml(formatted=formatted, *args, **kwargs)
+        return self.layout.toHTML(formatted=formatted, *args, **kwargs)
 
 Factory.addProduct(Grid)
 

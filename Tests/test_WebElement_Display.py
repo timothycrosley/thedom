@@ -53,13 +53,13 @@ class TestLabel(object):
         assert not self.element.text()
         self.element.setText("I changed the text")
         assert self.element.text() == "I changed the text"
-        assert "I changed the text" in self.element.toHtml()
+        assert "I changed the text" in self.element.toHTML()
 
     def test_setProperties(self):
         assert self.element.text() == ""
         self.element.setProperties({'text':'I set the text'})
         assert self.element.text() == "I set the text"
-        assert "I set the text" in self.element.toHtml()
+        assert "I set the text" in self.element.toHTML()
 
 
 class TestParagraph(ElementTester):

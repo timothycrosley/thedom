@@ -23,25 +23,33 @@
 from .MultiplePythonSupport import *
 
 def missingKey(d1, d2):
-    '''Returns a list of name value pairs for all the elements that are present in one dictionary and not the other'''
+    """
+        Returns a list of name value pairs for all the elements that are present in one dictionary and not the other
+    """
     l = []
     l += [ {k:d1[k]} for k in d1 if k not in d2 ]
     l += [ {k:d2[k]} for k in d2 if k not in d1 ]
     return l
 
 def dictCompare(d1, d2):
-    '''Returns a list of name value pairs for all the elements that are different between the two dictionaries'''
+    """
+        Returns a list of name value pairs for all the elements that are different between the two dictionaries
+    """
     diffs = missingKey(d1, d2)
     diffs += [ {k:str(d1[k]) + '->' + str(d2[k])} for k in d1 if k in d2 and d1[k] != d2[k]]
     return diffs
 
 def userInputStrip(uDict):
-    """Strip whitespace out of input provided by the user"""
+    """
+        Strip whitespace out of input provided by the user
+    """
     dictList = map(lambda x: (x[1] and type(x[1]) == type('')) and (x[0], x[1].strip()) or (x[0], x[1]), uDict.items())
     return dict(dictList)
 
 def setNestedValue(d, keyString, value):
-    """Sets the value in a nested dictionary where '.' is the delimiter"""
+    """
+        Sets the value in a nested dictionary where '.' is the delimiter
+    """
     keys = keyString.split('.')
     currentValue = d
     for key in keys:
@@ -50,7 +58,9 @@ def setNestedValue(d, keyString, value):
     previousValue[key] = value
 
 def getNestedValue(dictionary, keyString, default=None):
-    """Returns the value from a nested dictionary where '.' is the delimiter"""
+    """
+        Returns the value from a nested dictionary where '.' is the delimiter
+    """
     keys = keyString.split('.')
     currentValue = dictionary
     for key in keys:
@@ -63,6 +73,9 @@ def getNestedValue(dictionary, keyString, default=None):
     return currentValue
 
 def stringKeys(dictionary):
+    """
+        Modifies the passed in dictionary to ensure all keys are string objects, converting them when necessary.
+    """
     for key, value in dictionary.items():
         if type(key) != str:
             dictionary.pop(key)
@@ -71,6 +84,9 @@ def stringKeys(dictionary):
     return dictionary
 
 def iterateOver(dictionary, key):
+    """
+        Returns a list version of the value associated with key in dictionary.
+    """
     results = dictionary.get(key, [])
     if type(results) != list:
         results = [results]
@@ -78,13 +94,18 @@ def iterateOver(dictionary, key):
     return enumerate(results)
 
 def twoWayDict(dictionary):
+    """
+        Doubles the size of the dictionary, by making every reverse lookup work.
+    """
     for key, value in dictionary.items():
         dictionary[value] = key
 
     return dictionary
 
 class OrderedDict(dict):
-
+    """
+        Defines a dictionary which maintains order - only necessary in older versions of python.
+    """
     class ItemIterator(dict):
 
         def __init__(self, orderedDict, includeIndex=False):
@@ -126,7 +147,7 @@ class OrderedDict(dict):
         return newDict
 
     def update(self, dictionary):
-        for key, value in dictionary.iteritems():
+        for key, value in iteritems(dictionary):
             self[key] = value
 
     def items(self):
@@ -168,10 +189,12 @@ class OrderedDict(dict):
             self.orderedKeys.append(keyString)
         return dict.setdefault(self, keyString, value)
 
-
 def getAllNestedKeys(dictionary, prefix=""):
+    """
+        Returns all keys nested within nested dictionaries.
+    """
     keys = []
-    for key, value in dictionary.iteritems():
+    for key, value in iteritems(dictionary):
         if isinstance(value, dict):
             keys.extend(getAllNestedKeys(value, prefix=prefix + key + '.'))
             continue
@@ -181,20 +204,29 @@ def getAllNestedKeys(dictionary, prefix=""):
     return keys
 
 
-
 class NestedDict(dict):
+    """
+        Defines a dictionary that enables easy safe retrieval of nested dict keys.
+    """
     def __init__(self, d=None):
         if d:
             self.update(d)
 
     def setValue(self, keyString, value):
+        """
+            Sets the value of a nested dict key.
+        """
         setNestedValue(self, keyString, value)
 
     def allKeys(self):
+        """
+            Returns all keys, including nested dict keys.
+        """
         return getAllNestedKeys(self)
 
     def difference(self, otherDict):
-        """ returns a list of tuples [(key, myValue, otherDictValue),]
+        """
+            returns a list of tuples [(key, myValue, otherDictValue),]
             allowing you to do:
                 for fieldName, oldValue, newValue in oldValues.difference(newValues)
         """
@@ -209,6 +241,9 @@ class NestedDict(dict):
 
 
     def getValue(self, keyString, **kwargs):
+        """
+            Returns a nested value if it exists.
+        """
         keys = keyString.split('.')
         currentNode = self
         for key in keys:
@@ -220,13 +255,16 @@ class NestedDict(dict):
 
         if currentNode:
             return currentNode
-        elif kwargs.has_key('default'):
+        elif 'default' in kwargs:
             return kwargs.get('default')
         else:
             raise KeyError(keyString)
 
 
 def createDictFromString(string, itemSeparator, keyValueSeparator, ordered=False):
+    """
+        Creates a new dictionary based on the passed in string, itemSeparator and keyValueSeparator.
+    """
     if ordered:
         newDict = OrderedDict()
     else:

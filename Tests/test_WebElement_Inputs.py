@@ -197,19 +197,19 @@ class TestOption(ElementTester):
 
         self.element.setText("My Option Text")
         assert self.element.text() == "My Option Text"
-        assert "My Option Text" in self.element.toHtml()
+        assert "My Option Text" in self.element.toHTML()
 
     def test_setProperties(self):
         data = {'selected':True, 'text':"My Text"}
         self.element.setProperties(data)
         assert self.element.text() == "My Text"
-        assert "My Text" in self.element.toHtml()
+        assert "My Text" in self.element.toHTML()
         assert self.element.selected() == True
 
         newData = {'selected':False, 'text':"My New Text"}
         self.element.setProperties(newData)
         assert self.element.text() == "My New Text"
-        assert "My New Text" in self.element.toHtml()
+        assert "My New Text" in self.element.toHTML()
         assert self.element.selected() == False
 
 

@@ -23,13 +23,7 @@
 
 import os
 
-from . import Base
-from . import Buttons
-from . import Display
-from . import HiddenInputs
-from . import Inputs
-from . import Layout
-from . import UITemplate
+from . import Base, Buttons, Display, HiddenInputs, Inputs, Layout, UITemplate
 from .Factory import Composite, Factory
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
@@ -77,11 +71,11 @@ class Table(Base.WebElement):
                 self.setStyleFromString(self.parent.parent.uniformStyle)
             self._textNode = Base.TextNode()
 
-        def render(self):
+        def _render(self):
             """
                 Ensures that the text node is the last element upon rendering
             """
-            Base.WebElement.render(self)
+            Base.WebElement._render(self)
             self.addChildElement(self._textNode)
 
         def setText(self, text):
@@ -231,7 +225,7 @@ class Table(Base.WebElement):
             Sets a cell at row/column
         """
         if len(self.rows) > row:
-            return self.rows[row].setCell(column)
+            return self.rows[row].setCell(column, element)
 
         return False
 
@@ -248,8 +242,8 @@ class Table(Base.WebElement):
         """
         for row in rows:
             newRow = self.addRow()
-            for col, value in row.iteritems():
-                self.setCell(newRow, col, value)
+            for col, value in iteritems(row):
+                newRow.cell(col).setText(value)
 
     def joinRows(self, columnName, rows):
         """

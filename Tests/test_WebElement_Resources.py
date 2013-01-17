@@ -56,8 +56,8 @@ class TestScriptContainer(ElementTester):
         self.element.addScript("var value = 'I am another script';")
         assert self.element._scripts == ["alert('I am a script :D');",
                                                  "var value = 'I am another script';"]
-        assert "alert('I am a script :D');" in self.element.toHtml()
-        assert "var value = 'I am another script';" in self.element.toHtml()
+        assert "alert('I am a script :D');" in self.element.toHTML()
+        assert "var value = 'I am another script';" in self.element.toHTML()
 
     def test_removeScript(self):
         assert self.element._scripts == []

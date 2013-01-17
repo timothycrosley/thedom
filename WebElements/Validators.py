@@ -40,8 +40,14 @@ class Validation(Display.Message):
     __slots__ = ('_lastScript')
 
     class ClientSide(Display.Message.ClientSide):
+        """
+            Defines the client-side behavior of a the validation controller.
+        """
 
         def validate(self):
+            """
+                Specifies how a validation should be handled client-side.
+            """
             stack = self.assign('value', self.serverSide.userInput.clientSide.value())
             stack(self.hide())
             for validator in self.serverSide:
@@ -66,10 +72,16 @@ class Validation(Display.Message):
 
     @property
     def userInput(self):
+        """
+            Returns the user input associated with the validation being done.
+        """
         return self.forElement
 
     @userInput.setter
     def userInput(self, userInput):
+        """
+            Sets the user input to be associated with the validation process.
+        """
         if self._lastScript:
             self.removeScript(self._lastScript)
 
@@ -91,6 +103,9 @@ class Validation(Display.Message):
         return Display.Message.addChildElement(self, childElement, ensureUnique)
 
     def validate(self):
+        """
+            Defines how validation should be handled.
+        """
         self.hide()
         for validator in (element for element in self if isinstance(element, Validator)):
             if validator.required or self.userInput.value():
@@ -117,27 +132,45 @@ class Validator(Base.WebElement):
     class ClientSide(Display.Message.ClientSide):
 
         def validate(self):
+            """
+                Stub method for validating client-side, child classes should implement.
+            """
             pass
 
         def message(self, message):
             """
-                Expands and returns a message based on a message key
+                Expands and returns a message based on a message key.
             """
             return self.expandTemplate(self.serverSide.messages[message], self.associatedData())
 
         def error(self, message):
+            """
+                Returns a client-side error message.
+            """
             return (ClientSide.MessageTypes.ERROR, self.message(message))
 
         def info(self, message):
+            """
+                Returns a client-side info message.
+            """
             return (ClientSide.MessageTypes.INFO, self.message(message))
 
         def warning(self, message):
+            """
+                Returns a client-side warning message.
+            """
             return (ClientSide.MessageTypes.WARNING, self.message(message))
 
         def success(self, message):
+            """
+                Returns a client-side success message.
+            """
             return (ClientSide.MessageTypes.SUCCESS, self.message(message))
 
         def associatedData(self):
+            """
+                Returns the client-side data associated with this validator.
+            """
             return {'field':self.value}
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
@@ -146,18 +179,33 @@ class Validator(Base.WebElement):
         self.control = None
 
     def validate(self):
+        """
+            Defines the validator action server side, should be implemented by sub-classes.
+        """
         pass
 
     def error(self, message):
+        """
+            Returns an error message.
+        """
         return (ClientSide.MessageTypes.ERROR, self.message(message))
 
     def info(self, message):
+        """
+            Returns an info message.
+        """
         return (ClientSide.MessageTypes.INFO, self.message(message))
 
     def warning(self, message):
+        """
+            Returns an warning message.
+        """
         return (ClientSide.MessageTypes.WARNING, self.message(message))
 
     def success(self, message):
+        """
+            Returns a success message.
+        """
         return (ClientSide.MessageTypes.SUCCESS, self.message(message))
 
     def associatedData(self):
@@ -180,13 +228,18 @@ class Validator(Base.WebElement):
 
     @property
     def forElement(self):
+        """
+            Returns the element associated with the validator.
+        """
         return self.control.forElement
 
 
 class Or(Validator):
-
-    def render(self):
-        Validator.render(self)
+    """
+        Defines a validator that will pass when any of the child validators pass.
+    """
+    def _render(self):
+        Validator._render(self)
         for element in self:
             element.control = self.control
 
@@ -234,7 +287,9 @@ Factory.addProduct(Or)
 
 
 class And(Or):
-
+    """
+        Defines a validator that will only pass when all the child validators pass.
+    """
     class ClientSide(Validator.ClientSide):
         def validate(self):
             stack = Script("")
@@ -252,6 +307,9 @@ Factory.addProduct(And)
 
 
 class NotEmpty(Validator):
+    """
+        Defines a validator that will pass if any value is supplied.
+    """
     messages = {'notEmpty':'Please enter a value'}
     __slots__ = ()
 
@@ -273,6 +331,9 @@ Factory.addProduct(NotEmpty)
 
 
 class Int(Validator):
+    """
+        Defines a validator that will pass if a whole number is supplied.
+    """
     messages = {'notInt':'Please enter an integer value'}
     __slots__ = ()
 

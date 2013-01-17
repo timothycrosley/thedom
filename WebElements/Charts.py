@@ -20,8 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Base
-from . import Factory
+from . import Base, Factory
 from .Display import Image
 from .MultiplePythonSupport import *
 
@@ -85,15 +84,15 @@ class GoogleChart(Image):
         """
         self.__dataPoints__[str(label)] = value
 
-    def render(self):
-        Image.render(self)
+    def _render(self):
+        Image._render(self)
 
         # Update Source data
         data = self.__dataPoints__ or {'No Data!':'100'}
         self.style['width'] = self.__width__
 
         items = []
-        for key, value in data.iteritems():
+        for key, value in iteritems(data):
             items.append((value, key))
         items.sort()
         keys = [key for value, key in items]

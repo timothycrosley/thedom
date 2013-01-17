@@ -60,7 +60,8 @@ INVALID_CONTROL_CHARACTERS = [
 ]
 
 def patternSplit(text, pattern):
-    """Splits a string into a list of strings at each point it matches a pattern:
+    """
+        Splits a string into a list of strings at each point it matches a pattern:
         test - the text to match against
         pattern - a regex pattern to match against
     """
@@ -73,7 +74,9 @@ def patternSplit(text, pattern):
 
 
 def removeAlphas(value):
-    '''remove any extra formatting in a string of combined numbers and characters, returns a string'''
+    """
+        Returns a string removed of any extra formatting in the string or combined numbers and characters.
+    """
     newValue = ''
     for part in value:
         if part.isdigit():
@@ -81,12 +84,21 @@ def removeAlphas(value):
     return newValue
 
 def convertIterableToString(iterable):
+    """
+        Returns a string representation of an iterable value.
+    """
     return ' '.join([interpretAsString(item) or '' for item in iterable])
 
 def convertBoolToString(boolean):
+    """
+        Returns a string representation of a boolean value.
+    """
     return unicode(boolean).lower()
 
 def convertFloatToString(value):
+    """
+        Returns a string representation of a float value.
+    """
     return "%f%%" % (value * 100.0)
 
 typeDict = {bool:convertBoolToString, float:convertFloatToString}
@@ -98,8 +110,10 @@ for pythonType in (types.GeneratorType, list, tuple, set):
 getTypeDict = typeDict.get
 
 def interpretAsString(value):
-    """returns a string from lists, booleans, dictionaries or a
-        callbacks, or function/instance methods"""
+    """
+        returns a string from lists, booleans, dictionaries or a
+        callbacks, or function/instance methods
+    """
     if value is None:
         return ''
     call = getTypeDict(type(value), None)
@@ -109,7 +123,7 @@ def interpretAsString(value):
         return None
     elif isinstance(value, dict):
         asString = ""
-        for dictKey, dictValue in value.iteritems():
+        for dictKey, dictValue in iteritems(value):
             dictValue = interpretAsString(dictValue)
             if dictValue is not  None:
                 asString += unicode(dictKey) + ':' + dictValue + ';'
@@ -137,7 +151,8 @@ def interpretFromString(value):
     return value
 
 def listReplace(inString, listOfItems, replacement):
-    """ Replaces instaces of items withing listOfItems with replacement:
+    """
+        Replaces instaces of items withing listOfItems with replacement:
            inString - the string to do replacements on
            listOfItems - a list of strings to replace
            replacement - what to replace it with (or a list of replacements the same lenght as the list of items)
@@ -152,11 +167,15 @@ def listReplace(inString, listOfItems, replacement):
     return inString
 
 def removeDelimiters(inString, replacement=""):
+    """
+        Removes the specified delimiters from the inString.
+    """
     return listReplace(inString, ['.', ',', '+', '-', '/', '\\'], replacement)
 
 def stripControlChars(text, fromFront=True, fromBack=True):
-    """removes control characters from supplied text"""
-
+    """
+        Removes control characters from supplied text.
+    """
     if not text:
         return ''
 
@@ -171,7 +190,9 @@ def stripControlChars(text, fromFront=True, fromBack=True):
         return text
 
 def findIndexes(text, subString):
-    """Returns a set of all indexes of subString in text"""
+    """
+        Returns a set of all indexes of subString in text.
+    """
     indexes = set()
     lastFoundIndex = 0
     while True:
@@ -183,6 +204,9 @@ def findIndexes(text, subString):
     return indexes
 
 def encodeAnything(anything, encoding='utf8'):
+    """
+        Returns any data that is passed in encoded into the specified encoding or throws an exception.
+    """
     if type(anything) in (str, unicode):
         return unicode(anything).encode(encoding)
     if isinstance(anything, list):
@@ -190,7 +214,7 @@ def encodeAnything(anything, encoding='utf8'):
             anything[index] = encodeAnything(thing, encoding)
         return anything
     if isinstance(anything, dict):
-        for key, thing in anything.iteritems():
+        for key, thing in iteritems(anything):
             anything[key] = encodeAnything(thing, encoding)
         return anything
     if type(anything) == tuple:
@@ -207,9 +231,9 @@ def generateRandomKey(size=20, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for x in range(size))
 
 def everyDirAndSub(directory):
-    '''
+    """
        Splits a directory to get every directory and subdirectory as a list.
-    '''
+    """
     ret = []
     idx = 0
     while True:

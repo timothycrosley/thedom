@@ -55,18 +55,33 @@ class ValueElement(DOM.Input):
         CHANGE_EVENT = "keyup"
 
         def setValue(self, value):
+            """
+                Sets the value associated with the input.
+            """
             return ClientSide.setValue(self, value)
 
         def value(self):
+            """
+                Returns the value associated with the input.
+            """
             return ClientSide.getValue(self)
 
         def increment(self, max=None):
+            """
+                Increments the numerical value of the input up-to max.
+            """
             return ClientSide.increment(self, max)
 
         def deincrement(self, min=None):
+            """
+                De-Increments the numerical value of the input down-to min.
+            """
             return ClientSide.deincrement(self, min)
 
         def selectText(self, start, end):
+            """
+                Select text from start:end range.
+            """
             return ClientSide.selectText(self, start, end)
 
 
@@ -172,11 +187,11 @@ class InputElement(ValueElement):
     def _create(self, id, name=None, parent=None, key=None):
         ValueElement._create(self, id, name, parent, key=key)
 
-    def render(self):
+    def _render(self):
         """
             Update readonly attribute to reflect editable status
         """
-        ValueElement.render(self)
+        ValueElement._render(self)
         if not self.editable():
             self.attributes['readonly'] = 'readonly'
 
@@ -198,11 +213,19 @@ class CheckBox(InputElement):
     properties['valueAttribute'] = {'action':'setValueAttributeFromString'}
 
     class ClientSide(InputElement):
-
+        """
+            Defines a Checkboxes client-side behavior.
+        """
         def showIfChecked(self, elementToShow):
+            """
+                Shows the elements associated with the checkbox only if it is checked.
+            """
             return ClientSide.showIfChecked(elementToShow, self)
 
         def actLikeRadio(self, pair):
+            """
+                Joins 2 separate checkboxes to make them act like a pair of radio buttons.
+            """
             return ClientSide.checkboxActsLikeRadioButton(self, pair)
 
     def _create(self, id=None, name=None, parent=None, key=None):
@@ -421,11 +444,11 @@ class TextArea(ValueElement):
     def content(self, formatted=False, *args, **kwargs):
         return self.value() or ""
 
-    def toHtml(self, formatted=False, *args, **kwargs):
+    def toHTML(self, formatted=False, *args, **kwargs):
         if not self.editable():
             self.attributes['readonly'] = 'readonly'
 
-        return ValueElement.toHtml(self, *args, **kwargs)
+        return ValueElement.toHTML(self, *args, **kwargs)
 
 Factory.addProduct(TextArea)
 
@@ -537,8 +560,8 @@ class Select(ValueElement):
     def _create(self, id, name=None, parent=None, **kwargs):
         ValueElement._create(self, id, name, parent, **kwargs)
 
-    def render(self):
-        ValueElement.render(self)
+    def _render(self):
+        ValueElement._render(self)
         if not self.editable():
             self.attributes['disabled'] = 'True'
 
@@ -553,7 +576,7 @@ class Select(ValueElement):
                                  will be used for keys
         """
         if isinstance(options, dict):
-            for key, value in options.iteritems():
+            for key, value in iteritems(options):
                 self.addOption(key, value, displayKeys)
         else:
             for option in options:

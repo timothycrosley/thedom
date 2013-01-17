@@ -27,22 +27,30 @@ from types import GeneratorType
 from .DictUtils import OrderedDict
 from .MultiplePythonSupport import *
 
-ITERATOR_TYPES = (GeneratorType, list, tuple, set)
+ITERATOR_TYPES = (GeneratorType, list, tuple, set, range)
 
 def iterableLength(iterable):
+    """
+        Returns the length of an iterable object (such as a list or straight iterator).
+    """
     if type(iterable) not in ITERATOR_TYPES and getattr(iterable, 'count'):
         return iterable.count()
     else:
         return len(iterable)
 
 class IndexIterator(object):
-    """ Simple index based iterator (you give the start and end index, and the indexable item) """
+    """
+        Simple index based iterator (you give the start and end index, and the indexable item)
+    """
     def __init__(self, iteratorSlice, start, end):
         self.iteratorSlice = iteratorSlice
         self.end = end
         self.index = start
 
     def next(self):
+        """
+            Defines the action that occurs on each iteration through the IndexIterator.
+        """
         if self.index < self.end:
             value = self.iteratorSlice[self.index]
             self.index += 1
@@ -50,12 +58,17 @@ class IndexIterator(object):
         else:
             raise StopIteration
 
+    def __next__(self):
+        return self.next()
+
     def __iter__(self):
         return self
 
 
 class PopIterator(object):
-    """ Queue processing based off poping from a list """
+    """
+        Enables queue processing based off poping from a list.
+    """
     def __init__(self, popable, interval=1):
         self.popable = popable
         self.interval = interval
@@ -67,6 +80,9 @@ class PopIterator(object):
             return None
 
     def next(self):
+        """
+            Pops an item from the list then returns it.
+        """
         value = self.__getValue__()
         while not value:
             time.sleep(self.interval)
@@ -79,8 +95,10 @@ class PopIterator(object):
 
 
 class IteratorSlice(object):
-    """ Allows you to iterate through a section of an indexable iterable without creating a new list
-        or having step through every item till the start index (like islice does) """
+    """
+        Allows you to iterate through a section of an indexable iterable without creating a new list
+        or having step through every item till the start index (like islice does)
+    """
     def __init__(self, iterable):
         self.iterable = iterable
 
@@ -98,13 +116,14 @@ class IteratorSlice(object):
 
 
 class IterableCollection(object):
-    """ Provides a way to iterate through a collection of lists as if it where one really big list """
-
+    """
+        Provides a way to iterate through a collection of lists as if it where one really big list
+    """
     def __init__(self, iterableDictionary=None):
         self.iterableItems = []
         self.identifiers = []
         if iterableDictionary:
-            for identifier, iterableItem in iterableDictionary.iteritems():
+            for identifier, iterableItem in iteritems(iterableDictionary):
                 self.iterableItems.append(iterableItem)
                 self.identifiers.append(identifier)
 
@@ -119,6 +138,9 @@ class IterableCollection(object):
         return False
 
     def islice(self):
+        """
+            Override the behavior of the islice method to use the IteratorSlice object.
+        """
         return IteratorSlice(self)
 
     def __iter__(self):
@@ -166,14 +188,19 @@ class IterableCollection(object):
             currentSize += iterableLength(iterable)
 
     def pop(self, index=False):
-        indexes = range(0, len(self.iterableItems))
-        indexes.reverse()
+        """
+            Pops one item off the collection.
+        """
+        indexes = reversed(xrange(0, len(self.iterableItems)))
         for index in indexes:
             iterable = self.iterableItems[index]
             if iterableLength(iterable):
                 return (self.identifiers[index], iterable.pop())
 
     def getIterableIndex(self, index):
+        """
+            Returns the index within the combined iterator length.
+        """
         currentSize = 0
         for index, iterable in enumerate(self.iterableItems):
             if index >= currentSize and index < currentSize + iterableLength(iterable):
@@ -181,18 +208,30 @@ class IterableCollection(object):
             currentSize += iterableLength(iterable)
 
     def remove(self, value):
+        """
+            Removes value from all iterables in the collection.
+        """
         for iterable in self.iterableItems:
             iterable.remove(value)
 
     def append(self, value):
+        """
+            Adds value to the collections as a stand alone collection.
+        """
         self.extend([value])
 
     def extend(self, valueList, identifier=None):
+        """
+            Adds a new iterator to the iterable collection.
+        """
         self.iterableItems.append(valueList)
         self.identifiers.append(identifier)
         return valueList
 
     def count(self, value):
+        """
+            Returns the instances of value within the combined iterator collections.
+        """
         count = 0
         for iterable in self.iterableItems:
             count += iterable.count(value)
@@ -200,6 +239,9 @@ class IterableCollection(object):
         return count
 
 class IterableCollectionList(IterableCollection):
+    """
+        Makes an IterableCollection operate in the same mannor as a list.
+    """
     def __getitem__(self, index):
         if type(index) == slice:
             results = []
@@ -217,14 +259,22 @@ class IterableCollectionList(IterableCollection):
             return IterableCollection.__getitem__(self, index)[1]
 
     def order(self, by):
+        """
+            Orders all items within all iterators inside the collection.
+        """
         for iterable in self.iterableItems:
             iterable.order(by)
 
     def count(self):
+        """
+            Returns the combined iterator length.
+        """
         return len(self)
 
 class SortedSet(set):
-    """ A set that maintains order """
+    """
+        A set that maintains order
+    """
 
     def __init__(self, items):
         self.items = []
@@ -235,6 +285,9 @@ class SortedSet(set):
         return "SortedSet(" + repr(self.items) + ")"
 
     def add(self, item):
+        """
+            Adds item to the list if it is not yet present.
+        """
         if not item in self:
             self.items.append(item)
             set.add(self, item)
@@ -249,11 +302,16 @@ class SortedSet(set):
         return self.items.__iter__()
 
     def remove(self, item):
+        """
+            Removes item from the list if it is present.
+        """
         return self.items.remove(item)
 
 
 class Queryable(list):
-    """ Lets you interact with a list as you would a django queryset - very useful for tests """
+    """
+        Lets you interact with a list as you would a django queryset - very useful for tests
+    """
     def __init__(self, *kargs):
         list.__init__(self, *kargs)
         self.objects = self
@@ -275,21 +333,36 @@ class Queryable(list):
         return inBoth
 
     def objects(self):
+        """
+            Returns itself (for django api compatibility)
+        """
         return self
 
     def all(self):
+        """
+            Returns itself (for django api compatibility)
+        """
         return self
 
     def get(self, **args):
+        """
+            Gets the object that matches the specified args.
+        """
         results = self.filter(**args)
         if results:
             return results[0]
         return None
 
     def filter(self, **args):
+        """
+            Returns a queryable of items that match the specified args.
+        """
         return self.getMatches(args)[0]
 
     def exclude(self, **args):
+        """
+            Returns a queryable of items that don't match the specified args.
+        """
         return self.getMatches(args)[1]
 
     @staticmethod
@@ -300,6 +373,9 @@ class Queryable(list):
             return value
 
     def order_by(self, *fieldNames):
+        """
+            Returns a queryable that is ordered by the specified fieldNames.
+        """
         order = OrderedDict()
         reverseSort = False
         for index, fieldName in enumerate(fieldNames):
@@ -322,6 +398,9 @@ class Queryable(list):
         return Queryable(order.values())
 
     def values_list(self, columns, flat=False):
+        """
+            Returns a list of lists of values of the columns provided on all items in the Queryable.
+        """
         resultList = []
         if type(columns) in (str, unicode):
             columns = [columns]
@@ -337,17 +416,22 @@ class Queryable(list):
         return resultList
 
     def aggregate(self, **kwargs):
-        """ XXX this is a dummy implementation ONLY so that tests will run when the aggregate method is used
-            a full implementation should be created later when it is deemed nescarry """
+        """
+            This is a dummy implementation of a django method so that tests will run when it is used
+            a full implementation should be created later when it is deemed necessary.
+        """
         resultDict = {}
-        for key, method in kwargs.iteritems():
+        for key, method in iteritems(kwargs):
             resultDict[key] = 0
         return resultDict
 
     def getMatches(self, queryDict):
+        """
+            Returns all matches of the specified query dict.
+        """
         matches = Queryable()
         nonMatches = Queryable()
-        for key, value in queryDict.iteritems():
+        for key, value in iteritems(queryDict):
             keys = key.split("__")
             filterType = "exact"
             caseInsensitive = False
@@ -420,4 +504,7 @@ class Queryable(list):
         return (matches, nonMatches)
 
     def count(self):
+        """
+            Returns the number of items in the Queryable.
+        """
         return len(self)

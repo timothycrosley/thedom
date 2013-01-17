@@ -20,11 +20,10 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Base
-from . import Factory
+from . import Base, Factory
 from .MethodUtils import CallBack
-from .Resources import ResourceFile
 from .MultiplePythonSupport import *
+from .Resources import ResourceFile
 
 Factory = Factory.Factory("Document")
 
@@ -184,10 +183,17 @@ class Document(Base.WebElement):
         header.setValue(value)
         return header
 
-    def toHtml(self, formatted=False, *args, **kwargs):
-        return self.doctype + "\n" + Base.WebElement.toHtml(self, formatted, *args, **kwargs)
+    def toHTML(self, formatted=False, *args, **kwargs):
+        """
+            Overrides toHTML to include the doctype definition before the open tag.
+        """
+        return self.doctype + "\n" + Base.WebElement.toHTML(self, formatted, *args, **kwargs)
 
     def addChildElement(self, childElement, ensureUnique=True):
+        """
+            Overrides addChildElement to place header elements and resources in the head
+            and all others in the body.
+        """
         if type(childElement) in [self.Head, self.Body]:
             return Base.WebElement.addChildElement(self, childElement, ensureUnique)
         elif type(childElement) == ResourceFile or childElement._tagName in ['title', 'base', 'link',

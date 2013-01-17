@@ -49,7 +49,7 @@ class TestAutoField(ElementTester):
 
         self.element.setText("I changed the labels text!")
         assert self.element.text() == "I changed the labels text!"
-        assert "I changed the labels text!" in self.element.toHtml()
+        assert "I changed the labels text!" in self.element.toHTML()
 
     def test_userInput(self):
         assert type(self.element.userInput) == Invalid

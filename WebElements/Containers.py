@@ -21,16 +21,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import DOM
-from . import Base
-from . import Buttons
-from . import Display
-from . import Factory
-from . import Fields
-from . import HiddenInputs
-from . import Inputs
-from . import Layout
-from . import UITemplate
+from . import Base, Buttons, Display, DOM, Factory, Fields, HiddenInputs, Inputs, Layout, UITemplate
 from .Factory import Composite
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
@@ -74,6 +65,10 @@ class DropDownMenu(Layout.Box):
         return toggleButton
 
     def addChildElement(self, childElement):
+        """
+            Overrides the behavior of adding a child element, by making the first element the menu toggle
+            and the second the menu contents.
+        """
         if not self.toggle:
             return self.setToggleButton(Layout.Box.addChildElement(self, childElement))
         elif not self.menu:
@@ -131,8 +126,8 @@ class CollapsedText(DropDownMenu):
         """
         self.__text = text
 
-    def render(self):
-        DropDownMenu.render(self)
+    def _render(self):
+        DropDownMenu._render(self)
 
         text = self.text()
         if len(text or '') > int(self.lengthLimit or 0):
@@ -192,6 +187,11 @@ class Autocomplete(Layout.Box):
                           };""")
 
     def addChildElement(self, childElement):
+        """
+            Overrides the behavior of addChildElement making the first child element the user input
+            that will be provided auto complete support, and the second the menu contents which will contain
+            the auto complete results on key-up.
+        """
         if not self.userInput:
             self.userInput = Layout.Box.addChildElement(self, childElement)
             return self.userInput
@@ -205,6 +205,9 @@ class Autocomplete(Layout.Box):
             return Layout.Box.addChildElement(self, childElement)
 
     def jsShowIfActive(self):
+        """
+            Returns the javascript code necessary to show the drop down menu on key up if there is text present.
+        """
         return """if(event.keyCode != ENTER){
                     var menu = WebElements.peer(this, 'WMenu');
                     if(this.value""" + (self.blockTab and " && event.keyCode != TAB)" or ")") + """
@@ -279,8 +282,8 @@ class Tab(Layout.Box):
         self.imageName = None
         self.unselect()
 
-    def render(self):
-        Layout.Box.render(self)
+    def _render(self):
+        Layout.Box._render(self)
 
         if self.imageName:
             image = self.tabLabel.addChildElement(Layout.Box())
@@ -337,6 +340,9 @@ class TabContainer(Base.WebElement):
         self.addScript(CallBack(self, 'jsInit'))
 
     def jsInit(self):
+        """
+            Returns the javascript that will store the tabs state client-side.
+        """
         if self.selectedTab:
             return "var %s_selectedTab = '%s';" % (self.fullId(), self.selectedTab.fullId())
         return ""
@@ -367,6 +373,9 @@ class TabContainer(Base.WebElement):
         tab.select()
 
     def addChildElement(self, element):
+        """
+            Overrides the addChildElement behavior to make the first add element the tab.
+        """
         if isinstance(element, Tab):
             element.tabLabel.addJavascriptEvent('onclick', self.jsSelectTab(element))
             self.tabs[element.name] = element
@@ -385,6 +394,9 @@ Factory.addProduct(TabContainer)
 
 
 class VerticalTabContainer(TabContainer):
+    """
+        Defines a tab container that lays out tabs vertically instead of the default horizontal behavior.
+    """
     __layoutElement__ = Layout.Horizontal
     __tabLayoutElement__ = Layout.Vertical
 
@@ -537,6 +549,9 @@ class ActionBox(Layout.Vertical):
         self.actions = self.addChildElement(Display.List())
 
     def addChildElement(self, childElement, ensureUnique=False):
+        """
+            Overrides the addChildElement behavior to see any links passed in as actions.
+        """
         if type(childElement) == Buttons.Link:
             return self.actions.addChildElement(childElement)
         else:

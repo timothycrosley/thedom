@@ -37,16 +37,16 @@ class TestItemPager(ElementTester):
 
     def test_setItems(self):
         self.element.setItems(range(0, 100))
-        assert self.element.currentPageItems() == [0, 1, 2, 3, 4]
+        assert list(self.element.currentPageItems()) == list(range(0, 5))
         self.test_validXML()
 
         self.element.insertVariables({'TestIndex':5})
         self.element.setItems(range(0, 100))
-        assert self.element.currentPageItems() == [5, 6, 7, 8, 9]
+        assert list(self.element.currentPageItems()) == list(range(5, 10))
         self.test_validXML()
 
         self.element.setItems(range(0, 4))
-        assert self.element.currentPageItems() == [0, 1, 2, 3]
+        assert list(self.element.currentPageItems()) == list(range(0, 4))
         self.test_validXML()
         assert self.element.nextButton.shown() == False
         assert self.element.lastButton.shown() == False
@@ -58,7 +58,7 @@ class TestItemPager(ElementTester):
         #Show all toggled
         self.element.showAllButton.toggle()
         self.element.setItems(range(0, 100))
-        assert self.element.currentPageItems() == range(0, 100)
+        assert list(self.element.currentPageItems()) == list(range(0, 100))
         self.test_validXML()
 
     def test_jsSetNavigationIndex(self):

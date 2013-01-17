@@ -149,11 +149,11 @@ class ItemPager(Layout.Vertical):
                 {'id':self.fullId(), 'index':index, 'handlers':"\n".join([ClientSide.var(result) for result in
                                                                           self.emit('jsIndexChanged')])})
 
-    def render(self):
+    def _render(self):
         """
             Updates the ui to reflect the currently selected page and provide links to other pages
         """
-        Layout.Vertical.render(self)
+        Layout.Vertical._render(self)
         if not self._pages_:
             return
         elif not self.currentPageItems():
@@ -232,10 +232,10 @@ class JumpToLetter(Layout.Vertical):
                        "    WebElements.get(letterJump).value = letter;"
                        "}")
 
-    def render(self):
-        Layout.Vertical.render(self)
+    def _render(self):
+        Layout.Vertical._render(self)
         fullId = self.fullId()
-        for letter, link in self.__letterMap__.iteritems():
+        for letter, link in iteritems(self.__letterMap__):
             if letter == self.selectedLetter.value():
                 link.addClass("WLetterSelected")
             else:
@@ -312,8 +312,8 @@ class BreadCrumb(Layout.Box):
 
         self.trail = []
 
-    def render(self):
-        Layout.Box.render(self)
+    def _render(self):
+        Layout.Box._render(self)
         self.highlightCurrentLink()
 
     def addLink(self, text, location, key=None):
@@ -390,6 +390,10 @@ class BreadCrumb(Layout.Box):
         self.currentLink.removeClass('WCrumb')
 
     def insertVariables(self, valueDict=None):
+        """
+            Overrides insert variables to update the displayed status of the breadcrumb and compute the
+            current location and trail.
+        """
         Layout.Box.insertVariables(self, valueDict)
 
         clicked = 'none'
@@ -447,7 +451,7 @@ class UnrolledSelect(Display.List):
 
         self._lastAdded = False
 
-    def render(self):
+    def _render(self):
         if not self._lastAdded:
             self.addChildElement(Display.Label()).addClass('last')
             self._lastAdded = True
@@ -463,7 +467,7 @@ class UnrolledSelect(Display.List):
                                  will be used for keys
         """
         if isinstance(options, dict):
-            for key, value in options.iteritems():
+            for key, value in iteritems(options):
                 self.addOption(key, value, displayKeys)
         else:
             for option in options:
@@ -595,12 +599,12 @@ class TimeFrame(Layout.Horizontal):
         if self.days.value() == 0:
             self.days.setValue(1)
 
-    def render(self):
-        Layout.Horizontal.render(self)
+    def _render(self):
+        Layout.Horizontal._render(self)
         setTimeFrame = ("WebElements.stealClassFromPeer(this, 'selected');WebElements.peer(this, 'Value').value = '%d';" +
                         "".join(self.emit("jsTimeFrameChanged")))
         valueMap = {0:self.anyTime, 1:self.hours24, 7:self.days7, 14:self.days14}
-        for value, element in valueMap.iteritems():
+        for value, element in iteritems(valueMap):
             element.addJavascriptEvent('onclick', setTimeFrame % value)
         valueMap[self.days.value()].addClass('selected')
 

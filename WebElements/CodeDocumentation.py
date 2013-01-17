@@ -29,14 +29,10 @@ try:
 except ImportError:
     hasPygments = False
 
-from . import Base
-from . import DOM
-from . import DictUtils
-from . import Factory
+from . import Base, DictUtils, DOM, Factory
 from .Inputs import ValueElement
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
-
 
 Factory = Factory.Factory("CodeDocumentation")
 
@@ -67,11 +63,11 @@ class CodeSnippet(DOM.Pre):
     def _getLexer(self):
         return get_lexer_by_name(self.lexer)
 
-    def render(self):
+    def _render(self):
         """
            Renders the code with pygments if it is available otherwise with a simple pre-tag
         """
-        DOM.Pre.render(self)
+        DOM.Pre._render(self)
         if not hasPygments:
             self._textNode.setText(self.code)
             return

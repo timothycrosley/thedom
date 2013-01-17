@@ -82,5 +82,5 @@ class TestFormContainer(ElementTester):
     def setup_class(self):
         self.element = Factory.build("FormContainer", name="Test")
         self.element.addChildElement(Factory.build("Button", name="Button"))
-        self.element.addChildElement(Factory.build("Container", name="Container"))
+        self.element.addChildElement(Factory.build("Flow", name="Container"))
 

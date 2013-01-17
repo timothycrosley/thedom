@@ -38,10 +38,10 @@ def parse(data):
     tree = __parse__(data, Flow())
     tree[0].attributes['xmlns:xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
     tree[0].attributes['xmlns:xsd'] = "http://www.w3.org/2001/XMLSchema"
-    return tree.toHtml(formatted=True)
+    return tree.toHTML(formatted=True)
 
 def __parse__(data, parentElement):
-    for key, value in data.iteritems():
+    for key, value in iteritems(data):
         newElement = parentElement.addChildElement(__Tag__(key, parentElement))
         if type(value) == dict:
             __parse__(value, newElement)

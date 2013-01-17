@@ -35,7 +35,7 @@ class TestTable(ElementTester):
             assert self.element.text() == ""
             self.element.setText("I changed the text")
             assert self.element.text() == "I changed the text"
-            assert "I changed the text" in self.element.toHtml()
+            assert "I changed the text" in self.element.toHTML()
 
     def setup_method(self, element):
         self.element = Factory.build("Table", "Test")
@@ -136,13 +136,13 @@ class TestTable(ElementTester):
         assert row.cell("Lied About Super Powers").text() == "Ok Maybee a little bit..."
 
     def test_setProperties(self):
-        data = {"columns":["Name", "Type", "Location"],
-                "rows":[{"Name":"start.bin",
-                         "Type":"Binary",
-                         "Location":"/usr/bin"},
-                        {"Name":"document.txt",
-                         "Type":"Text File",
-                         "Location":"~/documents"}]}
+        data = (("columns", ["Name", "Type", "Location"]),
+                ("rows", [{"Name":"start.bin",
+                          "Type":"Binary",
+                          "Location":"/usr/bin"},
+                          {"Name":"document.txt",
+                           "Type":"Text File",
+                           "Location":"~/documents"}]))
 
         self.element.setProperties(data)
         assert len(self.element.rows) == 2
