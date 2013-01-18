@@ -1,7 +1,7 @@
 '''
     Charts.py
 
-    Contains elements that utilize the google charts public api to produce charts based on common data
+    Contains elements that utilize the google charts public API to produce charts based on common data
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
