@@ -289,7 +289,7 @@ class Field(Horizontal):
             self.label.attributes['for'] = self.userInput.id
             self.message.id = self.userInput.fullId() + "Message"
             self.validation.id = self.userInput.fullId() + "Validation"
-            self.validation.userInput = self.userInput
+            self.validation.forElement = self.userInput
         self.inputAndActions.addChildElement(self.message)
         self.inputAndActions.addChildElement(self.validation)
 

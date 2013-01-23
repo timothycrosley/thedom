@@ -48,7 +48,7 @@ class Validation(Display.Message):
             """
                 Specifies how a validation should be handled client-side.
             """
-            stack = self.assign('value', self.serverSide.userInput.clientSide.value())
+            stack = self.assign('value', self.serverSide.forElement.clientSide.value())
             stack(self.hide())
             for validator in self.serverSide:
                 if isinstance(validator, Validator):
@@ -70,29 +70,21 @@ class Validation(Display.Message):
         Display.Message._create(self, id=id, name=name, parent=parent, **kwargs)
         self._lastScript = None
 
-    @property
-    def userInput(self):
-        """
-            Returns the user input associated with the validation being done.
-        """
-        return self.forElement
+    def _render(self):
+        Display.Message._render(self)
+        if not self.forElement or not [match for match in self if isinstance(match, Validator)]:
+            return
 
-    @userInput.setter
-    def userInput(self, userInput):
-        """
-            Sets the user input to be associated with the validation process.
-        """
         if self._lastScript:
             self.removeScript(self._lastScript)
-
-        self.forElement = userInput
-        self._lastScript = userInput.clientSide.on(userInput.ClientSide.CHANGE_EVENT, self.clientSide.validate())
+        self._lastScript = self.forElement.clientSide.on(self.forElement.ClientSide.CHANGE_EVENT,
+                                                         self.clientSide.validate())
 
     def value(self):
         """
             Returns the value that all validators should validate
         """
-        return self.userInput.value()
+        return self.forElement.value()
 
     def addChildElement(self, childElement, ensureUnique=True):
         """
@@ -108,7 +100,7 @@ class Validation(Display.Message):
         """
         self.hide()
         for validator in (element for element in self if isinstance(element, Validator)):
-            if validator.required or self.userInput.value():
+            if validator.required or self.forElement.value():
                 message = validator.validate()
                 if message:
                     self.showMessage(*message)
