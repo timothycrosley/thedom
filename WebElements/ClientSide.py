@@ -90,7 +90,7 @@ class Script(object):
         return call(self.claim() + (name and "." + name or ""), *args)
 
     def RETURN(self, data=None):
-        if data:
+        if data is not None:
             return self(Script("return %s" % var(data)))
         return Script("return %s" % var(self))
 
