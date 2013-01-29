@@ -8,6 +8,6 @@ setup(name='WebElements',
       author='Timothy Crosley',
       author_email='timothy.crosley@gmail.com',
       url='http://www.webelements.in/',
-      download_url='https://github.com/timothycrosley/webelements/blob/master/dist/WebElements-1.0.0-alpha.4.tar.gz?raw=true',
+      download_url='https://github.com/timothycrosley/webelements/blob/master/dist/WebElements-1.0.0-alpha.5.tar.gz?raw=true',
       license = "GNU GPLv2",
       packages=['WebElements',],)
