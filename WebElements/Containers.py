@@ -230,11 +230,11 @@ class Tab(Layout.Box):
     """
         A single tab - holds a single element(The tabs content) and the tabs label
     """
-    __slots__ = ('text', '_textNode', 'tabLabel', 'imageName', 'isSelected')
+    __slots__ = ('tabLabel', 'imageName', 'isSelected')
     signals = Layout.Box.signals + ['selected', 'unselected']
     properties = Layout.Box.properties.copy()
     properties['select'] = {'action':'call', 'type':'bool'}
-    properties['text'] = {'action':'classAttribute'}
+    properties['text'] = {'action':'tabLabel.setText'}
     properties['imageName'] = {'action':'classAttribute'}
     Base.addChildProperties(properties, Display.Label, 'tabLabel')
 
@@ -276,11 +276,21 @@ class Tab(Layout.Box):
     def _create(self, id, name=None, parent=None, **kwargs):
         Layout.Box._create(self, id=id, name=name, parent=parent)
 
-        self.text = None
-        self._textNode = Base.TextNode()
         self.tabLabel = self.TabLabel(id=self.id + "Label", parent=self)
         self.imageName = None
         self.unselect()
+
+    def text(self):
+        """
+            Returns the text associated with this tab.
+        """
+        return self.tabLabel.text()
+
+    def setText(self, text):
+        """
+            Sets the display text associated with this tab.
+        """
+        return self.tabLabel.setText(text)
 
     def _render(self):
         Layout.Box._render(self)
@@ -290,8 +300,6 @@ class Tab(Layout.Box):
             image.addClass(self.imageName)
             image.style['margin'] = "auto"
             image.style['clear'] = "both"
-
-        self.tabLabel.addChildElement(self._textNode).setText(self.text or self.name)
 
     def select(self):
         """

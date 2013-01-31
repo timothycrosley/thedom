@@ -40,6 +40,16 @@ class TestTab(ElementTester):
     def setup_class(self):
         self.element = Factory.build("tab", "Test")
 
+    def test_text(self):
+        tab = Factory.build("tab", "Test")
+        assert tab.tabLabel.text() == ""
+        assert tab.text() == ""
+        assert tab.text() == tab.tabLabel.text()
+
+        tab.setProperty('text', 'heyy')
+        assert tab.tabLabel.text() == "heyy"
+        assert tab.text() == "heyy"
+        assert tab.text() == tab.tabLabel.text()
 
 class TestTabContainer(ElementTester):
 

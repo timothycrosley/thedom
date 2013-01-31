@@ -1,18 +1,37 @@
 @import "WebElementStructure.sass"
 @import "sassybuttons"
 
-input[type=button], input[type=submit]
-    @include sassy-button("simple", 10px, 19px, #E4E4E4, false, black)
+@mixin basicButton
+    +sassy-button("simple", 10px, 19px, #E4E4E4, false, black)
+
+@mixin mainActionButton
+    +sassy-button("simple", 10px, 19px, #669F5F)
+
+@mixin deleteActionButton
+    +sassy-button("simple", 10px, 19px, #C30000)
+
+@mixin toggleButtonUnclicked
+    +sassy-button("shiny", 10px, 19px, #7C7C7C)
+
+@mixin toggleButtonClicked
+    +sassy-button-style("inset", #474747)
+
+@mixin disabledButton
+    +sassy-button-style("inset", gray)
+    +indent
+
+input[type=button], input[type=submit],
+    +basicButton
     &.MainAction
-        @include sassy-button("simple", 10px, 19px, #669F5F)
+        +mainActionButton
     &.DeleteAction
-        @include sassy-button("simple", 10px, 19px, #C30000)
+        +deleteActionButton
     &.WToggleButton
-        @include sassy-button("shiny", 10px, 19px, #7C7C7C)
+        +toggleButtonUnclicked
         &.Pushed
-            @include sassy-button-style("inset", #474747)
+            +toggleButtonClicked
+
     &[disabled]
-        @include sassy-button-style("inset", gray)
-        @include indent
+        +disabledButton
         &:active
             @include indent
