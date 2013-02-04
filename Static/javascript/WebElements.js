@@ -662,10 +662,17 @@ WebElements.peer = function(element, className)
     return WebElements.getElementByClassName(className, WebElements.get(element).parentNode);
 }
 
+//Allows you to get elements in the same location on the tree based on a classname
+WebElements.peers = function(element, className)
+{
+    return WebElements.getElementsByClassName(className, WebElements.get(element).parentNode);
+}
+
+
 //Forces this to be the only peer with class
 WebElements.stealClassFromPeer = function(element, className)
 {
-    WebElements.forEach(WebElements.peer(element, className),
+    WebElements.forEach(WebElements.peers(element, className),
                                          function(element){WebElements.removeClass(element, className)});
     WebElements.addClass(element, className);
 }

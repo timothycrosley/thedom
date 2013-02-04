@@ -359,6 +359,9 @@ def childElements(parentElement):
 def peer(element, className):
     return call("WebElements.peer", element, className)
 
+def peers(element, className):
+    return call("WebElements.peers", element, className)
+
 def stealClassFromPeer(element, className):
     return call("WebElements.stealClassFromPeer", element, className)
 

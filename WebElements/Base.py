@@ -328,6 +328,12 @@ class WebElement(Connectable):
             """
             return ClientSide.peer(self, className)
 
+        def peers(self, className):
+            """
+                Returns the first element that shares the same parent and includes className.
+            """
+            return ClientSide.peers(self, className)
+
         def stealClassFromPeer(self, className):
             """
                 Adds className after removing the class from any element that shares the same parent.
