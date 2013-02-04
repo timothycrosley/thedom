@@ -360,7 +360,7 @@ def peer(element, className):
     return call("WebElements.peer", element, className)
 
 def stealClassFromPeer(element, className):
-    return call("WebElements.steelClassFromPeer", element, className)
+    return call("WebElements.stealClassFromPeer", element, className)
 
 def stealClassFromFellowChild(element, parentClassName, className):
     return call("WebElements.stealClassFromFellowChild", element, parentClassName, className)
