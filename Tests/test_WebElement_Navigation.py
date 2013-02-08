@@ -35,6 +35,9 @@ class TestItemPager(ElementTester):
     def fakeJavascript(self):
         return "doSomething();"
 
+    def test_noIetms(self):
+        self.element.currentPageItems() == ()
+
     def test_setItems(self):
         self.element.setItems(range(0, 100))
         assert list(self.element.currentPageItems()) == list(range(0, 5))

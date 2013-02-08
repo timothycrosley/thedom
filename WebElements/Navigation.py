@@ -138,7 +138,7 @@ class ItemPager(Layout.Vertical):
         """
             The items contained in the currently highlighted page
         """
-        return self._pages_.currentPageItems
+        return self._pages_ and self._pages_.currentPageItems or ()
 
     def jsSetNavigationIndex(self, index):
         """
