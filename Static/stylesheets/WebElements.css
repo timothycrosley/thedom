@@ -1285,6 +1285,19 @@ input[type=button][disabled]:active, input[type=submit][disabled]:active {
   box-shadow: white 1px 1px 1px 1px;
 }
 
+/* line 40, ../sass/WebElementStructureWithButtons.sass */
+.WButtonGroup input[type=button], .WButtonGroup input[type=submit] {
+  border-radius: 0px;
+}
+/* line 42, ../sass/WebElementStructureWithButtons.sass */
+.WButtonGroup input[type=button] .WFirst, .WButtonGroup input[type=submit] .WFirst {
+  border-radius: 8px 0px 0px 8px;
+}
+/* line 44, ../sass/WebElementStructureWithButtons.sass */
+.WButtonGroup input[type=button] .WLast, .WButtonGroup input[type=submit] .WLast {
+  border-radius: 0px 8px 8px 0px;
+}
+
 /* line 5, ../sass/_Fonts.sass */
 body {
   font-family: helvetica, arial, sans-serif;

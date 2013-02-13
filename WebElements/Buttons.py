@@ -259,7 +259,8 @@ class ToggleButton(Layout.Box):
         Defines a button that can be used as a toggle, with an on and off state
     """
     __slots__ = ('button', 'toggledState')
-    properties = Button.properties
+    properties = Button.properties.copy()
+    properties['checked'] = {'action':'call', 'name':'toggleOn', 'type':'bool'}
     signals = Layout.Box.signals + ['toggled', 'jsToggled']
 
     def _create(self, id, name=None, parent=None, **kwargs):

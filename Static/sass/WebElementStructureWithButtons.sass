@@ -35,3 +35,11 @@ input[type=button], input[type=submit],
         +disabledButton
         &:active
             @include indent
+
+.WButtonGroup
+    input[type=button], input[type=submit],
+        border-radius: 0px
+        .WFirst
+            border-radius: 8px 0px 0px 8px
+        .WLast
+            border-radius: 0px 8px 8px 0px

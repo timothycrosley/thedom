@@ -452,3 +452,22 @@ class Center(Box):
         self.addChildElementsTo = inner
 
 Factory.addProduct(Center)
+
+
+class ButtonGroup(Horizontal):
+    """
+        Groups buttons together (removing space between them clearly showing relation)
+    """
+    __slots__ = ()
+
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Horizontal._create(self, id, name, parent, **kwargs)
+
+    def _render(self):
+        if len(self.childElements) < 2:
+            return
+
+        self.childElements[0].addClass("WFirst")
+        self.childElements[-1].addClass("WLast")
+
+Factory.addProduct(ButtonGroup)
