@@ -1289,12 +1289,12 @@ input[type=button][disabled]:active, input[type=submit][disabled]:active {
 .WButtonGroup input[type=button], .WButtonGroup input[type=submit] {
   border-radius: 0px;
 }
-/* line 42, ../sass/WebElementStructureWithButtons.sass */
-.WButtonGroup input[type=button] .WFirst, .WButtonGroup input[type=submit] .WFirst {
+/* line 43, ../sass/WebElementStructureWithButtons.sass */
+.WButtonGroup WFirst input[type=button], .WButtonGroup WFirst input[type=submit] {
   border-radius: 8px 0px 0px 8px;
 }
-/* line 44, ../sass/WebElementStructureWithButtons.sass */
-.WButtonGroup input[type=button] .WLast, .WButtonGroup input[type=submit] .WLast {
+/* line 46, ../sass/WebElementStructureWithButtons.sass */
+.WButtonGroup .WLast input[type=button], .WButtonGroup .WLast input[type=submit] {
   border-radius: 0px 8px 8px 0px;
 }
 
