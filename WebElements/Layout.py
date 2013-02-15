@@ -464,11 +464,11 @@ class ButtonGroup(Horizontal):
         Horizontal._create(self, id, name, parent, **kwargs)
 
     def _render(self):
-        for childElement in childElements[1:-1]:
+        for childElement in self.childElements[1:-1]:
             childElement.removeClass('WFirst')
             childElement.removeClass('WLast')
 
-        if len(self.childElement) >= 2:
+        if len(self.childElements) >= 2:
             self.childElements[0].addClass("WFirst")
             self.childElements[-1].addClass("WLast")
 
