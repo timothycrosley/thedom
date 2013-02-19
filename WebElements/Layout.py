@@ -462,6 +462,7 @@ class ButtonGroup(Horizontal):
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Horizontal._create(self, id, name, parent, **kwargs)
+        self.addClass('WButtonGroup')
 
     def _render(self):
         for childElement in self.childElements[1:-1]:

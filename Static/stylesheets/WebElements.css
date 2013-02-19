@@ -1290,7 +1290,7 @@ input[type=button][disabled]:active, input[type=submit][disabled]:active {
   border-radius: 0px;
 }
 /* line 43, ../sass/WebElementStructureWithButtons.sass */
-.WButtonGroup WFirst input[type=button], .WButtonGroup WFirst input[type=submit] {
+.WButtonGroup .WFirst input[type=button], .WButtonGroup .WFirst input[type=submit] {
   border-radius: 8px 0px 0px 8px;
 }
 /* line 46, ../sass/WebElementStructureWithButtons.sass */
