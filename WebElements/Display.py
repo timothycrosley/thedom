@@ -20,6 +20,8 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
+import datetime
+
 from . import Base, ClientSide, DictUtils, DOM, Factory
 from .Inputs import ValueElement
 from .MethodUtils import CallBack
@@ -481,6 +483,21 @@ class Empty(Base.WebElement):
         return False
 
 Factory.addProduct(Empty)
+
+
+class Copyright(Label):
+    __slots__ = ('owner', )
+    properties = Base.WebElement.properties.copy()
+    properties['owner'] =  {'action':'classAttribute'}
+
+    def _create(self, name=None, id=None, parent=None, **kwargs):
+        Label._create(self, name, id, parent, **kwargs)
+        self.owner = ''
+
+    def _render(self):
+        self.setText("&copy;%s %s - All rights reserved." % (datetime.datetime.now().year, self.owner))
+
+Factory.addProduct(Copyright)
 
 
 class StraightHTML(Base.WebElement):
