@@ -952,6 +952,17 @@ label.WInfo {
   width: 100%;
 }
 
+/* line 397, ../sass/WebElementStructure.sass */
+.WGooglePlusBadge {
+  text-decoration: none;
+}
+/* line 399, ../sass/WebElementStructure.sass */
+.WGooglePlusBadge img {
+  border: 0;
+  width: 32px;
+  height: 32px;
+}
+
 /* line 23, ../sass/WebElementStructureWithButtons.sass */
 input[type=button], input[type=submit] {
   font-size: 19px;

@@ -29,6 +29,7 @@ WebElements/Parser.py
 WebElements/PositionController.py
 WebElements/Printing.py
 WebElements/Resources.py
+WebElements/Social.py
 WebElements/StringUtils.py
 WebElements/ToClientSide.py
 WebElements/UITemplate.py

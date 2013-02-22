@@ -12,7 +12,8 @@
     of the License, or (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    but WITHOUT ANY WARRANTY; without even the implied warranty
+     ,  of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
@@ -40,11 +41,12 @@ from . import (Base,
                Printing,
                Resources,
                UITemplate,
-               Validators)
+               Validators,
+               Social)
 
 FactoryClasses = Factory
 Factory = Factory.Composite((Validators.Factory, DOM.Factory, Buttons.Factory, DataViews.Factory,
                              Display.Factory, Fields.Factory, HiddenInputs.Factory, Inputs.Factory,
                              Layout.Factory, Navigation.Factory, Resources.Factory, Containers.Factory,
                              Charts.Factory, Printing.Factory, Document.Factory, CodeDocumentation.Factory,
-                             HTML5.Factory))
+                             HTML5.Factory, Social.Factory))

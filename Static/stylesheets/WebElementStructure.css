@@ -951,3 +951,14 @@ label.WInfo {
   padding: 4px;
   width: 100%;
 }
+
+/* line 397, ../sass/WebElementStructure.sass */
+.WGooglePlusBadge {
+  text-decoration: none;
+}
+/* line 399, ../sass/WebElementStructure.sass */
+.WGooglePlusBadge img {
+  border: 0;
+  width: 32px;
+  height: 32px;
+}
