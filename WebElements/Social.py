@@ -81,8 +81,8 @@ class FacebookLike(Social):
         Adds a facebook like link to your site
     """
     def toHTML(self, formatted=False, *args, **kwargs):
-        return ("""<div class="fb-like" data-href="https://www.facebook.com/%s" data-send="true""" + \
-                """data-layout="button_count" data-width="450" data-show-faces="true"></div>""") % self.account
+        return ("""<div class="fb-like" data-href="https://www.facebook.com/%s" data-send="false""" + \
+                """data-layout="button_count" data-width="300" data-show-faces="false"></div>""") % self.account
 
 Factory.addProduct(FacebookLike)
 
