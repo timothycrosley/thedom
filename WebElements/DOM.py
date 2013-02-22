@@ -770,7 +770,6 @@ class Link(WebElement):
     __slots__ = ()
     tagName = "link"
     tagSelfCloses = True
-    allowsChildren = False
     properties = WebElement.properties.copy()
     properties['charset'] = {'action':'attribute'}
     properties['src'] = {'action':'attribute'}
