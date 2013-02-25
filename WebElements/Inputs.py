@@ -85,8 +85,8 @@ class ValueElement(DOM.Input):
             return ClientSide.selectText(self, start, end)
 
 
-    def _create(self, id, name=None, parent=None, key=None, **kwargs):
-        DOM.Input._create(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
+        DOM.Input._create(self, id, name, parent, *args, **kwargs)
         self.key = key
         self._value = ''
         self.attributes['value'] = CallBack(self, 'value')
@@ -184,8 +184,8 @@ class InputElement(ValueElement):
     tagSelfCloses = True
     allowsChildren = False
 
-    def _create(self, id, name=None, parent=None, key=None):
-        ValueElement._create(self, id, name, parent, key=key)
+    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
+        ValueElement._create(self, id, name, parent, key=key, *args, **kwargs)
 
     def _render(self):
         """
@@ -228,8 +228,8 @@ class CheckBox(InputElement):
             """
             return ClientSide.checkboxActsLikeRadioButton(self, pair)
 
-    def _create(self, id=None, name=None, parent=None, key=None):
-        InputElement._create(self, id, name, parent, key=key)
+    def _create(self, id=None, name=None, parent=None, key=None, *args, **kwargs):
+        InputElement._create(self, id, name, parent, key=key, *args, **kwargs)
 
         self._value = False
         self.attributes['value'] = None
@@ -289,8 +289,8 @@ class Radio(CheckBox):
         radio buttons identifier
     """
     __slots__ = ()
-    def _create(self, id=None, name=None, parent=None, key=None):
-        CheckBox._create(self, id, name, parent, key=key)
+    def _create(self, id=None, name=None, parent=None, key=None, *args, **kwargs):
+        CheckBox._create(self, id, name, parent, key=key, *args, **kwargs)
         self.attributes['type'] = "radio"
         self.setId(id)
 
@@ -328,8 +328,8 @@ class TextBox(InputElement):
     properties['onkeydown'] = {'action' : 'javascriptEvent' }
     properties['onkeyup'] = {'action' : 'javascriptEvent' }
 
-    def _create(self, id, name=None, parent=None, key=None):
-        InputElement._create(self, id, name, parent, key)
+    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
+        InputElement._create(self, id, name, parent, key, *args, **kwargs)
         self.attributes['type'] = 'text'
         self.length = None
 
@@ -366,8 +366,8 @@ class IntegerTextBox(TextBox):
     properties['maximum'] = {'action':'classAttribute', 'type':'int'}
     properties['minimum'] = {'action':'classAttribute', 'type':'int'}
 
-    def _create(self, id, name=None, parent=None, key=None):
-        TextBox._create(self, id, name, parent, key)
+    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
+        TextBox._create(self, id, name, parent, key, *args, **kwargs)
         self.maximum = None
         self.minimum = None
         self.attributes['size'] = '4'
@@ -417,8 +417,8 @@ class FileUpload(InputElement):
     properties['size'] = {'action':'attribute'}
     properties['maxlength'] = {'action':'attribute'}
 
-    def _create(self, id, name=None, parent=None, key=None):
-        InputElement._create(self, id, name, parent, key=key)
+    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
+        InputElement._create(self, id, name, parent, key=key, *args, **kwargs)
 
         self.attributes['type'] = "file"
 
@@ -438,8 +438,8 @@ class TextArea(ValueElement):
     properties['wrap'] = {'action':'attribute'}
     properties['onkeydown'] = {'action':'javascriptEvent'}
 
-    def _create(self, id, name=None, parent=None, key=None):
-        ValueElement._create(self, id, name, parent, key=key)
+    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
+        ValueElement._create(self, id, name, parent, key=key, *args, **kwargs)
 
     def content(self, formatted=False, *args, **kwargs):
         return self.value() or ""
@@ -472,8 +472,8 @@ class Option(ValueElement):
         def showIfSelected(self, elementToShow):
             return ClientSide.showIfSelected(self.serverSide.parent.clientSide, self, elementToShow)
 
-    def _create(self, id=None, name=None, parent=None, key=None):
-        ValueElement._create(self, id, name, parent, key=key)
+    def _create(self, id=None, name=None, parent=None, key=None, *args, **kwargs):
+        ValueElement._create(self, id, name, parent, key=key, *args, **kwargs)
 
         self._selected = False
         self._textNode = self.addChildElement(Base.TextNode())
@@ -557,8 +557,8 @@ class Select(ValueElement):
         def showIfSelected(self, option, elementToShow):
             return ClientSide.showIfSelected(option, elementToShow, self)
 
-    def _create(self, id, name=None, parent=None, **kwargs):
-        ValueElement._create(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, *args, **kwargs):
+        ValueElement._create(self, id, name, parent, *args, **kwargs)
 
     def _render(self):
         ValueElement._render(self)
@@ -663,8 +663,8 @@ class MultiSelect(Select):
     """
     __slots__ = ()
 
-    def _create(self, id, name=None, parent=None, **kwargs):
-        Select._create(self, id, name, parent, **kwargs)
+    def _create(self, id, name=None, parent=None, *args, **kwargs):
+        Select._create(self, id, name, parent, *args, **kwargs)
         self.attributes['multiple'] = True
 
     def selected(self):
