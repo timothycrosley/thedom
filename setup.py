@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='WebElements',
-      version='1.0.0-alpha.17',
+      version='1.0.0-alpha.18',
       description='WebElements is a collection of python objects that enable you to represent and interact with the DOM server side before generating HTML, CSS, and JavaScript for the client.',
       author='Timothy Crosley',
       author_email='timothy.crosley@gmail.com',

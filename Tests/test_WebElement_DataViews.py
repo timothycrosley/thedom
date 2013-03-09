@@ -69,6 +69,32 @@ class TestTable(ElementTester):
         assert type(row.actualCell("Type")) == Table.Column
         assert len(self.element.header.childElements) == 2
 
+    def test_addRows(self):
+        # Using a list of dictionaries to populate a table is the most straight-forward method, but looses column
+        # order
+        self.element.addRows(({'B':'Row1', 'A':'Row1'}, {'B':'Row2', 'A':'Row2'}))
+        assert self.element.columns == ['A', 'B']
+
+        # Using nested tuples when adding rows should allow you to define the order of columns
+        newTable = Factory.build('Table', 'Test2')
+        newTable.addRows(((('B','Row1'), ('A','Row1')), (('B','Row2'), ('A','Row2'))))
+        assert newTable.columns == ['B', 'A']
+
+    def test_reorderingColumns(self):
+        self.element.addRows(({'B':'Cell1', 'A':'Cell2'}, {'B':'Cell3', 'A':'Cell4'}))
+        assert self.element.columns == ['A', 'B']
+        assert self.element.rows[0][0][0].text() == "Cell2"
+        assert self.element.rows[0][1][0].text() == "Cell1"
+        assert self.element.rows[1][0][0].text() == "Cell4"
+        assert self.element.rows[1][1][0].text() == "Cell3"
+
+        self.element.columns = ['B', 'A']
+        assert self.element.columns == ['B', 'A']
+        assert self.element.rows[0][0][0].text() == "Cell1"
+        assert self.element.rows[0][1][0].text() == "Cell2"
+        assert self.element.rows[1][0][0].text() == "Cell3"
+        assert self.element.rows[1][1][0].text() == "Cell4"
+
     def test_setCell(self):
         newRow = self.element.addRow()
         newRow.cell("Name").setText("Tim")

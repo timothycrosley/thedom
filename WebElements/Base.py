@@ -726,6 +726,16 @@ class WebElement(Connectable):
 
         return self._childElements
 
+    @childElements.setter
+    def childElements(self, childElements):
+        """
+            Sets the child elements of this element
+        """
+        if not childElements:
+            self._childElements = None
+        else:
+            self._childElements = childElements
+
     @property
     def clientSide(self):
         """

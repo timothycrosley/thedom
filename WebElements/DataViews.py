@@ -36,7 +36,7 @@ class Table(Base.WebElement):
         Defines a table webelement - which is designed to be used as an actual table of data (not for alignment of
         child elements), you can quickly fill it with data, and it will take care of the display for you.
     """
-    __slots__ = ('alignHeaders', 'header', 'rows', 'columns', 'columnMap', 'uniformStyle')
+    __slots__ = ('alignHeaders', 'header', 'rows', '_columns', 'columnMap', 'uniformStyle')
     tagName = "table"
     signals = Base.WebElement.signals + ['rowAdded', 'columnAdded']
     properties = Base.WebElement.properties.copy()
@@ -149,12 +149,34 @@ class Table(Base.WebElement):
         self.alignHeaders = ""
         self.header = self.addChildElement(header)
         self.rows = []
-        self.columns = []
+        self._columns = []
         self.columnMap = {}
         self.uniformStyle = ""
         self.addClass('GlobalTable')
 
         self.connect('columnAdded', None, header, 'addChildElement')
+
+    @property
+    def columns(self):
+        """
+            Returns the columns set on the table
+        """
+        return self._columns
+
+    @columns.setter
+    def columns(self, columns):
+        """
+            Setting columns allows you to change the ordering of columns after the fact
+        """
+        if set(columns) != set(self._columns):
+            raise ValueError("Setting columns should only be used for reording ")
+
+        indexes = [self._columns.index(column) for column in columns]
+        self._columns = columns
+
+        self.header.childElements = [self.header.childElements[index] for index in indexes]
+        for row in self.rows:
+            row.childElements = [row.childElements[index] for index in indexes]
 
     def addSeparator(self, separatorName=""):
         """
@@ -162,7 +184,7 @@ class Table(Base.WebElement):
         """
         row = self.addChildElement(self.Row())
         column = row.addChildElement(self.Column())
-        column.attributes['colspan'] = len(self.columns)
+        column.attributes['colspan'] = len(self._columns)
         column.setText(separatorName)
         return column
 
@@ -180,7 +202,7 @@ class Table(Base.WebElement):
         self.connect('columnAdded', None, row, 'addChildElement', self.Column)
         self.rows.append(row)
 
-        for column in self.columns:
+        for column in self._columns:
             row.addChildElement(self.Column(parent=row, id=column))
 
         self.emit('rowAdded', row)
@@ -190,7 +212,7 @@ class Table(Base.WebElement):
         """
             Adds a column to table (and therefore everyone within it)
         """
-        if not columnName in self.columns:
+        if not columnName in self._columns:
             column = Table.Header(columnName)
             if self.fullId():
                 column.addClass(self.fullId()[0].upper() + self.fullId()[1:] + columnName.replace(" ", "") + "Header")
@@ -198,7 +220,7 @@ class Table(Base.WebElement):
                 column.attributes['align'] = self.alignHeaders
 
             column.addChildElement(Base.TextNode((showName and (columnName or '')) or ''))
-            self.columns.append(columnName)
+            self._columns.append(columnName)
 
             self.emit('columnAdded', column)
             self.columnMap[columnName] = column
@@ -242,8 +264,12 @@ class Table(Base.WebElement):
         """
         for row in rows:
             newRow = self.addRow()
-            for col, value in iteritems(row):
-                newRow.cell(col).setText(value)
+            if type(row) in (list, tuple):
+                for col, value in row:
+                    newRow.cell(col).setText(value)
+            else:
+                for col, value in iteritems(row):
+                    newRow.cell(col).setText(value)
 
     def joinRows(self, columnName, rows):
         """
