@@ -657,7 +657,7 @@ class IntegerField(BaseField):
         self.label.style['margin-top'] = "5px;"
         self.up = self.toggleLayout.addChildElement(Buttons.UpButton())
         self.up.addClass("hidePrint")
-        self.down = self.toggleLayout.addChildElement(Buttons.DownButton(src=Base.IMAGES_URL + 'count_down.png'))
+        self.down = self.toggleLayout.addChildElement(Buttons.DownButton(src='images/count_down.png'))
         self.down.addClass("hidePrint")
         self.userInput.setValue(0)
 
@@ -704,7 +704,7 @@ class DateField(TextField):
         layout = self.addChildElement(Layout.Horizontal())
         layout.addClass("FieldDescription")
         self.calendarLink = layout.addChildElement(Display.Image(id + "CalendarLink",
-                                                                 src=Base.IMAGES_URL + 'calendar_icon.gif'))
+                                                                 src='images/calendar_icon.gif'))
         self.calendarLink.addClass('Clickable')
         self.calendarLink.addClass('hidePrint')
         self.calendarLink.addJavascriptEvent('onclick', CallBack(self, "jsOpenCalendar"))
@@ -863,7 +863,7 @@ class Filter(Layout.Box):
         removeButton.style['float'] = 'right'
         removeButton.style['display'] = 'none'
         removeButton.setText("")
-        removeButton.addChildElement(DOM.Img()).setProperty("src", Base.IMAGES_URL + "/close.gif")
+        removeButton.addChildElement(DOM.Img()).setProperty("src", "images//close.gif")
         removeButton.addClass('Clickable')
         removeButton.addClass('WRemoveFilter')
         removeButton.addJavascriptEvent("onclick", CallBack(self, 'jsRemoveFilter'))

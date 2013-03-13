@@ -133,78 +133,91 @@ Item = List.Item
 Factory.addProduct(List)
 
 
+def label(cls):
+    """
+        Adds text access methods and properties to an existing class by sub-classing it.
+    """
+    class Labelable(cls):
+        __slots__ = ('_textNode')
+
+        signals = cls.signals + ['textChanged']
+        properties = cls.properties.copy()
+        properties['text'] = {'action':'setText'}
+        properties['useNBSP'] = {'action':'call', 'type':'bool'}
+        properties['strong'] = {'action':'call', 'name':'makeStrong', 'type':'bool'}
+        properties['emphasis'] = {'action':'call', 'name':'addEmphasis', 'type':'bool'}
+
+        class ClientSide(cls.ClientSide):
+
+            def setText(self, text):
+                element = self.get()
+                element.innerHTML = text
+                return element
+
+        def _create(self, id=None, name=None, parent=None, **kwargs):
+            cls._create(self, id=id, name=name, parent=parent)
+
+            self._textNode = self.addChildElement(Base.TextNode())
+
+        def setText(self, text):
+            """
+                Sets the displayed text
+            """
+            if text != self._textNode.text():
+                self._textNode.setText(text)
+                self.emit('textChanged', text)
+
+        def useNBSP(self):
+            """
+                Replaces the text with a single space character
+            """
+            self.setText('&nbsp;')
+
+        def text(self):
+            """
+                Returns the displayed text
+            """
+            return self._textNode.text()
+
+        def appendText(self, text):
+            """
+                Adds a new line character followed by additional text
+            """
+            prevText = self.text()
+            if not prevText:
+                return self.setText(text)
+
+            self.setText(prevText + "<br />" + text)
+
+        def makeStrong(self):
+            """
+                wraps into a strong tag - requires parent element to be defined
+            """
+            self.addChildElementsTo = self.addChildElement(DOM.Strong())
+            self.addChildElementsTo.addChildElement(self._textNode)
+
+        def addEmphasis(self):
+            """
+                wraps into an emphasis tag - requires parent element to be defined
+            """
+            self.addChildElementsTo = self.addChildElement(DOM.Em())
+            self.addChildElementsTo.addChildElement(self._textNode)
+
+    Labelable.__name__ = cls.__name__
+    return Labelable
+
+
+@label
 class Label(DOM.Label):
     """
         Defines a label webelement, which will display a single string of text to the user
     """
-    __slots__ = ('_textNode')
-
-    signals = DOM.Label.signals + ['textChanged']
-    properties = DOM.Label.properties.copy()
-    properties['text'] = {'action':'setText'}
-    properties['useNBSP'] = {'action':'call', 'type':'bool'}
-    properties['strong'] = {'action':'call', 'name':'makeStrong', 'type':'bool'}
-    properties['emphasis'] = {'action':'call', 'name':'addEmphasis', 'type':'bool'}
-
-    class ClientSide(DOM.Label.ClientSide):
-
-        def setText(self, text):
-            element = self.get()
-            element.innerHTML = text
-            return element
-
-    def _create(self, id=None, name=None, parent=None, **kwargs):
-        DOM.Label._create(self, id=id, name=name, parent=parent)
-
-        self._textNode = self.addChildElement(Base.TextNode())
-
-    def setText(self, text):
-        """
-            Sets the displayed text
-        """
-        if text != self._textNode.text():
-            self._textNode.setText(text)
-            self.emit('textChanged', text)
-
-    def useNBSP(self):
-        """
-            Replaces the text with a single space character
-        """
-        self.setText('&nbsp;')
-
-    def text(self):
-        """
-            Returns the displayed text
-        """
-        return self._textNode.text()
-
-    def appendText(self, text):
-        """
-            Adds a new line character followed by additional text
-        """
-        prevText = self.text()
-        if not prevText:
-            return self.setText(text)
-
-        self.setText(prevText + "<br />" + text)
-
-    def makeStrong(self):
-        """
-            wraps into a strong tag - requires parent element to be defined
-        """
-        self.addChildElementsTo = self.addChildElement(DOM.Strong())
-        self.addChildElementsTo.addChildElement(self._textNode)
-
-    def addEmphasis(self):
-        """
-            wraps into an emphasis tag - requires parent element to be defined
-        """
-        self.addChildElementsTo = self.addChildElement(DOM.Em())
-        self.addChildElementsTo.addChildElement(self._textNode)
+    __slots__ = ()
 
 Factory.addProduct(Label)
 
 
+@label
 class Paragraph(DOM.P):
     """
         Defines a paragraph element
@@ -214,6 +227,7 @@ class Paragraph(DOM.P):
 Factory.addProduct(Paragraph)
 
 
+@label
 class Subscript(DOM.Sub):
     """
         Defines a subscripted text element
@@ -223,6 +237,7 @@ class Subscript(DOM.Sub):
 Factory.addProduct(Subscript)
 
 
+@label
 class Superscript(DOM.Sup):
     """
         Defines a superscripted text element
@@ -232,6 +247,7 @@ class Superscript(DOM.Sup):
 Factory.addProduct(Superscript)
 
 
+@label
 class PreformattedText(DOM.Pre):
     """
         Defines a preformatted text label, where no forced format should be applied (such as single space)

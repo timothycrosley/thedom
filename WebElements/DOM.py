@@ -22,7 +22,7 @@
 '''
 
 from . import DictUtils, Factory
-from .Base import WebElement
+from .Base import WebElement, Settings
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 
@@ -637,12 +637,18 @@ class Img(WebElement):
     tagSelfCloses = True
     allowsChildren = False
     properties = WebElement.properties.copy()
-    properties['src'] = {'action':'attribute'}
+    properties['src'] = {'action':'setImage'}
     properties['alt'] = {'action':'attribute'}
     properties['crossorigin'] = {'action':'attribute'}
     properties['ismap'] = {'action':'attribute', 'type':'bool'}
     properties['width'] = {'action':'attribute', 'type':'int'}
     properties['height'] = {'action':'attribute', 'type':'int'}
+
+    def setImage(self, image):
+        self.attributes['src'] = Settings.STATIC_URL + image
+
+    def image(self):
+        return self.attributes['src'].replace(Settings.STATIC_URL, "")
 
 Factory.addProduct(Img)
 
@@ -773,13 +779,25 @@ class Link(WebElement):
     allowsChildren = False
     properties = WebElement.properties.copy()
     properties['charset'] = {'action':'attribute'}
-    properties['src'] = {'action':'attribute'}
-    properties['href'] = {'action':'attribute'}
+    properties['src'] = {'action':'setSource'}
+    properties['href'] = {'action':'setHref'}
     properties['hreflang'] = {'action':'attribute'}
     properties['media'] = {'action':'attribute'}
     properties['rel'] = {'action':'attribute'}
     properties['type'] = {'action':'attribute'}
     properties['sizes'] = {'action':'attribute'}
+
+    def setHref(self, href):
+        self.attributes['href'] = Settings.STATIC_URL + href
+
+    def href(self):
+        return self.attributes['href'].replace(Settings.STATIC_URL, "")
+
+    def setSource(self, source):
+        self.attributes['src'] = Settings.STATIC_URL + source
+
+    def source(self, source):
+        return self.attributes['src'].replace(Settings.STATIC_URL, "")
 
 Factory.addProduct(Link)
 
@@ -1049,7 +1067,13 @@ class Script(WebElement):
     properties['defer'] = {'action':'attribute', 'type':'bool'}
     properties['type'] = {'action':'attribute'}
     properties['charset'] = {'action':'attribute'}
-    properties['src'] = {'action':'attribute'}
+    properties['src'] = {'action':'setScriptFile'}
+
+    def setScriptFile(self, scriptFile):
+        self.attributes['src'] = Settings.STATIC_URL + scriptFile
+
+    def scriptFile(self):
+        return self.attributes['src'].replace(Settings.STATIC_URL, "")
 
 Factory.addProduct(Script)
 

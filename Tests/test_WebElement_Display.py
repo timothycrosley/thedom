@@ -62,25 +62,25 @@ class TestLabel(object):
         assert "I set the text" in self.element.toHTML()
 
 
-class TestParagraph(ElementTester):
+class TestParagraph(TestLabel):
 
     def setup_method(self, method):
         self.element = Factory.build("Paragraph", "Test")
 
 
-class TestSubscript(ElementTester):
+class TestSubscript(TestLabel):
 
     def setup_method(self, method):
         self.element = Factory.build("Subscript", "Test")
 
 
-class TestSuperscript(ElementTester):
+class TestSuperscript(TestLabel):
 
     def setup_method(self, method):
         self.element = Factory.build("Superscript", "Test")
 
 
-class TestPreformattedText(ElementTester):
+class TestPreformattedText(TestLabel):
 
     def setup_method(self, method):
         self.element = Factory.build("PreformattedText", "Test")

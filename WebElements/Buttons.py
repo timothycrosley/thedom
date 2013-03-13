@@ -196,15 +196,15 @@ class UpButton(Display.HoverImage):
         A concrete button implementation, used to increase something by a factor of 1
     """
     __slots__ = ()
-    imageOnHover = Base.IMAGES_URL + 'count_up_highlight.png'
-    imageOnClick = Base.IMAGES_URL + 'count_up_pressed.png'
+    imageOnHover = 'images/count_up_highlight.png'
+    imageOnClick = 'images/count_up_pressed.png'
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Display.HoverImage._create(self, id, name, parent, **kwargs)
 
         self.style['height'] = "11px"
         self.style['width'] = "16px"
-        self.setProperty('src', Base.IMAGES_URL + "count_up.png")
+        self.setProperty('src', "images/count_up.png")
 
 Factory.addProduct(UpButton)
 
@@ -214,15 +214,15 @@ class DownButton(Display.HoverImage):
         A concrete button implementation, used to decrease something by a factor of 1
     """
     __slots__ = ()
-    imageOnHover = Base.IMAGES_URL + 'count_down_highlight.png'
-    imageOnClick = Base.IMAGES_URL + 'count_down_pressed.png'
+    imageOnHover = 'images/count_down_highlight.png'
+    imageOnClick = 'images/count_down_pressed.png'
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Display.HoverImage._create(self, id, name, parent, **kwargs)
 
         self.style['height'] = "11px"
         self.style['width'] = "16px"
-        self.setProperty("src", Base.IMAGES_URL + "count_down.png")
+        self.setProperty("src", "images/count_down.png")
 
 Factory.addProduct(DownButton)
 

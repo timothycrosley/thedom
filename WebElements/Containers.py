@@ -95,7 +95,7 @@ class Help(DropDownMenu):
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         DropDownMenu._create(self, id, name, parent, **kwargs)
-        self.addChildElement(Display.Image(src=Base.IMAGES_URL + "help.png"))
+        self.addChildElement(Display.Image(src="images/help.png"))
         layout = self.addChildElement(Layout.Vertical())
         self.label = layout.addChildElement(Display.Label)
         self.addChildElementsTo = layout
@@ -455,9 +455,9 @@ class Accordion(Layout.Vertical):
         return """if (!WebElements.shown('%s')){
                      WebElements.show('%s');
                      WebElements.get('%s').value = 'True';
-                     WebElements.get('%s').src = '%shide.gif'
+                     WebElements.get('%s').src = '%simages/hide.gif'
                 """ % (self.contentElement.fullId(), self.contentElement.fullId(),
-                       self.isOpen.fullId(), self.toggleImage.fullId(), Base.IMAGES_URL)
+                       self.isOpen.fullId(), self.toggleImage.fullId(), Base.Settings.STATIC_URL)
 
     def jsToggleOff(self):
         """
@@ -466,9 +466,9 @@ class Accordion(Layout.Vertical):
         return """if (WebElements.shown('%s')){
                      WebElements.hide('%s');
                      WebElements.get('%s').value = 'False';
-                     WebElements.get('%s').src = '%sshow.gif'
+                     WebElements.get('%s').src = '%simages/show.gif'
                 """ % (self.contentElement.fullId(), self.contentElement.fullId(),
-                       self.isOpen.fullId(), self.toggleImage.fullId(), Base.IMAGES_URL)
+                       self.isOpen.fullId(), self.toggleImage.fullId(), Base.Settings.STATIC_URL)
 
     def jsToggle(self):
         """
@@ -481,20 +481,20 @@ class Accordion(Layout.Vertical):
         return """if(!WebElements.shown(elementContent)){
                      WebElements.show(elementContent);
                      elementValue.value = 'True';
-                     elementImage.src = '%shide.gif'
+                     elementImage.src = '%simages/hide.gif'
                   }
                   else
                   {
                      WebElements.hide(elementContent);
                      elementValue.value = 'False';
-                     elementImage.src = '%sshow.gif'
-                  }""" % (Base.IMAGES_URL, Base.IMAGES_URL)
+                     elementImage.src = '%simages/show.gif'
+                  }""" % (Base.Settings.STATIC_URL, Base.Settings.STATIC_URL)
 
     def open(self):
         """
             Makes the accordions content visible
         """
-        self.toggleImage.setProperty('src', Base.IMAGES_URL + 'hide.gif')
+        self.toggleImage.setProperty('src', 'images/hide.gif')
         self.contentElement.show()
         self.isOpen.setValue(True)
 
@@ -502,7 +502,7 @@ class Accordion(Layout.Vertical):
         """
             Hides the accordions content
         """
-        self.toggleImage.setProperty('src', Base.IMAGES_URL + 'show.gif')
+        self.toggleImage.setProperty('src', 'images/show.gif')
         self.contentElement.hide()
         self.isOpen.setValue(False)
 

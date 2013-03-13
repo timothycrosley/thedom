@@ -31,13 +31,15 @@ from .MultiplePythonSupport import *
 from .StringUtils import interpretAsString
 from itertools import chain
 
-BLOCK_TAGS = ('address', 'blockquote', 'center', 'dir', 'div', 'dl', 'fieldset', 'form', 'h1',
-              'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'isindex', 'menu', 'noframes', 'noscript', 'ol',
-              'p', 'pre', 'table', 'ul', 'dd', 'dt', 'frameset', 'li', 'tbody', 'td', 'tfoot', 'th',
-              'thead', 'tr')
 
-INDENTATION = " "
-IMAGES_URL = "images/"
+class Settings(object):
+    STATIC_URL = ""
+    INDENTATION = " "
+    BLOCK_TAGS = ('address', 'blockquote', 'center', 'dir', 'div', 'dl', 'fieldset', 'form', 'h1',
+                'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'isindex', 'menu', 'noframes', 'noscript', 'ol',
+                'p', 'pre', 'table', 'ul', 'dd', 'dt', 'frameset', 'li', 'tbody', 'td', 'tfoot', 'th',
+                'thead', 'tr')
+
 
 def addChildProperties(propertiesDict, classDefinition, accessor):
     """
@@ -586,7 +588,7 @@ class WebElement(Connectable):
             """
             return ClientSide.getNotificationPermission()
 
-        def showNotification(self, title, content, icon=IMAGES_URL + "info.png"):
+        def showNotification(self, title, content, icon="images/info.png"):
             """
                 Shows a notifications to the user, where title is the subject and content is the message.
             """
@@ -1261,7 +1263,7 @@ class WebElement(Connectable):
 
         elements = [element.toHTML(formatted=formatted, *args, **kwargs) for element in self.childElements]
         if formatted:
-            return "\n".join([(self._tagName and INDENTATION or '') +
+            return "\n".join([(self._tagName and Settings.INDENTATION or '') +
                                line for line in "\n".join(elements).split("\n") if line])
         else:
             return ''.join(elements)
@@ -1406,7 +1408,7 @@ class WebElement(Connectable):
         """
             Returns true if the elements will render as an HTML block type
         """
-        if self._tagName in BLOCK_TAGS or self.hasClass("WBlock"):
+        if self._tagName in Settings.BLOCK_TAGS or self.hasClass("WBlock"):
             return True
         return False
 
