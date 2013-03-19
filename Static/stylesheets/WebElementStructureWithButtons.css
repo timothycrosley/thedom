@@ -780,7 +780,7 @@ div.WCenter div.WOuter div.WInner {
   border: 1px gray solid;
 }
 /* line 308, ../sass/WebElementStructure.sass */
-.WLoading span {
+.WLoading label {
   line-height: 30px;
   margin-left: 10px;
 }
