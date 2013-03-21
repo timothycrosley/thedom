@@ -28,6 +28,8 @@
         clear: both
 .WActions
     line-height: 40px
+    input[type=text]
+        margin-top: 8px
 div
     &.WSelectedMultiOption
         border: 1px gray solid
@@ -334,6 +336,34 @@ div.WCenter
         &.WSelected
             cursor: default
             @include background-image(linear-gradient(#aaaaaa, #cccccc, white))
+            border-top: 1px white solid
+
+.WTabContents.WLeft
+    width: 85%
+.WTabLabels.WLeft
+    padding-bottom: 10px
+    width: 15%
+    .WTabLabel
+        @include border-top-left-radius(10px)
+        @include border-top-right-radius(0px)
+        @include border-bottom-left-radius(10px)
+        background-color: lightgray
+        border-top: 1px gray solid
+        border-bottom: 1px gray solid
+        border-right: none
+        border-left: none
+        padding: 5px
+        &.WUnselected
+            cursor: pointer
+            @include background-image(linear-gradient(left, white, #cccccc, #aaaaaa))
+            border-top: 1px black solid
+            &:hover
+                border-top: 1px #396EFF solid
+                @include background-image(linear-gradient(left, white, darken(#cccccc, 20%), darken(#aaaaaa, 20%)))
+
+        &.WSelected
+            cursor: default
+            @include background-image(linear-gradient(left, #aaaaaa, #cccccc, white))
             border-top: 1px white solid
 
 

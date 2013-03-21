@@ -388,8 +388,12 @@
 .WActions {
   line-height: 40px;
 }
+/* line 31, ../sass/WebElementStructure.sass */
+.WActions input[type=text] {
+  margin-top: 8px;
+}
 
-/* line 32, ../sass/WebElementStructure.sass */
+/* line 34, ../sass/WebElementStructure.sass */
 div.WSelectedMultiOption {
   border: 1px gray solid;
   background-color: lightgrey;
@@ -397,15 +401,15 @@ div.WSelectedMultiOption {
   margin-left: 2px;
   color: black;
 }
-/* line 38, ../sass/WebElementStructure.sass */
+/* line 40, ../sass/WebElementStructure.sass */
 div.WSelectedMultiOption .valueSelected {
   width: 100px;
 }
-/* line 40, ../sass/WebElementStructure.sass */
+/* line 42, ../sass/WebElementStructure.sass */
 div.WSelectedMultiOption img {
   width: 1em;
 }
-/* line 42, ../sass/WebElementStructure.sass */
+/* line 44, ../sass/WebElementStructure.sass */
 div.WRemoved {
   background-color: #ffcccc;
   border: 1px #910000 solid;
@@ -413,7 +417,7 @@ div.WRemoved {
   float: left;
   margin: 3px;
 }
-/* line 48, ../sass/WebElementStructure.sass */
+/* line 50, ../sass/WebElementStructure.sass */
 div.WAdded {
   background-color: #e0ff97;
   border: 1px #268c18 solid;
@@ -421,7 +425,7 @@ div.WAdded {
   float: right;
   margin: 3px;
 }
-/* line 54, ../sass/WebElementStructure.sass */
+/* line 56, ../sass/WebElementStructure.sass */
 div.WStatusIndicator {
   border: 1px gray solid;
   margin-top: 10px;
@@ -430,41 +434,41 @@ div.WStatusIndicator {
   height: 100px;
   width: 4px;
 }
-/* line 61, ../sass/WebElementStructure.sass */
+/* line 63, ../sass/WebElementStructure.sass */
 div.StatusComplete {
   background-color: green;
 }
-/* line 63, ../sass/WebElementStructure.sass */
+/* line 65, ../sass/WebElementStructure.sass */
 div.StatusPartial {
   background-color: yellow;
 }
-/* line 65, ../sass/WebElementStructure.sass */
+/* line 67, ../sass/WebElementStructure.sass */
 div.StatusIncomplete {
   background-color: red;
 }
 
-/* line 68, ../sass/WebElementStructure.sass */
+/* line 70, ../sass/WebElementStructure.sass */
 input.ToggledOn {
   background-color: #77b2e0;
 }
 
-/* line 73, ../sass/WebElementStructure.sass */
+/* line 75, ../sass/WebElementStructure.sass */
 a.WToggleLink:visited, a.WToggleLink:link {
   font-weight: normal;
   text-decoration: none;
 }
-/* line 77, ../sass/WebElementStructure.sass */
+/* line 79, ../sass/WebElementStructure.sass */
 a.WToggleLink.Pushed:visited, a.WToggleLink.Pushed:link {
   font-weight: bold;
   text-decoration: none;
 }
 
-/* line 81, ../sass/WebElementStructure.sass */
+/* line 83, ../sass/WebElementStructure.sass */
 input.WAddFilterButton {
   width: 80px;
 }
 
-/* line 84, ../sass/WebElementStructure.sass */
+/* line 86, ../sass/WebElementStructure.sass */
 .WAddFilter {
   padding-top: 5px;
   width: 160px;
@@ -472,56 +476,56 @@ input.WAddFilterButton {
   margin-right: auto;
 }
 
-/* line 90, ../sass/WebElementStructure.sass */
+/* line 92, ../sass/WebElementStructure.sass */
 .WFilter {
   margin: 2px;
   padding: 4px;
   border: 1px #e5e5e5 solid;
 }
 
-/* line 96, ../sass/WebElementStructure.sass */
+/* line 98, ../sass/WebElementStructure.sass */
 .WFields .WLabel {
   width: 34%;
 }
-/* line 98, ../sass/WebElementStructure.sass */
+/* line 100, ../sass/WebElementStructure.sass */
 .WFields .WInputs {
   width: 65%;
 }
-/* line 100, ../sass/WebElementStructure.sass */
+/* line 102, ../sass/WebElementStructure.sass */
 .WFields .WInputs .WInput {
   width: 100%;
 }
-/* line 102, ../sass/WebElementStructure.sass */
+/* line 104, ../sass/WebElementStructure.sass */
 .WFields .WField {
   margin-bottom: 8px;
   margin-top: 8px;
 }
 
-/* line 107, ../sass/WebElementStructure.sass */
+/* line 109, ../sass/WebElementStructure.sass */
 .WFilterHighlight {
   background-color: #dedede;
   border: 1px #bcbbbb solid;
 }
 
-/* line 111, ../sass/WebElementStructure.sass */
+/* line 113, ../sass/WebElementStructure.sass */
 .WCheckboxField {
   margin-bottom: 4px;
   margin-top: 7px;
   clear: both;
 }
 
-/* line 116, ../sass/WebElementStructure.sass */
+/* line 118, ../sass/WebElementStructure.sass */
 .WUndoDelete {
   margin: 3px;
   padding: 3px;
 }
 
-/* line 120, ../sass/WebElementStructure.sass */
+/* line 122, ../sass/WebElementStructure.sass */
 .WStoredValue {
   margin-right: 4px;
 }
 
-/* line 123, ../sass/WebElementStructure.sass */
+/* line 125, ../sass/WebElementStructure.sass */
 .WMenu {
   color: black;
   position: absolute;
@@ -531,17 +535,17 @@ input.WAddFilterButton {
   border: 1px #5a5a5a solid;
 }
 
-/* line 131, ../sass/WebElementStructure.sass */
+/* line 133, ../sass/WebElementStructure.sass */
 .WSpaced {
   margin-left: 0.3em;
   margin-right: 0.3em;
 }
 
-/* line 135, ../sass/WebElementStructure.sass */
+/* line 137, ../sass/WebElementStructure.sass */
 .WAccordion {
   width: 100%;
 }
-/* line 138, ../sass/WebElementStructure.sass */
+/* line 140, ../sass/WebElementStructure.sass */
 .WAccordion .WToggle {
   width: 100%;
   background-color: #ffffbb;
@@ -549,32 +553,32 @@ input.WAddFilterButton {
   cursor: hand;
   border-bottom: 1px solid #cccc88;
 }
-/* line 144, ../sass/WebElementStructure.sass */
+/* line 146, ../sass/WebElementStructure.sass */
 .WAccordion .WToggle img {
   padding: 4px;
 }
-/* line 146, ../sass/WebElementStructure.sass */
+/* line 148, ../sass/WebElementStructure.sass */
 .WAccordion .WToggle span {
   margin-left: 3px;
   padding: 3px;
   display: block;
 }
 
-/* line 151, ../sass/WebElementStructure.sass */
+/* line 153, ../sass/WebElementStructure.sass */
 .WVerticalRule {
   border-left: 1px gray solid;
   height: 100%;
   width: 0%;
 }
 
-/* line 156, ../sass/WebElementStructure.sass */
+/* line 158, ../sass/WebElementStructure.sass */
 .WJumpToLetter {
   background-color: #0066cc;
   padding-bottom: 10px;
   padding-top: 10px;
 }
 
-/* line 161, ../sass/WebElementStructure.sass */
+/* line 163, ../sass/WebElementStructure.sass */
 .WLetterSelected {
   font-family: monospace;
   color: black;
@@ -586,7 +590,7 @@ input.WAddFilterButton {
   padding-right: 5px;
 }
 
-/* line 172, ../sass/WebElementStructure.sass */
+/* line 174, ../sass/WebElementStructure.sass */
 .WLetter:link, .WLetter:active, .WLetter:visited {
   font-family: monospace;
   color: #dadada;
@@ -594,7 +598,7 @@ input.WAddFilterButton {
   padding-left: 5px;
   padding-right: 5px;
 }
-/* line 178, ../sass/WebElementStructure.sass */
+/* line 180, ../sass/WebElementStructure.sass */
 .WLetter:hover {
   font-family: monospace;
   color: white;
@@ -605,7 +609,7 @@ input.WAddFilterButton {
   width: 100%;
 }
 
-/* line 187, ../sass/WebElementStructure.sass */
+/* line 189, ../sass/WebElementStructure.sass */
 div.WCrumb {
   border: 1px #868686 solid;
   color: black;
@@ -614,7 +618,7 @@ div.WCrumb {
   background-repeat: repeat-x;
   padding: 5px;
 }
-/* line 194, ../sass/WebElementStructure.sass */
+/* line 196, ../sass/WebElementStructure.sass */
 div.WCrumb a {
   font-weight: bold;
   cursor: pointer;
@@ -623,59 +627,59 @@ div.WCrumb a {
   cursor: pointer;
   cursor: hand;
 }
-/* line 201, ../sass/WebElementStructure.sass */
+/* line 203, ../sass/WebElementStructure.sass */
 div.WCrumb a:hover {
   color: white;
   background-color: gray;
 }
 
-/* line 205, ../sass/WebElementStructure.sass */
+/* line 207, ../sass/WebElementStructure.sass */
 .WTimeFrame {
   margin-top: 2px;
 }
-/* line 207, ../sass/WebElementStructure.sass */
+/* line 209, ../sass/WebElementStructure.sass */
 .WTimeFrame a {
   cursor: pointer;
   cursor: hand;
 }
-/* line 208, ../sass/WebElementStructure.sass */
+/* line 210, ../sass/WebElementStructure.sass */
 .WTimeFrame a.selected {
   font-weight: bold;
   text-decoration: none;
 }
-/* line 214, ../sass/WebElementStructure.sass */
+/* line 216, ../sass/WebElementStructure.sass */
 .WTimeFrame .WLabel {
   margin-left: 5px;
 }
 
-/* line 217, ../sass/WebElementStructure.sass */
+/* line 219, ../sass/WebElementStructure.sass */
 .WBlock {
   display: block;
 }
 
-/* line 220, ../sass/WebElementStructure.sass */
+/* line 222, ../sass/WebElementStructure.sass */
 .WLeft {
   float: left;
 }
 
-/* line 223, ../sass/WebElementStructure.sass */
+/* line 225, ../sass/WebElementStructure.sass */
 .WRight {
   float: right;
 }
 
-/* line 226, ../sass/WebElementStructure.sass */
+/* line 228, ../sass/WebElementStructure.sass */
 .WLabeledData {
   color: #775544;
 }
 
-/* line 229, ../sass/WebElementStructure.sass */
+/* line 231, ../sass/WebElementStructure.sass */
 .WDataLabeled {
   margin-left: 5px;
   color: #773300;
   font-weight: bold;
 }
 
-/* line 234, ../sass/WebElementStructure.sass */
+/* line 236, ../sass/WebElementStructure.sass */
 .WActionBox {
   background-color: #e7e7e7;
   border: 1px solid #cccccc;
@@ -685,23 +689,23 @@ div.WCrumb a:hover {
   width: 130px;
 }
 
-/* line 242, ../sass/WebElementStructure.sass */
+/* line 244, ../sass/WebElementStructure.sass */
 .WActionBoxHeader {
   font-size: 14px;
 }
 
-/* line 245, ../sass/WebElementStructure.sass */
+/* line 247, ../sass/WebElementStructure.sass */
 .WActionBox ul {
   margin: 0;
   color: #cccccc;
   padding-left: 1.5em !important;
 }
-/* line 249, ../sass/WebElementStructure.sass */
+/* line 251, ../sass/WebElementStructure.sass */
 .WActionBox ul li {
   margin: 0;
 }
 
-/* line 252, ../sass/WebElementStructure.sass */
+/* line 254, ../sass/WebElementStructure.sass */
 .WUnrolledSelect {
   margin: 0;
   padding: 0 !important;
@@ -710,14 +714,14 @@ div.WCrumb a:hover {
   list-position: 0;
   width: 75px;
 }
-/* line 259, ../sass/WebElementStructure.sass */
+/* line 261, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li {
   list-style: none;
   display: inline;
   margin: 0;
   padding: 0;
 }
-/* line 264, ../sass/WebElementStructure.sass */
+/* line 266, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li a {
   text-decoration: none;
   display: block;
@@ -727,26 +731,26 @@ div.WCrumb a:hover {
   border: 1px solid #d0d0d0;
   border-width: 0 1px 0 1px;
 }
-/* line 272, ../sass/WebElementStructure.sass */
+/* line 274, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li a:hover {
   background: url("tail_li_hover.gif") 5px 0 no-repeat #6699cc;
   color: #333333;
   border-right: 1px solid #ffffbb;
 }
-/* line 276, ../sass/WebElementStructure.sass */
+/* line 278, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li a.selected {
   background: url("tail_li_selected.gif") 5px 0 no-repeat #6699cc;
   color: black;
   border-right: 1px solid #eef0f4;
 }
-/* line 281, ../sass/WebElementStructure.sass */
+/* line 283, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li span.first {
   display: block;
   background-color: transparent;
   background-image: url("tail_li_first.gif");
   height: 14px;
 }
-/* line 286, ../sass/WebElementStructure.sass */
+/* line 288, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li span.last {
   display: block;
   background-color: transparent;
@@ -754,24 +758,24 @@ div.WCrumb a:hover {
   height: 14px;
 }
 
-/* line 292, ../sass/WebElementStructure.sass */
+/* line 294, ../sass/WebElementStructure.sass */
 div.WCenter {
   overflow: hidden;
   position: relative;
 }
-/* line 295, ../sass/WebElementStructure.sass */
+/* line 297, ../sass/WebElementStructure.sass */
 div.WCenter div.WOuter {
   float: left;
   position: relative;
   left: 50%;
 }
-/* line 299, ../sass/WebElementStructure.sass */
+/* line 301, ../sass/WebElementStructure.sass */
 div.WCenter div.WOuter div.WInner {
   position: relative;
   left: -50%;
 }
 
-/* line 304, ../sass/WebElementStructure.sass */
+/* line 306, ../sass/WebElementStructure.sass */
 .WLoading {
   -webkit-box-shadow: #b3b3b3 1px 1px 1px 1px;
   -moz-box-shadow: #b3b3b3 1px 1px 1px 1px;
@@ -779,24 +783,24 @@ div.WCenter div.WOuter div.WInner {
   background-color: lightgrey;
   border: 1px gray solid;
 }
-/* line 308, ../sass/WebElementStructure.sass */
+/* line 310, ../sass/WebElementStructure.sass */
 .WLoading label {
   line-height: 30px;
   margin-left: 10px;
 }
-/* line 311, ../sass/WebElementStructure.sass */
+/* line 313, ../sass/WebElementStructure.sass */
 .WLoading .WContent {
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
-/* line 315, ../sass/WebElementStructure.sass */
+/* line 317, ../sass/WebElementStructure.sass */
 .WTabLabels {
   background-color: #434343;
   padding-top: 10px;
   padding-left: 10px;
 }
-/* line 319, ../sass/WebElementStructure.sass */
+/* line 321, ../sass/WebElementStructure.sass */
 .WTabLabels .WTabLabel {
   -moz-border-radius-topleft: 10px;
   -webkit-border-top-left-radius: 10px;
@@ -809,7 +813,7 @@ div.WCenter div.WOuter div.WInner {
   border-right: 1px gray solid;
   padding: 5px;
 }
-/* line 326, ../sass/WebElementStructure.sass */
+/* line 328, ../sass/WebElementStructure.sass */
 .WTabLabels .WTabLabel.WUnselected {
   cursor: pointer;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(50%, #cccccc), color-stop(100%, #aaaaaa));
@@ -819,7 +823,7 @@ div.WCenter div.WOuter div.WInner {
   background-image: linear-gradient(#ffffff, #cccccc, #aaaaaa);
   border-top: 1px black solid;
 }
-/* line 330, ../sass/WebElementStructure.sass */
+/* line 332, ../sass/WebElementStructure.sass */
 .WTabLabels .WTabLabel.WUnselected:hover {
   border-top: 1px #396eff solid;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(50%, #999999), color-stop(100%, #777777));
@@ -828,7 +832,7 @@ div.WCenter div.WOuter div.WInner {
   background-image: -o-linear-gradient(#ffffff, #999999, #777777);
   background-image: linear-gradient(#ffffff, #999999, #777777);
 }
-/* line 334, ../sass/WebElementStructure.sass */
+/* line 336, ../sass/WebElementStructure.sass */
 .WTabLabels .WTabLabel.WSelected {
   cursor: default;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #aaaaaa), color-stop(50%, #cccccc), color-stop(100%, #ffffff));
@@ -839,7 +843,65 @@ div.WCenter div.WOuter div.WInner {
   border-top: 1px white solid;
 }
 
-/* line 340, ../sass/WebElementStructure.sass */
+/* line 341, ../sass/WebElementStructure.sass */
+.WTabContents.WLeft {
+  width: 85%;
+}
+
+/* line 343, ../sass/WebElementStructure.sass */
+.WTabLabels.WLeft {
+  padding-bottom: 10px;
+  width: 15%;
+}
+/* line 346, ../sass/WebElementStructure.sass */
+.WTabLabels.WLeft .WTabLabel {
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px;
+  border-top-left-radius: 10px;
+  -moz-border-radius-topright: 0px;
+  -webkit-border-top-right-radius: 0px;
+  border-top-right-radius: 0px;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  background-color: lightgrey;
+  border-top: 1px gray solid;
+  border-bottom: 1px gray solid;
+  border-right: none;
+  border-left: none;
+  padding: 5px;
+}
+/* line 356, ../sass/WebElementStructure.sass */
+.WTabLabels.WLeft .WTabLabel.WUnselected {
+  cursor: pointer;
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #ffffff), color-stop(50%, #cccccc), color-stop(100%, #aaaaaa));
+  background-image: -webkit-linear-gradient(left, #ffffff, #cccccc, #aaaaaa);
+  background-image: -moz-linear-gradient(left, #ffffff, #cccccc, #aaaaaa);
+  background-image: -o-linear-gradient(left, #ffffff, #cccccc, #aaaaaa);
+  background-image: linear-gradient(left, #ffffff, #cccccc, #aaaaaa);
+  border-top: 1px black solid;
+}
+/* line 360, ../sass/WebElementStructure.sass */
+.WTabLabels.WLeft .WTabLabel.WUnselected:hover {
+  border-top: 1px #396eff solid;
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #ffffff), color-stop(50%, #999999), color-stop(100%, #777777));
+  background-image: -webkit-linear-gradient(left, #ffffff, #999999, #777777);
+  background-image: -moz-linear-gradient(left, #ffffff, #999999, #777777);
+  background-image: -o-linear-gradient(left, #ffffff, #999999, #777777);
+  background-image: linear-gradient(left, #ffffff, #999999, #777777);
+}
+/* line 364, ../sass/WebElementStructure.sass */
+.WTabLabels.WLeft .WTabLabel.WSelected {
+  cursor: default;
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #aaaaaa), color-stop(50%, #cccccc), color-stop(100%, #ffffff));
+  background-image: -webkit-linear-gradient(left, #aaaaaa, #cccccc, #ffffff);
+  background-image: -moz-linear-gradient(left, #aaaaaa, #cccccc, #ffffff);
+  background-image: -o-linear-gradient(left, #aaaaaa, #cccccc, #ffffff);
+  background-image: linear-gradient(left, #aaaaaa, #cccccc, #ffffff);
+  border-top: 1px white solid;
+}
+
+/* line 370, ../sass/WebElementStructure.sass */
 .WDropArea {
   -webkit-box-shadow: #b3b3b3 1px 1px 1px 1px;
   -moz-box-shadow: #b3b3b3 1px 1px 1px 1px;
@@ -855,7 +917,7 @@ div.WCenter div.WOuter div.WInner {
   padding-left: 20px;
   border: 1px gray solid;
 }
-/* line 350, ../sass/WebElementStructure.sass */
+/* line 380, ../sass/WebElementStructure.sass */
 .WDropArea.WEmpty {
   height: 380px;
   width: 400px;
@@ -865,7 +927,7 @@ div.WCenter div.WOuter div.WInner {
   padding: 0px;
   padding-bottom: 20px;
 }
-/* line 358, ../sass/WebElementStructure.sass */
+/* line 388, ../sass/WebElementStructure.sass */
 .WDropArea .WStatusBar {
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
@@ -876,34 +938,34 @@ div.WCenter div.WOuter div.WInner {
   border-bottom: 1px gray solid;
   line-height: 32px;
 }
-/* line 363, ../sass/WebElementStructure.sass */
+/* line 393, ../sass/WebElementStructure.sass */
 .WDropArea .WStatusBar .WDropIndicator {
   margin-left: 30px;
   margin-right: 15px;
 }
-/* line 367, ../sass/WebElementStructure.sass */
+/* line 397, ../sass/WebElementStructure.sass */
 .WDropArea .WFile {
   width: 130px;
   height: 140px;
   padding: 5px;
 }
-/* line 371, ../sass/WebElementStructure.sass */
+/* line 401, ../sass/WebElementStructure.sass */
 .WDropArea .WFile .WImageContainer {
   width: 128px;
   height: 128px;
 }
-/* line 374, ../sass/WebElementStructure.sass */
+/* line 404, ../sass/WebElementStructure.sass */
 .WDropArea .WFile .WImageContainer img {
   max-width: 128px;
   max-height: 128px;
 }
-/* line 377, ../sass/WebElementStructure.sass */
+/* line 407, ../sass/WebElementStructure.sass */
 .WDropArea .WFile span {
   text-align: center;
   overflow: hidden;
 }
 
-/* line 388, ../sass/WebElementStructure.sass */
+/* line 418, ../sass/WebElementStructure.sass */
 label.WError {
   background-color: #ffbaba;
   -webkit-border-radius: 0px 0px 10px 10px;
@@ -915,7 +977,7 @@ label.WError {
   padding: 4px;
   width: 100%;
 }
-/* line 390, ../sass/WebElementStructure.sass */
+/* line 420, ../sass/WebElementStructure.sass */
 label.WSuccess {
   background-color: #82db7e;
   -webkit-border-radius: 0px 0px 10px 10px;
@@ -927,7 +989,7 @@ label.WSuccess {
   padding: 4px;
   width: 100%;
 }
-/* line 392, ../sass/WebElementStructure.sass */
+/* line 422, ../sass/WebElementStructure.sass */
 label.WWarning {
   background-color: #e7f2bc;
   -webkit-border-radius: 0px 0px 10px 10px;
@@ -939,7 +1001,7 @@ label.WWarning {
   padding: 4px;
   width: 100%;
 }
-/* line 394, ../sass/WebElementStructure.sass */
+/* line 424, ../sass/WebElementStructure.sass */
 label.WInfo {
   background-color: #aed0e7;
   -webkit-border-radius: 0px 0px 10px 10px;
@@ -952,11 +1014,11 @@ label.WInfo {
   width: 100%;
 }
 
-/* line 397, ../sass/WebElementStructure.sass */
+/* line 427, ../sass/WebElementStructure.sass */
 .WGooglePlusBadge {
   text-decoration: none;
 }
-/* line 399, ../sass/WebElementStructure.sass */
+/* line 429, ../sass/WebElementStructure.sass */
 .WGooglePlusBadge img {
   border: 0;
   width: 32px;

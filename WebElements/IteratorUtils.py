@@ -466,10 +466,11 @@ class Queryable(list):
                 else:
                     matchAgainst = currentModel
 
+                if not matchAgainst:
+                        matchAgainst = ""
+
                 if caseInsensitive:
                     value = value.lower()
-                    if not matchAgainst:
-                        matchAgainst = ""
                     matchAgainst = matchAgainst.lower()
 
                 matched = False

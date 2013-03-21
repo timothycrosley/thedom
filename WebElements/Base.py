@@ -81,6 +81,8 @@ class AutoAddScripts(type):
 
         return type.__new__(cls, name, bases, dct)
 
+AutoAddScripts = AutoAddScripts('AutoAddScripts', (object, ), {})
+
 
 class WebElement(Connectable):
     """
@@ -111,11 +113,10 @@ class WebElement(Connectable):
     properties['accesskey'] = {'action':'attribute'}
     tagName = ""
 
-    class ClientSide(object):
+    class ClientSide(AutoAddScripts):
         """
             Defines the client side behavior, and actions of an element
         """
-        __metaclass__ = AutoAddScripts
         __slots__ = ('serverSide',)
 
         def __init__(self, element):

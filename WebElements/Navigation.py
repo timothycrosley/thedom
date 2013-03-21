@@ -134,10 +134,17 @@ class ItemPager(Layout.Vertical):
                                           pagesShownAtOnce=int(self.pagesShownAtOnce))
         self._index_.setValue(self._pages_.startIndex)
 
-    def currentPageItems(self):
+    def currentPageItems(self, allItems=None, requestFields=None):
         """
             The items contained in the currently highlighted page
+
+            optionally pass all available items and the current requests fields-dict
+            to set and retrieve with a single call.
         """
+        if requestFields:
+            self.insertVariables(requestFields)
+        if allItems:
+            self.setItems(allItems)
         return self._pages_ and self._pages_.currentPageItems or ()
 
     def jsSetNavigationIndex(self, index):

@@ -249,8 +249,8 @@ class Field(Horizontal):
         self._required = None
         self.inputAndActions = self.addChildElement(Vertical())
         self.userInput = None
-        self.message = Display.Message()
-        self.validation = Validators.Validation()
+        self.message = self.inputAndActions.addChildElement(Display.Message())
+        self.validation = self.inputAndActions.addChildElement(Validators.Validation())
         self.addChildElementsTo = self.inputAndActions
         self.manualValidate = False
 
@@ -295,6 +295,17 @@ class Field(Horizontal):
 
         if self._required:
             self.label.addChildElement(self._required) # Ensures the symbol is farthest element right
+
+        if not self.manualValidate:
+            for validator in self.validation:
+                self.validation.validate()
+
+    def insertVariables(self, variableDict=None):
+        """
+            Overrides insertVariables to validate the field if automatic validation is set
+        """
+        Horizontal.insertVariables(self, variableDict)
+
         if not self.manualValidate:
             for validator in self.validation:
                 self.validation.validate()

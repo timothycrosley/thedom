@@ -223,7 +223,7 @@ class Validator(Base.WebElement):
         """
             Returns the element associated with the validator.
         """
-        return self.control.forElement
+        return self.control and self.control.forElement
 
 
 class Or(Validator):
