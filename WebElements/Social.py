@@ -130,13 +130,14 @@ class Gravatar(Image):
 
     def _render(self):
         self.attributes['src'] = "http://www.gravatar.com/avatar/%s?s=%s&r=%s&d=%s" % \
-                                  (hashlib.md5(self.email).hexdigest(), self.size(), self.rating(), self.default())
+                                  (hashlib.md5(self.email.encode('utf-8')).hexdigest(), self.size(),
+                                   self.rating(), self.default())
 
     def profileURL(self):
         """
             Returns the associated profile URL that can be used to modify the provided image
         """
-        return "http://www.gravatar.com/%s" % hashlib.md5(self.email).hexdigest()
+        return "http://www.gravatar.com/%s" % hashlib.md5(self.email.encode('utf-8')).hexdigest()
 
     def setSize(self, size):
         """

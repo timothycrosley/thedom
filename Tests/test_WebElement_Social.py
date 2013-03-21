@@ -61,4 +61,3 @@ class TestGravatar(ElementTester):
     def setup_method(self, element):
         self.element = Factory.build("Gravatar", name="Test")
         self.element.email = "timothy.crosley@gmail.com"
-        print self.element.toHTML()
