@@ -160,10 +160,12 @@ class ValueElement(DOM.Input):
         DOM.Input.exportVariables(self, exportedVariables, flat)
         return exportedVariables
 
-    def setValue(self, value):
+    def setValue(self, value, safe=False):
         """
             Sets the value associated with the element
         """
+        if not safe:
+            value = self.sanitize(value)
         if value != self._value:
             self._value = value
             self.emit('valueChanged', value)

@@ -28,7 +28,7 @@ from .Connectable import Connectable
 from .IteratorUtils import Queryable
 from .MethodUtils import acceptsArguments, CallBack
 from .MultiplePythonSupport import *
-from .StringUtils import interpretAsString
+from .StringUtils import interpretAsString, listReplace
 from itertools import chain
 
 
@@ -39,7 +39,8 @@ class Settings(object):
                 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'isindex', 'menu', 'noframes', 'noscript', 'ol',
                 'p', 'pre', 'table', 'ul', 'dd', 'dt', 'frameset', 'li', 'tbody', 'td', 'tfoot', 'th',
                 'thead', 'tr')
-
+    UNSAFE_CHARACTERS = (('&', '<', '>', '"', "'"),
+                         ('&amp;', '&lt;', '&gt;', '&quot;', '&#x27;', '&#x2F;'))
 
 def addChildProperties(propertiesDict, classDefinition, accessor):
     """
@@ -1427,6 +1428,15 @@ class WebElement(Connectable):
         if self._tagName in Settings.BLOCK_TAGS or self.hasClass("WBlock"):
             return True
         return False
+
+    def sanitize(self, inputValue):
+        """
+            Sanitizes direct user input, to protect against XSS attacks.
+        """
+        if type(inputValue) not in (str, unicode):
+            return inputValue
+
+        return listReplace(inputValue, Settings.UNSAFE_CHARACTERS[0], Settings.UNSAFE_CHARACTERS[1])
 
     def __iter__(self):
         return self.childElements.__iter__()

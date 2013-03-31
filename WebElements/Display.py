@@ -159,10 +159,12 @@ def label(cls):
 
             self._textNode = self.addChildElement(Base.TextNode())
 
-        def setText(self, text):
+        def setText(self, text, safe=False):
             """
                 Sets the displayed text
             """
+            if not safe:
+                text = self.sanitize(text)
             if text != self._textNode.text():
                 self._textNode.setText(text)
                 self.emit('textChanged', text)
@@ -179,7 +181,7 @@ def label(cls):
             """
             return self._textNode.text()
 
-        def appendText(self, text):
+        def appendText(self, text, safe=False):
             """
                 Adds a new line character followed by additional text
             """
@@ -187,7 +189,10 @@ def label(cls):
             if not prevText:
                 return self.setText(text)
 
-            self.setText(prevText + "<br />" + text)
+            if not safe:
+                text = self.sanitize(text)
+
+            self.setText(prevText + "<br />" + text, safe=True)
 
         def makeStrong(self):
             """
