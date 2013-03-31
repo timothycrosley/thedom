@@ -160,7 +160,7 @@ WebElements.Settings.throbberImage = 'images/throbber.gif';
 WebElements.Settings.Serialize = ['input', 'textarea', 'select'];
 
 WebElements.State = {}
-WebElements.State.dropDownOpen = false;
+WebElements.State.isPopupOpen = false;
 WebElements.State.currentDropDown = null;
 WebElements.State.currentButton = null;
 
@@ -168,7 +168,7 @@ WebElements.State.currentButton = null;
 WebElements.get = function (element)
 {
     //If an actual element is given (or nothing is given) just return it
-    if(!element || element.innerHTML != null || element == document)
+    if(!element || element.innerHTML != null || element == document || element == window)
     {
         return element;
     }
@@ -500,7 +500,13 @@ WebElements.displayDropDown = function(dropDown, parentElement)
 WebElements.toggleDropDown = function(dropDown, parentElement)
 {
     var dropDown = WebElements.get(dropDown);
-    WebElements.shown(dropDown) && WebElements.hide(dropDown) || WebElements.displayDropDown(dropDown, parentElement);
+    if(WebElements.shown(dropDown))
+    {
+        WebElements.hide(dropDown);
+        return false;
+    }
+    WebElements.displayDropDown(dropDown, parentElement);
+    return true;
 }
 
 WebElements.openAccordion = function(accordionName)
@@ -1193,7 +1199,7 @@ WebElements.closeMenu = function()
 {
     WebElements.hide(WebElements.State.currentDropDown);
     if(WebElements.State.currentButton){
-        WebElements.removeClass(WebElements.State.currentButton, 'SelectedDropDown');
+        WebElements.removeClass(WebElements.State.currentButton, 'WSelected');
     }
 }
 
@@ -1386,28 +1392,27 @@ WebElements.buildFileOpener = function(dropBox)
 
 WebElements.clickDropDown = function(menu, openOnly, button, parentElement)
 {
-    WebElements.State.dropDownOpen = true;
+    WebElements.State.isPopupOpen = true;
     if(WebElements.State.currentDropDown && WebElements.State.currentDropDown != menu)
     {
         WebElements.hide(WebElements.State.currentDropDown);
-        WebElements.removeClass(WebElements.State.currentButton, 'SelectedDropDown');
+        WebElements.removeClass(WebElements.State.currentButton, 'WSelected');
     }
     WebElements.State.currentDropDown = menu;
     WebElements.State.currentButton = button;
     if(!openOnly || !WebElements.shown(WebElements.State.currentDropDown)){
         if(WebElements.toggleDropDown(WebElements.State.currentDropDown, parentElement)){
-            WebElements.addClass(button, 'SelectedDropDown');
+            WebElements.addClass(button, 'WSelected');
         }
         else{
-            WebElements.removeClass(button, 'SelectedDropDown');
+            WebElements.removeClass(button, 'WSelected');
        }
    }
 }
 
 
 //attach on click event to body to close any open pop up menus when a random click is placed
-WebElements.State.oldDocumentOnload = document.onload;
-document.onload = function()
+WebElements.Events.addEvent(window, 'load', function()
 {
     document.body.onclick = function closeOpenMenu()
     {
@@ -1421,11 +1426,7 @@ document.onload = function()
             WebElements.State.isPopupOpen = false;
         }
     }
-    if(WebElements.State.oldDocumentOnload)
-    {
-        WebElements.State.oldDocumentOnload();
-    }
-}
+});
 
 WebElements.serialize = function(field)
 {
@@ -1436,7 +1437,7 @@ WebElements.serialize = function(field)
     {
         return '';
     }
-    if(tagName == "input" || tagName == "textArea")
+    if(tagName == "input" || tagName == "textarea")
     {
         if(tagName == "input")
         {

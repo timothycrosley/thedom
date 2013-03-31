@@ -451,7 +451,7 @@ class Queryable(list):
                 currentModel = model
                 for modelName in keys:
                     if isinstance(currentModel, dict):
-                        currentModel = currentModel[modelName]
+                        currentModel = currentModel.get(modelName, None)
                     else:
                         currentModel = currentModel.__getattribute__(modelName)
 
@@ -465,6 +465,9 @@ class Queryable(list):
                         matchAgainst = getattr(currentModel, key, None)
                 else:
                     matchAgainst = currentModel
+
+                if type(matchAgainst) in (types.FunctionType, types.MethodType):
+                    matchAgainst = matchAgainst()
 
                 if not matchAgainst:
                         matchAgainst = ""

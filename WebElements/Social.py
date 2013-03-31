@@ -147,6 +147,8 @@ class Gravatar(Image):
         if size > 2048 or size < 1:
             raise ValueError("Gravatar only supports requesting image sizes 1 - 2048")
         self._size = size
+        self.style['width'] = "%spx" % size
+        self.style['height'] = "%spx" % size
 
     def size(self):
         """

@@ -10,6 +10,9 @@
 @mixin deleteActionButton
     +sassy-button("simple", 10px, 19px, #C30000)
 
+@mixin positiveAction
+    +sassy-button("simple", 10px, 19px, #3e8dc9)
+
 @mixin toggleButtonUnclicked
     +sassy-button("shiny", 10px, 19px, #7C7C7C)
 
@@ -24,6 +27,8 @@ input[type=button], input[type=submit],
     +basicButton
     &.MainAction
         +mainActionButton
+    &.PositiveAction
+        +positiveAction
     &.DeleteAction
         +deleteActionButton
     &.WToggleButton

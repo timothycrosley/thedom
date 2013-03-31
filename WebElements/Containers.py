@@ -56,11 +56,12 @@ class DropDownMenu(Layout.Box):
         """
         self.toggle = toggleButton
         if self.id:
-            self.toggle.id = self.id + ":Toggle"
+            self.toggle.id = self.id + "-Toggle"
+
         self.toggle.addJavascriptEvent('onclick',
                                        "WebElements.clickDropDown(%s(this, 'WMenu'), %s, this, %s);" %
                                         (relation, ((self.openOnly and "true") or "false"),
-                                    (self.parentElement and "$('#%s')" % self.parentElement) or "null"))
+                                    (self.parentElement and "WebElements.get('%s')" % self.parentElement) or "null"))
         self.toggle.addClass("WToggle")
         return toggleButton
 
@@ -108,7 +109,7 @@ class CollapsedText(DropDownMenu):
     """
         Shows a limited amount of text revealing the rest when the user hovers over
     """
-    __slots__ = ('lengthLimit', '__text', 'label')
+    __slots__ = ('lengthLimit', '__text', 'label', 'completeText')
     properties = DropDownMenu.properties.copy()
     properties['lengthLimit'] = {'action':'classAttribute', 'type':'int'}
     properties['text'] = {'action':'setText'}
@@ -118,7 +119,7 @@ class CollapsedText(DropDownMenu):
 
         self.lengthLimit = 40
         self.label = self.addChildElement(Display.Label)
-        self.__text = None
+        self.__text = ''
 
     def setText(self, text):
         """
@@ -130,7 +131,7 @@ class CollapsedText(DropDownMenu):
         DropDownMenu._render(self)
 
         text = self.text()
-        if len(text or '') > int(self.lengthLimit or 0):
+        if len(text) > int(self.lengthLimit or 0):
             self.label.parent.addJavascriptEvent('onmouseover',
                                                "WebElements.displayDropDown(WebElements.peer(this, 'WMenu'));")
             self.label.parent.addJavascriptEvent('onmouseout', "WebElements.hide(WebElements.peer(this, 'WMenu'));")
@@ -426,11 +427,12 @@ class Accordion(Layout.Vertical):
         Layout.Vertical._create(self, id, name, parent, **kwargs)
         self.addClass("WAccordion")
 
-        self.toggle = self.addChildElement(Layout.Horizontal())
+        self.toggle = self.addChildElement(Layout.Box())
         self.toggle.addClass('WToggle')
         self.toggle.addJavascriptEvent('onclick', CallBack(self, 'jsToggle'))
         self.toggleImage = self.toggle.addChildElement(Display.Image(id + "Image"))
-        self.toggleLabel = self.toggle.addChildElement(Display.Label())
+        self.toggleImage.addClass('WLeft')
+        self.toggleLabel = self.toggle.addChildElement(Display.FreeText())
         self.isOpen = self.toggle.addChildElement(HiddenInputs.HiddenBooleanValue(id + "Value"))
         self.contentElement = self.addChildElement(Layout.Box(id + "Content"))
         self.contentElement.addClass('WContent')
