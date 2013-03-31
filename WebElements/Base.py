@@ -21,6 +21,7 @@
 '''
 
 import re
+import cgi
 from types import FunctionType
 
 from . import ClientSide, DictUtils, ToClientSide
@@ -39,8 +40,6 @@ class Settings(object):
                 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'isindex', 'menu', 'noframes', 'noscript', 'ol',
                 'p', 'pre', 'table', 'ul', 'dd', 'dt', 'frameset', 'li', 'tbody', 'td', 'tfoot', 'th',
                 'thead', 'tr')
-    UNSAFE_CHARACTERS = (('&', '<', '>', '"', "'"),
-                         ('&amp;', '&lt;', '&gt;', '&quot;', '&#x27;', '&#x2F;'))
 
 def addChildProperties(propertiesDict, classDefinition, accessor):
     """
@@ -1436,7 +1435,7 @@ class WebElement(Connectable):
         if type(inputValue) not in (str, unicode):
             return inputValue
 
-        return listReplace(inputValue, Settings.UNSAFE_CHARACTERS[0], Settings.UNSAFE_CHARACTERS[1])
+        return cgi.escape(inputValue, quote=True)
 
     def __iter__(self):
         return self.childElements.__iter__()
