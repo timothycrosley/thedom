@@ -173,7 +173,7 @@ def label(cls):
             """
                 Replaces the text with a single space character
             """
-            self.setText('&nbsp;')
+            self.setText('&nbsp;', safe=True)
 
         def text(self):
             """
@@ -516,7 +516,7 @@ class Copyright(Label):
         self.owner = ''
 
     def _render(self):
-        self.setText("&copy;%s %s - All rights reserved." % (datetime.datetime.now().year, self.owner))
+        self.setText("&copy;%s %s - All rights reserved." % (datetime.datetime.now().year, self.owner), safe=True)
 
 Factory.addProduct(Copyright)
 
