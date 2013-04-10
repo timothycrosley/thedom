@@ -546,7 +546,7 @@ input.WAddFilterButton {
   width: 100%;
 }
 /* line 140, ../sass/WebElementStructure.sass */
-.WAccordion .WToggle {
+.WAccordion .WAccordionToggle {
   width: 100%;
   background-color: #ffffbb;
   cursor: pointer;
@@ -554,11 +554,11 @@ input.WAddFilterButton {
   border-bottom: 1px solid #cccc88;
 }
 /* line 146, ../sass/WebElementStructure.sass */
-.WAccordion .WToggle img {
+.WAccordion .WAccordionToggle img {
   padding: 4px;
 }
 /* line 148, ../sass/WebElementStructure.sass */
-.WAccordion .WToggle span {
+.WAccordion .WAccordionToggle span {
   margin-left: 3px;
   padding: 3px;
   display: block;

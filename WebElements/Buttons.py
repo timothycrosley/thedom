@@ -140,6 +140,12 @@ class Button(InputElement):
             self.attributes.pop('disabled', None)
             self.attributes.pop('readonly', None)
 
+    def disabled(self):
+        """
+            Returns true if the button is disabled.
+        """
+        return self.attributes.get('disabled', None) == '1'
+
     def setText(self, text):
         """
             Sets the buttons visible text

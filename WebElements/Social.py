@@ -132,6 +132,8 @@ class Gravatar(Image):
         self.attributes['src'] = "http://www.gravatar.com/avatar/%s?s=%s&r=%s&d=%s" % \
                                   (hashlib.md5(self.email.encode('utf-8')).hexdigest(), self.size(),
                                    self.rating(), self.default())
+        self.style['width'] = "%spx" % self.size()
+        self.style['height'] = "%spx" % self.size()
 
     def profileURL(self):
         """
@@ -147,8 +149,6 @@ class Gravatar(Image):
         if size > 2048 or size < 1:
             raise ValueError("Gravatar only supports requesting image sizes 1 - 2048")
         self._size = size
-        self.style['width'] = "%spx" % size
-        self.style['height'] = "%spx" % size
 
     def size(self):
         """

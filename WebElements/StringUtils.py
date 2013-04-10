@@ -24,8 +24,10 @@ import random
 import re
 import string
 import types
+from urllib import urlencode
 
 from .MultiplePythonSupport import *
+from . import ClientSide
 
 INVALID_CONTROL_CHARACTERS = [
     chr(0x00),
@@ -244,3 +246,23 @@ def everyDirAndSub(directory):
         ret += [directory[:idx]]
     ret += [directory]
     return ret
+
+def scriptURL(argumentDictionary):
+    """
+        Encodes a dictionary into a URL, while allowing scripts to be ran to form the URL client side
+    """
+    scriptParams = []
+    for argumentName, argumentValue in argumentDictionary.items():
+        if isinstance(argumentValue, ClientSide.Script):
+            argumentDictionary.pop(argumentName)
+            scriptParams.append('%s=" + %s' % (argumentName, argumentValue.claim()))
+    if not scriptParams:
+        return urlencode(argumentDictionary)
+    elif argumentDictionary:
+        scriptParams += urlencode(argumentDictionary)
+
+    urlScript = ' + "'.join(scriptParams)
+    if not argumentDictionary:
+        urlScript = '"' + urlScript
+
+    return ClientSide.Script(urlScript)

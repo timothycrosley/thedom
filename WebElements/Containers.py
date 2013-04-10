@@ -96,7 +96,7 @@ class Help(DropDownMenu):
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         DropDownMenu._create(self, id, name, parent, **kwargs)
-        self.addChildElement(Display.Image(src="images/help.png"))
+        self.addChildElement(Display.Image(src="images/help.png")).addClass("Clickable")
         layout = self.addChildElement(Layout.Vertical())
         self.label = layout.addChildElement(Display.Label)
         self.addChildElementsTo = layout
@@ -428,7 +428,7 @@ class Accordion(Layout.Vertical):
         self.addClass("WAccordion")
 
         self.toggle = self.addChildElement(Layout.Box())
-        self.toggle.addClass('WToggle')
+        self.toggle.addClass('WAccordionToggle')
         self.toggle.addJavascriptEvent('onclick', CallBack(self, 'jsToggle'))
         self.toggleImage = self.toggle.addChildElement(Display.Image(id + "Image"))
         self.toggleImage.addClass('WLeft')

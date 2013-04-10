@@ -1435,7 +1435,7 @@ class WebElement(Connectable):
         if type(inputValue) not in (str, unicode):
             return inputValue
 
-        return cgi.escape(inputValue, quote=True)
+        return cgi.escape(inputValue)
 
     def __iter__(self):
         return self.childElements.__iter__()

@@ -119,6 +119,8 @@ class IterableCollection(object):
     """
         Provides a way to iterate through a collection of lists as if it where one really big list
     """
+    __slots__ = ('iterableItems', 'identifiers')
+
     def __init__(self, iterableDictionary=None):
         self.iterableItems = []
         self.identifiers = []
@@ -240,8 +242,10 @@ class IterableCollection(object):
 
 class IterableCollectionList(IterableCollection):
     """
-        Makes an IterableCollection operate in the same mannor as a list.
+        Makes an IterableCollection operate in exactly the same manor as a list.
     """
+    __slots__ = ()
+
     def __getitem__(self, index):
         if type(index) == slice:
             results = []
@@ -270,6 +274,7 @@ class IterableCollectionList(IterableCollection):
             Returns the combined iterator length.
         """
         return len(self)
+
 
 class SortedSet(set):
     """

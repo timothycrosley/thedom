@@ -141,9 +141,9 @@ class ItemPager(Layout.Vertical):
             optionally pass all available items and the current requests fields-dict
             to set and retrieve with a single call.
         """
-        if requestFields:
+        if requestFields is not None:
             self.insertVariables(requestFields)
-        if allItems:
+        if allItems is not None:
             self.setItems(allItems)
         return self._pages_ and self._pages_.currentPageItems or ()
 

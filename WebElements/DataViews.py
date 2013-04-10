@@ -169,7 +169,7 @@ class Table(Base.WebElement):
             Setting columns allows you to change the ordering of columns after the fact
         """
         if set(columns) != set(self._columns):
-            raise ValueError("Setting columns should only be used for reording ")
+            raise ValueError("Setting columns should only be used for reordering.")
 
         indexes = [self._columns.index(column) for column in columns]
         self._columns = columns
@@ -185,6 +185,7 @@ class Table(Base.WebElement):
         row = self.addChildElement(self.Row())
         column = row.addChildElement(self.Column())
         column.attributes['colspan'] = len(self._columns)
+        column.addClass("WSeparator")
         column.setText(separatorName)
         return column
 
