@@ -501,31 +501,36 @@ input.WAddFilterButton {
   margin-top: 8px;
 }
 
-/* line 109, ../sass/WebElementStructure.sass */
+/* line 108, ../sass/WebElementStructure.sass */
+.WField {
+  line-height: 28px;
+}
+
+/* line 112, ../sass/WebElementStructure.sass */
 .WFilterHighlight {
   background-color: #dedede;
   border: 1px #bcbbbb solid;
 }
 
-/* line 113, ../sass/WebElementStructure.sass */
+/* line 116, ../sass/WebElementStructure.sass */
 .WCheckboxField {
   margin-bottom: 4px;
   margin-top: 7px;
   clear: both;
 }
 
-/* line 118, ../sass/WebElementStructure.sass */
+/* line 121, ../sass/WebElementStructure.sass */
 .WUndoDelete {
   margin: 3px;
   padding: 3px;
 }
 
-/* line 122, ../sass/WebElementStructure.sass */
+/* line 125, ../sass/WebElementStructure.sass */
 .WStoredValue {
   margin-right: 4px;
 }
 
-/* line 125, ../sass/WebElementStructure.sass */
+/* line 128, ../sass/WebElementStructure.sass */
 .WMenu {
   color: black;
   position: absolute;
@@ -535,17 +540,17 @@ input.WAddFilterButton {
   border: 1px #5a5a5a solid;
 }
 
-/* line 133, ../sass/WebElementStructure.sass */
+/* line 136, ../sass/WebElementStructure.sass */
 .WSpaced {
   margin-left: 0.3em;
   margin-right: 0.3em;
 }
 
-/* line 137, ../sass/WebElementStructure.sass */
+/* line 140, ../sass/WebElementStructure.sass */
 .WAccordion {
   width: 100%;
 }
-/* line 140, ../sass/WebElementStructure.sass */
+/* line 143, ../sass/WebElementStructure.sass */
 .WAccordion .WAccordionToggle {
   width: 100%;
   background-color: #ffffbb;
@@ -553,32 +558,32 @@ input.WAddFilterButton {
   cursor: hand;
   border-bottom: 1px solid #cccc88;
 }
-/* line 146, ../sass/WebElementStructure.sass */
+/* line 149, ../sass/WebElementStructure.sass */
 .WAccordion .WAccordionToggle img {
   padding: 4px;
 }
-/* line 148, ../sass/WebElementStructure.sass */
+/* line 151, ../sass/WebElementStructure.sass */
 .WAccordion .WAccordionToggle span {
   margin-left: 3px;
   padding: 3px;
   display: block;
 }
 
-/* line 153, ../sass/WebElementStructure.sass */
+/* line 156, ../sass/WebElementStructure.sass */
 .WVerticalRule {
   border-left: 1px gray solid;
   height: 100%;
   width: 0%;
 }
 
-/* line 158, ../sass/WebElementStructure.sass */
+/* line 161, ../sass/WebElementStructure.sass */
 .WJumpToLetter {
   background-color: #0066cc;
   padding-bottom: 10px;
   padding-top: 10px;
 }
 
-/* line 163, ../sass/WebElementStructure.sass */
+/* line 166, ../sass/WebElementStructure.sass */
 .WLetterSelected {
   font-family: monospace;
   color: black;
@@ -590,7 +595,7 @@ input.WAddFilterButton {
   padding-right: 5px;
 }
 
-/* line 174, ../sass/WebElementStructure.sass */
+/* line 177, ../sass/WebElementStructure.sass */
 .WLetter:link, .WLetter:active, .WLetter:visited {
   font-family: monospace;
   color: #dadada;
@@ -598,7 +603,7 @@ input.WAddFilterButton {
   padding-left: 5px;
   padding-right: 5px;
 }
-/* line 180, ../sass/WebElementStructure.sass */
+/* line 183, ../sass/WebElementStructure.sass */
 .WLetter:hover {
   font-family: monospace;
   color: white;
@@ -609,7 +614,7 @@ input.WAddFilterButton {
   width: 100%;
 }
 
-/* line 189, ../sass/WebElementStructure.sass */
+/* line 192, ../sass/WebElementStructure.sass */
 div.WCrumb {
   border: 1px #868686 solid;
   color: black;
@@ -618,7 +623,7 @@ div.WCrumb {
   background-repeat: repeat-x;
   padding: 5px;
 }
-/* line 196, ../sass/WebElementStructure.sass */
+/* line 199, ../sass/WebElementStructure.sass */
 div.WCrumb a {
   font-weight: bold;
   cursor: pointer;
@@ -627,59 +632,59 @@ div.WCrumb a {
   cursor: pointer;
   cursor: hand;
 }
-/* line 203, ../sass/WebElementStructure.sass */
+/* line 206, ../sass/WebElementStructure.sass */
 div.WCrumb a:hover {
   color: white;
   background-color: gray;
 }
 
-/* line 207, ../sass/WebElementStructure.sass */
+/* line 210, ../sass/WebElementStructure.sass */
 .WTimeFrame {
   margin-top: 2px;
 }
-/* line 209, ../sass/WebElementStructure.sass */
+/* line 212, ../sass/WebElementStructure.sass */
 .WTimeFrame a {
   cursor: pointer;
   cursor: hand;
 }
-/* line 210, ../sass/WebElementStructure.sass */
+/* line 213, ../sass/WebElementStructure.sass */
 .WTimeFrame a.selected {
   font-weight: bold;
   text-decoration: none;
 }
-/* line 216, ../sass/WebElementStructure.sass */
+/* line 219, ../sass/WebElementStructure.sass */
 .WTimeFrame .WLabel {
   margin-left: 5px;
 }
 
-/* line 219, ../sass/WebElementStructure.sass */
+/* line 222, ../sass/WebElementStructure.sass */
 .WBlock {
   display: block;
 }
 
-/* line 222, ../sass/WebElementStructure.sass */
+/* line 225, ../sass/WebElementStructure.sass */
 .WLeft {
   float: left;
 }
 
-/* line 225, ../sass/WebElementStructure.sass */
+/* line 228, ../sass/WebElementStructure.sass */
 .WRight {
   float: right;
 }
 
-/* line 228, ../sass/WebElementStructure.sass */
+/* line 231, ../sass/WebElementStructure.sass */
 .WLabeledData {
   color: #775544;
 }
 
-/* line 231, ../sass/WebElementStructure.sass */
+/* line 234, ../sass/WebElementStructure.sass */
 .WDataLabeled {
   margin-left: 5px;
   color: #773300;
   font-weight: bold;
 }
 
-/* line 236, ../sass/WebElementStructure.sass */
+/* line 239, ../sass/WebElementStructure.sass */
 .WActionBox {
   background-color: #e7e7e7;
   border: 1px solid #cccccc;
@@ -689,23 +694,23 @@ div.WCrumb a:hover {
   width: 130px;
 }
 
-/* line 244, ../sass/WebElementStructure.sass */
+/* line 247, ../sass/WebElementStructure.sass */
 .WActionBoxHeader {
   font-size: 14px;
 }
 
-/* line 247, ../sass/WebElementStructure.sass */
+/* line 250, ../sass/WebElementStructure.sass */
 .WActionBox ul {
   margin: 0;
   color: #cccccc;
   padding-left: 1.5em !important;
 }
-/* line 251, ../sass/WebElementStructure.sass */
+/* line 254, ../sass/WebElementStructure.sass */
 .WActionBox ul li {
   margin: 0;
 }
 
-/* line 254, ../sass/WebElementStructure.sass */
+/* line 257, ../sass/WebElementStructure.sass */
 .WUnrolledSelect {
   margin: 0;
   padding: 0 !important;
@@ -714,14 +719,14 @@ div.WCrumb a:hover {
   list-position: 0;
   width: 75px;
 }
-/* line 261, ../sass/WebElementStructure.sass */
+/* line 264, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li {
   list-style: none;
   display: inline;
   margin: 0;
   padding: 0;
 }
-/* line 266, ../sass/WebElementStructure.sass */
+/* line 269, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li a {
   text-decoration: none;
   display: block;
@@ -731,26 +736,26 @@ div.WCrumb a:hover {
   border: 1px solid #d0d0d0;
   border-width: 0 1px 0 1px;
 }
-/* line 274, ../sass/WebElementStructure.sass */
+/* line 277, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li a:hover {
   background: url("tail_li_hover.gif") 5px 0 no-repeat #6699cc;
   color: #333333;
   border-right: 1px solid #ffffbb;
 }
-/* line 278, ../sass/WebElementStructure.sass */
+/* line 281, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li a.selected {
   background: url("tail_li_selected.gif") 5px 0 no-repeat #6699cc;
   color: black;
   border-right: 1px solid #eef0f4;
 }
-/* line 283, ../sass/WebElementStructure.sass */
+/* line 286, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li span.first {
   display: block;
   background-color: transparent;
   background-image: url("tail_li_first.gif");
   height: 14px;
 }
-/* line 288, ../sass/WebElementStructure.sass */
+/* line 291, ../sass/WebElementStructure.sass */
 .WUnrolledSelect li span.last {
   display: block;
   background-color: transparent;
@@ -758,24 +763,24 @@ div.WCrumb a:hover {
   height: 14px;
 }
 
-/* line 294, ../sass/WebElementStructure.sass */
+/* line 297, ../sass/WebElementStructure.sass */
 div.WCenter {
   overflow: hidden;
   position: relative;
 }
-/* line 297, ../sass/WebElementStructure.sass */
+/* line 300, ../sass/WebElementStructure.sass */
 div.WCenter div.WOuter {
   float: left;
   position: relative;
   left: 50%;
 }
-/* line 301, ../sass/WebElementStructure.sass */
+/* line 304, ../sass/WebElementStructure.sass */
 div.WCenter div.WOuter div.WInner {
   position: relative;
   left: -50%;
 }
 
-/* line 306, ../sass/WebElementStructure.sass */
+/* line 308, ../sass/WebElementStructure.sass */
 .WLoading {
   -webkit-box-shadow: #b3b3b3 1px 1px 1px 1px;
   -moz-box-shadow: #b3b3b3 1px 1px 1px 1px;
@@ -783,24 +788,24 @@ div.WCenter div.WOuter div.WInner {
   background-color: lightgrey;
   border: 1px gray solid;
 }
-/* line 310, ../sass/WebElementStructure.sass */
+/* line 312, ../sass/WebElementStructure.sass */
 .WLoading label {
   line-height: 30px;
   margin-left: 10px;
 }
-/* line 313, ../sass/WebElementStructure.sass */
+/* line 315, ../sass/WebElementStructure.sass */
 .WLoading .WContent {
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
-/* line 317, ../sass/WebElementStructure.sass */
+/* line 319, ../sass/WebElementStructure.sass */
 .WTabLabels {
   background-color: #434343;
   padding-top: 10px;
   padding-left: 10px;
 }
-/* line 321, ../sass/WebElementStructure.sass */
+/* line 323, ../sass/WebElementStructure.sass */
 .WTabLabels .WTabLabel {
   -moz-border-radius-topleft: 10px;
   -webkit-border-top-left-radius: 10px;
@@ -813,7 +818,7 @@ div.WCenter div.WOuter div.WInner {
   border-right: 1px gray solid;
   padding: 5px;
 }
-/* line 328, ../sass/WebElementStructure.sass */
+/* line 330, ../sass/WebElementStructure.sass */
 .WTabLabels .WTabLabel.WUnselected {
   cursor: pointer;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(50%, #cccccc), color-stop(100%, #aaaaaa));
@@ -823,7 +828,7 @@ div.WCenter div.WOuter div.WInner {
   background-image: linear-gradient(#ffffff, #cccccc, #aaaaaa);
   border-top: 1px black solid;
 }
-/* line 332, ../sass/WebElementStructure.sass */
+/* line 334, ../sass/WebElementStructure.sass */
 .WTabLabels .WTabLabel.WUnselected:hover {
   border-top: 1px #396eff solid;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(50%, #999999), color-stop(100%, #777777));
@@ -832,7 +837,7 @@ div.WCenter div.WOuter div.WInner {
   background-image: -o-linear-gradient(#ffffff, #999999, #777777);
   background-image: linear-gradient(#ffffff, #999999, #777777);
 }
-/* line 336, ../sass/WebElementStructure.sass */
+/* line 338, ../sass/WebElementStructure.sass */
 .WTabLabels .WTabLabel.WSelected {
   cursor: default;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #aaaaaa), color-stop(50%, #cccccc), color-stop(100%, #ffffff));
@@ -843,17 +848,17 @@ div.WCenter div.WOuter div.WInner {
   border-top: 1px white solid;
 }
 
-/* line 341, ../sass/WebElementStructure.sass */
+/* line 343, ../sass/WebElementStructure.sass */
 .WTabContents.WLeft {
   width: 85%;
 }
 
-/* line 343, ../sass/WebElementStructure.sass */
+/* line 345, ../sass/WebElementStructure.sass */
 .WTabLabels.WLeft {
   padding-bottom: 10px;
   width: 15%;
 }
-/* line 346, ../sass/WebElementStructure.sass */
+/* line 348, ../sass/WebElementStructure.sass */
 .WTabLabels.WLeft .WTabLabel {
   -moz-border-radius-topleft: 10px;
   -webkit-border-top-left-radius: 10px;
@@ -871,7 +876,7 @@ div.WCenter div.WOuter div.WInner {
   border-left: none;
   padding: 5px;
 }
-/* line 356, ../sass/WebElementStructure.sass */
+/* line 358, ../sass/WebElementStructure.sass */
 .WTabLabels.WLeft .WTabLabel.WUnselected {
   cursor: pointer;
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #ffffff), color-stop(50%, #cccccc), color-stop(100%, #aaaaaa));
@@ -881,7 +886,7 @@ div.WCenter div.WOuter div.WInner {
   background-image: linear-gradient(left, #ffffff, #cccccc, #aaaaaa);
   border-top: 1px black solid;
 }
-/* line 360, ../sass/WebElementStructure.sass */
+/* line 362, ../sass/WebElementStructure.sass */
 .WTabLabels.WLeft .WTabLabel.WUnselected:hover {
   border-top: 1px #396eff solid;
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #ffffff), color-stop(50%, #999999), color-stop(100%, #777777));
@@ -890,7 +895,7 @@ div.WCenter div.WOuter div.WInner {
   background-image: -o-linear-gradient(left, #ffffff, #999999, #777777);
   background-image: linear-gradient(left, #ffffff, #999999, #777777);
 }
-/* line 364, ../sass/WebElementStructure.sass */
+/* line 366, ../sass/WebElementStructure.sass */
 .WTabLabels.WLeft .WTabLabel.WSelected {
   cursor: default;
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #aaaaaa), color-stop(50%, #cccccc), color-stop(100%, #ffffff));
@@ -901,7 +906,7 @@ div.WCenter div.WOuter div.WInner {
   border-top: 1px white solid;
 }
 
-/* line 370, ../sass/WebElementStructure.sass */
+/* line 372, ../sass/WebElementStructure.sass */
 .WDropArea {
   -webkit-box-shadow: #b3b3b3 1px 1px 1px 1px;
   -moz-box-shadow: #b3b3b3 1px 1px 1px 1px;
@@ -917,7 +922,7 @@ div.WCenter div.WOuter div.WInner {
   padding-left: 20px;
   border: 1px gray solid;
 }
-/* line 380, ../sass/WebElementStructure.sass */
+/* line 382, ../sass/WebElementStructure.sass */
 .WDropArea.WEmpty {
   height: 380px;
   width: 400px;
@@ -927,7 +932,7 @@ div.WCenter div.WOuter div.WInner {
   padding: 0px;
   padding-bottom: 20px;
 }
-/* line 388, ../sass/WebElementStructure.sass */
+/* line 390, ../sass/WebElementStructure.sass */
 .WDropArea .WStatusBar {
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
@@ -938,34 +943,34 @@ div.WCenter div.WOuter div.WInner {
   border-bottom: 1px gray solid;
   line-height: 32px;
 }
-/* line 393, ../sass/WebElementStructure.sass */
+/* line 395, ../sass/WebElementStructure.sass */
 .WDropArea .WStatusBar .WDropIndicator {
   margin-left: 30px;
   margin-right: 15px;
 }
-/* line 397, ../sass/WebElementStructure.sass */
+/* line 399, ../sass/WebElementStructure.sass */
 .WDropArea .WFile {
   width: 130px;
   height: 140px;
   padding: 5px;
 }
-/* line 401, ../sass/WebElementStructure.sass */
+/* line 403, ../sass/WebElementStructure.sass */
 .WDropArea .WFile .WImageContainer {
   width: 128px;
   height: 128px;
 }
-/* line 404, ../sass/WebElementStructure.sass */
+/* line 406, ../sass/WebElementStructure.sass */
 .WDropArea .WFile .WImageContainer img {
   max-width: 128px;
   max-height: 128px;
 }
-/* line 407, ../sass/WebElementStructure.sass */
+/* line 409, ../sass/WebElementStructure.sass */
 .WDropArea .WFile span {
   text-align: center;
   overflow: hidden;
 }
 
-/* line 418, ../sass/WebElementStructure.sass */
+/* line 420, ../sass/WebElementStructure.sass */
 label.WError {
   background-color: #ffbaba;
   -webkit-border-radius: 0px 0px 10px 10px;
@@ -974,10 +979,10 @@ label.WError {
   -o-border-radius: 0px 0px 10px 10px;
   border-radius: 0px 0px 10px 10px;
   border: 1px #ba0000 solid;
-  padding: 4px;
+  padding: 2px;
   width: 100%;
 }
-/* line 420, ../sass/WebElementStructure.sass */
+/* line 422, ../sass/WebElementStructure.sass */
 label.WSuccess {
   background-color: #82db7e;
   -webkit-border-radius: 0px 0px 10px 10px;
@@ -986,10 +991,10 @@ label.WSuccess {
   -o-border-radius: 0px 0px 10px 10px;
   border-radius: 0px 0px 10px 10px;
   border: 1px #164614 solid;
-  padding: 4px;
+  padding: 2px;
   width: 100%;
 }
-/* line 422, ../sass/WebElementStructure.sass */
+/* line 424, ../sass/WebElementStructure.sass */
 label.WWarning {
   background-color: #e7f2bc;
   -webkit-border-radius: 0px 0px 10px 10px;
@@ -998,10 +1003,10 @@ label.WWarning {
   -o-border-radius: 0px 0px 10px 10px;
   border-radius: 0px 0px 10px 10px;
   border: 1px #7b931c solid;
-  padding: 4px;
+  padding: 2px;
   width: 100%;
 }
-/* line 424, ../sass/WebElementStructure.sass */
+/* line 426, ../sass/WebElementStructure.sass */
 label.WInfo {
   background-color: #aed0e7;
   -webkit-border-radius: 0px 0px 10px 10px;
@@ -1010,24 +1015,185 @@ label.WInfo {
   -o-border-radius: 0px 0px 10px 10px;
   border-radius: 0px 0px 10px 10px;
   border: 1px #225374 solid;
-  padding: 4px;
+  padding: 2px;
   width: 100%;
 }
 
-/* line 427, ../sass/WebElementStructure.sass */
+/* line 429, ../sass/WebElementStructure.sass */
 .WGooglePlusBadge {
   text-decoration: none;
 }
-/* line 429, ../sass/WebElementStructure.sass */
+/* line 431, ../sass/WebElementStructure.sass */
 .WGooglePlusBadge img {
   border: 0;
   width: 32px;
   height: 32px;
 }
 
+/* line 436, ../sass/WebElementStructure.sass */
+.WCalendar {
+  z-index: 9999;
+  display: block;
+  position: relative;
+  width: 240px;
+  padding: 8px;
+  color: #333333;
+  background: white;
+  border: 1px solid #cccccc;
+  border-bottom-color: #bbbbbb;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+/* line 448, ../sass/WebElementStructure.sass */
+.WCalendar.is-hidden {
+  display: none;
+}
+/* line 451, ../sass/WebElementStructure.sass */
+.WCalendar.is-bound {
+  position: absolute;
+  box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.5);
+}
+/* line 455, ../sass/WebElementStructure.sass */
+.WCalendar .pika-title {
+  position: relative;
+  text-align: center;
+}
+/* line 459, ../sass/WebElementStructure.sass */
+.WCalendar .pika-title select {
+  cursor: pointer;
+  position: absolute;
+  z-index: 9998;
+  margin: 0;
+  left: 0;
+  top: 5px;
+  filter: alpha(opacity=0);
+  opacity: 0;
+}
+/* line 469, ../sass/WebElementStructure.sass */
+.WCalendar .pika-label {
+  display: inline-block;
+  *display: inline;
+  position: relative;
+  z-index: 9999;
+  overflow: hidden;
+  margin: 0;
+  padding: 5px 3px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: bold;
+  background-color: white;
+}
+/* line 482, ../sass/WebElementStructure.sass */
+.WCalendar .pika-prev, .WCalendar .pika-next {
+  display: block;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+  border: 0;
+  padding: 0;
+  width: 20px;
+  height: 30px;
+  background-color: transparent;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 75% 75%;
+  white-space: nowrap;
+  text-indent: 100%;
+  overflow: hidden;
+  opacity: 0.5;
+  *position: absolute;
+  *top: 0;
+}
+/* line 502, ../sass/WebElementStructure.sass */
+.WCalendar .pika-prev:hover, .WCalendar .pika-next:hover {
+  opacity: 1;
+}
+/* line 504, ../sass/WebElementStructure.sass */
+.WCalendar .pika-prev.is-disabled, .WCalendar .pika-next.is-disabled {
+  cursor: default;
+  opacity: 0.2;
+}
+/* line 508, ../sass/WebElementStructure.sass */
+.WCalendar .pika-prev, .WCalendar .is-rtl .pika-next {
+  float: left;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==");
+  *left: 0;
+}
+/* line 513, ../sass/WebElementStructure.sass */
+.WCalendar .pika-next, .WCalendar .is-rtl .pika-prev {
+  float: right;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAU0lEQVR42u3VOwoAMAgE0dwfAnNjU26bYkBCFGwfiL9VVWoO+BJ4Gf3gtsEKKoFBNTCoCAYVwaAiGNQGMUHMkjGbgjk2mIONuXo0nC8XnCf1JXgArVIZAQh5TKYAAAAASUVORK5CYII=");
+  *right: 0;
+}
+/* line 518, ../sass/WebElementStructure.sass */
+.WCalendar .pika-select {
+  display: inline-block;
+  *display: inline;
+}
+/* line 522, ../sass/WebElementStructure.sass */
+.WCalendar .pika-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 0;
+}
+/* line 529, ../sass/WebElementStructure.sass */
+.WCalendar .pika-table th, .WCalendar .pika-table td {
+  width: 14.28571%;
+}
+/* line 532, ../sass/WebElementStructure.sass */
+.WCalendar .pika-table th {
+  color: #999999;
+  font-size: 12px;
+  line-height: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+/* line 539, ../sass/WebElementStructure.sass */
+.WCalendar .pika-button {
+  cursor: pointer;
+  display: block;
+  outline: none;
+  border: 0;
+  margin: 0;
+  width: 100%;
+  padding: 5px;
+  color: #666666;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: right;
+  background: whitesmoke;
+}
+/* line 553, ../sass/WebElementStructure.sass */
+.WCalendar .is-today .pika-button {
+  color: #33aaff;
+  font-weight: bold;
+}
+/* line 557, ../sass/WebElementStructure.sass */
+.WCalendar .is-selected .pika-button {
+  color: white;
+  font-weight: bold;
+  background: #33aaff;
+  box-shadow: inset 0 1px 3px #178fe5;
+  border-radius: 3px;
+}
+/* line 564, ../sass/WebElementStructure.sass */
+.WCalendar .is-disabled .pika-button {
+  pointer-events: none;
+  cursor: default;
+  color: #999999;
+  opacity: 0.3;
+}
+/* line 570, ../sass/WebElementStructure.sass */
+.WCalendar .pika-button:hover {
+  color: white !important;
+  background: #ff8000 !important;
+  box-shadow: none !important;
+  border-radius: 3px !important;
+}
+
 /* line 26, ../sass/WebElementStructureWithButtons.sass */
 input[type=button], input[type=submit] {
-  font-size: 19px;
+  font-size: 16px;
   padding: 0.3em 1.5em;
   display: inline-block;
   cursor: pointer;
@@ -1085,7 +1251,7 @@ input[type=button]::-moz-focus-inner, input[type=submit]::-moz-focus-inner {
 }
 /* line 28, ../sass/WebElementStructureWithButtons.sass */
 input[type=button].MainAction, input[type=submit].MainAction {
-  font-size: 19px;
+  font-size: 16px;
   padding: 0.3em 1.5em;
   display: inline-block;
   cursor: pointer;
@@ -1143,7 +1309,7 @@ input[type=button].MainAction::-moz-focus-inner, input[type=submit].MainAction::
 }
 /* line 30, ../sass/WebElementStructureWithButtons.sass */
 input[type=button].PositiveAction, input[type=submit].PositiveAction {
-  font-size: 19px;
+  font-size: 16px;
   padding: 0.3em 1.5em;
   display: inline-block;
   cursor: pointer;
@@ -1201,7 +1367,7 @@ input[type=button].PositiveAction::-moz-focus-inner, input[type=submit].Positive
 }
 /* line 32, ../sass/WebElementStructureWithButtons.sass */
 input[type=button].DeleteAction, input[type=submit].DeleteAction {
-  font-size: 19px;
+  font-size: 16px;
   padding: 0.3em 1.5em;
   display: inline-block;
   cursor: pointer;
@@ -1259,7 +1425,7 @@ input[type=button].DeleteAction::-moz-focus-inner, input[type=submit].DeleteActi
 }
 /* line 34, ../sass/WebElementStructureWithButtons.sass */
 input[type=button].WToggleButton, input[type=submit].WToggleButton {
-  font-size: 19px;
+  font-size: 16px;
   padding: 0.3em 1.5em;
   display: inline-block;
   cursor: pointer;

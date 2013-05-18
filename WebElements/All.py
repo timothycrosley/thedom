@@ -32,9 +32,7 @@ from . import (Base,
                Document,
                DOM,
                Factory,
-               Fields,
                HiddenInputs,
-               HTML5,
                Inputs,
                Layout,
                Navigation,
@@ -46,7 +44,6 @@ from . import (Base,
 
 FactoryClasses = Factory
 Factory = Factory.Composite((Validators.Factory, DOM.Factory, Buttons.Factory, DataViews.Factory,
-                             Display.Factory, Fields.Factory, HiddenInputs.Factory, Inputs.Factory,
-                             Layout.Factory, Navigation.Factory, Resources.Factory, Containers.Factory,
-                             Charts.Factory, Printing.Factory, Document.Factory, CodeDocumentation.Factory,
-                             HTML5.Factory, Social.Factory))
+                             Display.Factory, HiddenInputs.Factory, Inputs.Factory, Layout.Factory,
+                             Navigation.Factory, Resources.Factory, Containers.Factory, Charts.Factory,
+                             Printing.Factory, Document.Factory, CodeDocumentation.Factory, Social.Factory))

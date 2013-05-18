@@ -20,6 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
+from datetime import datetime
 import types
 
 from . import DOM
@@ -27,8 +28,8 @@ from . import Base
 from . import ClientSide
 from . import DictUtils
 from . import Factory
+from .Types import Bool
 from .MethodUtils import CallBack
-from .StringUtils import interpretAsString
 from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("Inputs")
@@ -41,7 +42,7 @@ class ValueElement(DOM.Input):
     tagName = ""
     tagSelfCloses = False
     allowsChildren = True
-    __slots__ = ('key', '_value')
+    __slots__ = ('_value')
     signals = DOM.Input.signals + ['valueChanged']
     properties = DOM.Input.properties.copy()
     properties['text'] = {'action':'setValue'}
@@ -85,9 +86,8 @@ class ValueElement(DOM.Input):
             return ClientSide.selectText(self, start, end)
 
 
-    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
+    def _create(self, id, name=None, parent=None, *args, **kwargs):
         DOM.Input._create(self, id, name, parent, *args, **kwargs)
-        self.key = key
         self._value = ''
         self.attributes['value'] = CallBack(self, 'value')
 
@@ -102,8 +102,6 @@ class ValueElement(DOM.Input):
 
         value = None
         removeFromDictionary = True
-        if self.key:
-            value = DictUtils.getNestedValue(variableDict, self.key)
         if self.fullId() and value is None:
             value = variableDict.get(self.fullId(), None)
             if value and type(value) in (list, tuple):
@@ -135,37 +133,31 @@ class ValueElement(DOM.Input):
         for key in [self.id, self.name, self.fullId(), self.fullName()]:
             dictionary.pop(key, False)
 
-    def exportVariables(self, exportedVariables=None, flat=False):
+    def exportVariables(self, exportedVariables=None):
         """
             return the used webelements variables as a dictionary
         """
         if exportedVariables is None:
             exportedVariables = {}
 
-        if flat:
-            if self.name:
-                prevValue = exportedVariables.get(self.name, None)
-                if type(prevValue) == list:
-                    prevValue.append(self.value)
-                elif prevValue is not None:
-                    exportedVariables[self.name] = [prevValue, self.value()]
-                else:
-                    exportedVariables[self.name] = self.value()
-            elif self.id:
-                exportedVariables[self.id] = self.value()
-        else:
-            if self.key:
-                DictUtils.setNestedValue(exportedVariables, self.key, self.value())
+        if self.name:
+            prevValue = exportedVariables.get(self.name, None)
+            if type(prevValue) == list:
+                prevValue.append(self.value)
+            elif prevValue is not None:
+                exportedVariables[self.name] = [prevValue, self.value()]
+            else:
+                exportedVariables[self.name] = self.value()
+        elif self.id:
+            exportedVariables[self.id] = self.value()
 
-        DOM.Input.exportVariables(self, exportedVariables, flat)
+        DOM.Input.exportVariables(self, exportedVariables)
         return exportedVariables
 
-    def setValue(self, value, safe=False):
+    def setValue(self, value):
         """
             Sets the value associated with the element
         """
-        if not safe:
-            value = self.sanitize(value)
         if value != self._value:
             self._value = value
             self.emit('valueChanged', value)
@@ -186,8 +178,8 @@ class InputElement(ValueElement):
     tagSelfCloses = True
     allowsChildren = False
 
-    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
-        ValueElement._create(self, id, name, parent, key=key, *args, **kwargs)
+    def _create(self, id, name=None, parent=None, *args, **kwargs):
+        ValueElement._create(self, id, name, parent, *args, **kwargs)
 
     def _render(self):
         """
@@ -230,8 +222,8 @@ class CheckBox(InputElement):
             """
             return ClientSide.checkboxActsLikeRadioButton(self, pair)
 
-    def _create(self, id=None, name=None, parent=None, key=None, *args, **kwargs):
-        InputElement._create(self, id, name, parent, key=key, *args, **kwargs)
+    def _create(self, id=None, name=None, parent=None, *args, **kwargs):
+        InputElement._create(self, id, name, parent, *args, **kwargs)
 
         self._value = False
         self.attributes['value'] = None
@@ -291,8 +283,8 @@ class Radio(CheckBox):
         radio buttons identifier
     """
     __slots__ = ()
-    def _create(self, id=None, name=None, parent=None, key=None, *args, **kwargs):
-        CheckBox._create(self, id, name, parent, key=key, *args, **kwargs)
+    def _create(self, id=None, name=None, parent=None, *args, **kwargs):
+        CheckBox._create(self, id, name, parent, *args, **kwargs)
         self.attributes['type'] = "radio"
         self.setId(id)
 
@@ -330,8 +322,8 @@ class TextBox(InputElement):
     properties['onkeydown'] = {'action' : 'javascriptEvent' }
     properties['onkeyup'] = {'action' : 'javascriptEvent' }
 
-    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
-        InputElement._create(self, id, name, parent, key, *args, **kwargs)
+    def _create(self, id, name=None, parent=None, *args, **kwargs):
+        InputElement._create(self, id, name, parent, *args, **kwargs)
         self.attributes['type'] = 'text'
         self.length = None
 
@@ -368,8 +360,8 @@ class IntegerTextBox(TextBox):
     properties['maximum'] = {'action':'classAttribute', 'type':'int'}
     properties['minimum'] = {'action':'classAttribute', 'type':'int'}
 
-    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
-        TextBox._create(self, id, name, parent, key, *args, **kwargs)
+    def _create(self, id, name=None, parent=None, *args, **kwargs):
+        TextBox._create(self, id, name, parent, *args, **kwargs)
         self.maximum = None
         self.minimum = None
         self.attributes['size'] = '4'
@@ -419,10 +411,16 @@ class FileUpload(InputElement):
     properties['size'] = {'action':'attribute'}
     properties['maxlength'] = {'action':'attribute'}
 
-    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
-        InputElement._create(self, id, name, parent, key=key, *args, **kwargs)
+    def _create(self, id, name=None, parent=None, *args, **kwargs):
+        InputElement._create(self, id, name, parent, *args, **kwargs)
 
         self.attributes['type'] = "file"
+
+    def insertVariables(self, variableDict=None):
+        """
+            Override inserting variables to ignore file uploads, as you can not reinsert file upload data.
+        """
+        pass
 
 Factory.addProduct(FileUpload)
 
@@ -440,8 +438,8 @@ class TextArea(ValueElement):
     properties['wrap'] = {'action':'attribute'}
     properties['onkeydown'] = {'action':'javascriptEvent'}
 
-    def _create(self, id, name=None, parent=None, key=None, *args, **kwargs):
-        ValueElement._create(self, id, name, parent, key=key, *args, **kwargs)
+    def _create(self, id, name=None, parent=None, *args, **kwargs):
+        ValueElement._create(self, id, name, parent, *args, **kwargs)
 
     def content(self, formatted=False, *args, **kwargs):
         return self.value() or ""
@@ -474,8 +472,8 @@ class Option(ValueElement):
         def showIfSelected(self, elementToShow):
             return ClientSide.showIfSelected(self.serverSide.parent.clientSide, self, elementToShow)
 
-    def _create(self, id=None, name=None, parent=None, key=None, *args, **kwargs):
-        ValueElement._create(self, id, name, parent, key=key, *args, **kwargs)
+    def _create(self, id=None, name=None, parent=None, *args, **kwargs):
+        ValueElement._create(self, id, name, parent, *args, **kwargs)
 
         self._selected = False
         self._textNode = self.addChildElement(Base.TextNode())
@@ -598,14 +596,12 @@ class Select(ValueElement):
 
     def addOption(self, key, value=None, displayKeys=True):
         """
-            Adds options based on a key-value dictionary
+            Adds options based on a key and value
         """
         newOption = Option()
         if not value:
             value = key
 
-        key = interpretAsString(key)
-        value = interpretAsString(value)
         if displayKeys:
             newOption.setValue(value)
             newOption.setText(key)
@@ -638,10 +634,9 @@ class Select(ValueElement):
         """
             Selects a child select option
         """
-        strValue = interpretAsString(value)
         for obj in self.childElements:
-            if strValue and ((obj.fullId() == strValue) or (str(obj.value()) == strValue) or
-                             (obj._textNode.text() == strValue)):
+            if value and ((obj.fullId() == value) or (str(obj.value()) == value) or
+                             (obj._textNode.text() == value)):
                 obj.select()
             else:
                 obj.unselect()
@@ -667,7 +662,7 @@ class MultiSelect(Select):
 
     def _create(self, id, name=None, parent=None, *args, **kwargs):
         Select._create(self, id, name, parent, *args, **kwargs)
-        self.attributes['multiple'] = True
+        self.attributes['multiple'] = Bool(True)
 
     def selected(self):
         """
@@ -710,8 +705,6 @@ class MultiSelect(Select):
             variableDict = {}
 
         value = None
-        if self.key:
-            value = DictUtils.getNestedValue(variableDict, self.key)
         if self.fullId() and value is None:
             value = variableDict.get(self.fullId(), None)
         if self.id and value is None:
@@ -724,3 +717,38 @@ class MultiSelect(Select):
         self._removeFromDictionary(variableDict)
 
 Factory.addProduct(MultiSelect)
+
+
+class Date(TextBox):
+    __slots__ = ()
+    properties = TextBox.properties.copy()
+
+    class ClientSide(TextBox.ClientSide):
+
+        def create(self):
+            return ClientSide.addEvent(ClientSide.WINDOW, 'load',
+                                       ClientSide.createCalendar(self))
+
+    def _create(self, id, name=None, parent=None, *args, **kwargs):
+        TextBox._create(self, id, name, parent, *args, **kwargs)
+
+    def _render(self):
+        """
+            Add the script to initialize the calendar client-side.
+        """
+        TextBox._render(self)
+        if self.id:
+            self.clientSide.create()
+
+    def asDate(self):
+        """
+            Returns the value of the object in date form
+        """
+        value = self.value()
+        if value:
+            return datetime.strptime(value, '%m/%d/%Y')
+
+        return None
+
+
+Factory.addProduct(Date)

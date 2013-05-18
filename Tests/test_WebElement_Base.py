@@ -37,11 +37,8 @@ class TestWebElement(object):
 
     def setup_method(self, method):
         self.container = Factory.build('Box', '1')
-        self.container.key = 'my.test.container'
 
-        self.firstChild = self.container.addChildElement(Factory.build('Textbox',
-                                                                       '2'))
-        self.firstChild.key = 'my.test.firstChild'
+        self.firstChild = self.container.addChildElement(Factory.build('Textbox', '2'))
 
     def test_addChildElement(self):
         #Ensure element adds correctly if parent element allows children
@@ -127,36 +124,36 @@ class TestWebElement(object):
         #add javascript events
         self.container.addJavascriptEvent("onload",
                                           "alert('ALERT!! You hava a virus on your"\
-                                          +" computer!!!!');")
+                                          +" computer!!!!')")
         self.container.addJavascriptEvent("onload",
-                                          "alert('please go to freevirusscanner.com');")
+                                          "alert('please go to freevirusscanner.com')")
         self.container.addJavascriptEvent("onload",
                                           "alert('there (for only $14.95) we can remove "\
                                           +"all your viruses forever. Seriously. I mean why "\
                                           +"would we lie about this? After all no one on "\
-                                          +"the  interwebs lies anyways ;-)');")
-        self.firstChild.addJavascriptEvent("onclick", "alert('hello');")
+                                          +"the  interwebs lies anyways ;-)')")
+        self.firstChild.addJavascriptEvent("onclick", "alert('hello')")
         self.firstChild.addJavascriptEvent("onclick",
-                                                 "alert('why are you clicking me?');")
+                                                 "alert('why are you clicking me?')")
 
         #ensure correct results are returned
         assert self.container.javascriptEvent("onload") == \
                                        "alert('ALERT!! You hava a virus on your"\
-                                       + " computer!!!!'); "\
-                                       +"alert('please go to freevirusscanner.com'); "\
+                                       + " computer!!!!');"\
+                                       +"alert('please go to freevirusscanner.com');"\
                                        +"alert('there (for only $14.95) we can remove "\
                                        + "all your viruses forever. Seriously. I mean why "\
                                        + "would we lie about this? After all no one on "\
-                                       + "the  interwebs lies anyways ;-)');"
+                                       + "the  interwebs lies anyways ;-)')"
         assert self.firstChild.javascriptEvent("onclick") == \
-                          "alert('hello'); alert('why are you clicking me?');"
+                          "alert('hello');alert('why are you clicking me?')"
 
         #remove javascript events
         self.container.removeJavascriptEvent("onload",
                                          "alert('there (for only $14.95) we can remove "\
                                          + "all your viruses forever. Seriously. I mean why "\
                                          + "would we lie about this? After all no one on "\
-                                         + "the  interwebs lies anyways ;-)');")
+                                         + "the  interwebs lies anyways ;-)')")
                                          # ^ The marking department told me to remove
                                          # the above alert message. They said it wasn't
                                          # proffesional enough :(.
@@ -168,8 +165,8 @@ class TestWebElement(object):
         #ensure event removals are reflected correctly
         assert self.container.javascriptEvent("onload") == \
                                        "alert('ALERT!! You hava a virus on your"\
-                                       +" computer!!!!'); "\
-                                       +"alert('please go to freevirusscanner.com');"
+                                       +" computer!!!!');"\
+                                       +"alert('please go to freevirusscanner.com')"
         assert self.firstChild.javascriptEvent("onclick") == ''
 
     def test_prefix(self):
@@ -226,25 +223,14 @@ class TestWebElement(object):
         #Test inserting by Id works correctly
         self.container.insertVariables({'2':'MyTestValue'})
         assert self.firstChild.value() == 'MyTestValue'
-        assert self.firstChild.exportVariables()['my']['test']['firstChild'] == 'MyTestValue'
+        assert self.firstChild.exportVariables()['name'] == 'MyTestValue'
 
         #Test inserting by FullId works correctly
         self.container.insertVariables({'MyPrefix-2':'MyNewTestValue'})
         assert self.firstChild.value() == 'MyNewTestValue'
-        assert self.firstChild.exportVariables()['my']['test']['firstChild'] == 'MyNewTestValue'
+        assert self.firstChild.exportVariables()['name'] == 'MyNewTestValue'
 
-        #Test inserting by key works correctly
-        self.container.insertVariables({'my':{'test':{'firstChild':'MyEvenNewerTestValue'}}})
-        assert self.firstChild.value() == 'MyEvenNewerTestValue'
-        assert self.firstChild.exportVariables()['my']['test']['firstChild'] == 'MyEvenNewerTestValue'
-
-        #Test to ensure correct variable priority (key > fullid > id > fullname > name)
-        self.container.insertVariables({'my':{'test':{'firstChild':'keyValue'}},
-                                        'MyPrefix-2':'fullIdValue',
-                                        '2':'idValue',
-                                        'MyPrefix-name':'fullNameValue',
-                                        'name':'nameValue'})
-        assert self.firstChild.value() == 'keyValue'
+        #Test to ensure correct variable priority (fullid > id > fullname > name)
         self.container.insertVariables({'MyPrefix-2':'fullIdValue',
                                         '2':'idValue',
                                         'MyPrefix-name':'fullNameValue',

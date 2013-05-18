@@ -72,7 +72,7 @@ class Script(object):
     def __setattr__(self, name, value):
         if name in self.__class__.__slots__:
             return object.__setattr__(self, name, value)
-        self.content = "%s.%s = %s" % (var(self), name, var(value))
+        self.content = "%s.%s = %s" % (self.content, name, var(value))
 
     def __contains__(self, item):
         return Script(ClientSide.contains(self.claim(), var(item)))
@@ -195,7 +195,7 @@ def var(variable):
     if type(variable) in (list, tuple, set):
         return "[" + ",".join(var(item) for item in variable) + "]"
     if isinstance(variable, dict):
-        return "{" + ",".join(["%s:%s," % (var(key), var(value)) for key, value in iteritems(variable)]) + "}"
+        return "{" + ",".join(["%s:%s" % (var(key), var(value)) for key, value in iteritems(variable)]) + "}"
     return json.dumps(variable)
 
 def varList(*args):
@@ -236,6 +236,8 @@ def regexp(value):
 
 THIS = Script("this")
 DOCUMENT = Script("document")
+WINDOW = Script("window")
+STOP_EVENT = Script("WebElements.stopOperation")
 
 ### WebElements.js bindings follow - doc strings are contained within javascript code
 
@@ -277,6 +279,9 @@ def showClass(className, parentNode=DOCUMENT):
 
 def buildThrobber():
     return call("WebElements.buildThrobber")
+
+def becomeThrobber(element=THIS):
+    return call("WebElements.becomeThrobber", element)
 
 def getElementsByClassName(className, parentNode=DOCUMENT, stopOnFirstMatch=False):
     return call("WebElements.getElementsByClassName", className, parentNode, stopOnFirstMatch)
@@ -368,6 +373,9 @@ def stealClassFromPeer(element, className):
 def stealClassFromFellowChild(element, parentClassName, className):
     return call("WebElements.stealClassFromFellowChild", element, parentClassName, className)
 
+def stealClassFromContainer(element, container, className):
+    return call("WebElements.stealClassFromContainer", element, container, className)
+
 def hide(element):
     return call("WebElements.hide", element)
 
@@ -398,8 +406,8 @@ def addOptions(selectElement, options):
 def addHtml(element, html):
     return call("WebElements.addHtml", element, html)
 
-def move(element, to):
-    return call("WebElements.move", element, to)
+def move(element, to, makeTop=False):
+    return call("WebElements.move", element, to, makeTop)
 
 def copy(element, to, incrementId=False):
     return call("WebElements.copy", element, to, incrementId)
@@ -568,6 +576,30 @@ def showIfChecked(elementToShow, checkbox=THIS):
 
 def expandTemplate(template, valueDictionary):
     return call("WebElements.expandTemplate", template, valueDictionary)
+
+def createCalendar(element):
+    return call("WebElements.createCalendar",{'field':get(element)})
+
+def onPagerChange(pager, callBack):
+    return call("WebElements.onPagerChange", pager, inlineFunction(callBack, accepts=('params', )))
+
+def timezone():
+    return call("WebElements.timezone")
+
+def setCookie(name, value):
+    return call("WebElements.setCookie", name, value)
+
+def getCookie(name):
+    return call("WebElements.getCookie", name)
+
+def openAccordion(content, image, value):
+    return openAccordion("WebElements.openAccordion", content, image, value)
+
+def closeAccordion(content, image, value):
+    return openAccordion("WebElements.closeAccordion", content, image, value)
+
+def toggleAccordion(content, image, value):
+    return call("WebElements.toggleAccordion", content, image, value)
 
 class doClientSide(object):
     """

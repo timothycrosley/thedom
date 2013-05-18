@@ -29,11 +29,11 @@ from . import HiddenInputs
 from . import Inputs
 from . import Layout
 from . import UITemplate
+from .Types import Safe
 from .Factory import Factory
 from .IteratorUtils import iterableLength
 from .MethodUtils import CallBack
 from .PositionController import PositionController
-from .StringUtils import interpretAsString
 from .MultiplePythonSupport import *
 
 Factory = Factory("Navigation")
@@ -46,11 +46,19 @@ class ItemPager(Layout.Vertical):
     """
     __slots__ = ('resultsStartAt', 'numberOfResults', 'showAllButton', 'startButton', 'backButton', 'pageLinks',
                  'nextButton', 'lastButton', 'pagesShownAtOnce', 'itemsPerPage', '_index_', '_pages_',
-                 'resultsEndAt')
+                 'resultsEndAt', 'updateJS')
     signals = Base.TemplateElement.signals + ['jsIndexChanged']
     properties = Base.TemplateElement.properties.copy()
     properties['itemsPerPage'] = {'action':'classAttribute', 'type':'int'}
     properties['pagesShownAtOnce'] = {'action':'classAttribute', 'type':'int'}
+
+    class ClientSide(Layout.Vertical.ClientSide):
+
+        def control(self, pageControl, silent=True, timeout=None):
+            return self.onChange(pageControl.clientSide.get(silent=silent, timeout=timeout, params=self.params))
+
+        def onChange(self, event):
+            return ClientSide.onPagerChange(self, event)
 
     def _create(self, id, name=None, parent=None, **kwargs):
         Layout.Vertical._create(self, id, name, parent, **kwargs)
@@ -90,22 +98,22 @@ class ItemPager(Layout.Vertical):
         buttonLayout = self.addChildElement(Layout.Horizontal())
 
         self.startButton = buttonLayout.addChildElement(Buttons.Link())
-        self.startButton.setText("&lt;&lt;")
+        self.startButton.setText("<<")
         self.startButton.setDestination("#Link")
 
         self.backButton = buttonLayout.addChildElement(Buttons.Link())
-        self.backButton.setText("&lt; Back")
+        self.backButton.setText("< Back")
         self.backButton.setDestination("#Link")
         self.backButton.addClass("WSpaced")
 
         self.pageLinks = buttonLayout.addChildElement(Layout.Flow())
 
         self.nextButton = buttonLayout.addChildElement(Buttons.Link())
-        self.nextButton.setText("Next &gt;")
+        self.nextButton.setText("Next >")
         self.nextButton.setDestination("#Link")
 
         self.lastButton = buttonLayout.addChildElement(Buttons.Link())
-        self.lastButton.setText("&gt;&gt;")
+        self.lastButton.setText(">>")
         self.lastButton.setDestination("#Link")
         self.lastButton.addClass("WSpaced")
 
@@ -114,8 +122,6 @@ class ItemPager(Layout.Vertical):
         self._index_ = self.addChildElement(HiddenInputs.HiddenIntValue(id + 'Index'))
         self._pages_ = None
 
-        self.showAllButton.addJavascriptEvent('onclick', "WebElements.replace(this, WebElements.buildThrobber());")
-        self.showAllButton.connect('jsToggled', None, self, 'jsSetNavigationIndex', 0)
         self.showAllButton.connect('toggled', True, self.showAllButton, 'setValue', 'Show in Pages')
         self.showAllButton.connect('toggled', False, self.showAllButton, 'setValue', 'Show All')
 
@@ -123,16 +129,18 @@ class ItemPager(Layout.Vertical):
         """
             Set a list of items for the item pager to page-through
         """
-        itemsPerPage = int(self.itemsPerPage)
-        if iterableLength(items) <= itemsPerPage:
-            self.showAllButton.remove()
-        elif self.showAllButton.toggled():
+        pageLimit = int(self.itemsPerPage)
+        if self.showAllButton.toggled():
             itemsPerPage = iterableLength(items)
-
+        else:
+            itemsPerPage = pageLimit
         self._pages_ = PositionController(items=items or [], startIndex=self._index_.value(),
                                           itemsPerPage=itemsPerPage,
                                           pagesShownAtOnce=int(self.pagesShownAtOnce))
         self._index_.setValue(self._pages_.startIndex)
+
+        if self._pages_.length <= pageLimit:
+            self.showAllButton.remove()
 
     def currentPageItems(self, allItems=None, requestFields=None):
         """
@@ -146,15 +154,6 @@ class ItemPager(Layout.Vertical):
         if allItems is not None:
             self.setItems(allItems)
         return self._pages_ and self._pages_.currentPageItems or ()
-
-    def jsSetNavigationIndex(self, index):
-        """
-            Creates the javascript to switch to a different position within the items:
-            index - the first item you want to appear in your pages results
-        """
-        return ("WebElements.get('%(id)sIndex').value = '%(index)d';%(handlers)s;" %
-                {'id':self.fullId(), 'index':index, 'handlers':"\n".join([ClientSide.var(result) for result in
-                                                                          self.emit('jsIndexChanged')])})
 
     def _render(self):
         """
@@ -174,8 +173,8 @@ class ItemPager(Layout.Vertical):
         if self._pages_.areMore:
             self.nextButton.show()
             self.lastButton.show()
-            self.nextButton.addJavascriptEvent('onclick', self.jsSetNavigationIndex(self._pages_.nextPageIndex))
-            self.lastButton.addJavascriptEvent('onclick', self.jsSetNavigationIndex(self._pages_.lastPageIndex))
+            self.nextButton.attributes['index'] = self._pages_.nextPageIndex
+            self.lastButton.attributes['index'] = self._pages_.lastPageIndex
         else:
             self.nextButton.hide()
             self.lastButton.hide()
@@ -183,8 +182,8 @@ class ItemPager(Layout.Vertical):
         if self._pages_.arePrev:
             self.backButton.show()
             self.startButton.show()
-            self.backButton.addJavascriptEvent('onclick', self.jsSetNavigationIndex(self._pages_.prevPageIndex))
-            self.startButton.addJavascriptEvent('onclick', self.jsSetNavigationIndex(0))
+            self.backButton.attributes['index'] = self._pages_.prevPageIndex
+            self.startButton.attributes['index'] = 0
         else:
             self.backButton.hide()
             self.startButton.hide()
@@ -192,12 +191,15 @@ class ItemPager(Layout.Vertical):
         pageList = self._pages_.pageList()
         if len(pageList) > 1:
             for page in self._pages_.pageList():
-                link = self.pageLinks.addChildElement(Buttons.Link())
-                link.setText(unicode(page / self._pages_.itemsPerPage + 1))
-                link.addClass('WSpaced')
-                if page != self._index_.value():
-                    link.setDestination('#Link')
-                    link.addJavascriptEvent('onclick', self.jsSetNavigationIndex(page))
+                if page == self._index_.value():
+                    pageElement = self.pageLinks.addChildElement(Display.Label())
+                else:
+                    pageElement = self.pageLinks.addChildElement(Buttons.Link())
+                    pageElement.setDestination('#Link')
+                    pageElement.attributes['index'] = page
+
+                pageElement.setText(unicode(page / self._pages_.itemsPerPage + 1))
+                pageElement.addClass('WSpaced')
 
 Factory.addProduct(ItemPager)
 
@@ -274,165 +276,6 @@ class JumpToLetter(Layout.Vertical):
 Factory.addProduct(JumpToLetter)
 
 
-class BreadCrumb(Layout.Box):
-    """
-        Defines a dynamically built navigation breadcrumb
-    """
-    __slots__ = ('hiddenData', 'prevLinkClicked', 'location', 'label', 'currentLocation', 'currentText', 'formName',
-                 'linkCount', 'links', 'trail', 'currentLink')
-    properties = Layout.Box.properties.copy()
-    properties['formName'] = {'action':'classAttribute'}
-
-    def _create(self, id, name=None, parent=None, **kwargs):
-        Layout.Box._create(self, id, name, parent, **kwargs)
-        self.addClass("WBreadCrumb")
-
-        hiddenData = Inputs.TextBox(id + ':HiddenData')
-        hiddenData.attributes['type'] = 'hidden'
-        self.hiddenData = self.addChildElement(hiddenData)
-
-        prevLinkClicked = Inputs.TextBox(id + ':LinkClicked')
-        prevLinkClicked.attributes['type'] = 'hidden'
-        self.prevLinkClicked = self.addChildElement(prevLinkClicked)
-
-        location = Inputs.TextBox(id + ':Location')
-        location.attributes['type'] = 'hidden'
-        self.location = self.addChildElement(location)
-
-        label = Inputs.TextBox(id + ':Label')
-        label.attributes['type'] = 'hidden'
-        self.label = self.addChildElement(label)
-
-        key = Inputs.TextBox(id + ':Key')
-        key.attributes['type'] = 'hidden'
-        self.key = self.addChildElement(key)
-
-        self.currentLocation = ''
-        self.currentText = ''
-        self.formName = "setMe"
-
-        self.linkCount = 0
-        self.links = []
-        self.addLink('Home', 'Home')
-
-        self.addScript(CallBack(self, 'jsSubmitLink'))
-
-        self.trail = []
-
-    def _render(self):
-        Layout.Box._render(self)
-        self.highlightCurrentLink()
-
-    def addLink(self, text, location, key=None):
-        """
-            Adds a link to the breadcumb that can be clicked to return to a previous location
-        """
-        key = key or text
-
-        if self.currentLocation:
-            self.trail.append({'field':self.currentLocation, 'term':key})
-
-            spacer = Display.Label('spacer')
-            spacer.setText(' >> ')
-            self.addChildElement(spacer)
-
-            value = self.hiddenData.value()
-            if value:
-                value += '[/]'
-            value += text + '[:]' + location + '[:]' + key
-            self.hiddenData.setValue(value)
-
-        link = Buttons.Link('breadcrumb')
-        link.addClass("WCrumb")
-        link.setText(text)
-        link.name = unicode(self.linkCount)
-        link.addJavascriptEvent('onclick', "submitLink('" + text + "', '" +
-                                                       location + "', '" +
-                                                       key + "', '" +
-                                                       unicode(self.linkCount) + "');")
-
-        self.currentLocation = location
-        self.currentText = text
-        self.addChildElement(link)
-        self.currentLink = link
-        self.linkCount += 1
-        self.links.append(link)
-        return link
-
-    def filterDict(self):
-        """
-            Returns a dictionary of field - term, to represent your current location based on the breadcrumbs
-        """
-        data = {}
-        for location in self.trail:
-            data[location['field']] = location['term']
-
-        return data
-
-    def jsSubmitLink(self):
-        """
-            Returns the javascript that will change your location in the breadcrumb trail clientside
-        """
-        return """
-                function submitLink(label, view, key, index){
-                    if(index != null){
-                        link = WebElements.get('""" + self.prevLinkClicked.id + """');
-                        link.value = index;
-                    }
-                    if(key == null){
-                        key = label;
-                    }
-
-                    WebElements.get('""" + self.label.id  + """').value = label;
-                    WebElements.get('""" + self.location.id + """').value = view;
-                    WebElements.get('""" + self.key.id + """').value = key;
-                    WebElements.get('""" + self.formName + """').submit();
-                }
-               """
-
-    def highlightCurrentLink(self):
-        """
-            Updates the display of the current link to reflected its highlighted status
-        """
-        self.currentLink.removeClass('WCrumb')
-
-    def insertVariables(self, valueDict=None):
-        """
-            Overrides insert variables to update the displayed status of the breadcrumb and compute the
-            current location and trail.
-        """
-        Layout.Box.insertVariables(self, valueDict)
-
-        clicked = 'none'
-        if self.prevLinkClicked.value():
-            clicked = int(self.prevLinkClicked.value())
-
-        links = self.hiddenData.value()
-        self.hiddenData.setValue('')
-        self.prevLinkClicked.setValue('')
-        if clicked != 0:
-            if links:
-                current = 1
-                for link in links.split('[/]'):
-                    if current == clicked:
-                        break
-
-                    label, location, key = link.split('[:]')
-                    self.addLink(label, location, key)
-
-                    current += 1
-
-            if self.location.value():
-                self.addLink(self.label.value(),
-                             self.location.value(),
-                             self.key.value())
-                self.location.setValue('')
-                self.label.setValue('')
-                self.key.setValue('')
-
-Factory.addProduct(BreadCrumb)
-
-
 class UnrolledSelect(Display.List):
     """
          A select input implementation where all options are visible at once but only one is selectable
@@ -452,7 +295,6 @@ class UnrolledSelect(Display.List):
                        "{"
                        "    var valueElement = WebElements.fellowChild(option, 'WUnrolledSelect', 'Value');"
                        "    valueElement.value = option.name;"
-                       "    valueElement.onchange();"
                        "    WebElements.stealClassFromFellowChild(option, 'WUnrolledSelect', 'selected');"
                        "}")
 
@@ -478,7 +320,10 @@ class UnrolledSelect(Display.List):
                 self.addOption(key, value, displayKeys)
         else:
             for option in options:
-                self.addOption(option)
+                if type(option) in (list, tuple):
+                    self.addOption(option[0], option[1])
+                else:
+                    self.addOption(option)
 
     def addOptionList(self, options, displayKeys=True):
         """
@@ -500,8 +345,6 @@ class UnrolledSelect(Display.List):
         if not value:
             value = key
 
-        key = interpretAsString(key)
-        value = interpretAsString(value)
         if displayKeys:
             newOption.name = value
             newOption.setText(key)
@@ -551,68 +394,3 @@ class UnrolledSelect(Display.List):
                 return option.name
 
 Factory.addProduct(UnrolledSelect)
-
-
-class TimeFrame(Layout.Horizontal):
-    """
-        Allows a user to select the time frame from which items will appear
-    """
-    __slots__ = ('anyTime', 'hours24', 'days7', 'days14', 'helpDropDown', 'help', 'days')
-    signals = Base.TemplateElement.signals + ['jsTimeFrameChanged']
-    properties = Layout.Horizontal.properties.copy()
-    properties['help'] = {'action':'help.setText'}
-    properties['disableAnyTime'] = {'action':'call', 'type':'bool'}
-
-    def _create(self, id, name=None, parent=None, **kwargs):
-        Layout.Horizontal._create(self, id, name, parent, **kwargs)
-        self.style['margin-top'] = '2px'
-        self.addClass("WTimeFrame")
-
-        label = self.addChildElement(Display.Label())
-        label.setText('Show Timeframe:')
-        label.addClass("WLabel")
-
-        self.anyTime = self.addChildElement(Buttons.Link())
-        self.anyTime.addClass('WSpaced')
-        self.anyTime.setText('All,')
-
-        self.hours24 = self.addChildElement(Buttons.Link())
-        self.hours24.addClass('WSpaced')
-        self.hours24.setText('24 Hours,')
-
-        self.days7 = self.addChildElement(Buttons.Link())
-        self.days7.addClass('WSpaced')
-        self.days7.setText('7 Days,')
-
-        self.days14 = self.addChildElement(Buttons.Link())
-        self.days14.addClass('WSpaced')
-        self.days14.setText('14 Days')
-
-        self.helpDropDown = self.addChildElement(Containers.DropDownMenu('help'))
-        helpLink = self.helpDropDown.addChildElement(Buttons.Link())
-        helpLink.setText("(Describe Time Frame)")
-        helpLink.setDestination("#Link")
-        self.help = self.helpDropDown.addChildElement(Display.Label())
-        self.help.setText("Help text goes here")
-
-        self.days = self.addChildElement(HiddenInputs.HiddenIntValue(id + ":days"))
-        self.days.addClass('Value')
-
-    def disableAnyTime(self):
-        """
-            Will display the anyTime option in addition to the 14 days, 7 days and 1 day options
-        """
-        self.anyTime.remove()
-        if self.days.value() == 0:
-            self.days.setValue(1)
-
-    def _render(self):
-        Layout.Horizontal._render(self)
-        setTimeFrame = ("WebElements.stealClassFromPeer(this, 'selected');WebElements.peer(this, 'Value').value = '%d';" +
-                        "".join(self.emit("jsTimeFrameChanged")))
-        valueMap = {0:self.anyTime, 1:self.hours24, 7:self.days7, 14:self.days14}
-        for value, element in iteritems(valueMap):
-            element.addJavascriptEvent('onclick', setTimeFrame % value)
-        valueMap[self.days.value()].addClass('selected')
-
-Factory.addProduct(TimeFrame)

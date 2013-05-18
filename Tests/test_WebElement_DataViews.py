@@ -118,9 +118,9 @@ class TestTable(ElementTester):
         newRow.cell("Name").appendText("Crosley")
         newRow.cell("Country").appendText("States")
 
-        assert newRow.cell('Name').text() == "Tim<br />Crosley"
+        assert newRow.cell('Name').text() == "Tim" # Appended text is only visible by going through label tree
         assert newRow.cell('Type').text() == "Developer"
-        assert newRow.cell('Country').text() == "United<br />States"
+        assert newRow.cell('Country').text() == "United"
 
     def test_addColumn(self):
         column1 = self.element.addColumn("Name")

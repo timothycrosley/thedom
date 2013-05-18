@@ -8,7 +8,7 @@ $sb-base-color: rgba(11, 153, 194, 1);
 $sb-second-color: false;
 $sb-border-radius: 5px;
 $sb-padding: 0.3em 1.5em;
-$sb-font-size: 16px;
+$sb-font-size: 12px;
 $sb-text-color: white;
 $sb-text-style: "inset";
 $sb-gradient-style: "simple";
@@ -20,7 +20,8 @@ $sb-ie-support: true;
 
 @mixin sassy-button-default-structure {
   display: inline-block;
-  cursor: pointer; }
+  cursor: pointer;
+}
 
 //  *    Mixin reference
 //  *   -----------------------------------------

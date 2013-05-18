@@ -86,7 +86,7 @@ Events.addEvent = function(element, type, handler)
             }
         }
         handlers[handler.$$guid] = handler;
-        element["on" + type] = handleEvent;
+        element["on" + type] = Events.handleEvent;
     }
 };
 Events.addEvent.guid = 1;
@@ -157,6 +157,10 @@ WebElements.Events = Events;
 
 WebElements.Settings = {}
 WebElements.Settings.throbberImage = 'images/throbber.gif';
+WebElements.Settings.showImage = 'images/show.gif';
+WebElements.Settings.hideImage = 'images/hide.gif';
+WebElements.Settings.throbberHeight = 32;
+WebElements.Settings.throbberWidth = 34;
 WebElements.Settings.Serialize = ['input', 'textarea', 'select'];
 
 WebElements.State = {}
@@ -216,7 +220,7 @@ WebElements.map = function(arrayOfItems, callBack)
     newArray = []
     for(var currentItem=0; currentItem < arrayOfItems.length; currentItem++)
     {
-        newArray.push(arrayOfItems[currentItem]);
+        newArray.push(callBack(arrayOfItems[currentItem]));
     }
     return newArray;
 }
@@ -325,7 +329,46 @@ WebElements.buildThrobber = function()
 {
     var throbber = document.createElement('img');
     throbber.src = WebElements.Settings.throbberImage;
+    throbber.style.height = WebElements.Settings.throbberHeight + "px"
+    throbber.style.width = WebElements.Settings.throbberWidth + "px"
     return throbber;
+}
+
+//Replaces an element with a throbberImage on the fly
+WebElements.becomeThrobber = function(element)
+{
+    var element = WebElements.get(element);
+    var throbber = WebElements.buildThrobber();
+    var elementHeight = element.offsetHeight;
+    var elementWidth = element.offsetWidth;
+
+    throbber.style.padding = null;
+    throbber.style.margin = null;
+    throbber.style.backgroundColor = "white";
+    throbber.style.border = "1px gray solid";
+
+
+    throbber.className = element.className;
+    throbber.style.height = elementHeight + "px";
+    throbber.style.width = elementWidth + "px";
+
+    var toReturn = WebElements.replace(element, throbber);
+
+    if(elementHeight > WebElements.Settings.throbberHeight)
+    {
+        var half = String((elementHeight - WebElements.Settings.throbberHeight) / 2) + "px";
+        throbber.style.paddingTop = half;
+        throbber.style.paddingBottom = half;
+    }
+
+    if(elementWidth > WebElements.Settings.throbberWidth)
+    {
+        var half = String((elementWidth - WebElements.Settings.throbberWidth) / 2) + "px";
+        throbber.style.paddingLeft = half;
+        throbber.style.paddingRight = half;
+    }
+
+    return toReturn;
 }
 
 //Gets elements by there css class that are childern of a certain node - uses native implementation if present
@@ -521,6 +564,11 @@ WebElements.fellowChild = function(element, parentClass, childClass)
     return WebElements.getElementByClassName(childClass, WebElements.parent(element, parentClass));
 }
 
+WebElements.fellowChildren = function(element, parentClass, childClass)
+{
+    return WebElements.getElementsByClassName(childClass, WebElements.parent(element, parentClass));
+}
+
 //Get first child element (exluding empty elements)
 WebElements.firstChild = function(element)
 {
@@ -528,12 +576,12 @@ WebElements.firstChild = function(element)
     if(element.firstChild)
     {
         element = element.firstChild
+        while ((!element || element.innerHTML == null) && element.nextSibling)
+        {
+            element = element.nextSibling;
+        }
+        return element;
     }
-    while ((!element || element.innerHTML == null) && element.nextSibling)
-    {
-        element = element.nextSibling;
-    }
-    return element;
 }
 
 //Get last child element (exluding empty elements)
@@ -556,6 +604,7 @@ WebElements.lastChild = function(element)
 WebElements.next = function(element)
 {
     var element = WebElements.get(element);
+    var originalElement = element;
     if(element.nextSibling)
     {
         element = element.nextSibling;
@@ -686,11 +735,16 @@ WebElements.stealClassFromPeer = function(element, className)
 //Forces this to be the only peer with class
 WebElements.stealClassFromFellowChild = function(element, parentClassName, className)
 {
-    var fellowChild = WebElements.fellowChild(element, parentClassName, className);
-    if(fellowChild)
-    {
-        WebElements.removeClass(fellowChild, className);
-    }
+    WebElements.forEach(WebElements.fellowChildren(element, parentClassName, className),
+                        function(element){WebElements.removeClass(element, className);});
+    WebElements.addClass(element, className);
+}
+
+//Removes the class from all elements in the specified container and sets it on itself
+WebElements.stealClassFromContainer = function(element, container, className)
+{
+    WebElements.forEach(WebElements.getElementsByClassName(className, container),
+                        function(element){WebElements.removeClass(element, className)});
     WebElements.addClass(element, className);
 }
 
@@ -797,9 +851,18 @@ WebElements.addHtml = function(element, html)
 }
 
 //moves an element to a new location
-WebElements.move = function(element, to)
+WebElements.move = function(element, to, makeTop)
 {
-    WebElements.get(to).appendChild(WebElements.get(element));
+    var sendTo = WebElements.get(to);
+    if(makeTop)
+    {
+        var firstChild = WebElements.firstChild(sendTo);
+        if(firstChild)
+        {
+            return sendTo.insertBefore(WebElements.get(element), firstChild);
+        }
+    }
+    return sendTo.appendChild(WebElements.get(element));
 }
 
 //makes a copy of an element into 'to' and returns the copy optionally incrementing its ID
@@ -1335,59 +1398,26 @@ WebElements.stopOperation = function(evt)
   evt.preventDefault();
 }
 
-// attaches html5 drag and drop file uploading capabilities to an drop down skeleton
-WebElements.buildFileOpener = function(dropBox)
+WebElements.onPagerChange = function(pager, callBack)
 {
-    var dropBox = WebElements.get(dropBox);
-    var statusBar = WebElements.get(dropBox.id + 'StatusBar');
-    var dropLabel = WebElements.get(dropBox.id + 'DropLabel');
-    var fileTemplate = WebElements.get(dropBox.id + 'File');
-    var filesContainer = WebElements.get(dropBox.id + 'Files');
-
-    // init event handlers
-    dropBox.addEventListener("dragenter", WebElements.stopOperation, false);
-    dropBox.addEventListener("dragexit", WebElements.stopOperation, false);
-    dropBox.addEventListener("dragover", WebElements.stopOperation, false);
-    dropBox.addEventListener("drop", function(evt){
-        evt.preventDefault(evt);
-
-        var files = evt.dataTransfer.files;
-        var count = files.length;
-
-        // Only call the handler if 1 or more files was dropped.
-        if (files.length > 0)
-        {
-            WebElements.show(statusBar);
-            WebElements.removeClass(dropBox, "WEmpty");
-            WebElements.forEach(files, function(file){
-                dropLabel.innerHTML = "Processing " + file.name;
-
-                var reader = new FileReader();
-                reader.file = file;
-
-                // init the reader event handlers
-                reader.onload = function(evt)
-                {
-                    var fileName = dropBox.id + evt.target.file.name;
-                     if(WebElements.get(fileName))
-                     {
-                         return; // Don't upload the same file twice but don't annoy users with pesky errors
-                     }
-                    newFile = WebElements.copy(fileTemplate, filesContainer, false);
-                    alert("OO")
-                    newFile.id = fileName;
-                    WebElements.show(newFile);
-                    WebElements.getElementByClassName('WThumbnail', newFile).src = evt.target.result;
-                    WebElements.getElementByClassName('WFileName', newFile).innerHTML = evt.target.file.name;
-                };
-
-                // begin the read operation
-                reader.readAsDataURL(file);
-            });
-        }
-        WebElements.hide(statusBar);
-
-    }, false);
+    var pager = WebElements.get(pager);
+    if(!pager)
+    {
+        return;
+    }
+    var indexElement = WebElements.get(pager.id + "Index")
+    WebElements.forEach(WebElements.getElementsByTagNames(['a', 'input'], pager),
+                        function(element){
+                            WebElements.Events.addEvent(element, 'click', function(){
+                                indexValue = '0';
+                                if(element.getAttribute('index'))
+                                {
+                                    indexValue = element.getAttribute('index');
+                                }
+                                indexElement.value = indexValue;
+                                WebElements.becomeThrobber(element);
+                                callBack(WebElements.serializeAll(pager));
+                            })});
 }
 
 WebElements.clickDropDown = function(menu, openOnly, button, parentElement)
@@ -1478,7 +1508,7 @@ WebElements.serializeAll = function(container)
 //Presents a confirm window to the user, before doing an action
 WebElements.confirm = function(message, action)
 {
-    if(window.confirm('%s'))
+    if(window.confirm(message))
     {
         action();
     }
@@ -1561,4 +1591,1272 @@ WebElements.expandTemplate = function(template, valueDictionary)
     }
 
     return result
+}
+
+{
+
+    /*!
+    * Pikaday
+    *
+    * Copyright © 2013 David Bushell | BSD & MIT license | https://github.com/dbushell/Pikaday
+    */
+
+    (function (root, define, factory)
+    {
+        'use strict';
+
+        if (typeof define === 'function' && define.amd) {
+            // AMD. Register as an anonymous module.
+            define(function (req)
+            {
+                // Load moment.js as an optional dependency
+                var id = 'moment';
+                var moment = req.defined && req.defined(id) ? req(id) : undefined;
+                return factory(moment || root.moment);
+            });
+        } else {
+            // Browser global
+            root.Pikaday = factory(root.moment);
+        }
+    }(window, window.define, function (moment)
+    {
+        'use strict';
+
+        /**
+        * feature detection and helper functions
+        */
+        var hasMoment = typeof moment === 'function',
+
+        hasEventListeners = !!window.addEventListener,
+
+        document = window.document,
+
+        sto = window.setTimeout,
+
+        addEvent = function(el, e, callback, capture)
+        {
+            if (hasEventListeners) {
+                el.addEventListener(e, callback, !!capture);
+            } else {
+                el.attachEvent('on' + e, callback);
+            }
+        },
+
+        removeEvent = function(el, e, callback, capture)
+        {
+            if (hasEventListeners) {
+                el.removeEventListener(e, callback, !!capture);
+            } else {
+                el.detachEvent('on' + e, callback);
+            }
+        },
+
+        fireEvent = function(el, eventName, data)
+        {
+            var ev;
+
+            if (document.createEvent) {
+                ev = document.createEvent('HTMLEvents');
+                ev.initEvent(eventName, true, false);
+                ev = extend(ev, data);
+                el.dispatchEvent(ev);
+            } else if (document.createEventObject) {
+                ev = document.createEventObject();
+                ev = extend(ev, data);
+                el.fireEvent('on' + eventName, ev);
+            }
+        },
+
+        trim = function(str)
+        {
+            return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g,'');
+        },
+
+        hasClass = function(el, cn)
+        {
+            return (' ' + el.className + ' ').indexOf(' ' + cn + ' ') !== -1;
+        },
+
+        addClass = function(el, cn)
+        {
+            if (!hasClass(el, cn)) {
+                el.className = (el.className === '') ? cn : el.className + ' ' + cn;
+            }
+        },
+
+        removeClass = function(el, cn)
+        {
+            el.className = trim((' ' + el.className + ' ').replace(' ' + cn + ' ', ' '));
+        },
+
+        isArray = function(obj)
+        {
+            return (/Array/).test(Object.prototype.toString.call(obj));
+        },
+
+        isDate = function(obj)
+        {
+            return (/Date/).test(Object.prototype.toString.call(obj)) && !isNaN(obj.getTime());
+        },
+
+        isLeapYear = function(year)
+        {
+            // solution by Matti Virkkunen: http://stackoverflow.com/a/4881951
+            return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
+        },
+
+        getDaysInMonth = function(year, month)
+        {
+            return [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+        },
+
+        setToStartOfDay = function(date)
+        {
+            if (isDate(date)) date.setHours(0,0,0,0);
+        },
+
+        compareDates = function(a,b)
+        {
+            // weak date comparison (use setToStartOfDay(date) to ensure correct result)
+            return a.getTime() === b.getTime();
+        },
+
+        extend = function(to, from, overwrite)
+        {
+            var prop, hasProp;
+            for (prop in from) {
+                hasProp = to[prop] !== undefined;
+                if (hasProp && typeof from[prop] === 'object' && from[prop].nodeName === undefined) {
+                    if (isDate(from[prop])) {
+                        if (overwrite) {
+                            to[prop] = new Date(from[prop].getTime());
+                        }
+                    }
+                    else if (isArray(from[prop])) {
+                        if (overwrite) {
+                            to[prop] = from[prop].slice(0);
+                        }
+                    } else {
+                        to[prop] = extend({}, from[prop], overwrite);
+                    }
+                } else if (overwrite || !hasProp) {
+                    to[prop] = from[prop];
+                }
+            }
+            return to;
+        },
+
+
+        /**
+        * defaults and localisation
+        */
+        defaults = {
+
+            // bind the picker to a form field
+            field: null,
+
+            // automatically show/hide the picker on `field` focus (default `true` if `field` is set)
+            bound: undefined,
+
+            // the default output format for `.toString()` and `field` value
+            format: 'YYYY-MM-DD',
+
+            // the initial date to view when first opened
+            defaultDate: null,
+
+            // make the `defaultDate` the initial selected value
+            setDefaultDate: false,
+
+            // first day of week (0: Sunday, 1: Monday etc)
+            firstDay: 0,
+
+            // the minimum/earliest date that can be selected
+            minDate: null,
+            // the maximum/latest date that can be selected
+            maxDate: null,
+
+            // number of years either side, or array of upper/lower range
+            yearRange: 10,
+
+            // used internally (don't config outside)
+            minYear: 0,
+            maxYear: 9999,
+            minMonth: undefined,
+            maxMonth: undefined,
+
+            isRTL: false,
+
+            // how many months are visible (not implemented yet)
+            numberOfMonths: 1,
+
+            // internationalization
+            i18n: {
+                previousMonth : 'Previous Month',
+                nextMonth     : 'Next Month',
+                months        : ['January','February','March','April','May','June','July','August','September','October','November','December'],
+                weekdays      : ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+                weekdaysShort : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+            },
+
+            // callback function
+            onSelect: null,
+            onOpen: null,
+            onClose: null,
+            onDraw: null
+        },
+
+
+        /**
+        * templating functions to abstract HTML rendering
+        */
+        renderDayName = function(opts, day, abbr)
+        {
+            day += opts.firstDay;
+            while (day >= 7) {
+                day -= 7;
+            }
+            return abbr ? opts.i18n.weekdaysShort[day] : opts.i18n.weekdays[day];
+        },
+
+        renderDay = function(i, isSelected, isToday, isDisabled, isEmpty)
+        {
+            if (isEmpty) {
+                return '<td class="is-empty"></td>';
+            }
+            var arr = [];
+            if (isDisabled) {
+                arr.push('is-disabled');
+            }
+            if (isToday) {
+                arr.push('is-today');
+            }
+            if (isSelected) {
+                arr.push('is-selected');
+            }
+            return '<td data-day="' + i + '" class="' + arr.join(' ') + '"><button class="pika-button" type="button">' + i + '</button>' + '</td>';
+        },
+
+        renderRow = function(days, isRTL)
+        {
+            return '<tr>' + (isRTL ? days.reverse() : days).join('') + '</tr>';
+        },
+
+        renderBody = function(rows)
+        {
+            return '<tbody>' + rows.join('') + '</tbody>';
+        },
+
+        renderHead = function(opts)
+        {
+            var i, arr = [];
+            for (i = 0; i < 7; i++) {
+                arr.push('<th scope="col"><abbr title="' + renderDayName(opts, i) + '">' + renderDayName(opts, i, true) + '</abbr></th>');
+            }
+            return '<thead>' + (opts.isRTL ? arr.reverse() : arr).join('') + '</thead>';
+        },
+
+        renderTitle = function(instance)
+        {
+            var i, j, arr,
+                opts = instance._o,
+                month = instance._m,
+                year  = instance._y,
+                isMinYear = year === opts.minYear,
+                isMaxYear = year === opts.maxYear,
+                html = '<div class="pika-title">',
+                prev = true,
+                next = true;
+
+            for (arr = [], i = 0; i < 12; i++) {
+                arr.push('<option value="' + i + '"' +
+                    (i === month ? ' selected': '') +
+                    ((isMinYear && i < opts.minMonth) || (isMaxYear && i > opts.maxMonth) ? 'disabled' : '') + '>' +
+                    opts.i18n.months[i] + '</option>');
+            }
+            html += '<div class="pika-label">' + opts.i18n.months[month] + '<select class="pika-select pika-select-month">' + arr.join('') + '</select></div>';
+
+            if (isArray(opts.yearRange)) {
+                i = opts.yearRange[0];
+                j = opts.yearRange[1] + 1;
+            } else {
+                i = year - opts.yearRange;
+                j = 1 + year + opts.yearRange;
+            }
+
+            for (arr = []; i < j && i <= opts.maxYear; i++) {
+                if (i >= opts.minYear) {
+                    arr.push('<option value="' + i + '"' + (i === year ? ' selected': '') + '>' + (i) + '</option>');
+                }
+            }
+            html += '<div class="pika-label">' + year + '<select class="pika-select pika-select-year">' + arr.join('') + '</select></div>';
+
+            if (isMinYear && (month === 0 || opts.minMonth >= month)) {
+                prev = false;
+            }
+
+            if (isMaxYear && (month === 11 || opts.maxMonth <= month)) {
+                next = false;
+            }
+
+            html += '<button class="pika-prev' + (prev ? '' : ' is-disabled') + '" type="button">' + opts.i18n.previousMonth + '</button>';
+            html += '<button class="pika-next' + (next ? '' : ' is-disabled') + '" type="button">' + opts.i18n.nextMonth + '</button>';
+
+            return html += '</div>';
+        },
+
+        renderTable = function(opts, data)
+        {
+            return '<table cellpadding="0" cellspacing="0" class="pika-table">' + renderHead(opts) + renderBody(data) + '</table>';
+        },
+
+
+        /**
+        * Pikaday constructor
+        */
+        Pikaday = function(options)
+        {
+            var self = this,
+                opts = self.config(options);
+
+            self._onMouseDown = function(e)
+            {
+                if (!self._v) {
+                    return;
+                }
+                e = e || window.event;
+                var target = e.target || e.srcElement;
+                if (!target) {
+                    return;
+                }
+
+                if (!hasClass(target, 'is-disabled')) {
+                    if (hasClass(target, 'pika-button') && !hasClass(target, 'is-empty')) {
+                        self.setDate(new Date(self._y, self._m, parseInt(target.innerHTML, 10)));
+                        if (opts.bound) {
+                            sto(function() {
+                                self.hide();
+                            }, 100);
+                        }
+                        return;
+                    }
+                    else if (hasClass(target, 'pika-prev')) {
+                        self.prevMonth();
+                    }
+                    else if (hasClass(target, 'pika-next')) {
+                        self.nextMonth();
+                    }
+                }
+                if (!hasClass(target, 'pika-select')) {
+                    if (e.preventDefault) {
+                        e.preventDefault();
+                    } else {
+                        e.returnValue = false;
+                        return false;
+                    }
+                } else {
+                    self._c = true;
+                }
+            };
+
+            self._onChange = function(e)
+            {
+                e = e || window.event;
+                var target = e.target || e.srcElement;
+                if (!target) {
+                    return;
+                }
+                if (hasClass(target, 'pika-select-month')) {
+                    self.gotoMonth(target.value);
+                }
+                else if (hasClass(target, 'pika-select-year')) {
+                    self.gotoYear(target.value);
+                }
+            };
+
+            self._onInputChange = function(e)
+            {
+                var date;
+
+                if (e.firedBy === self) {
+                    return;
+                }
+                if (hasMoment) {
+                    date = moment(opts.field.value, opts.format);
+                    date = (date && date.isValid()) ? date.toDate() : null;
+                }
+                else {
+                    date = new Date(Date.parse(opts.field.value));
+                }
+                self.setDate(isDate(date) ? date : null);
+                if (!self._v) {
+                    self.show();
+                }
+            };
+
+            self._onInputFocus = function()
+            {
+                self.show();
+            };
+
+            self._onInputClick = function()
+            {
+                self.show();
+            };
+
+            self._onInputBlur = function()
+            {
+                if (!self._c) {
+                    self._b = sto(function() {
+                        self.hide();
+                    }, 50);
+                }
+                self._c = false;
+            };
+
+            self._onClick = function(e)
+            {
+                e = e || window.event;
+                var target = e.target || e.srcElement,
+                    pEl = target;
+                if (!target) {
+                    return;
+                }
+                if (!hasEventListeners && hasClass(target, 'pika-select')) {
+                    if (!target.onchange) {
+                        target.setAttribute('onchange', 'return;');
+                        addEvent(target, 'change', self._onChange);
+                    }
+                }
+                do {
+                    if (hasClass(pEl, 'WCalendar')) {
+                        return;
+                    }
+                }
+                while ((pEl = pEl.parentNode));
+                if (self._v && target !== opts.field) {
+                    self.hide();
+                }
+            };
+
+            self.el = document.createElement('div');
+            self.el.className = 'WCalendar' + (opts.isRTL ? ' is-rtl' : '');
+
+            addEvent(self.el, 'mousedown', self._onMouseDown, true);
+            addEvent(self.el, 'change', self._onChange);
+
+            if (opts.field) {
+                if (opts.bound) {
+                    document.body.appendChild(self.el);
+                } else {
+                    opts.field.parentNode.insertBefore(self.el, opts.field.nextSibling);
+                }
+                addEvent(opts.field, 'change', self._onInputChange);
+
+                if (!opts.defaultDate) {
+                    if (hasMoment && opts.field.value) {
+                        opts.defaultDate = moment(opts.field.value, opts.format).toDate();
+                    } else {
+                        opts.defaultDate = new Date(Date.parse(opts.field.value));
+                    }
+                    opts.setDefaultDate = true;
+                }
+            }
+
+            var defDate = opts.defaultDate;
+
+            if (isDate(defDate)) {
+                if (opts.setDefaultDate) {
+                    self.setDate(defDate, true);
+                } else {
+                    self.gotoDate(defDate);
+                }
+            } else {
+                self.gotoDate(new Date());
+            }
+
+            if (opts.bound) {
+                this.hide();
+                self.el.className += ' is-bound';
+                addEvent(opts.field, 'click', self._onInputClick);
+                addEvent(opts.field, 'focus', self._onInputFocus);
+                addEvent(opts.field, 'blur', self._onInputBlur);
+            } else {
+                this.show();
+            }
+
+        };
+
+
+        /**
+        * public Pikaday API
+        */
+        Pikaday.prototype = {
+
+
+            /**
+            * configure functionality
+            */
+            config: function(options)
+            {
+                if (!this._o) {
+                    this._o = extend({}, defaults, true);
+                }
+
+                var opts = extend(this._o, options, true);
+
+                opts.isRTL = !!opts.isRTL;
+
+                opts.field = (opts.field && opts.field.nodeName) ? opts.field : null;
+
+                opts.bound = !!(opts.bound !== undefined ? opts.field && opts.bound : opts.field);
+
+                var nom = parseInt(opts.numberOfMonths, 10) || 1;
+                opts.numberOfMonths = nom > 4 ? 4 : nom;
+
+                if (!isDate(opts.minDate)) {
+                    opts.minDate = false;
+                }
+                if (!isDate(opts.maxDate)) {
+                    opts.maxDate = false;
+                }
+                if ((opts.minDate && opts.maxDate) && opts.maxDate < opts.minDate) {
+                    opts.maxDate = opts.minDate = false;
+                }
+                if (opts.minDate) {
+                    setToStartOfDay(opts.minDate);
+                    opts.minYear  = opts.minDate.getFullYear();
+                    opts.minMonth = opts.minDate.getMonth();
+                }
+                if (opts.maxDate) {
+                    setToStartOfDay(opts.maxDate);
+                    opts.maxYear  = opts.maxDate.getFullYear();
+                    opts.maxMonth = opts.maxDate.getMonth();
+                }
+
+                if (isArray(opts.yearRange)) {
+                    var fallback = new Date().getFullYear() - 10;
+                    opts.yearRange[0] = parseInt(opts.yearRange[0], 10) || fallback;
+                    opts.yearRange[1] = parseInt(opts.yearRange[1], 10) || fallback;
+                } else {
+                    opts.yearRange = Math.abs(parseInt(opts.yearRange, 10)) || defaults.yearRange;
+                    if (opts.yearRange > 100) {
+                        opts.yearRange = 100;
+                    }
+                }
+
+                return opts;
+            },
+
+            /**
+            * return a formatted string of the current selection (using Moment.js if available)
+            */
+            toString: function(format)
+            {
+                var dd = this._d.getDate();
+                var mm = this._d.getMonth() + 1;
+                var yyyy = this._d.getFullYear();
+                if(dd<10)
+                {
+                    dd = '0' + dd;
+                }
+                if(mm<10)
+                {
+                    mm = '0' + mm;
+                }
+                return !isDate(this._d) ? '' : mm + '/' + dd + '/' + yyyy;
+            },
+
+            /**
+            * return a Moment.js object of the current selection (if available)
+            */
+            getMoment: function()
+            {
+                return hasMoment ? moment(this._d) : null;
+            },
+
+            /**
+            * set the current selection from a Moment.js object (if available)
+            */
+            setMoment: function(date)
+            {
+                if (hasMoment && moment.isMoment(date)) {
+                    this.setDate(date.toDate());
+                }
+            },
+
+            /**
+            * return a Date object of the current selection
+            */
+            getDate: function()
+            {
+                return isDate(this._d) ? new Date(this._d.getTime()) : null;
+            },
+
+            /**
+            * set the current selection
+            */
+            setDate: function(date, preventOnSelect)
+            {
+                if (!date) {
+                    this._d = null;
+                    return this.draw();
+                }
+                if (typeof date === 'string') {
+                    date = new Date(Date.parse(date));
+                }
+                if (!isDate(date)) {
+                    return;
+                }
+
+                var min = this._o.minDate,
+                    max = this._o.maxDate;
+
+                if (isDate(min) && date < min) {
+                    date = min;
+                } else if (isDate(max) && date > max) {
+                    date = max;
+                }
+
+                this._d = new Date(date.getTime());
+                setToStartOfDay(this._d);
+                this.gotoDate(this._d);
+
+                if (this._o.field) {
+                    this._o.field.value = this.toString();
+                    fireEvent(this._o.field, 'change', { firedBy: this });
+                }
+                if (!preventOnSelect && typeof this._o.onSelect === 'function') {
+                    this._o.onSelect.call(this, this.getDate());
+                }
+            },
+
+            /**
+            * change view to a specific date
+            */
+            gotoDate: function(date)
+            {
+                if (!isDate(date)) {
+                    return;
+                }
+                this._y = date.getFullYear();
+                this._m = date.getMonth();
+                this.draw();
+            },
+
+            gotoToday: function()
+            {
+                this.gotoDate(new Date());
+            },
+
+            /**
+            * change view to a specific month (zero-index, e.g. 0: January)
+            */
+            gotoMonth: function(month)
+            {
+                if (!isNaN( (month = parseInt(month, 10)) )) {
+                    this._m = month < 0 ? 0 : month > 11 ? 11 : month;
+                    this.draw();
+                }
+            },
+
+            nextMonth: function()
+            {
+                if (++this._m > 11) {
+                    this._m = 0;
+                    this._y++;
+                }
+                this.draw();
+            },
+
+            prevMonth: function()
+            {
+                if (--this._m < 0) {
+                    this._m = 11;
+                    this._y--;
+                }
+                this.draw();
+            },
+
+            /**
+            * change view to a specific full year (e.g. "2012")
+            */
+            gotoYear: function(year)
+            {
+                if (!isNaN(year)) {
+                    this._y = parseInt(year, 10);
+                    this.draw();
+                }
+            },
+
+            /**
+            * refresh the HTML
+            */
+            draw: function(force)
+            {
+                if (!this._v && !force) {
+                    return;
+                }
+                var opts = this._o,
+                    minYear = opts.minYear,
+                    maxYear = opts.maxYear,
+                    minMonth = opts.minMonth,
+                    maxMonth = opts.maxMonth;
+
+                if (this._y <= minYear) {
+                    this._y = minYear;
+                    if (!isNaN(minMonth) && this._m < minMonth) {
+                        this._m = minMonth;
+                    }
+                }
+                if (this._y >= maxYear) {
+                    this._y = maxYear;
+                    if (!isNaN(maxMonth) && this._m > maxMonth) {
+                        this._m = maxMonth;
+                    }
+                }
+
+                this.el.innerHTML = renderTitle(this) + this.render(this._y, this._m);
+
+                if (opts.bound) {
+                    var pEl  = opts.field,
+                        left = pEl.offsetLeft,
+                        top  = pEl.offsetTop + pEl.offsetHeight;
+                    while((pEl = pEl.offsetParent)) {
+                        left += pEl.offsetLeft;
+                        top  += pEl.offsetTop;
+                    }
+                    this.el.style.cssText = 'position:absolute;left:' + left + 'px;top:' + top + 'px;';
+                    sto(function() {
+                        opts.field.focus();
+                    }, 1);
+                }
+
+                if (typeof this._o.onDraw === 'function') {
+                    var self = this;
+                    sto(function() {
+                        self._o.onDraw.call(self);
+                    }, 0);
+                }
+            },
+
+            /**
+            * render HTML for a particular month
+            */
+            render: function(year, month)
+            {
+                var opts   = this._o,
+                    now    = new Date(),
+                    days   = getDaysInMonth(year, month),
+                    before = new Date(year, month, 1).getDay(),
+                    data   = [],
+                    row    = [];
+                setToStartOfDay(now);
+                if (opts.firstDay > 0) {
+                    before -= opts.firstDay;
+                    if (before < 0) {
+                        before += 7;
+                    }
+                }
+                var cells = days + before,
+                    after = cells;
+                while(after > 7) {
+                    after -= 7;
+                }
+                cells += 7 - after;
+                for (var i = 0, r = 0; i < cells; i++)
+                {
+                    var day = new Date(year, month, 1 + (i - before)),
+                        isDisabled = (opts.minDate && day < opts.minDate) || (opts.maxDate && day > opts.maxDate),
+                        isSelected = isDate(this._d) ? compareDates(day, this._d) : false,
+                        isToday = compareDates(day, now),
+                        isEmpty = i < before || i >= (days + before);
+
+                    row.push(renderDay(1 + (i - before), isSelected, isToday, isDisabled, isEmpty));
+
+                    if (++r === 7) {
+                        data.push(renderRow(row, opts.isRTL));
+                        row = [];
+                        r = 0;
+                    }
+                }
+                return renderTable(opts, data);
+            },
+
+            isVisible: function()
+            {
+                return this._v;
+            },
+
+            show: function()
+            {
+                if (!this._v) {
+                    if (this._o.bound) {
+                        addEvent(document, 'click', this._onClick);
+                    }
+                    removeClass(this.el, 'is-hidden');
+                    this._v = true;
+                    this.draw();
+                    if (typeof this._o.onOpen === 'function') {
+                        this._o.onOpen.call(this);
+                    }
+                }
+            },
+
+            hide: function()
+            {
+                var v = this._v;
+                if (v !== false) {
+                    if (this._o.bound) {
+                        removeEvent(document, 'click', this._onClick);
+                    }
+                    this.el.style.cssText = '';
+                    addClass(this.el, 'is-hidden');
+                    this._v = false;
+                    if (v !== undefined && typeof this._o.onClose === 'function') {
+                        this._o.onClose.call(this);
+                    }
+                }
+            },
+
+            /**
+            * GAME OVER
+            */
+            destroy: function()
+            {
+                this.hide();
+                removeEvent(this.el, 'mousedown', this._onMouseDown, true);
+                removeEvent(this.el, 'change', this._onChange);
+                if (this._o.field) {
+                    removeEvent(this._o.field, 'change', this._onInputChange);
+                    if (this._o.bound) {
+                        removeEvent(this._o.field, 'click', this._onInputClick);
+                        removeEvent(this._o.field, 'focus', this._onInputFocus);
+                        removeEvent(this._o.field, 'blur', this._onInputBlur);
+                    }
+                }
+                if (this.el.parentNode) {
+                    this.el.parentNode.removeChild(this.el);
+                }
+            }
+
+        };
+
+        return Pikaday;
+
+    }));
+
+    WebElements.createCalendar = function(options)
+    {
+        var picker = new Pikaday(options);
+        return picker;
+    }
+}
+
+{
+    (function(root) {
+  /**
+   * Namespace to hold all the code for timezone detection.
+   */
+  var jstz = (function () {
+      'use strict';
+      var HEMISPHERE_SOUTH = 's',
+
+          /**
+           * Gets the offset in minutes from UTC for a certain date.
+           * @param {Date} date
+           * @returns {Number}
+           */
+          get_date_offset = function (date) {
+              var offset = -date.getTimezoneOffset();
+              return (offset !== null ? offset : 0);
+          },
+
+          get_date = function (year, month, date) {
+              var d = new Date();
+              if (year !== undefined) {
+                d.setFullYear(year);
+              }
+              d.setMonth(month);
+              d.setDate(date);
+              return d;
+          },
+
+          get_january_offset = function (year) {
+              return get_date_offset(get_date(year, 0 ,2));
+          },
+
+          get_june_offset = function (year) {
+              return get_date_offset(get_date(year, 5, 2));
+          },
+
+          /**
+           * Private method.
+           * Checks whether a given date is in daylight saving time.
+           * If the date supplied is after august, we assume that we're checking
+           * for southern hemisphere DST.
+           * @param {Date} date
+           * @returns {Boolean}
+           */
+          date_is_dst = function (date) {
+              var is_southern = date.getMonth() > 7,
+                  base_offset = is_southern ? get_june_offset(date.getFullYear()) :
+                                              get_january_offset(date.getFullYear()),
+                  date_offset = get_date_offset(date),
+                  is_west = base_offset < 0,
+                  dst_offset = base_offset - date_offset;
+
+              if (!is_west && !is_southern) {
+                  return dst_offset < 0;
+              }
+
+              return dst_offset !== 0;
+          },
+
+          /**
+           * This function does some basic calculations to create information about
+           * the user's timezone. It uses REFERENCE_YEAR as a solid year for which
+           * the script has been tested rather than depend on the year set by the
+           * client device.
+           *
+           * Returns a key that can be used to do lookups in jstz.olson.timezones.
+           * eg: "720,1,2".
+           *
+           * @returns {String}
+           */
+
+          lookup_key = function () {
+              var january_offset = get_january_offset(),
+                  june_offset = get_june_offset(),
+                  diff = january_offset - june_offset;
+
+              if (diff < 0) {
+                  return january_offset + ",1";
+              } else if (diff > 0) {
+                  return june_offset + ",1," + HEMISPHERE_SOUTH;
+              }
+
+              return january_offset + ",0";
+          },
+
+          /**
+           * Uses get_timezone_info() to formulate a key to use in the olson.timezones dictionary.
+           *
+           * Returns a primitive object on the format:
+           * {'timezone': TimeZone, 'key' : 'the key used to find the TimeZone object'}
+           *
+           * @returns Object
+           */
+          determine = function () {
+              var key = lookup_key();
+              return new jstz.TimeZone(jstz.olson.timezones[key]);
+          },
+
+          /**
+           * This object contains information on when daylight savings starts for
+           * different timezones.
+           *
+           * The list is short for a reason. Often we do not have to be very specific
+           * to single out the correct timezone. But when we do, this list comes in
+           * handy.
+           *
+           * Each value is a date denoting when daylight savings starts for that timezone.
+           */
+          dst_start_for = function (tz_name) {
+
+            var ru_pre_dst_change = new Date(2010, 6, 15, 1, 0, 0, 0), // In 2010 Russia had DST, this allows us to detect Russia :)
+                dst_starts = {
+                    'America/Denver': new Date(2011, 2, 13, 3, 0, 0, 0),
+                    'America/Mazatlan': new Date(2011, 3, 3, 3, 0, 0, 0),
+                    'America/Chicago': new Date(2011, 2, 13, 3, 0, 0, 0),
+                    'America/Mexico_City': new Date(2011, 3, 3, 3, 0, 0, 0),
+                    'America/Asuncion': new Date(2012, 9, 7, 3, 0, 0, 0),
+                    'America/Santiago': new Date(2012, 9, 3, 3, 0, 0, 0),
+                    'America/Campo_Grande': new Date(2012, 9, 21, 5, 0, 0, 0),
+                    'America/Montevideo': new Date(2011, 9, 2, 3, 0, 0, 0),
+                    'America/Sao_Paulo': new Date(2011, 9, 16, 5, 0, 0, 0),
+                    'America/Los_Angeles': new Date(2011, 2, 13, 8, 0, 0, 0),
+                    'America/Santa_Isabel': new Date(2011, 3, 5, 8, 0, 0, 0),
+                    'America/Havana': new Date(2012, 2, 10, 2, 0, 0, 0),
+                    'America/New_York': new Date(2012, 2, 10, 7, 0, 0, 0),
+                    'Europe/Helsinki': new Date(2013, 2, 31, 5, 0, 0, 0),
+                    'Pacific/Auckland': new Date(2011, 8, 26, 7, 0, 0, 0),
+                    'America/Halifax': new Date(2011, 2, 13, 6, 0, 0, 0),
+                    'America/Goose_Bay': new Date(2011, 2, 13, 2, 1, 0, 0),
+                    'America/Miquelon': new Date(2011, 2, 13, 5, 0, 0, 0),
+                    'America/Godthab': new Date(2011, 2, 27, 1, 0, 0, 0),
+                    'Europe/Moscow': ru_pre_dst_change,
+                    'Asia/Amman': new Date(2013, 2, 29, 1, 0, 0, 0),
+                    'Asia/Beirut': new Date(2013, 2, 31, 2, 0, 0, 0),
+                    'Asia/Damascus': new Date(2013, 3, 6, 2, 0, 0, 0),
+                    'Asia/Jerusalem': new Date(2013, 2, 29, 5, 0, 0, 0),
+                    'Asia/Yekaterinburg': ru_pre_dst_change,
+                    'Asia/Omsk': ru_pre_dst_change,
+                    'Asia/Krasnoyarsk': ru_pre_dst_change,
+                    'Asia/Irkutsk': ru_pre_dst_change,
+                    'Asia/Yakutsk': ru_pre_dst_change,
+                    'Asia/Vladivostok': ru_pre_dst_change,
+                    'Asia/Baku': new Date(2013, 2, 31, 4, 0, 0),
+                    'Asia/Yerevan': new Date(2013, 2, 31, 3, 0, 0),
+                    'Asia/Kamchatka': ru_pre_dst_change,
+                    'Asia/Gaza': new Date(2010, 2, 27, 4, 0, 0),
+                    'Africa/Cairo': new Date(2010, 4, 1, 3, 0, 0),
+                    'Europe/Minsk': ru_pre_dst_change,
+                    'Pacific/Apia': new Date(2010, 10, 1, 1, 0, 0, 0),
+                    'Pacific/Fiji': new Date(2010, 11, 1, 0, 0, 0),
+                    'Australia/Perth': new Date(2008, 10, 1, 1, 0, 0, 0)
+                };
+
+              return dst_starts[tz_name];
+          };
+
+      return {
+          determine: determine,
+          date_is_dst: date_is_dst,
+          dst_start_for: dst_start_for
+      };
+  }());
+
+  /**
+   * Simple object to perform ambiguity check and to return name of time zone.
+   */
+  jstz.TimeZone = function (tz_name) {
+      'use strict';
+        /**
+         * The keys in this object are timezones that we know may be ambiguous after
+         * a preliminary scan through the olson_tz object.
+         *
+         * The array of timezones to compare must be in the order that daylight savings
+         * starts for the regions.
+         */
+      var AMBIGUITIES = {
+              'America/Denver':       ['America/Denver', 'America/Mazatlan'],
+              'America/Chicago':      ['America/Chicago', 'America/Mexico_City'],
+              'America/Santiago':     ['America/Santiago', 'America/Asuncion', 'America/Campo_Grande'],
+              'America/Montevideo':   ['America/Montevideo', 'America/Sao_Paulo'],
+              'Asia/Beirut':          ['Asia/Amman', 'Asia/Jerusalem', 'Asia/Beirut', 'Europe/Helsinki','Asia/Damascus'],
+              'Pacific/Auckland':     ['Pacific/Auckland', 'Pacific/Fiji'],
+              'America/Los_Angeles':  ['America/Los_Angeles', 'America/Santa_Isabel'],
+              'America/New_York':     ['America/Havana', 'America/New_York'],
+              'America/Halifax':      ['America/Goose_Bay', 'America/Halifax'],
+              'America/Godthab':      ['America/Miquelon', 'America/Godthab'],
+              'Asia/Dubai':           ['Europe/Moscow'],
+              'Asia/Dhaka':           ['Asia/Yekaterinburg'],
+              'Asia/Jakarta':         ['Asia/Omsk'],
+              'Asia/Shanghai':        ['Asia/Krasnoyarsk', 'Australia/Perth'],
+              'Asia/Tokyo':           ['Asia/Irkutsk'],
+              'Australia/Brisbane':   ['Asia/Yakutsk'],
+              'Pacific/Noumea':       ['Asia/Vladivostok'],
+              'Pacific/Tarawa':       ['Asia/Kamchatka', 'Pacific/Fiji'],
+              'Pacific/Tongatapu':    ['Pacific/Apia'],
+              'Asia/Baghdad':         ['Europe/Minsk'],
+              'Asia/Baku':            ['Asia/Yerevan','Asia/Baku'],
+              'Africa/Johannesburg':  ['Asia/Gaza', 'Africa/Cairo']
+          },
+
+          timezone_name = tz_name,
+
+          /**
+           * Checks if a timezone has possible ambiguities. I.e timezones that are similar.
+           *
+           * For example, if the preliminary scan determines that we're in America/Denver.
+           * We double check here that we're really there and not in America/Mazatlan.
+           *
+           * This is done by checking known dates for when daylight savings start for different
+           * timezones during 2010 and 2011.
+           */
+          ambiguity_check = function () {
+              var ambiguity_list = AMBIGUITIES[timezone_name],
+                  length = ambiguity_list.length,
+                  i = 0,
+                  tz = ambiguity_list[0];
+
+              for (; i < length; i += 1) {
+                  tz = ambiguity_list[i];
+
+                  if (jstz.date_is_dst(jstz.dst_start_for(tz))) {
+                      timezone_name = tz;
+                      return;
+                  }
+              }
+          },
+
+          /**
+           * Checks if it is possible that the timezone is ambiguous.
+           */
+          is_ambiguous = function () {
+              return typeof (AMBIGUITIES[timezone_name]) !== 'undefined';
+          };
+
+      if (is_ambiguous()) {
+          ambiguity_check();
+      }
+
+      return {
+          name: function () {
+              return timezone_name;
+          }
+      };
+  };
+
+  jstz.olson = {};
+
+  /*
+   * The keys in this dictionary are comma separated as such:
+   *
+   * First the offset compared to UTC time in minutes.
+   *
+   * Then a flag which is 0 if the timezone does not take daylight savings into account and 1 if it
+   * does.
+   *
+   * Thirdly an optional 's' signifies that the timezone is in the southern hemisphere,
+   * only interesting for timezones with DST.
+   *
+   * The mapped arrays is used for constructing the jstz.TimeZone object from within
+   * jstz.determine_timezone();
+   */
+  jstz.olson.timezones = {
+      '-720,0'   : 'Pacific/Majuro',
+      '-660,0'   : 'Pacific/Pago_Pago',
+      '-600,1'   : 'America/Adak',
+      '-600,0'   : 'Pacific/Honolulu',
+      '-570,0'   : 'Pacific/Marquesas',
+      '-540,0'   : 'Pacific/Gambier',
+      '-540,1'   : 'America/Anchorage',
+      '-480,1'   : 'America/Los_Angeles',
+      '-480,0'   : 'Pacific/Pitcairn',
+      '-420,0'   : 'America/Phoenix',
+      '-420,1'   : 'America/Denver',
+      '-360,0'   : 'America/Guatemala',
+      '-360,1'   : 'America/Chicago',
+      '-360,1,s' : 'Pacific/Easter',
+      '-300,0'   : 'America/Bogota',
+      '-300,1'   : 'America/New_York',
+      '-270,0'   : 'America/Caracas',
+      '-240,1'   : 'America/Halifax',
+      '-240,0'   : 'America/Santo_Domingo',
+      '-240,1,s' : 'America/Santiago',
+      '-210,1'   : 'America/St_Johns',
+      '-180,1'   : 'America/Godthab',
+      '-180,0'   : 'America/Argentina/Buenos_Aires',
+      '-180,1,s' : 'America/Montevideo',
+      '-120,0'   : 'America/Noronha',
+      '-120,1'   : 'America/Noronha',
+      '-60,1'    : 'Atlantic/Azores',
+      '-60,0'    : 'Atlantic/Cape_Verde',
+      '0,0'      : 'UTC',
+      '0,1'      : 'Europe/London',
+      '60,1'     : 'Europe/Berlin',
+      '60,0'     : 'Africa/Lagos',
+      '60,1,s'   : 'Africa/Windhoek',
+      '120,1'    : 'Asia/Beirut',
+      '120,0'    : 'Africa/Johannesburg',
+      '180,0'    : 'Asia/Baghdad',
+      '180,1'    : 'Europe/Moscow',
+      '210,1'    : 'Asia/Tehran',
+      '240,0'    : 'Asia/Dubai',
+      '240,1'    : 'Asia/Baku',
+      '270,0'    : 'Asia/Kabul',
+      '300,1'    : 'Asia/Yekaterinburg',
+      '300,0'    : 'Asia/Karachi',
+      '330,0'    : 'Asia/Kolkata',
+      '345,0'    : 'Asia/Kathmandu',
+      '360,0'    : 'Asia/Dhaka',
+      '360,1'    : 'Asia/Omsk',
+      '390,0'    : 'Asia/Rangoon',
+      '420,1'    : 'Asia/Krasnoyarsk',
+      '420,0'    : 'Asia/Jakarta',
+      '480,0'    : 'Asia/Shanghai',
+      '480,1'    : 'Asia/Irkutsk',
+      '525,0'    : 'Australia/Eucla',
+      '525,1,s'  : 'Australia/Eucla',
+      '540,1'    : 'Asia/Yakutsk',
+      '540,0'    : 'Asia/Tokyo',
+      '570,0'    : 'Australia/Darwin',
+      '570,1,s'  : 'Australia/Adelaide',
+      '600,0'    : 'Australia/Brisbane',
+      '600,1'    : 'Asia/Vladivostok',
+      '600,1,s'  : 'Australia/Sydney',
+      '630,1,s'  : 'Australia/Lord_Howe',
+      '660,1'    : 'Asia/Kamchatka',
+      '660,0'    : 'Pacific/Noumea',
+      '690,0'    : 'Pacific/Norfolk',
+      '720,1,s'  : 'Pacific/Auckland',
+      '720,0'    : 'Pacific/Tarawa',
+      '765,1,s'  : 'Pacific/Chatham',
+      '780,0'    : 'Pacific/Tongatapu',
+      '780,1,s'  : 'Pacific/Apia',
+      '840,0'    : 'Pacific/Kiritimati'
+  };
+
+  if (typeof exports !== 'undefined') {
+    exports.jstz = jstz;
+  } else {
+    root.jstz = jstz;
+  }
+})(this);
+
+    WebElements.timezone = function()
+    {
+        var tz = jstz.determine();
+        return tz.name();
+    }
+}
+
+WebElements.setCookie = function(name, value)
+{
+    document.cookie = name + "=" + value + ";"
+}
+
+WebElements.getCookie = function(name)
+{
+    currentcookie = document.cookie;
+    if (currentcookie.length > 0)
+    {
+        firstidx = currentcookie.indexOf(name + "=");
+        if (firstidx != -1)
+        {
+            firstidx = firstidx + name.length + 1;
+            lastidx = currentcookie.indexOf(";",firstidx);
+            if (lastidx == -1)
+            {
+                lastidx = currentcookie.length;
+            }
+            return unescape(currentcookie.substring(firstidx, lastidx));
+        }
+    }
+    return "";
+}
+
+WebElements.openAccordion = function(content, image, value)
+{
+    var content = WebElements.get(content);
+    var image = WebElements.get(image);
+    var value = WebElements.get(value);
+
+    WebElements.show(content);
+    value.value = 'True';
+    image.src = WebElements.Settings.hideImage;
+}
+
+WebElements.closeAccordion = function(content, image, value)
+{
+    var content = WebElements.get(content);
+    var image = WebElements.get(image);
+    var value = WebElements.get(value);
+
+    WebElements.hide(content);
+    value.value = 'False';
+    image.src =  WebElements.Settings.showImage;
+}
+
+WebElements.toggleAccordion = function(content, image, value)
+{
+    if(!WebElements.shown(content))
+    {
+        WebElements.openAccordion(content, image, value);
+    }
+    else
+    {
+        WebElements.closeAccordion(content, image, value);
+    }
 }

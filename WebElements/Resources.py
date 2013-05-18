@@ -27,7 +27,6 @@ from . import Base
 from . import Factory
 from . import ClientSide
 from .MethodUtils import CallBack
-from .StringUtils import interpretAsString
 from .DOM import Link, Script, H2
 from .MultiplePythonSupport import *
 
@@ -104,69 +103,14 @@ class ScriptContainer(DOM.Script):
         self.attributes['language'] = 'javascript'
         self.attributes['type']  = 'text/javascript'
         self._scripts = []
-        self.usedObjects = []
 
     def content(self, formatted=False, *args, **kwargs):
         """
             Overrides the base content method to return the javascript associated with the scriptcontainer
         """
-        scriptContent = ";".join([interpretAsString(script) for script in self.scripts()])
-
-        for objectType in self.usedObjects:
-            for function in objectType.jsFunctions:
-                scriptContent += self.jsFunctionAsString(getattr(objectType, function))
+        scriptContent = ";".join([str(script) for script in self.scripts()])
 
         return scriptContent
-
-    def addJSFunctions(self, objectType):
-        """
-            Adds all jsFunction scripts set on the passed in class
-        """
-        if not objectType in self.usedObjects:
-            self.usedObjects.append(objectType)
-
-    def jsFunctionAsString(self, jsFunction):
-        """
-            Creates and returns a jsFunction implementation based on a pased in python function representation
-        """
-        methodName = jsFunction.__name__
-        attributes = list(getattr(jsFunction, 'func_code', getattr(jsFunction, '__code__')).co_varnames)
-        attributes.reverse()
-
-        functionDefaults = getattr(jsFunction, 'func_defaults', getattr(jsFunction, '__defaults__'))
-        if functionDefaults:
-            methodDefaults = list(functionDefaults)
-        else:
-            methodDefaults = []
-
-        methodDefaults.reverse()
-
-        defaults = {}
-        for index, default in enumerate(methodDefaults):
-            if type(default) in (str, unicode):
-                default = "'" + default + "'"
-            else:
-                default = interpretAsString(default)
-            defaults[attributes[index]] = default
-
-        attributeValues = {}
-        for attribute in attributes:
-            if defaults.get(attribute, None) is None:
-                attributeValues[attribute] = None
-
-        attributes.reverse()
-        script = ["\nfunction %s(%s)" % (methodName, ', '.join(attributes))]
-        script.append("{")
-        for var, default in iteritems(defaults):
-            script.append("\tif(%s == null) var %s = %s;" % (var, var, default))
-
-        for var in attributes:
-            if var.startswith("element"):
-                script.append('\tvar %s = WebElements.get(%s);' % (var, var))
-        script.append(interpretAsString(jsFunction(**attributeValues)))
-        script.append("}\n")
-
-        return "\n".join(script)
 
     def addScript(self, script):
         """

@@ -25,6 +25,7 @@ from . import DOM
 from . import Display
 from . import Factory
 from . import Validators
+from .Types import Safe
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 
@@ -56,12 +57,13 @@ class Stack(Base.WebElement):
         """
             Updates the index to show the givin element:
                 element - the element to show
+
+            returns the element on success or None on failure
         """
         if element in self.stackElements:
             self.index = self.stackElements.index(element)
             self.__setChildren__()
-            return True
-        return False
+            return element
 
     def visibleElement(self):
         """
@@ -237,6 +239,7 @@ class Field(Horizontal):
     Base.addChildProperties(properties, Display.Image, 'image')
     Base.addChildProperties(properties, Vertical, 'inputAndActions')
     Base.addChildProperties(properties, Display.Message, 'message')
+    Base.addChildProperties(properties, Display.Label, 'label')
     properties['text'] = {'action':'setText'}
     properties['required'] = {'action':'call', 'name':'setRequired', 'type':'bool'}
     properties['manualValidate'] = {'type':'bool', 'action':'classAttribute'}
@@ -253,6 +256,7 @@ class Field(Horizontal):
         self.validation = self.inputAndActions.addChildElement(Validators.Validation())
         self.addChildElementsTo = self.inputAndActions
         self.manualValidate = False
+        self.addClass('WField')
 
     @property
     def image(self):
@@ -302,11 +306,15 @@ class Field(Horizontal):
 
     def insertVariables(self, variableDict=None):
         """
-            Overrides insertVariables to validate the field if automatic validation is set
+            Overrides insertVariables to validate the field if data is present
         """
+        validate = False
+        if variableDict.get(self.userInput.fullId(), None) is not None:
+            validate = True
+
         Horizontal.insertVariables(self, variableDict)
 
-        if not self.manualValidate:
+        if validate:
             for validator in self.validation:
                 self.validation.validate()
 
@@ -348,8 +356,6 @@ class Fields(Vertical):
             Overrides addChildElement to automatically add the appropriate classes to fields, labels, and inputs
             to enable styling them with CSS.
         """
-        if element.displayable:
-            element.addClass("WField")
         if hasattr(element, 'label'):
             element.label.addClass("WLabel")
         if hasattr(element, 'inputAndActions'):
@@ -389,8 +395,8 @@ class Grid(Box):
 
         columnIndex = 0
         for element in self:
-            style = self.rowHeight and {'height':self.rowHeight} or {}
-            columns[columnIndex].addChildElement(element, ensureUnique=False, style=style)
+            element.style.update(self.rowHeight and {'height':self.rowHeight} or {})
+            columns[columnIndex].addChildElement(element, ensureUnique=False)
             if self.uniformStyle:
                 element.setStyleFromString(self.uniformStyle)
 
@@ -410,14 +416,13 @@ Factory.addProduct(Grid)
 
 class LineBreak(Box):
     """
-        Forces a newline below all divs
-        Like a more forceful <br/>
+        Forces a newline below all divs (a clear fix)
     """
     __slots__ = ()
 
     def _create(self, name=None, id=None, parent=None):
         Box._create(self, '', None, parent)
-        self.addChildElement(Base.TextNode("&nbsp;"))
+        self.addChildElement(Base.TextNode(Safe("&nbsp;")))
         self.style['clear'] = 'both'
         self.style['height'] = '0px'
 

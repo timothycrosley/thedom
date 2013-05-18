@@ -31,14 +31,14 @@ class __Tag__(WebElement):
         WebElement._create(self, id, name, parent, **kwargs)
         self._tagName = tagName
 
-def parse(data):
+def parse(data, formatted=False):
     """
         Takes a jsonable python data structure and turns it into valid xml
     """
     tree = __parse__(data, Flow())
     tree[0].attributes['xmlns:xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
     tree[0].attributes['xmlns:xsd'] = "http://www.w3.org/2001/XMLSchema"
-    return tree.toHTML(formatted=True)
+    return tree.toHTML(formatted=formatted)
 
 def __parse__(data, parentElement):
     for key, value in iteritems(data):

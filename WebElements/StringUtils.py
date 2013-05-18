@@ -85,58 +85,6 @@ def removeAlphas(value):
             newValue += part
     return newValue
 
-def convertIterableToString(iterable):
-    """
-        Returns a string representation of an iterable value.
-    """
-    return ' '.join([interpretAsString(item) or '' for item in iterable])
-
-def convertBoolToString(boolean):
-    """
-        Returns a string representation of a boolean value.
-    """
-    return unicode(boolean).lower()
-
-def convertFloatToString(value):
-    """
-        Returns a string representation of a float value.
-    """
-    return "%f%%" % (value * 100.0)
-
-typeDict = {bool:convertBoolToString, float:convertFloatToString}
-for pythonType in (str, unicode) + (int, long):
-    typeDict[pythonType] = unicode
-for pythonType in (types.GeneratorType, list, tuple, set):
-    typeDict[pythonType] = convertIterableToString
-
-getTypeDict = typeDict.get
-
-def interpretAsString(value):
-    """
-        returns a string from lists, booleans, dictionaries or a
-        callbacks, or function/instance methods
-    """
-    if value is None:
-        return ''
-    call = getTypeDict(type(value), None)
-    if call:
-        return call(value)
-    elif not value:
-        return None
-    elif isinstance(value, dict):
-        asString = ""
-        for dictKey, dictValue in iteritems(value):
-            dictValue = interpretAsString(dictValue)
-            if dictValue is not  None:
-                asString += unicode(dictKey) + ':' + dictValue + ';'
-        return asString
-    elif hasattr(value, "__call__"):
-        return interpretAsString(value())
-    elif type(value) == float:
-        return "%f%%" % (value * 100.0)
-
-    return unicode(value)
-
 def interpretFromString(value):
     """
         returns the python equivalent value from an xml string (such as an attribute value):

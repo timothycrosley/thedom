@@ -61,6 +61,9 @@ class CallBack(object):
     def __call__(self):
         return self.call()
 
+    def __str__(self):
+        return unicode(self.call() or "")
+
     def call(self):
         """
             Calls the method

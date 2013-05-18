@@ -386,3 +386,31 @@ class PhoneNumber(PatternValidator):
 Factory.addProduct(PhoneNumber)
 
 
+class DateValidator(PatternValidator):
+    """
+        Validates that a date matches the standard MM/DD/YYYY format.
+    """
+    pattern = re.compile(r'^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d$')
+    messages = {'format':'MM/DD/YYYY'}
+    __slots__ = ()
+
+Factory.addProduct(DateValidator)
+
+
+class URLValidator(PatternValidator):
+    """
+        Validates that a given URL matches the standard URL format.
+    """
+    pattern = re.compile(r'^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$')
+    messages = {'format':'Please enter a valid URL'}
+    __slots__ = ()
+
+Factory.addProduct(URLValidator)
+
+
+class TimeValidator(PatternValidator):
+    pattern = re.compile(r'^\d{1,2}:\d{2}([ap]m)$')
+    messages = {'format':'HH:MMpm'}
+    __slots__ = ()
+
+Factory.addProduct(TimeValidator)

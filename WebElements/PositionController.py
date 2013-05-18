@@ -55,7 +55,7 @@ class PositionController(object):
         self.itemsPerPage = itemsPerPage
 
         self.numberOfPages = self.length // self.itemsPerPage
-        if self.numberOfPages < (float(self.length) // float(self.itemsPerPage)):
+        if self.numberOfPages < (float(self.length) / float(self.itemsPerPage)):
             self.numberOfPages += 1
 
         self.allPages = []

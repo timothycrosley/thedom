@@ -27,18 +27,17 @@ from WebElements.Inputs import ValueElement
 class TestValueElement(object):
 
     def setup_method(self, method):
-        self.element = ValueElement("ValueId", "ValueName", key="ValueKey")
+        self.element = ValueElement("ValueId", "ValueName")
 
     def test_insertVariableByKey(self):
         variableDict = {'SomeValue':'AHHH!',
-                        'ValueKey':'First',
                         'ValueId':'Second',
                         'ValueName':'Third',
                         'SomeOtherValue':[1, 2, 3, 4]}
 
         self.element.insertVariables(variableDict)
-        assert self.element.value() == 'First'
-        assert self.element.exportVariables() == {'ValueKey':'First'}
+        assert self.element.value() == 'Second'
+        assert self.element.exportVariables() == {'ValueName':'Second'}
 
     def test_insertVariableById(self):
         variableDict = {'SomeValue':'AHHH!',
@@ -48,7 +47,7 @@ class TestValueElement(object):
 
         self.element.insertVariables(variableDict)
         assert self.element.value() == 'Second'
-        assert self.element.exportVariables() == {'ValueKey':'Second'}
+        assert self.element.exportVariables() == {'ValueName':'Second'}
 
     def test_insertVariableByName(self):
         variableDict = {'SomeValue':'AHHH!',
@@ -65,15 +64,15 @@ class TestValueElement(object):
                         'SomeOtherValue':[5, 6, 7, 8]}
         self.element.insertVariables(variableDict)
         assert self.element.value() == 'Red'
-        assert self.element.exportVariables() == {'ValueKey':'Red'}
+        assert self.element.exportVariables() == {'ValueName':'Red'}
 
         self.element.insertVariables(variableDict)
         assert self.element.value() == 'Green'
-        assert self.element.exportVariables() == {'ValueKey':'Green'}
+        assert self.element.exportVariables() == {'ValueName':'Green'}
 
         self.element.insertVariables(variableDict)
         assert self.element.value() == 'Blue'
-        assert self.element.exportVariables() == {'ValueKey':'Blue'}
+        assert self.element.exportVariables() == {'ValueName':'Blue'}
 
     def test_value(self):
         assert not self.element.value()

@@ -81,12 +81,6 @@ class TestAccordion(ElementTester):
         self.element = Factory.build("accordion", "Test")
 
 
-class TestAccordion(ElementTester):
-
-    def setup_class(self):
-        self.element = Factory.build("accordion", "Test")
-
-
 class TestFormContainer(ElementTester):
 
     def setup_class(self):

@@ -5,7 +5,6 @@ WebElements/Base.py
 WebElements/Buttons.py
 WebElements/Charts.py
 WebElements/ClientSide.py
-WebElements/ClientSideSupport.py
 WebElements/CodeDocumentation.py
 WebElements/Connectable.py
 WebElements/Containers.py
@@ -15,8 +14,6 @@ WebElements/DictUtils.py
 WebElements/Display.py
 WebElements/Document.py
 WebElements/Factory.py
-WebElements/Fields.py
-WebElements/HTML5.py
 WebElements/HiddenInputs.py
 WebElements/Inputs.py
 WebElements/IteratorUtils.py
@@ -31,7 +28,7 @@ WebElements/Printing.py
 WebElements/Resources.py
 WebElements/Social.py
 WebElements/StringUtils.py
-WebElements/ToClientSide.py
+WebElements/Types.py
 WebElements/UITemplate.py
 WebElements/Validators.py
 WebElements/__init__.py

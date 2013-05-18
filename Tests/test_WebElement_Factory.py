@@ -76,13 +76,13 @@ class TestFactory(object):
         assert type(Factory.buildFromTemplate(Template('SomeElementThatDoesNotExist'))) == Invalid
 
         template = Template('box', properties=(('style', 'margin:5px;'),),
-                            childElements=(Template('textfield', id='My Field A', accessor="Field1",
+                            childElements=(Template('button', id='My Field A', accessor="Field1",
                                                 properties=(('style', 'margin-bottom:4px; margin-top:7px; clear:both;'),
                                                             ('text', 'Field 1:'))),
-                                           Template('textfield', id='My Field B',
+                                           Template('button', id='My Field B',
                                                 properties=(('style', 'margin-bottom:4px; margin-top:7px; clear:both;'),
                                                             ('text', 'Field 2:'))),
-                                           Template('textareafield', id='My Field C',
+                                           Template('label', id='My Field C',
                                                 properties=(('style', 'margin-bottom:4px; margin-top:7px; clear:both;'),
                                                             ('text', 'Field 3:'))),
                                                             ))
@@ -96,30 +96,24 @@ class TestFactory(object):
 
         #Field 1
         childElement = testObject.childElements[0]
-        assert childElement.__class__.__name__ == "TextField"
+        assert childElement.__class__.__name__ == "Button"
         assert childElement.style == \
                     {'margin-bottom':'4px', 'margin-top':'7px', 'clear':'both'}
         assert childElement.text() == "Field 1:"
-        assert childElement.userInput.fullId() == "My Field A"
-        assert childElement.userInput.__class__.__name__ == "TextBox"
         assert childElement == accessors['Field1']
 
         #Field 2
         childElement = testObject.childElements[1]
-        assert childElement.__class__.__name__ == "TextField"
+        assert childElement.__class__.__name__ == "Button"
         assert childElement.style == {'margin-bottom':'4px', 'margin-top':'7px', 'clear':'both'}
         assert childElement.text() == "Field 2:"
-        assert childElement.userInput.fullId() == "My Field B"
-        assert childElement.userInput.__class__.__name__ == "TextBox"
 
         #Field 3
         childElement = testObject.childElements[2]
-        assert childElement.__class__.__name__ == "TextAreaField"
+        assert childElement.__class__.__name__ == "Label"
         assert childElement.style == \
                     {'margin-bottom':'4px', 'margin-top':'7px', 'clear':'both'}
         assert childElement.text() == "Field 3:"
-        assert childElement.userInput.fullId() == "My Field C"
-        assert childElement.userInput.__class__.__name__ == "TextArea"
 
 
 class TestCompositeFactory(object):

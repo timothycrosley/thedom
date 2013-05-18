@@ -21,7 +21,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Base, Buttons, Display, DOM, Factory, Fields, HiddenInputs, Inputs, Layout, UITemplate
+from . import Base, Buttons, Display, DOM, Factory, HiddenInputs, Inputs, Layout, UITemplate, ClientSide
 from .Factory import Composite
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
@@ -293,6 +293,10 @@ class Tab(Layout.Box):
         """
         return self.tabLabel.setText(text)
 
+    def remove(self):
+        self.tabLabel.remove()
+        return Layout.Box.remove(self)
+
     def _render(self):
         Layout.Box._render(self)
 
@@ -417,11 +421,24 @@ class Accordion(Layout.Vertical):
         Defines an accordion, a labeled section of the page, that upon clicking the label has its visibility
         toggled
     """
-    __slots__ = ('toggle', 'toggleImage', 'toggleLabel', 'isOpen', 'contentElement')
-    jsFunctions = ['toggleAccordion']
+    __slots__ = ('toggle', 'toggleImage', 'toggleLabel', 'isOpen', 'contentElement', '_scriptAdded')
     properties = Layout.Box.properties.copy()
     properties['open'] = {'action':'call', 'type':'bool'}
     properties['label'] = {'action':'setLabel'}
+
+    class ClientSide(Layout.Vertical.ClientSide):
+
+        def toggle(self):
+            element = self.serverSide
+            return ClientSide.toggleAccordion(element.contentElement, element.toggleImage, element.isOpen)
+
+        def open(self):
+            element = self.serverSide
+            return ClientSide.openAccordion(element.contentElement, element.toggleImage, element.isOpen)
+
+        def close(self):
+            element = self.serverSide
+            return ClientSide.closeAccordion(element.contentElement, element.toggleImage, element.isOpen)
 
     def _create(self, id, name=None, parent=None, **kwargs):
         Layout.Vertical._create(self, id, name, parent, **kwargs)
@@ -429,8 +446,7 @@ class Accordion(Layout.Vertical):
 
         self.toggle = self.addChildElement(Layout.Box())
         self.toggle.addClass('WAccordionToggle')
-        self.toggle.addJavascriptEvent('onclick', CallBack(self, 'jsToggle'))
-        self.toggleImage = self.toggle.addChildElement(Display.Image(id + "Image"))
+        self.toggleImage = self.toggle.addChildElement(Display.Image((id or "") + "Image"))
         self.toggleImage.addClass('WLeft')
         self.toggleLabel = self.toggle.addChildElement(Display.FreeText())
         self.isOpen = self.toggle.addChildElement(HiddenInputs.HiddenBooleanValue(id + "Value"))
@@ -441,8 +457,12 @@ class Accordion(Layout.Vertical):
         self.isOpen.connect('valueChanged', True, self, 'open')
         self.isOpen.connect('valueChanged', False, self, 'close')
         self.close()
+        self._scriptAdded = False
 
-        self.addJSFunctions(Accordion)
+    def _render(self):
+        if not self._scriptAdded:
+            self.toggle.addJavascriptEvent('onclick', self.ClientSide(self).toggle())
+            self._scriptAdded = True
 
     def setLabel(self, text):
         """
@@ -450,47 +470,11 @@ class Accordion(Layout.Vertical):
         """
         self.toggleLabel.setText(text)
 
-    def jsToggleOn(self):
+    def label(self):
         """
-            Returns the javascript that will toggle the label on client side
+            Returns the toggle label's text
         """
-        return """if (!WebElements.shown('%s')){
-                     WebElements.show('%s');
-                     WebElements.get('%s').value = 'True';
-                     WebElements.get('%s').src = '%simages/hide.gif'
-                """ % (self.contentElement.fullId(), self.contentElement.fullId(),
-                       self.isOpen.fullId(), self.toggleImage.fullId(), Base.Settings.STATIC_URL)
-
-    def jsToggleOff(self):
-        """
-            Returns the javascript that will toggle the label off client side
-        """
-        return """if (WebElements.shown('%s')){
-                     WebElements.hide('%s');
-                     WebElements.get('%s').value = 'False';
-                     WebElements.get('%s').src = '%simages/show.gif'
-                """ % (self.contentElement.fullId(), self.contentElement.fullId(),
-                       self.isOpen.fullId(), self.toggleImage.fullId(), Base.Settings.STATIC_URL)
-
-    def jsToggle(self):
-        """
-            Returns the javascript that will set the toggled state to the reverse of its current state client side
-        """
-        return "toggleAccordion('%s', '%s', '%s');" % (self.contentElement.fullId(), self.toggleImage.fullId(),
-                                                   self.isOpen.fullId())
-    @staticmethod
-    def toggleAccordion(elementContent, elementImage, elementValue):
-        return """if(!WebElements.shown(elementContent)){
-                     WebElements.show(elementContent);
-                     elementValue.value = 'True';
-                     elementImage.src = '%simages/hide.gif'
-                  }
-                  else
-                  {
-                     WebElements.hide(elementContent);
-                     elementValue.value = 'False';
-                     elementImage.src = '%simages/show.gif'
-                  }""" % (Base.Settings.STATIC_URL, Base.Settings.STATIC_URL)
+        return self.toggleLabel.text()
 
     def open(self):
         """
@@ -568,3 +552,37 @@ class ActionBox(Layout.Vertical):
             return Layout.Vertical.addChildElement(self, childElement, ensureUnique=ensureUnique)
 
 Factory.addProduct(ActionBox)
+
+
+class PageControlPlacement(Layout.Box):
+    """
+        Defines where on a page a PageControl should be placed, so that a third party library
+        (such as DynamicForm) can automatically find and replace the control object with a concrete instance.
+
+        Note: A unique (per-template not page) id is necessary for the automatic replacement to work,
+              and an accessor must not be present.
+    """
+    __slots__ = ('control')
+    properties = Layout.Box.properties.copy()
+    properties['control'] = {'action':'classAttribute', 'info':'The id of the control to replace this with, '
+                                                               'control path is relative and dots are allowed '
+                                                               'to access child controls. Use .. to access parent '
+                                                               'controls as with python parent imports. '
+                                                               'If not specified id is assumed to be the control '
+                                                               'name.'}
+
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        Layout.Box._create(self, id, name, parent, **kwargs)
+        self.control = id
+
+    def _render(self):
+        layout = self.addChildElement(Layout.Horizontal(style='height: 50px; padding:10px;',
+                                                        **{'class':'WLoading'}))
+        layout += Display.Image(src="images/throbber.gif")
+        if self.control.lower().endswith('s'):
+            layout += Display.Label(text=self.control + " go here...")
+        else:
+            layout += Display.Label(text=self.control + " goes here...")
+
+Factory.addProduct(PageControlPlacement)
+

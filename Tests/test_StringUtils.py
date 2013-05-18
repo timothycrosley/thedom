@@ -28,35 +28,6 @@ def test_removeAlphas():
     assert StringUtils.removeAlphas('afjsafdl121323213adfas1231321') == "1213232131231321"
     assert StringUtils.removeAlphas('213123123123231') == "213123123123231"
 
-
-def test_interpretAsString():
-    """Ensure the interpret as string utility function correctly takes objects and turns them into
-       strings
-    """
-    testList = ['1a', '2b', '3c', '4d']
-    assert StringUtils.interpretAsString(testList) == "1a 2b 3c 4d"
-
-    testTuple = ('1a', '2b', '3c', '4d')
-    assert StringUtils.interpretAsString(testTuple) == "1a 2b 3c 4d"
-
-    testDictionary = {1:'a', 2:'b', 3:'c', 4:'d'}
-    assert StringUtils.interpretAsString(testDictionary) == "1:a;2:b;3:c;4:d;"
-
-    testBoolean = True
-    assert StringUtils.interpretAsString(testBoolean) == "true"
-
-    testBoolean = False
-    assert StringUtils.interpretAsString(testBoolean) == "false"
-
-    testFloat = 1.0 / 4.0
-    assert StringUtils.interpretAsString(testFloat) == "25.000000%"
-
-    def testFunction():
-        return "hello"
-    assert StringUtils.interpretAsString(testFunction) == "hello"
-
-    assert StringUtils.interpretAsString("") == u("")
-
 def test_interpretFromString():
     """Ensure the interpret from string utility method correctly takes strings and turns them into
        objects

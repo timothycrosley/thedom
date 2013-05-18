@@ -24,12 +24,12 @@ import re
 import cgi
 from types import FunctionType
 
-from . import ClientSide, DictUtils, ToClientSide
+from .Types import Scripts, StyleDict, Set, Safe, Unsafe, WebDataType
+from . import ClientSide, DictUtils
 from .Connectable import Connectable
 from .IteratorUtils import Queryable
 from .MethodUtils import acceptsArguments, CallBack
 from .MultiplePythonSupport import *
-from .StringUtils import interpretAsString, listReplace
 from itertools import chain
 
 
@@ -88,9 +88,9 @@ class WebElement(Connectable):
     """
         The base WebElement which all custom WebElements should extend.
     """
-    __slots__ = ('_tagName', '_prefix', '__scriptTemp__', '__objectTemp__', 'validator', '_editable',
+    __slots__ = ('_tagName', '_prefix', '__scriptTemp__', 'validator', '_editable',
                  '__scriptContainer__', 'id', 'name', 'parent', '_style', '_classes', '_attributes',
-                 '_childElements', 'addChildElementsTo', 'key', '_tagSelfCloses', '_clientSide')
+                 '_childElements', 'addChildElementsTo', '_tagSelfCloses', '_clientSide')
     tagSelfCloses = False
     allowsChildren = True
     displayable = True
@@ -102,7 +102,6 @@ class WebElement(Connectable):
     properties['hide'] = {'action':'call', 'type':'bool'}
     properties['title'] = {'action':'attribute'}
     properties['lang'] = {'action':'attribute'}
-    properties['key'] = {'action':'classAttribute'}
     properties['validator'] = {'action':'classAttribute'}
     properties['uneditable'] = {'action':'call', 'name':'__setUneditable__', 'type':'bool'}
     properties['contenteditable'] = {'action':'attribute'}
@@ -122,22 +121,28 @@ class WebElement(Connectable):
         def __init__(self, element):
             self.serverSide = element
 
-        def on(self, event, action):
+        def on(self, event, action, dom=False):
             """
                 Attaches a client side action to be performed every time event occurs.
+
+                if dom is True the event is added to the DOM object directly instead of with JavaScript
             """
+            if dom:
+                return self.serverSide.addJavascriptEvent("on" + event, action)
+
             if type(action) in (list, tuple):
                 action = ClientSide.Script(";".join([ClientSide.var(actionScript) for actionScript in action]))
+
             return ClientSide.addEvent(self, event, ClientSide.eventHandler(action))
 
-        def onKey(self, key, action, direction="up"):
+        def onKey(self, key, action, direction="up", dom=False):
             """
                 Attaches a client side action to be performed every time a key is pressed on the element.
             """
             with self.evt.keyCode.IF.IS(key) as eventHandler:
                 eventHandler(action)
 
-            return self.on('key' + direction, eventHandler)
+            return self.on('key' + direction, eventHandler, dom)
 
         @property
         def id(self):
@@ -145,6 +150,13 @@ class WebElement(Connectable):
                 Returns what the element's id will be by the time it is rendered on the client's browser.
             """
             return self.serverSide.fullId()
+
+        @property
+        def do(self):
+            """
+                Provides quick access for performing actions against the element clientSide.
+            """
+            return ClientSide.doClientSide(self.get().claim())
 
         def __call__(self, script):
             self.serverSide.addScript(script)
@@ -160,6 +172,9 @@ class WebElement(Connectable):
         def __getattr__(self, name):
             return ClientSide.Script(name)
 
+        def call(self, functionName, *args):
+            return ClientSide.call(functionName, *args)
+
         def alert(self, message):
             """
                 Pops-up an alert window with the text contained in message.
@@ -172,11 +187,11 @@ class WebElement(Connectable):
             """
             return ClientSide.call("console.log", message)
 
-        def get(self):
+        def get(self, element=None):
             """
                 Returns an element retrieved based upon it's id or unique name
             """
-            return ClientSide.get(self)
+            return ClientSide.get(element or self)
 
         def forEach(self, arrayOfItems, callBack):
             """
@@ -358,6 +373,12 @@ class WebElement(Connectable):
             """
             return ClientSide.stealClassFromFellowChild(self, parentClass, className)
 
+        def stealClassFromContainer(self, container, className):
+            """
+                Adds className after removing it from all childElements of container
+            """
+            return ClientSide.stealClassFromContainer(self, container, className)
+
         def toggleVisiblity(self):
             """
                 Toggles whether or not the element can be seen.
@@ -381,6 +402,12 @@ class WebElement(Connectable):
                 Returns a DOM image object with the throbber image as it's source.
             """
             return ClientSide.buildThrobber()
+
+        def becomeThrobber(self):
+            """
+                Replaces this element with a throbber image client side.
+            """
+            return ClientSide.becomeThrobber(self)
 
         def show(self):
             """
@@ -424,11 +451,11 @@ class WebElement(Connectable):
             """
             return ClientSide.addHtml(self, html)
 
-        def move(self, to):
+        def move(self, to, makeTop=False):
             """
                 Removes the element from it's current location, adding it to 'to'.
             """
-            return ClientSide.move(self, to)
+            return ClientSide.move(self, to, makeTop)
 
         def copy(self, to, incrementId=False):
             """
@@ -664,6 +691,18 @@ class WebElement(Connectable):
             """
             return ClientSide.expandTemplate(template, valueDictionary)
 
+        def setCookie(self, name, value):
+            """
+                Sets a cookie client-side.
+            """
+            return ClientSide.setCookie(name, value)
+
+        def getCookie(self, name):
+            """
+                Returns a cookie based on its name client-side.
+            """
+            return ClientSide.getCookie(name)
+
     def __init__(self, id=None, name=None, parent=None, **kwargs):
         Connectable.__init__(self)
         self._create(id, name, parent, **kwargs)
@@ -682,7 +721,6 @@ class WebElement(Connectable):
         self.id = id
         self.name = name or id
         self.parent = parent
-        self.key = None
 
         self._style = None
         self._classes = None
@@ -694,7 +732,6 @@ class WebElement(Connectable):
 
         self.__scriptTemp__ = None
         self.__scriptContainer__ = None
-        self.__objectTemp__ = None
         self._editable = None
         self.validator = None
 
@@ -714,7 +751,7 @@ class WebElement(Connectable):
             Returns the element's classes (creating them on-demand in a lazy fashion)
         """
         if self._classes is None:
-            self._classes = set([])
+            self._classes = Set([])
 
         return self._classes
 
@@ -724,7 +761,7 @@ class WebElement(Connectable):
             Returns the element's style dictionary (creating it on-demand in a lazy fashion)
         """
         if self._style is None:
-            self._style = {}
+            self._style = StyleDict()
 
         return self._style
 
@@ -947,11 +984,6 @@ class WebElement(Connectable):
                     for script in scriptTemp:
                         self.addScript(script)
 
-                objectTemp = childElement.__objectTemp__
-                if objectTemp:
-                    for objectWithScripts in objectTemp:
-                        self.addJSFunctions(objectWithScripts)
-
             return childElement
         else:
             return False
@@ -1026,6 +1058,7 @@ class WebElement(Connectable):
                 className - the name of the class to add
         """
         self.classes.add(className)
+        return self
 
     def chooseClass(self, classes, choice):
         """
@@ -1034,11 +1067,12 @@ class WebElement(Connectable):
         for className in classes:
             self.removeClass(className)
         self.addClass(choice)
+        return self
 
     def setClasses(self, classes):
         """ Replace all current classes with a list of classes """
-        self._classes = set(classes)
-        self.attributes['class'] = self.classes
+        self._classes = Set(classes)
+        return self
 
     def removeClass(self, className):
         """
@@ -1047,6 +1081,7 @@ class WebElement(Connectable):
         """
         if self.hasClass(className):
             self.classes.remove(className)
+        return self
 
     def editable(self):
         """
@@ -1068,6 +1103,7 @@ class WebElement(Connectable):
         """
         self._editable = editable
         self.emit('editableChanged', editable)
+        return self
 
     def __setUneditable__(self):
         self.setEditable(False)
@@ -1095,18 +1131,6 @@ class WebElement(Connectable):
 
         return scriptContainer
 
-    def runClientSide(self, python):
-        """
-            Converts the python code directly to client-side code :: FEATURE STILL IN DEVELOPMENT ::
-        """
-        return self.addScript(ToClientSide.convert(python))
-
-    def dontRunClientSide(self, python):
-        """
-            Removes the defined client side python code so it wont be executed :: FEATURE STILL IN DEVELOPMENT ::
-        """
-        return self.removeScript(ToClientSide.convert(python))
-
     def addScript(self, script):
         """
             Adds a script to the script contianer set on the element:
@@ -1124,6 +1148,8 @@ class WebElement(Connectable):
             if not script in self.__scriptTemp__:
                 self.__scriptTemp__.append(script)
 
+        return self
+
     def removeScript(self, script):
         """
             Removes a script from the scriptContainer associated with this element:
@@ -1138,18 +1164,7 @@ class WebElement(Connectable):
             if scriptTemp and script in scriptTemp:
                 scriptTemp.remove(script)
 
-    def addJSFunctions(self, objectType):
-        """
-            Adds all static scripts associated with a webElement class:
-                objectType - the non-instanciated webElement class
-        """
-        if self.scriptContainer():
-            self.scriptContainer().addJSFunctions(objectType)
-        elif self.parent:
-            self.parent.addJSFunctions(objectType)
-        else:
-            self.__objectTemp__ = self.__objectTemp__ or []
-            self.__objectTemp__.append(objectType)
+        return self
 
     def __insertTemporaryScripts(self):
         """
@@ -1162,24 +1177,6 @@ class WebElement(Connectable):
                 self.addScript(script)
             self.__scriptTemp__ = []
 
-        objectTemp = self.__objectTemp__ or []
-        if objectTemp:
-            for objectType in objectTemp:
-                self.addJSFunctions(objectType)
-            self.__objectTemp__ = []
-
-    def addClientSideEvent(self, event, python):
-        """
-            Attaches python code to be executed client-side when even occurs :: FEATURE STILL IN DEVELOPMENT ::
-        """
-        self.addJavascriptEvent(event, ToClientSide.convert(python))
-
-    def removeClientSideEvent(self, event, python=None):
-        """
-            Removes previously attached python code from an event :: FEATURE STILL IN DEVELOPMENT ::
-        """
-        self.removeJavascriptEvent(event, python and ToClientSide.convert(python) or None)
-
     def addJavascriptEvent(self, event, javascript):
         """
             Adds a clientside action to be done on event:
@@ -1190,9 +1187,9 @@ class WebElement(Connectable):
             javascript = javascript.claim() + ";"
         if type(event) in (list, tuple):
             for eventName in event:
-                self.attributes.setdefault(eventName, []).append(javascript)
+                self.attributes.setdefault(eventName, Scripts()).append(javascript)
         else:
-            self.attributes.setdefault(event, []).append(javascript)
+            self.attributes.setdefault(event, Scripts()).append(javascript)
 
     def removeJavascriptEvent(self, event, javascript=None):
         """
@@ -1201,28 +1198,27 @@ class WebElement(Connectable):
                 javascript - the specific action to remove(if not set all actions are removed)
         """
         if javascript:
-            self.attributes[event].remove(javascript)
-        elif event in self.attributes:
-            self.attributes.pop(event)
+            return self.attributes[event].remove(javascript)
+        self.attributes.pop(event, None)
 
     def javascriptEvent(self, event):
         """
             Returns the action associated with a particular client-side event:
                 event - the name of the client side event
         """
-        return interpretAsString(self.attributes.get(event, None))
+        return str(self.attributes.get(event, ''))
 
     def removeChild(self, child):
         """
             Removes a child webElement:
                 child - the element to remove
+
+            Returns the removed child on success or None on failure
         """
         if child in self.childElements:
             self.childElements.remove(child)
             child.parent = None
-            return True
-
-        return False
+            return child
 
     def startTag(self):
         """
@@ -1242,15 +1238,18 @@ class WebElement(Connectable):
         if self._attributes is not None:
             attributes = chain(attributes, iteritems(self.attributes))
         for key, value in attributes:
-            value = interpretAsString(value)
-            if value:
-                if value == '_BLANK_':
-                    value = ""
+            if value is not None:
+                if not isinstance(value, WebDataType):
+                    value = Unsafe(value)
+                if value:
+                    if value == '_BLANK_':
+                        value = ""
 
-                if value == '_EMPTY_':
-                    startTag += key + " "
-                else:
-                    startTag += key + '="' + value.replace('"', '&quot;') + '" '
+                    if value == '_EMPTY_':
+                        startTag += key + " "
+                    else:
+
+                        startTag += key + '="' + unicode(value).replace('"', '&quot;') + '" '
 
         if self._tagSelfCloses:
             startTag += '/'
@@ -1325,7 +1324,7 @@ class WebElement(Connectable):
 
     @staticmethod
     def __getStyleDictFromString(styleString):
-        styleDict = {}
+        styleDict = StyleDict()
 
         styleDefinitions = styleString.split(';')
         for definition in styleDefinitions:
@@ -1388,6 +1387,8 @@ class WebElement(Connectable):
         else:
             objectWithProperty.__getattribute__(propertyAction)(value)
 
+        return self
+
     def setProperties(self, properties):
         """
             Loads element properties from a list of property name to value tuples
@@ -1398,6 +1399,8 @@ class WebElement(Connectable):
         for propertyName, propertyValue in properties:
             if propertyValue is not None and propertyName in self.properties:
                 self.setProperty(propertyName, propertyValue)
+
+        return self
 
     def _render(self):
         """
@@ -1428,15 +1431,6 @@ class WebElement(Connectable):
             return True
         return False
 
-    def sanitize(self, inputValue):
-        """
-            Sanitizes direct user input, to protect against XSS attacks.
-        """
-        if type(inputValue) not in (str, unicode):
-            return inputValue
-
-        return cgi.escape(inputValue)
-
     def __iter__(self):
         return self.childElements.__iter__()
 
@@ -1447,7 +1441,10 @@ class WebElement(Connectable):
         return self.childElements.__getitem__(index)
 
     def __setitem__(self, index, value):
-        return self.childElements.__setitem__(index, value)
+        if type(index) == int:
+            self.childElements.__setitem__(index, value)
+        else:
+            self.setProperty(index, value)
 
     def __delitem__(self, index):
         return self.childElements.__delitem__(index)
@@ -1504,7 +1501,7 @@ class Invalid(WebElement):
         """
             Overrides the behavior of setProperties on invalid elements to do nothing.
         """
-        pass
+        return self
 
     def content(self, formatted=False, *args, **kwargs):
         """
@@ -1523,7 +1520,7 @@ class TextNode(object):
     tagName = ''
     _tagName = ''
 
-    def __init__(self, text='', parent=None):
+    def __init__(self, text="", parent=None):
         self.setText(text)
         self.parent = parent
 
@@ -1531,6 +1528,11 @@ class TextNode(object):
         """
             Sets the text associated with the text node.
         """
+        if not text:
+            text = ""
+        elif not isinstance(text, WebDataType):
+            text = Unsafe(text)
+
         self._text = text
 
     def text(self):
@@ -1594,8 +1596,8 @@ class TemplateElement(WebElement):
         instance = self.factory.buildFromTemplate(self.template, accessors=accessors, parent=self)
         for accessor, element in iteritems(accessors):
             if hasattr(self, accessor):
-                raise ValueError("The accessor name or id of the element has to be unique and can not be the same as a"
-                                 " base webelement attribute."
+                raise ValueError("The accessor name or id of the element has to be unique and can not be the "
+                                 "same as a base webelement attribute."
                                  "Failed on adding element with id or accessor '%s'." % accessor)
 
             self.__setattr__(accessor, element)

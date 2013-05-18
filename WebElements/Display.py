@@ -23,6 +23,7 @@
 import datetime
 
 from . import Base, ClientSide, DictUtils, DOM, Factory
+from .Types import Safe
 from .Inputs import ValueElement
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
@@ -35,9 +36,16 @@ class Image(DOM.Img):
         Adds an image to the page
     """
     __slots__ = ()
+    properties = DOM.Img.properties.copy()
+    properties['size'] = {'action':'setSize', 'info':'Sets the height and width uniformly in pixels.', 'type':'int'}
 
-    allowsChildren = False
-    tagSelfCloses = True
+    def setSize(self, size):
+        """
+            Convenience function: Sets the height and width uniformly in pixels.
+        """
+        sizeDefinition = '%spx' % size
+        self.style['height'] = sizeDefinition
+        self.style['width'] = sizeDefinition
 
 Factory.addProduct(Image)
 
@@ -159,12 +167,10 @@ def label(cls):
 
             self._textNode = self.addChildElement(Base.TextNode())
 
-        def setText(self, text, safe=False):
+        def setText(self, text):
             """
                 Sets the displayed text
             """
-            if not safe:
-                text = self.sanitize(text)
             if text != self._textNode.text():
                 self._textNode.setText(text)
                 self.emit('textChanged', text)
@@ -173,7 +179,7 @@ def label(cls):
             """
                 Replaces the text with a single space character
             """
-            self.setText('&nbsp;', safe=True)
+            self.setText(Safe('&nbsp;'))
 
         def text(self):
             """
@@ -181,7 +187,7 @@ def label(cls):
             """
             return self._textNode.text()
 
-        def appendText(self, text, safe=False):
+        def appendText(self, text):
             """
                 Adds a new line character followed by additional text
             """
@@ -189,10 +195,8 @@ def label(cls):
             if not prevText:
                 return self.setText(text)
 
-            if not safe:
-                text = self.sanitize(text)
-
-            self.setText(prevText + "<br />" + text, safe=True)
+            self.addChildElement(DOM.Br())
+            self.addChildElement(Base.TextNode(text))
 
         def makeStrong(self):
             """
@@ -507,6 +511,9 @@ Factory.addProduct(Empty)
 
 
 class Copyright(Label):
+    """
+        Displays a basic copyright notice, automatically appending the current date.
+    """
     __slots__ = ('owner', )
     properties = Base.WebElement.properties.copy()
     properties['owner'] =  {'action':'classAttribute'}
@@ -516,7 +523,7 @@ class Copyright(Label):
         self.owner = ''
 
     def _render(self):
-        self.setText("&copy;%s %s - All rights reserved." % (datetime.datetime.now().year, self.owner), safe=True)
+        self.setText(Safe("&copy;%s %s - All rights reserved." % (datetime.datetime.now().year, self.owner)))
 
 Factory.addProduct(Copyright)
 
