@@ -1,5 +1,6 @@
 @import "compass"
 @import "CodeDocumentation"
+@import "Utils"
 
 @mixin basicShadow
     @include box-shadow(lighten(gray, 20%) 1px 1px 1px 1px)
@@ -329,14 +330,17 @@ div.WCenter
         padding: 5px
         &.WUnselected
             cursor: pointer
+            +filter-gradient(#cccccc, #aaaaaa)
             @include background-image(linear-gradient(white, #cccccc, #aaaaaa))
             border-top: 1px black solid
             &:hover
                 border-top: 1px #396EFF solid
+                +filter-gradient(darken(#cccccc, 20%), darken(#aaaaaa, 20%))
                 @include background-image(linear-gradient(white, darken(#cccccc, 20%), darken(#aaaaaa, 20%)))
 
         &.WSelected
             cursor: default
+            +filter-gradient(#cccccc, white)
             @include background-image(linear-gradient(#aaaaaa, #cccccc, white))
             border-top: 1px white solid
 
@@ -357,14 +361,17 @@ div.WCenter
         padding: 5px
         &.WUnselected
             cursor: pointer
+            +filter-gradient(#cccccc, white, horizontal)
             @include background-image(linear-gradient(left, white, #cccccc, #aaaaaa))
             border-top: 1px black solid
             &:hover
                 border-top: 1px #396EFF solid
+                +filter-gradient(darken(#cccccc, 20%), darken(#aaaaaa, 20%), horizontal)
                 @include background-image(linear-gradient(left, white, darken(#cccccc, 20%), darken(#aaaaaa, 20%)))
 
         &.WSelected
             cursor: default
+            +filter-gradient(#cccccc, white, horizontal)
             @include background-image(linear-gradient(left, #aaaaaa, #cccccc, white))
             border-top: 1px white solid
 

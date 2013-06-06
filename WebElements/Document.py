@@ -52,6 +52,7 @@ class MetaData(Base.WebElement):
     properties = Base.WebElement.properties.copy()
     properties['value'] = {'action':'setValue'}
     properties['name'] = {'action':'setName'}
+    properties['http-equiv'] = {'action':'attribute'}
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Base.WebElement._create(self)
@@ -165,11 +166,11 @@ class Document(Base.WebElement):
         self.title = self.head.addChildElement(self.Title())
         self.contentType = self.addHeader('Content-Type', 'text/html; charset=UTF-8')
 
-    def addMetaData(self, name, value):
+    def addMetaData(self, name=None, value="", **kwargs):
         """
             Will add a meta tag based on name+value pair
         """
-        metaTag = self.head.addChildElement(MetaData())
+        metaTag = self.head.addChildElement(MetaData(**kwargs))
         metaTag.setName(name)
         metaTag.setValue(value)
         return metaTag

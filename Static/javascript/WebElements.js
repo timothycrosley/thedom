@@ -45,6 +45,7 @@ Platform.IS_OPERA = Object.prototype.toString.call(window.opera) == '[object Ope
 Platform.IS_IE = navigator.appVersion.match(/\bMSIE\b/) && !!window.attachEvent && !Platform.IS_OPERA;
 Platform.IS_WEBKIT = navigator.userAgent.indexOf('AppleWebKit/') > -1
 Platform.IS_GECKO = navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') === -1
+Platform.HAS_PLACEHOLDERS = (!Platform.IS_IE || 'placeholder' in document.createElement('input'));
 
 //Provides basic event handling
 var Events = Events || {}
@@ -282,8 +283,12 @@ WebElements.getByCondition = function(conditional, parentNode, stopOnFirstMatch)
 {
     if(!stopOnFirstMatch){stopOnFirstMatch = false;}
     var elements_to_return = [];
-    var elements = parentNode;
-    if(!parentNode instanceof Array)
+    var elements = [];
+    if(parentNode instanceof Array)
+    {
+        elements = parentNode;
+    }
+    else
     {
         parentNode = WebElements.get(parentNode);
         elements = parentNode.getElementsByTagName("*");
@@ -376,13 +381,18 @@ WebElements.getElementsByClassName = function(className, parentNode, stopOnFirst
 {
     parentNode = WebElements.get(parentNode);
     if(document.getElementsByClassName){
+        var results = null;
         if(parentNode)
         {
-            return parentNode.getElementsByClassName(className);
+            results = parentNode.getElementsByClassName(className);
         }
         else
         {
-            return document.getElementsByClassName(className);
+            results = document.getElementsByClassName(className);
+        }
+        if(stopOnFirstMatch)
+        {
+            return results[0];
         }
     }
     if(!parentNode)
@@ -391,13 +401,14 @@ WebElements.getElementsByClassName = function(className, parentNode, stopOnFirst
     }
 
     var regexp = new RegExp('\\b' + className + '\\b');
-    return WebElements.getByCondition(function(element){regexp.test(element.className)}, parentNode, stopOnFirstMatch);
+    return WebElements.getByCondition(function(element){return regexp.test(element.className)},
+                                      parentNode, stopOnFirstMatch);
 }
 
 //Gets the first element in parent node with a certain class name
 WebElements.getElementByClassName = function(className, parentNode)
 {
-    return WebElements.getElementsByClassName(className, parentNode, true)[0];
+    return WebElements.getElementsByClassName(className, parentNode, true);
 }
 
 //Returns all children with a particular attribute value
@@ -1440,6 +1451,40 @@ WebElements.clickDropDown = function(menu, openOnly, button, parentElement)
    }
 }
 
+WebElements.addPlaceholders = function(element)
+{
+    if(Platform.HAS_PLACEHOLDERS)
+    {
+        return;
+    }
+
+    var element = WebElements.get(element);
+    WebElements.forEach(element.getElementsByTagName('input'), function(input)
+    {
+        if(input.getAttribute('placeholder'))
+        {
+            input.style.cssText = "color:#939393;font-style:italic;"
+            input.value = input.getAttribute("placeholder");
+            input.onclick = function()
+            {
+                if(this.value == this.getAttribute("placeholder"))
+                {
+                    this.value = '';
+                    this.style.cssText = "color:#000;font-style:normal;"
+                }
+            }
+            input.onblur = function()
+            {
+                if(this.value == '')
+                {
+                    this.value = this.getAttribute("placeholder");
+                    this.style.cssText = "color:#939393;font-style:italic;"
+                }
+            }
+        }
+    });
+}
+
 
 //attach on click event to body to close any open pop up menus when a random click is placed
 WebElements.Events.addEvent(window, 'load', function()
@@ -1456,6 +1501,7 @@ WebElements.Events.addEvent(window, 'load', function()
             WebElements.State.isPopupOpen = false;
         }
     }
+    WebElements.addPlaceholders(document);
 });
 
 WebElements.serialize = function(field)

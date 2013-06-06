@@ -624,6 +624,7 @@ class IFrame(WebElement):
     properties['src'] = {'action':'attribute'}
     properties['srcdoc'] = {'action':'attribute'}
     properties['width'] = {'action':'attribute', 'type':'int'}
+    properties['frameborder'] = {'action':'attribute'}
 
 Factory.addProduct(IFrame)
 

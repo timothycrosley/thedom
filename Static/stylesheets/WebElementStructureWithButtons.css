@@ -1191,8 +1191,8 @@ label.WInfo {
   border-radius: 3px !important;
 }
 
-/* line 26, ../sass/WebElementStructureWithButtons.sass */
-input[type=button], input[type=submit] {
+/* line 27, ../sass/WebElementStructureWithButtons.sass */
+input[type=button], input[type=submit], .Button {
   font-size: 16px;
   padding: 0.3em 1.5em;
   display: inline-block;
@@ -1217,11 +1217,11 @@ input[type=button], input[type=submit] {
   text-shadow: #f7f7f7 0 1px 0;
 }
 /* line 15, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button]:hover, input[type=submit]:hover {
+input[type=button]:hover, input[type=submit]:hover, .Button:hover {
   text-decoration: none;
 }
 /* line 36, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button]:hover, input[type=submit]:hover {
+input[type=button]:hover, input[type=submit]:hover, .Button:hover {
   background-color: #bebebe;
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #d7d7d7), color-stop(100%, #bebebe));
   background: -webkit-linear-gradient(#d7d7d7, #bebebe);
@@ -1230,13 +1230,13 @@ input[type=button]:hover, input[type=submit]:hover {
   background: linear-gradient(#d7d7d7, #bebebe);
 }
 /* line 39, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button]:active, input[type=submit]:active {
+input[type=button]:active, input[type=submit]:active, .Button:active {
   -webkit-box-shadow: #b6b6b6 0 1px 2px inset;
   -moz-box-shadow: #b6b6b6 0 1px 2px inset;
   box-shadow: #b6b6b6 0 1px 2px inset;
 }
 /* line 6, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].disabled, input[type=button][disabled], input[type=submit].disabled, input[type=submit][disabled] {
+input[type=button].disabled, input[type=button][disabled], input[type=submit].disabled, input[type=submit][disabled], .Button.disabled, .Button[disabled] {
   opacity: 0.6;
   background: #cbcbcb;
   cursor: default;
@@ -1245,12 +1245,12 @@ input[type=button].disabled, input[type=button][disabled], input[type=submit].di
   box-shadow: none;
 }
 /* line 73, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
-input[type=button]::-moz-focus-inner, input[type=submit]::-moz-focus-inner {
+input[type=button]::-moz-focus-inner, input[type=submit]::-moz-focus-inner, .Button::-moz-focus-inner {
   padding: 0 !important;
   margin: -1px !important;
 }
-/* line 28, ../sass/WebElementStructureWithButtons.sass */
-input[type=button].MainAction, input[type=submit].MainAction {
+/* line 29, ../sass/WebElementStructureWithButtons.sass */
+input[type=button].MainAction, input[type=submit].MainAction, .Button.MainAction {
   font-size: 16px;
   padding: 0.3em 1.5em;
   display: inline-block;
@@ -1275,11 +1275,11 @@ input[type=button].MainAction, input[type=submit].MainAction {
   text-shadow: #314c2d 0 -1px 0;
 }
 /* line 15, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].MainAction:hover, input[type=submit].MainAction:hover {
+input[type=button].MainAction:hover, input[type=submit].MainAction:hover, .Button.MainAction:hover {
   text-decoration: none;
 }
 /* line 36, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].MainAction:hover, input[type=submit].MainAction:hover {
+input[type=button].MainAction:hover, input[type=submit].MainAction:hover, .Button.MainAction:hover {
   background-color: #476f42;
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #5c8f55), color-stop(100%, #476f42));
   background: -webkit-linear-gradient(#5c8f55, #476f42);
@@ -1288,13 +1288,13 @@ input[type=button].MainAction:hover, input[type=submit].MainAction:hover {
   background: linear-gradient(#5c8f55, #476f42);
 }
 /* line 39, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].MainAction:active, input[type=submit].MainAction:active {
+input[type=button].MainAction:active, input[type=submit].MainAction:active, .Button.MainAction:active {
   -webkit-box-shadow: #41663d 0 1px 2px inset;
   -moz-box-shadow: #41663d 0 1px 2px inset;
   box-shadow: #41663d 0 1px 2px inset;
 }
 /* line 6, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].MainAction.disabled, input[type=button].MainAction[disabled], input[type=submit].MainAction.disabled, input[type=submit].MainAction[disabled] {
+input[type=button].MainAction.disabled, input[type=button].MainAction[disabled], input[type=submit].MainAction.disabled, input[type=submit].MainAction[disabled], .Button.MainAction.disabled, .Button.MainAction[disabled] {
   opacity: 0.6;
   background: #527f4c;
   cursor: default;
@@ -1303,12 +1303,12 @@ input[type=button].MainAction.disabled, input[type=button].MainAction[disabled],
   box-shadow: none;
 }
 /* line 73, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
-input[type=button].MainAction::-moz-focus-inner, input[type=submit].MainAction::-moz-focus-inner {
+input[type=button].MainAction::-moz-focus-inner, input[type=submit].MainAction::-moz-focus-inner, .Button.MainAction::-moz-focus-inner {
   padding: 0 !important;
   margin: -1px !important;
 }
-/* line 30, ../sass/WebElementStructureWithButtons.sass */
-input[type=button].PositiveAction, input[type=submit].PositiveAction {
+/* line 31, ../sass/WebElementStructureWithButtons.sass */
+input[type=button].PositiveAction, input[type=submit].PositiveAction, .Button.PositiveAction {
   font-size: 16px;
   padding: 0.3em 1.5em;
   display: inline-block;
@@ -1333,11 +1333,11 @@ input[type=button].PositiveAction, input[type=submit].PositiveAction {
   text-shadow: #1d4666 0 -1px 0;
 }
 /* line 15, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].PositiveAction:hover, input[type=submit].PositiveAction:hover {
+input[type=button].PositiveAction:hover, input[type=submit].PositiveAction:hover, .Button.PositiveAction:hover {
   text-decoration: none;
 }
 /* line 36, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].PositiveAction:hover, input[type=submit].PositiveAction:hover {
+input[type=button].PositiveAction:hover, input[type=submit].PositiveAction:hover, .Button.PositiveAction:hover {
   background-color: #296492;
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #3480ba), color-stop(100%, #296492));
   background: -webkit-linear-gradient(#3480ba, #296492);
@@ -1346,13 +1346,13 @@ input[type=button].PositiveAction:hover, input[type=submit].PositiveAction:hover
   background: linear-gradient(#3480ba, #296492);
 }
 /* line 39, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].PositiveAction:active, input[type=submit].PositiveAction:active {
+input[type=button].PositiveAction:active, input[type=submit].PositiveAction:active, .Button.PositiveAction:active {
   -webkit-box-shadow: #255c86 0 1px 2px inset;
   -moz-box-shadow: #255c86 0 1px 2px inset;
   box-shadow: #255c86 0 1px 2px inset;
 }
 /* line 6, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].PositiveAction.disabled, input[type=button].PositiveAction[disabled], input[type=submit].PositiveAction.disabled, input[type=submit].PositiveAction[disabled] {
+input[type=button].PositiveAction.disabled, input[type=button].PositiveAction[disabled], input[type=submit].PositiveAction.disabled, input[type=submit].PositiveAction[disabled], .Button.PositiveAction.disabled, .Button.PositiveAction[disabled] {
   opacity: 0.6;
   background: #2e72a6;
   cursor: default;
@@ -1361,12 +1361,12 @@ input[type=button].PositiveAction.disabled, input[type=button].PositiveAction[di
   box-shadow: none;
 }
 /* line 73, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
-input[type=button].PositiveAction::-moz-focus-inner, input[type=submit].PositiveAction::-moz-focus-inner {
+input[type=button].PositiveAction::-moz-focus-inner, input[type=submit].PositiveAction::-moz-focus-inner, .Button.PositiveAction::-moz-focus-inner {
   padding: 0 !important;
   margin: -1px !important;
 }
-/* line 32, ../sass/WebElementStructureWithButtons.sass */
-input[type=button].DeleteAction, input[type=submit].DeleteAction {
+/* line 33, ../sass/WebElementStructureWithButtons.sass */
+input[type=button].DeleteAction, input[type=submit].DeleteAction, .Button.DeleteAction {
   font-size: 16px;
   padding: 0.3em 1.5em;
   display: inline-block;
@@ -1391,11 +1391,11 @@ input[type=button].DeleteAction, input[type=submit].DeleteAction {
   text-shadow: #3e0000 0 -1px 0;
 }
 /* line 15, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].DeleteAction:hover, input[type=submit].DeleteAction:hover {
+input[type=button].DeleteAction:hover, input[type=submit].DeleteAction:hover, .Button.DeleteAction:hover {
   text-decoration: none;
 }
 /* line 36, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].DeleteAction:hover, input[type=submit].DeleteAction:hover {
+input[type=button].DeleteAction:hover, input[type=submit].DeleteAction:hover, .Button.DeleteAction:hover {
   background-color: #760000;
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #aa0000), color-stop(100%, #760000));
   background: -webkit-linear-gradient(#aa0000, #760000);
@@ -1404,13 +1404,13 @@ input[type=button].DeleteAction:hover, input[type=submit].DeleteAction:hover {
   background: linear-gradient(#aa0000, #760000);
 }
 /* line 39, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].DeleteAction:active, input[type=submit].DeleteAction:active {
+input[type=button].DeleteAction:active, input[type=submit].DeleteAction:active, .Button.DeleteAction:active {
   -webkit-box-shadow: #670000 0 1px 2px inset;
   -moz-box-shadow: #670000 0 1px 2px inset;
   box-shadow: #670000 0 1px 2px inset;
 }
 /* line 6, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].DeleteAction.disabled, input[type=button].DeleteAction[disabled], input[type=submit].DeleteAction.disabled, input[type=submit].DeleteAction[disabled] {
+input[type=button].DeleteAction.disabled, input[type=button].DeleteAction[disabled], input[type=submit].DeleteAction.disabled, input[type=submit].DeleteAction[disabled], .Button.DeleteAction.disabled, .Button.DeleteAction[disabled] {
   opacity: 0.6;
   background: #900000;
   cursor: default;
@@ -1419,12 +1419,12 @@ input[type=button].DeleteAction.disabled, input[type=button].DeleteAction[disabl
   box-shadow: none;
 }
 /* line 73, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
-input[type=button].DeleteAction::-moz-focus-inner, input[type=submit].DeleteAction::-moz-focus-inner {
+input[type=button].DeleteAction::-moz-focus-inner, input[type=submit].DeleteAction::-moz-focus-inner, .Button.DeleteAction::-moz-focus-inner {
   padding: 0 !important;
   margin: -1px !important;
 }
-/* line 34, ../sass/WebElementStructureWithButtons.sass */
-input[type=button].WToggleButton, input[type=submit].WToggleButton {
+/* line 35, ../sass/WebElementStructureWithButtons.sass */
+input[type=button].WToggleButton, input[type=submit].WToggleButton, .Button.WToggleButton {
   font-size: 16px;
   padding: 0.3em 1.5em;
   display: inline-block;
@@ -1449,11 +1449,11 @@ input[type=button].WToggleButton, input[type=submit].WToggleButton {
   text-shadow: #666666 0 -1px 0;
 }
 /* line 15, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].WToggleButton:hover, input[type=submit].WToggleButton:hover {
+input[type=button].WToggleButton:hover, input[type=submit].WToggleButton:hover, .Button.WToggleButton:hover {
   text-decoration: none;
 }
 /* line 24, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].WToggleButton:hover, input[type=submit].WToggleButton:hover {
+input[type=button].WToggleButton:hover, input[type=submit].WToggleButton:hover, .Button.WToggleButton:hover {
   background-color: #626262;
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #b7b7b7), color-stop(50%, #626262), color-stop(100%, #4e4e4e));
   background: -webkit-linear-gradient(#b7b7b7, #626262 50%, #4e4e4e);
@@ -1462,13 +1462,13 @@ input[type=button].WToggleButton:hover, input[type=submit].WToggleButton:hover {
   background: linear-gradient(#b7b7b7, #626262 50%, #4e4e4e);
 }
 /* line 27, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].WToggleButton:active, input[type=submit].WToggleButton:active {
+input[type=button].WToggleButton:active, input[type=submit].WToggleButton:active, .Button.WToggleButton:active {
   -webkit-box-shadow: #4e4e4e 0 1px 2px inset;
   -moz-box-shadow: #4e4e4e 0 1px 2px inset;
   box-shadow: #4e4e4e 0 1px 2px inset;
 }
 /* line 6, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-pseudo-states.sass */
-input[type=button].WToggleButton.disabled, input[type=button].WToggleButton[disabled], input[type=submit].WToggleButton.disabled, input[type=submit].WToggleButton[disabled] {
+input[type=button].WToggleButton.disabled, input[type=button].WToggleButton[disabled], input[type=submit].WToggleButton.disabled, input[type=submit].WToggleButton[disabled], .Button.WToggleButton.disabled, .Button.WToggleButton[disabled] {
   opacity: 0.6;
   background: #626262;
   cursor: default;
@@ -1477,25 +1477,25 @@ input[type=button].WToggleButton.disabled, input[type=button].WToggleButton[disa
   box-shadow: none;
 }
 /* line 73, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/_sassy-buttons.sass */
-input[type=button].WToggleButton::-moz-focus-inner, input[type=submit].WToggleButton::-moz-focus-inner {
+input[type=button].WToggleButton::-moz-focus-inner, input[type=submit].WToggleButton::-moz-focus-inner, .Button.WToggleButton::-moz-focus-inner {
   padding: 0 !important;
   margin: -1px !important;
 }
-/* line 36, ../sass/WebElementStructureWithButtons.sass */
-input[type=button].WToggleButton.Pushed, input[type=submit].WToggleButton.Pushed {
+/* line 37, ../sass/WebElementStructureWithButtons.sass */
+input[type=button].WToggleButton.Pushed, input[type=submit].WToggleButton.Pushed, .Button.WToggleButton.Pushed {
   -webkit-box-shadow: #333333 0 0.2em 0.4em inset;
   -moz-box-shadow: #333333 0 0.2em 0.4em inset;
   box-shadow: #333333 0 0.2em 0.4em inset;
   border: solid 1px #212121;
 }
 /* line 13, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-styles.sass */
-input[type=button].WToggleButton.Pushed:active, input[type=submit].WToggleButton.Pushed:active {
+input[type=button].WToggleButton.Pushed:active, input[type=submit].WToggleButton.Pushed:active, .Button.WToggleButton.Pushed:active {
   -webkit-box-shadow: #282828 0 0.2em 0.4em inset;
   -moz-box-shadow: #282828 0 0.2em 0.4em inset;
   box-shadow: #282828 0 0.2em 0.4em inset;
 }
-/* line 39, ../sass/WebElementStructureWithButtons.sass */
-input[type=button][disabled], input[type=submit][disabled] {
+/* line 40, ../sass/WebElementStructureWithButtons.sass */
+input[type=button][disabled], input[type=submit][disabled], .Button[disabled] {
   -webkit-box-shadow: #6c6c6c 0 0.2em 0.4em inset;
   -moz-box-shadow: #6c6c6c 0 0.2em 0.4em inset;
   box-shadow: #6c6c6c 0 0.2em 0.4em inset;
@@ -1505,27 +1505,27 @@ input[type=button][disabled], input[type=submit][disabled] {
   box-shadow: white 1px 1px 1px 1px;
 }
 /* line 13, ../../../../../../../var/lib/gems/1.9.1/gems/sassy-buttons-0.1.4/stylesheets/sassy-buttons/_sassy-button-styles.sass */
-input[type=button][disabled]:active, input[type=submit][disabled]:active {
+input[type=button][disabled]:active, input[type=submit][disabled]:active, .Button[disabled]:active {
   -webkit-box-shadow: #616161 0 0.2em 0.4em inset;
   -moz-box-shadow: #616161 0 0.2em 0.4em inset;
   box-shadow: #616161 0 0.2em 0.4em inset;
 }
-/* line 41, ../sass/WebElementStructureWithButtons.sass */
-input[type=button][disabled]:active, input[type=submit][disabled]:active {
+/* line 42, ../sass/WebElementStructureWithButtons.sass */
+input[type=button][disabled]:active, input[type=submit][disabled]:active, .Button[disabled]:active {
   -webkit-box-shadow: white 1px 1px 1px 1px;
   -moz-box-shadow: white 1px 1px 1px 1px;
   box-shadow: white 1px 1px 1px 1px;
 }
 
-/* line 45, ../sass/WebElementStructureWithButtons.sass */
+/* line 46, ../sass/WebElementStructureWithButtons.sass */
 .WButtonGroup input[type=button], .WButtonGroup input[type=submit] {
   border-radius: 0px 0px 0px 0px;
 }
-/* line 48, ../sass/WebElementStructureWithButtons.sass */
+/* line 49, ../sass/WebElementStructureWithButtons.sass */
 .WButtonGroup .WFirst input[type=button], .WButtonGroup .WFirst input[type=submit] {
   border-radius: 8px 0px 0px 8px;
 }
-/* line 51, ../sass/WebElementStructureWithButtons.sass */
+/* line 52, ../sass/WebElementStructureWithButtons.sass */
 .WButtonGroup .WLast input[type=button], .WButtonGroup .WLast input[type=submit] {
   border-radius: 0px 8px 8px 0px;
 }

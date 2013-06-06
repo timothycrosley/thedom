@@ -85,7 +85,7 @@ class Script(object):
             self.content += ";"
         self.content += var(other)
         return self
-
+    
     def do(self, name=None, *args):
         return call(self.claim() + (name and "." + name or ""), *args)
 
@@ -600,6 +600,9 @@ def closeAccordion(content, image, value):
 
 def toggleAccordion(content, image, value):
     return call("WebElements.toggleAccordion", content, image, value)
+
+def setAttribute(instance, name, value):
+    return Script("%s.%s = %s" % (instance, name, var(value)))
 
 class doClientSide(object):
     """

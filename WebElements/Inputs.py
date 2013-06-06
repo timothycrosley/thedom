@@ -206,7 +206,7 @@ class CheckBox(InputElement):
     properties = InputElement.properties.copy()
     properties['valueAttribute'] = {'action':'setValueAttributeFromString'}
 
-    class ClientSide(InputElement):
+    class ClientSide(InputElement.ClientSide):
         """
             Defines a Checkboxes client-side behavior.
         """
@@ -319,13 +319,18 @@ class TextBox(InputElement):
     properties['maxlength'] = {'action':'attribute'}
     properties['password'] = {'action':'setIsPassword', 'type':'bool'}
     properties['autocomplete'] = {'action':'attribute'}
-    properties['onkeydown'] = {'action' : 'javascriptEvent' }
-    properties['onkeyup'] = {'action' : 'javascriptEvent' }
+    properties['onkeydown'] = {'action':'javascriptEvent' }
+    properties['onkeyup'] = {'action':'javascriptEvent' }
+    properties['speech'] = {'action':'supportSpeechInput', 'type':'bool'}
 
     def _create(self, id, name=None, parent=None, *args, **kwargs):
         InputElement._create(self, id, name, parent, *args, **kwargs)
         self.attributes['type'] = 'text'
         self.length = None
+
+    def supportSpeechInput(self, support=True):
+        self.attributes['speech'] = support
+        self.attributes['x-webkit-speech'] = support
 
     def setIsPassword(self, isPassword):
         """
@@ -740,7 +745,7 @@ class Date(TextBox):
         if self.id:
             self.clientSide.create()
 
-    def asDate(self):
+    def asDate(self, timezone=None):
         """
             Returns the value of the object in date form
         """

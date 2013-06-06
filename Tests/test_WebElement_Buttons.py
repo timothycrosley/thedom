@@ -34,6 +34,10 @@ class TestLink(ElementTester):
         self.element.setDestination("www.google.com")
         assert self.element.destination() == "www.google.com"
         assert self.element.toHTML().find("www.google.com") > 0
+        
+    def test_rel(self):
+        self.element.setProperty('rel', 'test')
+        assert self.element.attributes['rel'] == 'test'
 
     def test_text(self):
         assert not self.element.text()

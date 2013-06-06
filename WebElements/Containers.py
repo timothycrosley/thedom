@@ -392,7 +392,6 @@ class TabContainer(Base.WebElement):
         if isinstance(element, Tab):
             element.tabLabel.addJavascriptEvent('onclick', self.jsSelectTab(element))
             self.tabs[element.name] = element
-            element.id = self.id + element.name.capitalize()
             element.tabLabel.id = element.id + "Label"
             element.connect('selected', None, self, 'selectTab', element.name)
             if not self.selectedTab or element.isSelected:

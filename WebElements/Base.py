@@ -110,6 +110,9 @@ class WebElement(Connectable):
     properties['hidden'] = {'action':'attribute', 'type':'bool'}
     properties['tabindex'] = {'action':'attribute', 'type':'int'}
     properties['accesskey'] = {'action':'attribute'}
+    properties['itemprop'] = {'action':'attribute'}
+    properties['itemscope'] = {'action':'attribute', 'type':'bool'}
+    properties['itemtype'] = {'action':'attribute'}
     tagName = ""
 
     class ClientSide(AutoAddScripts):
@@ -121,7 +124,7 @@ class WebElement(Connectable):
         def __init__(self, element):
             self.serverSide = element
 
-        def on(self, event, action, dom=False):
+        def on(self, event, action, dom=True):
             """
                 Attaches a client side action to be performed every time event occurs.
 
@@ -135,11 +138,12 @@ class WebElement(Connectable):
 
             return ClientSide.addEvent(self, event, ClientSide.eventHandler(action))
 
-        def onKey(self, key, action, direction="up", dom=False):
+        def onKey(self, key, action, direction="up", dom=True):
             """
                 Attaches a client side action to be performed every time a key is pressed on the element.
             """
-            with self.evt.keyCode.IF.IS(key) as eventHandler:
+            event = dom and self.event or self.evt
+            with event.keyCode.IF.IS(key) as eventHandler:
                 eventHandler(action)
 
             return self.on('key' + direction, eventHandler, dom)

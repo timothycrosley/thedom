@@ -34,8 +34,8 @@ class Link(DOM.A):
         Defines an <a href> webelement (An html link meant to open a new page)
     """
     __slots__ = ('_textNode')
-    signals = Base.WebElement.signals + ['emit', 'textChanged']
-    properties = Base.WebElement.properties.copy()
+    signals = DOM.A.signals + ['emit', 'textChanged']
+    properties = DOM.A.properties.copy()
     properties['text'] = {'action':'setText'}
     properties['value'] = {'action':'setDestination'}
     properties['target'] = {'action':'attribute'}

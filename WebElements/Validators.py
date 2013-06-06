@@ -78,7 +78,7 @@ class Validation(Display.Message):
         if self._lastScript:
             self.removeScript(self._lastScript)
         self._lastScript = self.forElement.clientSide.on(self.forElement.ClientSide.CHANGE_EVENT,
-                                                         self.clientSide.validate())
+                                                         self.clientSide.validate(), dom=False)
 
     def value(self):
         """

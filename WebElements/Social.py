@@ -24,7 +24,9 @@ import hashlib
 import urllib
 
 from . import Factory
-from .Base import WebElement
+from . import Layout
+from . import ClientSide
+from .Base import WebElement, TextNode
 from .Buttons import Link
 from .Display import Image
 
@@ -59,6 +61,87 @@ class TwitterBadge(Social):
 Factory.addProduct(TwitterBadge)
 
 
+class TwitterAPI(WebElement):
+    __slots__ = ()
+    def _create(self, name=None, id=None, parent=None, html="", *kargs, **kwargs):
+        WebElement._create(self, name, id, parent, *kargs, **kwargs)
+        self.addScript('window.twttr = (function (d,s,id) {'
+                       'var t, js, fjs = d.getElementsByTagName(s)[0];'
+                       'if (d.getElementById(id)) return; js=d.createElement(s); js.id=id;'
+                       'js.src="https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs);'
+                       'return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f) } });'
+                       '}(document, "script", "twitter-wjs"));')
+
+Factory.addProduct(TwitterAPI)
+
+
+class Tweet(Link):
+    __slots__ = ()
+    properties = Link.properties.copy()
+    properties['hideCount'] = {'action':'hideCount', 'type':'bool', 'info':"Don't show the number of re-tweets"}
+    properties['largeButton'] = {'action':'useLargeButton', 'type':'bool', 'info':'User larger tweet button size'}
+    properties['url'] = {'action':'attribute', 'name':'data-url', 'info':'Set the url the tweet will link to'}
+    properties['hashtag'] = {'action':'attribute', 'name':'data-hashtags', 'info':'Associated a hashtag to the tweet'}
+    properties['via'] = {'action':'attribute', 'name':'data-via', 'info':'Associated with another twitter account'}
+    properties['message'] = {'action':'attribute', 'name':'data-text', 'info':'The tweet message text'}
+    
+    def _create(self, name=None, id=None, parent=None, *kargs, **kwargs):
+        Link._create(self, name, id, parent, *kargs, **kwargs)
+        self.setText("Tweet")
+        self.addClass("twitter-share-button")
+        self.setDestination("https://twitter.com/share")
+    
+    def hideCount(self, hide=True):
+        if hide:
+            self.attributes['data-count'] = 'none'
+        else:
+            self.attributes.pop('data-count', None)
+
+    def useLargeButton(self, use=True):
+        if use:
+            self.attributes['data-size'] = 'large'
+        else:
+            self.attributes.pop('data-size', None)
+
+    def toHTML(self, formatted=False, *args, **kwargs):
+        """
+            Adds the twitter script to the tweet button
+        """ 
+        html = Link.toHTML(self, formatted, *args, **kwargs)
+        return html
+    
+Factory.addProduct(Tweet)
+
+
+class GooglePlusAPI(WebElement):
+    __slots__ = ()
+    def _create(self, name=None, id=None, parent=None, html="", *kargs, **kwargs):
+        WebElement._create(self, name, id, parent, *kargs, **kwargs)
+        self.addScript("window.___gcfg = {lang:'en-US','parsetags':'explicit'};"
+                       "(function() {var po = document.createElement('script');"
+                       "po.type = 'text/javascript'; po.async = true;"
+                       "po.src = 'https://apis.google.com/js/plusone.js';"
+                       "var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);"
+                       "})();")
+
+Factory.addProduct(GooglePlusAPI)
+
+
+class GooglePlusShare(Layout.Box):
+    __slots__ = ()
+    properties = Layout.Box.properties.copy()
+    properties['size'] = {'action':'attribute', 'name':'data-height', 'type':'int',
+                          'info':"The Size of the of the button, 2 is large"}
+    properties['url'] = {'action':'attribute', 'name':'data-href', 'info':"The url the google plus button points to"}
+    def _create(self, name=None, id=None, parent=None, html="", *kargs, **kwargs):
+        WebElement._create(self, name, id, parent, *kargs, **kwargs)
+        self.addClass("g-plus")
+        self.attributes['data-action'] = "share"
+        self.attributes['data-annotation'] = "none"
+
+Factory.addProduct(GooglePlusShare)
+
+
 class GooglePlusBadge(Social):
     """
         Displays a clickable google plus badge.
@@ -90,24 +173,109 @@ class FacebookLike(Social):
 Factory.addProduct(FacebookLike)
 
 
-class FacebookAPI(WebElement):
+class FacebookAPI(Layout.Box):
     """
-        Adds facebook api support to your site - only add once.
+        Adds facebook api support to your site and optionally calls the init method on it - only add once.
     """
-    def toHTML(self, formatted=False, *args, **kwargs):
+    __slots__ = ('loginURL', 'logoutURL', 'appId', 'init')
+    properties = WebElement.properties.copy()
+    properties['appId'] = {'action':'classAttribute'}
+    properties['init'] = {'action':'classAttribute', 'type':'bool'}
+    properties['loginURL'] = {'action':'classAttribute'}
+    properties['logoutURL'] = {'action':'classAttribute'}
+    
+    class ClientSide(Layout.Box.ClientSide):
+        def feed(self, name, caption, description, link, picture=None, redirect=None, callback=None):
+            """
+                Posts defined data to the users news feed.
+            """
+            arguments = {'method':'feed', 'name':name, 'caption':caption, 'link':link}
+            if picture:
+                arguments['picture'] = picture
+            if redirect:
+                arguments['redirect_url'] = redirect
+            if callback:
+                return ClientSide.call("FB.ui", arguments, callback)
+            if description:
+                arguments['description'] = description
+            
+            return ClientSide.call("FB.ui", arguments)
+    
+    def _create(self, id=None, name=None, parent=None, *kargs, **kwargs):
+        Layout.Box._create(self, "fb-root", name, parent, *kargs, **kwargs)
+        self.appId = ""
+        self.init = False
+        self.loginURL = None
+        self.logoutURL = None
+
+    def _render(self):
         """
             Returns the api support code directly
         """
-        return ("""<div id="fb-root"></div>
-                    <script>(function(d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) return;
-                    js = d.createElement(s); js.id = id;
-                    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=128897293878199";
-                    fjs.parentNode.insertBefore(js, fjs);
-                    }(document, 'script', 'facebook-jssdk'));</script>""")
+        if self.init:
+            extra = ""
+            if self.loginURL:
+                extra += "FB.Event.subscribe('auth.login', function(response){window.location = '%s'});" % \
+                         self.loginURL
+            if self.logoutURL:
+                extra += "FB.Event.subscribe('auth.logout', function(response){window.location = '%s'});" % \
+                         self.logoutURL
+            self.addScript("""window.fbAsyncInit = function(){FB.init
+                                            ({appId: '%s', status: true, cookie: true, xfbml: true});
+                                            %s
+                                            }""" % (self.appId, extra))
+        self.addScript("""(function(d, s, id){
+                            var js, fjs = d.getElementsByTagName(s)[0];
+                            if (d.getElementById(id)) {return;}
+                            js = d.createElement(s); js.id = id;
+                            js.src = "//connect.facebook.net/en_US/all.js";
+                            fjs.parentNode.insertBefore(js, fjs);
+                        }(document, 'script', 'facebook-jssdk'));""")
 
 Factory.addProduct(FacebookAPI)
+
+
+class FacebookLogin(WebElement):
+    """
+        Adds a facebook login button to the page
+    """    
+    __slots__ = ('text', )
+    tagName = "fb:login-button"
+    properties = WebElement.properties.copy()
+    properties['show-faces'] = {'action':'attribute', 'type':'bool',
+                                'info':'Specifies whether to show faces underneath the Login button.'}
+    properties['width'] = {'action':'attribute', 'type':'int',
+                           'info':'The width of the plugin in pixels. Default width: 200px.'}
+    properties['size'] = {'action':'attribute',
+                          'info':'Different sized buttons: small, medium, large, xlarge (default: medium).'}
+    properties['max-rows'] = {'action':'attribute', 'type':'int',
+                              'info':'The maximum number of rows of profile pictures to display. Default value: 1.'}
+    properties['scope'] = {'action':'attribute', 'info':'a comma separated list of extended permissions to request.'}
+    properties['registration-url '] = {'action':'attribute',
+                                       'info':'URL to redirect to on initial registration.'}
+    properties['text'] = {'action':'classAttribute', 'info':'Set a custom label for the facebook connect button.'}
+    
+    def _create(self, id=None, name=None, parent=None, *kargs, **kwargs):
+        WebElement._create(self, id, name, parent, *kargs, **kwargs)
+        self.text = None
+    
+    def _render(self):
+        if self.text:
+            if not self.childElements:
+                self += TextNode()
+                
+            self.childElements[0].setText(self.text)
+        elif self.childElements:
+            self.childElements[0].setText("")
+            
+    class ClientSide(WebElement.ClientSide):
+        """
+            Defines the client-side behavior of the facebook api.
+        """
+        def logout(self):
+            return ClientSide.call("FB.logout")
+        
+Factory.addProduct(FacebookLogin)
 
 
 class Gravatar(Image):
