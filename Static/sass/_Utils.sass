@@ -1,0 +1,28 @@
+@mixin gradient($start, $end, $from:top)
+    @if $from == top
+        +filter-gradient($start, $end)
+    @else
+        +filter-gradient($start, $end, horizontal)
+    background: $start
+    +background(linear-gradient($from, $start, $end))
+    
+    
+@mixin radial($center, $background, $size)
+    background: $background
+    position: relative \9
+    .IEHack
+        position: absolute \9
+        top: 0 \9
+        left: 0 \9
+        background: $center \9
+        width: $size \9
+        height: $size \9
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=60, finishopacity=0, style=2)"
+        filter: unquote("progid:DXImageTransform.Microsoft.Alpha(opacity=60, finishopacity=0, style=2)")
+        
+    +background(radial-gradient($center, $background $size))
+    
+@mixin shadow()
+    +single-box-shadow()
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000')"
+    filter: unquote("progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000')")
