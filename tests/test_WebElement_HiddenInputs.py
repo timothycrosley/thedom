@@ -23,6 +23,7 @@
 from test_WebElement_Base import ElementTester
 from WebElements.All import Factory
 
+
 class TestHiddenValue(ElementTester):
 
     def setup_class(self):
@@ -83,4 +84,3 @@ class TestHiddenIntValue(ElementTester):
         self.element.setText(0)
         assert self.element.text() == 0
         assert self.element.value() == 0
-

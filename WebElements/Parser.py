@@ -21,8 +21,9 @@
 '''
 
 from . import Base
-from .Base import WebElement, TextNode
+from .Base import TextNode, WebElement
 from .MultiplePythonSupport import *
+
 
 class WebElementTree(WebElement):
     """

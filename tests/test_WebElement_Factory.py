@@ -22,8 +22,10 @@
 
 from WebElements.All import Factory
 from WebElements.Base import Invalid, WebElement
-from WebElements.Factory import Composite as CompositeFactory, Factory as FactoryClass
+from WebElements.Factory import Composite as CompositeFactory
+from WebElements.Factory import Factory as FactoryClass
 from WebElements.UITemplate import Template
+
 
 class FakeWebElement(WebElement):
     def __init__(self, id=None, name=None, parent=None):
@@ -132,4 +134,3 @@ class TestCompositeFactory(object):
         # oh no! both companies were bought out!
         electricCarCompanyOfTheFuture = CompositeFactory((generalMotors, toyota))
         assert electricCarCompanyOfTheFuture.products == {'volt':Volt, 'prius':Prius}
-

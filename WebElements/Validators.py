@@ -23,11 +23,8 @@
 import re
 import string
 
-from . import Factory
-from . import Base
-from . import Display
-from . import ClientSide
-from .ClientSide import do, regexp, var, Script
+from . import Base, ClientSide, Display, Factory
+from .ClientSide import do, regexp, Script, var
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 

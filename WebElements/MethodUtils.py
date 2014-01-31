@@ -22,6 +22,7 @@
 
 from .MultiplePythonSupport import *
 
+
 def acceptsArguments(method, numberOfArguments):
     """
         Returns True if the given method will accept the given number of arguments:

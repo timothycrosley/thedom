@@ -20,17 +20,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from datetime import datetime
 import types
+from datetime import datetime
 
-from . import DOM
-from . import Base
-from . import ClientSide
-from . import DictUtils
-from . import Factory
-from .Types import Bool
+from . import Base, ClientSide, DictUtils, DOM, Factory
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
+from .Types import Bool
 
 Factory = Factory.Factory("Inputs")
 

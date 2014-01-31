@@ -23,6 +23,7 @@
 from .IteratorUtils import iterableLength
 from .MultiplePythonSupport import *
 
+
 class PositionController(object):
     """A simple way to control paging and positon within lists
 

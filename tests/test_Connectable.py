@@ -22,6 +22,7 @@
 
 from WebElements.Connectable import Connectable
 
+
 class Value(Connectable):
     signals = ['valueChanged']
 

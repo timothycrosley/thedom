@@ -24,6 +24,7 @@ from test_WebElement_Base import ElementTester
 from WebElements.All import Factory
 from WebElements.Buttons import Link
 
+
 class TestItemPager(ElementTester):
 
     def setup_method(self, method):
@@ -65,4 +66,3 @@ class TestJumpToLetter(ElementTester):
 
     def setup_class(self):
         self.element = Factory.build('JumpToLetter', 'test')
-

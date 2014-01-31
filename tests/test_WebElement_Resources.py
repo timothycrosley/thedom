@@ -24,6 +24,7 @@ from test_WebElement_Base import ElementTester
 from WebElements.All import Factory
 from WebElements.Resources import ScriptContainer
 
+
 class TestResourceFile(ElementTester):
 
     def setup_class(self):
@@ -67,4 +68,3 @@ class TestScriptContainer(ElementTester):
 
         self.element.removeScript("alert('I am a script :D');")
         assert self.element._scripts == []
-

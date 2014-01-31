@@ -24,6 +24,7 @@ from test_WebElement_Base import ElementTester
 from WebElements.All import Factory
 from WebElements.Inputs import ValueElement
 
+
 class TestValueElement(object):
 
     def setup_method(self, method):

@@ -23,10 +23,10 @@
 import datetime
 
 from . import Base, ClientSide, DictUtils, DOM, Factory
-from .Types import Safe
 from .Inputs import ValueElement
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
+from .Types import Safe
 
 Factory = Factory.Factory("Display")
 

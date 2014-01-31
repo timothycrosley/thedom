@@ -25,9 +25,10 @@ try:
 except ImportError:
     import pickle
 
-import sys
 import os
 import subprocess
+import sys
+
 
 class TestWebElements_Benchmark(object):
 
@@ -46,4 +47,3 @@ class TestWebElements_Benchmark(object):
         assert(results['loopedCreate'] < 20.0)
         assert(results['longestCreationTime'] < 0.010)
         assert(results['createAllOnce'] < 0.250)
-

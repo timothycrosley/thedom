@@ -24,6 +24,7 @@ from test_WebElement_Base import ElementTester
 from WebElements.All import Factory
 from WebElements.DataViews import Table
 
+
 class TestTable(ElementTester):
 
     class TestColumn(ElementTester):

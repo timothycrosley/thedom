@@ -23,8 +23,8 @@
 from xml.dom import minidom
 
 from . import shpaml
-from .StringUtils import interpretFromString
 from .MultiplePythonSupport import *
+from .StringUtils import interpretFromString
 
 # Supported format types
 XML = 0
@@ -124,4 +124,3 @@ def __createTemplateFromXML(xml):
         childElements = None
 
     return Template(create, accessor, id, name, childElements, properties)
-

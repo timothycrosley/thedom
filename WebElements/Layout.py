@@ -20,14 +20,10 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Base
-from . import DOM
-from . import Display
-from . import Factory
-from . import Validators
-from .Types import Safe
+from . import Base, Display, DOM, Factory, Validators
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
+from .Types import Safe
 
 Factory = Factory.Factory("Layout")
 

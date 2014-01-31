@@ -22,12 +22,9 @@
 
 import types
 
-from . import DOM
-from . import Base
-from . import Factory
-from . import ClientSide
+from . import Base, ClientSide, DOM, Factory
+from .DOM import H2, Link, Script
 from .MethodUtils import CallBack
-from .DOM import Link, Script, H2
 from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("Resources")

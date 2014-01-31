@@ -22,7 +22,7 @@
 '''
 
 from . import DictUtils, Factory
-from .Base import WebElement, Settings
+from .Base import Settings, WebElement
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 

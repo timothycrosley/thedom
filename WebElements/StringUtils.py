@@ -26,8 +26,8 @@ import string
 import types
 from urllib import urlencode
 
-from .MultiplePythonSupport import *
 from . import ClientSide
+from .MultiplePythonSupport import *
 
 INVALID_CONTROL_CHARACTERS = [
     chr(0x00),

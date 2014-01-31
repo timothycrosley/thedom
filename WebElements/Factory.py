@@ -27,6 +27,7 @@ import types
 from .Base import Invalid, TextNode
 from .MultiplePythonSupport import *
 
+
 class Factory(object):
     def __init__(self, name=""):
         self.products = {}

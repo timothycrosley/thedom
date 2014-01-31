@@ -30,14 +30,12 @@ import gc
 import sys
 import time
 
-from WebElements import UITemplate
-from WebElements.MultiplePythonSupport import *
-from WebElements import DictUtils
-from WebElements.All import Factory, DOM
-from WebElements.Base import WebElement, TemplateElement, TextNode
+from WebElements import DictUtils, UITemplate
+from WebElements.All import DOM, Factory
+from WebElements.Base import TemplateElement, TextNode, WebElement
 from WebElements.Layout import Box
+from WebElements.MultiplePythonSupport import *
 from WebElements.Resources import ScriptContainer
-
 
 results = {'loopedCreate':0.0, 'loopedInit':0.0, 'loopedToHtml':0.0, 'bigTable':0.0, 'bigTableSize':0.0,
            'createAllOnce':0.0, 'longestCreationTime':0.0, 'nestedNodeCreation':0.0,

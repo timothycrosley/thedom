@@ -23,10 +23,8 @@
 import hashlib
 import urllib
 
-from . import Factory
-from . import Layout
-from . import ClientSide
-from .Base import WebElement, TextNode
+from . import ClientSide, Factory, Layout
+from .Base import TextNode, WebElement
 from .Buttons import Link
 from .Display import Image
 
@@ -355,4 +353,3 @@ class Gravatar(Image):
         return self._default
 
 Factory.addProduct(Gravatar)
-

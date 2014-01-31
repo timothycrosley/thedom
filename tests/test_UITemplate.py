@@ -59,5 +59,3 @@ def test_fromSHPAML():
              """
 
     assert UITemplate.fromSHPAML(shpmal) == EXPECTED_STRUCTURE
-
-

@@ -23,6 +23,7 @@
 from WebElements import StringUtils
 from WebElements.MultiplePythonSupport import *
 
+
 def test_removeAlphas():
     """ Ensure that the utility function to remove alpha characters works successfully """
     assert StringUtils.removeAlphas('afjsafdl121323213adfas1231321') == "1213232131231321"
@@ -84,4 +85,3 @@ def test_generateRandomKey():
     randomKey2 = StringUtils.generateRandomKey(40)
     assert randomKey1 != randomKey2
     assert len(randomKey1) == len(randomKey2) == 40
-

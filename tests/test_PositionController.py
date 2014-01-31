@@ -22,6 +22,7 @@
 
 from WebElements.PositionController import PositionController
 
+
 class TestPositionController(object):
 
     def setup_method(self, object):

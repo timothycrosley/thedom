@@ -21,7 +21,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Base, Buttons, Display, DOM, Factory, HiddenInputs, Inputs, Layout, UITemplate, ClientSide
+from . import Base, Buttons, ClientSide, Display, DOM, Factory, HiddenInputs, Inputs, Layout, UITemplate
 from .Factory import Composite
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
@@ -584,4 +584,3 @@ class PageControlPlacement(Layout.Box):
             layout += Display.Label(text=self.control + " goes here...")
 
 Factory.addProduct(PageControlPlacement)
-

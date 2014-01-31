@@ -23,6 +23,7 @@
 from WebElements.IteratorUtils import IterableCollection, Queryable, SortedSet
 from WebElements.MultiplePythonSupport import *
 
+
 def test_iterableCollection():
     """Test basic functionality of iterable collection works as expected"""
     collection = IterableCollection()
@@ -94,4 +95,3 @@ def test_Queryable():
     assert queryable.__lowerStrings__(u('Hi There')) == u('hi there')
     assert queryable.__lowerStrings__(u('HI THERE')) == u('hi there')
     assert queryable.__lowerStrings__(57) == 57
-

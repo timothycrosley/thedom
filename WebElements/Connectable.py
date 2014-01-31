@@ -24,6 +24,7 @@
 from . import MethodUtils
 from .MultiplePythonSupport import *
 
+
 class Connectable(object):
     __slots__ = ("connections")
 

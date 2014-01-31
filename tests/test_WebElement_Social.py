@@ -23,6 +23,7 @@
 from test_WebElement_Base import ElementTester
 from WebElements.All import Factory
 
+
 class TestTwitterBadge(ElementTester):
 
     def setup_method(self, element):

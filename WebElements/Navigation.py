@@ -20,21 +20,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Base
-from . import Buttons
-from . import ClientSide
-from . import Containers
-from . import Display
-from . import HiddenInputs
-from . import Inputs
-from . import Layout
-from . import UITemplate
-from .Types import Safe
+from . import Base, Buttons, ClientSide, Containers, Display, HiddenInputs, Inputs, Layout, UITemplate
 from .Factory import Factory
 from .IteratorUtils import iterableLength
 from .MethodUtils import CallBack
-from .PositionController import PositionController
 from .MultiplePythonSupport import *
+from .PositionController import PositionController
+from .Types import Safe
 
 Factory = Factory("Navigation")
 

@@ -22,6 +22,7 @@
 
 from WebElements import DictUtils
 
+
 class TestDictUtilsTest(object):
     def __init__(self, needsdb=1, db=None):
         pass

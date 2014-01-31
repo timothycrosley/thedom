@@ -20,17 +20,17 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-import re
 import cgi
+import re
+from itertools import chain
 from types import FunctionType
 
-from .Types import Scripts, StyleDict, Set, Safe, Unsafe, WebDataType
 from . import ClientSide, DictUtils
 from .Connectable import Connectable
 from .IteratorUtils import Queryable
 from .MethodUtils import acceptsArguments, CallBack
 from .MultiplePythonSupport import *
-from itertools import chain
+from .Types import Safe, Scripts, Set, StyleDict, Unsafe, WebDataType
 
 
 class Settings(object):
@@ -1607,4 +1607,3 @@ class TemplateElement(WebElement):
             self.__setattr__(accessor, element)
 
         self.addChildElement(instance)
-

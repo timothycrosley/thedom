@@ -28,6 +28,7 @@ import json
 
 from .MultiplePythonSupport import *
 
+
 class Script(object):
     __slots__ = ('content', 'container')
 
