@@ -84,7 +84,7 @@ class AutoAddScripts(type):
 AutoAddScripts = AutoAddScripts('AutoAddScripts', (object, ), {})
 
 
-class WebElement(Connectable):
+class Node(Connectable):
     """
         The base WebElement which all custom thedom should extend.
     """

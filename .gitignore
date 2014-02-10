@@ -56,6 +56,3 @@ atlassian-ide-plugin.xml
 *.swp
 *.kate-swp
 .ropeproject/
-
-# generic cache
-.sass-cache
