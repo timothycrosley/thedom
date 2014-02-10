@@ -83,6 +83,18 @@ class StyleDict(dict, WebDataType):
 
     def __str__(self):
         return self.__unicode__()
+    
+    @classmethod
+    def fromString(cls, styleString):
+        styleDict = cls()
+
+        styleDefinitions = styleString.split(';')
+        for definition in styleDefinitions:
+            if definition:
+                name, value = definition.split(':')
+                styleDict[name.strip()] = value.strip()
+
+        return styleDict
 
 
 class Scripts(list, SafeDataType):

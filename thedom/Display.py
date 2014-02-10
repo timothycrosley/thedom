@@ -26,6 +26,7 @@ from . import Base, ClientSide, DictUtils, DOM, Factory
 from .Inputs import ValueElement
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
+from .Resources import ScriptContainer
 from .Types import Safe
 
 Factory = Factory.Factory("Display")
@@ -114,13 +115,13 @@ class List(DOM.UL):
         DOM.UL._create(self, id=id, name=name, parent=parent)
         self.ordered = False
 
-    def addChildElement(self, childElement):
+    def addChildElement(self, childElement, ensureUnique=True):
         """
             Overrides the add childelement behavior to nest child elements in Item elements.
         """
         item = self.Item()
-        item.addChildElement(childElement)
-        Base.Node.addChildElement(self, item)
+        item.addChildElement(childElement, ensureUnique)
+        Base.Node.addChildElement(self, item, ensureUnique=False)
 
         return childElement
 
@@ -584,19 +585,55 @@ Factory.addProduct(StatusIndicator)
 class CacheElement(Base.Node):
     """
         Renders an element once caches the result and returns the cache every time after
+        after the element is rendered any methods to modify the class, or its children
+        will do nothing and return the class itself.
     """
-    __slots__ = ('__cachedHTML__')
+    __slots__ = ('_cachedHTML')
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Base.Node._create(self, id, name, parent, **kwargs)
-        self.__cachedHTML__ = None
+        self._cachedHTML = None
+        scriptContainer = self.addChildElement(ScriptContainer())
+        self.setScriptContainer(scriptContainer)
 
     def toHTML(self, formatted=False, *args, **kwargs):
         """
             Overrides toHTML to only render itself once, and return a cached copy on subsequent calls.
         """
-        if self.__cachedHTML__ is None:
-            self.__cachedHTML__ = Base.Node.toHTML(self, formatted, *args, **kwargs)
-        return self.__cachedHTML__
+        if self._cachedHTML is None:
+            toCache = Base.Node.toHTML(self, formatted, *args, **kwargs)
+            self.reset()
+            self.setScriptContainer(None)
+            self._cachedHTML = toCache
+            
+        return self._cachedHTML
+    
+    def __getattribute__(self, name):
+        if name not in ("toHTML", "rendered", "_cachedHTML", "__iter__", "__repr__") and self.rendered():
+            return self
+        
+        return Base.Node.__getattribute__(self, name)
+    
+    def __iter__(self):
+        return [].__iter__()
+    
+    def __repr__(self):
+        return "Cached Content"
+    
+    def __call__(self, *args, **kwargs):
+        return self
+    
+    def rendered(self):
+        return getattr(self, '_cachedHTML', None) is not None
 
 Factory.addProduct(CacheElement)
+
+
+class Static(Base.Node):
+    """
+        A signifier that the elements below will not be modified, allowing template optimizations and pre-rendering.
+        On it's own it performs no special operations, and does not modify any child elements.
+    """
+    pass
+
+Factory.addProduct(Static)

@@ -1,11 +1,7 @@
-"""
-    thedom/__init__.py
+'''
+    ListUtils.py
 
-    thedom is a library that provides classes to represent sections of a page.
-    At the most basic point a Node is a 1:1 mapping to a DOM object, however
-    as thedom can each contain child elements - a single Node from an
-    API usage point of view can define any concept or widget on a web page no matter
-    how complex.
+    Utility methods and classes that provide more efficient ways of handling python lists
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -22,6 +18,27 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-"""
+'''
 
-__version__ = "1.0.0-beta.3"
+try:
+    from collections import OrderedDict
+    HAS_ORDERED_DICT = True
+except ImportError:
+    HAS_ORDERED_DICT = False
+
+
+if HAS_ORDERED_DICT:
+    def unique(nonUnique):
+        """ Takes a non unique list and returns a unique one, preserving order """
+        return list(OrderedDict.fromkeys(nonUnique))
+else:
+    def unique(nonUnique): 
+        """ Takes a non unique list and returns a unique one, preserving order """
+        seen = {}
+        results = []
+        for item in nonUnique:
+            if item in seen:
+                continue
+                seen[item] = 1
+            results.append(item)
+        return results

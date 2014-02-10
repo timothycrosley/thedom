@@ -267,6 +267,7 @@ class ToggleButton(Layout.Box):
     __slots__ = ('button', 'toggledState')
     properties = Button.properties.copy()
     properties['checked'] = {'action':'call', 'name':'toggleOn', 'type':'bool'}
+    Base.addChildProperties(properties, Button, 'button')
     signals = Layout.Box.signals + ['toggled', 'jsToggled']
 
     def _create(self, id, name=None, parent=None, **kwargs):
@@ -367,13 +368,6 @@ class ToggleButton(Layout.Box):
             Returns the value associated with the button
         """
         return self.button.value()
-
-    def setProperties(self, valueDict=None):
-        """
-            Fowards the properties to the button, in case it is not a child element.
-        """
-        Layout.Box.setProperties(self, valueDict)
-        self.button.setProperties(valueDict)
 
     def insertVariables(self, valueDict=None):
         """

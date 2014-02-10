@@ -23,7 +23,7 @@
 
 import os
 
-from . import Base, Buttons, Display, HiddenInputs, Inputs, Layout, UITemplate
+from . import Base, Buttons, Display, HiddenInputs, Inputs, Layout
 from .Factory import Composite, Factory
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *

@@ -36,7 +36,7 @@ class Stack(Base.Node):
     __slots__ = ('index', 'stackElements')
     properties = Base.Node.properties.copy()
     properties['index'] = {'action':'classAttribute', 'type':'int'}
-
+    
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Base.Node._create(self, id, name, parent, **kwargs)
         self.index = 0
@@ -91,6 +91,77 @@ class Stack(Base.Node):
         return childElement
 
 Factory.addProduct(Stack)
+
+
+class ClientStack(DOM.Div):
+    """
+       A ClientStack like a Stack is a container for child elements where only of the contained elements can be
+       displayed at a time. However, with a ClientStack all elements are rendered and sent to the client so
+       they can be manipulated in the browser.
+    """
+    __slots__ = ('index', )
+    properties = DOM.Div.properties.copy()
+    properties['index'] = {'action':'classAttribute', 'type':'int'}
+    
+    class ClientSide(DOM.Div.ClientSide):
+        
+        def setVisibleElement(self, element):
+            """
+                Updates the currently visible element from the client-side
+            """
+            return element.stealClassFromPeer('WVisible')
+        
+        def visibleElement(self):
+            """
+                Returns the currently visible element client-side
+            """
+            return self.getChildByClassName('WVisible')
+        
+    def _create(self, id=None, name=None, parent=None, **kwargs):
+        DOM.Div._create(self, id, name, parent, **kwargs)
+        self.index = 0
+        self.addClass("WStack")
+
+    def setVisibleElement(self, element):
+        """
+            Updates the index to show the givin element:
+                element - the element to show
+
+            returns the element on success or None on failure
+        """
+        if element in self:
+            self.index = self.childElements.index(element)
+            return element
+
+    def visibleElement(self):
+        """
+            Returns the currently visible web element
+        """
+        if self.index >= 0 and self.index < len(self.childElements):
+            return self[int(self.index)]
+        elif self.childElements:
+            return self[0]
+        return None
+
+    def toHTML(self, formatted=False, *args, **kwargs):
+        """
+            Changes toHTML behavior to only generate the html for the visible element
+        """
+        if self.childElements:
+            for child in self:
+                child.removeClass("WVisible")
+            self.visibleElement().addClass("WVisible")
+        return Base.Node.toHTML(self, formatted=formatted, *args, **kwargs)
+
+    def addChildElement(self, childElement, ensureUnique=True):
+        """
+            Overrides addChildElement to check if the added element is the first and therefore the default
+            displayed item within the stack.
+        """
+        childElement.addClass("WItem")
+        return DOM.Div.addChildElement(self, childElement, ensureUnique)
+
+Factory.addProduct(ClientStack)
 
 
 class Box(DOM.Div):
@@ -320,7 +391,7 @@ class Field(Horizontal):
         """
         self.label.setText(text)
 
-    def addChildElement(self, element):
+    def addChildElement(self, element, ensureUnique=True):
         """
             Handles the addition of child elements, making the first externally added element be the input associated
             with the field
@@ -330,9 +401,9 @@ class Field(Horizontal):
             self.message.forElement = element
             self.validation.forElement = element
         elif isinstance(element, Validators.Validator):
-            return self.validation.addChildElement(element)
+            return self.validation.addChildElement(element, ensureUnique)
 
-        return Horizontal.addChildElement(self, element)
+        return Horizontal.addChildElement(self, element, ensureUnique)
 
 Factory.addProduct(Field)
 
@@ -347,7 +418,7 @@ class Fields(Vertical):
         Vertical._create(self, id, name, parent, **kwargs)
         self.addClass("WFields")
 
-    def addChildElement(self, element):
+    def addChildElement(self, element, ensureUnique=True):
         """
             Overrides addChildElement to automatically add the appropriate classes to fields, labels, and inputs
             to enable styling them with CSS.
@@ -359,7 +430,7 @@ class Fields(Vertical):
             if hasattr(element, 'userInput'):
                 element.userInput.addClass("WInput")
 
-        return Vertical.addChildElement(self, element)
+        return Vertical.addChildElement(self, element, ensureUnique)
 
 Factory.addProduct(Fields)
 

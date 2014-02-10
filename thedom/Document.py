@@ -177,7 +177,7 @@ class Document(Base.Node):
 
     def addHeader(self, name, value):
         """
-            Will add an http header pair based on name+value pair
+            Will add an HTTP header pair based on name + value pair
         """
         header = self.head.addChildElement(HTTPHeader())
         header.setName(name)

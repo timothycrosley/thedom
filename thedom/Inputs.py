@@ -81,6 +81,8 @@ class ValueElement(DOM.Input):
             """
             return ClientSide.selectText(self, start, end)
 
+    def __init__(self, id=None, name=None, *args, **kwargs):
+        DOM.Input.__init__(self, id, name or id, *args, **kwargs)
 
     def _create(self, id, name=None, parent=None, *args, **kwargs):
         DOM.Input._create(self, id, name, parent, *args, **kwargs)
@@ -131,7 +133,7 @@ class ValueElement(DOM.Input):
 
     def exportVariables(self, exportedVariables=None):
         """
-            return the used thedom variables as a dictionary
+            return the used webelements variables as a dictionary
         """
         if exportedVariables is None:
             exportedVariables = {}

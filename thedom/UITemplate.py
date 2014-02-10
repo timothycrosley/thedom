@@ -23,9 +23,9 @@
 from xml.dom import minidom
 
 from . import shpaml
-from .StringUtils import interpretFromString
-from .MultiplePythonSupport import *
 from .Base import Node
+from .MultiplePythonSupport import *
+from .StringUtils import interpretFromString
 
 # Supported format types
 XML = 0
@@ -69,7 +69,7 @@ class Template(object):
             return False
 
         return True
-
+    
     def build(self, factory):
         templateElement = self.Rendered()
 
@@ -78,7 +78,7 @@ class Template(object):
         for accessor, element in iteritems(accessors):
             if hasattr(templateElement, accessor):
                 raise ValueError("The accessor name or id of the element has to be unique and can not be the "
-                                 "same as a base node attribute."
+                                 "same as a base webelement attribute."
                                  "Failed on adding element with id or accessor '%s'." % accessor)
 
             templateElement.__setattr__(accessor, element)
@@ -98,7 +98,6 @@ def fromFile(templateFile, formatType=SHPAML):
         with open(templateFile) as openFile:
             return fromSHPAML(openFile.read())
 
-
 def fromXML(xml):
     """
         Returns a parsable dictionary representation of the interface:
@@ -107,7 +106,6 @@ def fromXML(xml):
     xmlStructure = minidom.parseString(xml)
     return __createTemplateFromXML(xmlStructure.childNodes[0])
 
-
 def fromSHPAML(shpamlTemplate):
     """
         Returns a parsable dictionary representation of the interface:
@@ -115,7 +113,6 @@ def fromSHPAML(shpamlTemplate):
     """
     xmlStructure = minidom.parseString(shpaml.convert_text(shpamlTemplate))
     return __createTemplateFromXML(xmlStructure.childNodes[0])
-
 
 def __createTemplateFromXML(xml):
     """
@@ -148,4 +145,3 @@ def __createTemplateFromXML(xml):
         childElements = None
 
     return Template(create, accessor, id, name, childElements, properties)
-

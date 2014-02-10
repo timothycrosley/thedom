@@ -4,7 +4,7 @@
     Convenience python functions that return JavaScript code -
     including complete python bindings for thedom.js
 
-    NOTE: documentation for the binding functions is defined in Node.js and not as doc strings on the binding
+    NOTE: documentation for the binding functions is defined in thedom.js and not as doc strings on the binding
     methods themselves.
 
     Copyright (C) 2013  Timothy Edmund Crosley
@@ -74,6 +74,7 @@ class Script(object):
         if name in self.__class__.__slots__:
             return object.__setattr__(self, name, value)
         self.content = "%s.%s = %s" % (self.content, name, var(value))
+        return self
 
     def __contains__(self, item):
         return Script(ClientSide.contains(self.claim(), var(item)))
@@ -236,6 +237,7 @@ def regexp(value):
     return Script("/%s/" % (value.pattern, ))
 
 THIS = Script("this")
+EVENT = Script("event")
 DOCUMENT = Script("document")
 WINDOW = Script("window")
 STOP_EVENT = Script("thedom.stopOperation")
@@ -289,6 +291,15 @@ def getElementsByClassName(className, parentNode=DOCUMENT, stopOnFirstMatch=Fals
 
 def getElementByClassName(className, parentNode=DOCUMENT):
     return call("thedom.getElementByClassName", className, parentNode)
+
+def directChildren(parent):
+    return call("thedom.directChildren", parent)
+
+def directChildrenWithClass(parent, className):
+    return call("thedom.directChildrenWithClass", parent, className)
+
+def directChild(parent, className):
+    return call("thedom.directChild", parent, className)
 
 def getChildrenByAttribute(parentNode, attributeName, attributeValue):
     return call("thedom.getElementsByAttribute", parentNode, attributeName, attributeValue)
@@ -354,7 +365,7 @@ def setPrefix(container, prefix):
     return call("thedom.setPrefix", container, prefix)
 
 def parent(element, className, giveUpAtClass=False):
-    return call("thedom.parent", className, giveUpAtClass)
+    return call("thedom.parent", element, className, giveUpAtClass)
 
 def clearChildren(element, replacement=None):
     return call("thedom.clearChildren", element, replacement)
@@ -416,6 +427,9 @@ def copy(element, to, incrementId=False):
 def contains(text, subtext, caseSensitive=False):
     return call("thedom.contains", text, subtext, caseSensitive)
 
+def endsWith(text, subtext):
+    return call("thedom.endsWith", text, subtext)
+
 def startsWith(text, subtext, caseSensitive=False):
     return call("thedom.startsWith", text, subtext, caseSensitive)
 
@@ -473,6 +487,9 @@ def removeClass(element, classToRemove):
 def addClass(element, classToAdd):
     return call("thedom.addClass", element, classToAdd)
 
+def addClasses(element, classesToAdd):
+    return call("thedom.addClasses", element, classesToAdd)
+
 def removeFromArray(arrayOfItems, toRemove):
     return call("thedom.removeFromArray", arrayOfItems, toRemove)
 
@@ -509,6 +526,9 @@ def toggleMenu(button):
 def closeMenu():
     return call("thedom.closeMenu")
 
+def disableChildren(parentElement):
+    return call("thedom.disableChildren", parentElement)
+
 def selectText(element, start, end):
     return call("thedom.selectText", element, start, end)
 
@@ -536,6 +556,9 @@ def checkboxActsLikeRadioButton(element, pair):
 def stopOperation(event):
     return call("thedom.stopOperation", event)
 
+def stopInline(event=EVENT):
+    return call("thedom.stopInline", event)
+
 def buildFileOpener(dropBox):
     return call("thedom.buildFileOpener", dropBox)
 
@@ -551,8 +574,8 @@ def serializeElements(elements):
 def serializeAll(container=DOCUMENT):
     return call("thedom.serializeAll", container)
 
-def confirm(message, action):
-    return call("thedom.confirm", message, inlineFunction(action))
+def confirm(message, action, attach=THIS):
+    return call("thedom.confirm", message, inlineFunction(action, accepts=('element', )), attach)
 
 def callOpener(method):
     return call("thedom.callOpener", method)
@@ -604,6 +627,9 @@ def toggleAccordion(content, image, value):
 
 def setAttribute(instance, name, value):
     return Script("%s.%s = %s" % (instance, name, var(value)))
+
+def selectTab(tab):
+    return call("thedom.selectTab", tab)
 
 class doClientSide(object):
     """

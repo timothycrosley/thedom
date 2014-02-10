@@ -21,7 +21,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Base, Buttons, ClientSide, Display, DOM, Factory, HiddenInputs, Inputs, Layout, UITemplate
+from . import Base, Buttons, ClientSide, Display, DOM, Factory, HiddenInputs, Inputs, Layout
 from .Factory import Composite
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
@@ -65,15 +65,15 @@ class DropDownMenu(Layout.Box):
         self.toggle.addClass("WToggle")
         return toggleButton
 
-    def addChildElement(self, childElement):
+    def addChildElement(self, childElement, ensureUnique=True):
         """
             Overrides the behavior of adding a child element, by making the first element the menu toggle
             and the second the menu contents.
         """
         if not self.toggle:
-            return self.setToggleButton(Layout.Box.addChildElement(self, childElement))
+            return self.setToggleButton(Layout.Box.addChildElement(self, childElement, ensureUnique))
         elif not self.menu:
-            self.menu = Layout.Box.addChildElement(self, childElement)
+            self.menu = Layout.Box.addChildElement(self, childElement, ensureUnique)
             if self.id:
                 self.menu.id = self.id + ":Content"
             self.menu.addClass("WMenu")
@@ -187,23 +187,23 @@ class Autocomplete(Layout.Box):
                             }
                           };""")
 
-    def addChildElement(self, childElement):
+    def addChildElement(self, childElement, ensureUnique=True):
         """
             Overrides the behavior of addChildElement making the first child element the user input
             that will be provided auto complete support, and the second the menu contents which will contain
             the auto complete results on key-up.
         """
         if not self.userInput:
-            self.userInput = Layout.Box.addChildElement(self, childElement)
+            self.userInput = Layout.Box.addChildElement(self, childElement, ensureUnique)
             return self.userInput
         if not self.menu:
-            self.menu = Layout.Box.addChildElement(self, childElement)
+            self.menu = Layout.Box.addChildElement(self, childElement, ensureUnique)
             self.menu.id = self.id + ":Content"
             self.menu.addClass("WMenu")
             self.menu.hide()
             return self.menu
         else:
-            return Layout.Box.addChildElement(self, childElement)
+            return Layout.Box.addChildElement(self, childElement, ensureUnique)
 
     def jsShowIfActive(self):
         """
@@ -238,6 +238,11 @@ class Tab(Layout.Box):
     properties['text'] = {'action':'tabLabel.setText'}
     properties['imageName'] = {'action':'classAttribute'}
     Base.addChildProperties(properties, Display.Label, 'tabLabel')
+    
+    class ClientSide(Layout.Box.ClientSide):
+        
+        def select(self):
+            return ClientSide.selectTab(self)
 
     class TabLabel(Display.Label):
         """
@@ -254,7 +259,6 @@ class Tab(Layout.Box):
             """
                 changes the class to reflect a selected tab label
             """
-            self.removeClass('WUnselected')
             self.addClass('WSelected')
 
         def unselect(self):
@@ -262,24 +266,13 @@ class Tab(Layout.Box):
                 changes the class to reflect an unselected tab label
             """
             self.removeClass('WSelected')
-            self.addClass('WUnselected')
-
-        @staticmethod
-        def jsSelect(tab):
-            return ("thedom.removeClass(%(tab)s, 'WUnselected');"
-                    "thedom.addClass(%(tab)s, 'WSelected');") % {'tab':tab}
-
-        @staticmethod
-        def jsUnselect(tab):
-            return ("thedom.removeClass(%(tab)s, 'WSelected');"
-                    "thedom.addClass(%(tab)s, 'WUnselected');") % {'tab':tab}
 
     def _create(self, id, name=None, parent=None, **kwargs):
         Layout.Box._create(self, id=id, name=name, parent=parent)
 
         self.tabLabel = self.TabLabel(id=self.id + "Label", parent=self)
         self.imageName = None
-        self.unselect()
+        self.isSelected = False
 
     def text(self):
         """
@@ -312,7 +305,7 @@ class Tab(Layout.Box):
         """
         self.isSelected = True
         self.tabLabel.select()
-        self.show()
+        self.addClass("WSelected")
         self.emit('selected')
 
     def unselect(self):
@@ -321,7 +314,7 @@ class Tab(Layout.Box):
         """
         self.isSelected = False
         self.tabLabel.unselect()
-        self.hide()
+        self.removeClass("WSelected")
         self.emit('unselected')
 
 Factory.addProduct(Tab)
@@ -350,28 +343,6 @@ class TabContainer(Base.Node):
         self.__tabContentContainer__ = self.layout.addChildElement(Layout.Box())
         self.__tabContentContainer__.addClass('WTabContents')
 
-        self.addScript(CallBack(self, 'jsInit'))
-
-    def jsInit(self):
-        """
-            Returns the javascript that will store the tabs state client-side.
-        """
-        if self.selectedTab:
-            return "var %s_selectedTab = '%s';" % (self.fullId(), self.selectedTab.fullId())
-        return ""
-
-    def jsSelectTab(self, tab):
-        """
-            Returns the javascript code to select an individual tab client side
-        """
-        return (("thedom.hide(%(tabContainer)s_selectedTab);" +
-                 tab.TabLabel.jsUnselect("%s_selectedTab + 'Label'" % self.fullId()) +
-                 "%(tabContainer)s_selectedTab = '%(tab)s';"
-                 "thedom.show(%(tabContainer)s_selectedTab);" +
-                 tab.TabLabel.jsSelect("'" + tab.fullId() + "Label'")) %
-                    {'tab':tab.fullId(),
-                     'tabContainer':self.fullId()})
-
     def selectTab(self, tabName):
         """
             Selects an individual tab based upon its name
@@ -385,22 +356,23 @@ class TabContainer(Base.Node):
         self.selectedTab = tab
         tab.select()
 
-    def addChildElement(self, element):
+    def addChildElement(self, element, ensureUnique=True):
         """
             Overrides the addChildElement behavior to make the first add element the tab.
         """
         if isinstance(element, Tab):
-            element.tabLabel.addJavascriptEvent('onclick', self.jsSelectTab(element))
-            self.tabs[element.name] = element
+            element.tabLabel.addJavascriptEvent('onclick', element.clientSide.select())
+            self.tabs[element.id] = element
             element.tabLabel.id = element.id + "Label"
-            element.connect('selected', None, self, 'selectTab', element.name)
+            element.connect('selected', None, self, 'selectTab', element.id)
             if not self.selectedTab or element.isSelected:
                 element.select()
 
             self.__tabLabelContainer__.addChildElement(element.tabLabel)
+            element.addClass("WTab")
             return self.__tabContentContainer__.addChildElement(element)
         else:
-            return Base.Node.addChildElement(self, element)
+            return Base.Node.addChildElement(self, element, ensureUnique)
 
 Factory.addProduct(TabContainer)
 
@@ -541,7 +513,7 @@ class ActionBox(Layout.Vertical):
 
         self.actions = self.addChildElement(Display.List())
 
-    def addChildElement(self, childElement, ensureUnique=False):
+    def addChildElement(self, childElement, ensureUnique=True):
         """
             Overrides the addChildElement behavior to see any links passed in as actions.
         """

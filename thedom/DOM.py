@@ -22,7 +22,7 @@
 '''
 
 from . import DictUtils, Factory
-from .Base import Settings, Node
+from .Base import Node, Settings
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 

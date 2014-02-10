@@ -1,7 +1,7 @@
 '''
     Compile.py
-
-    Provides utilities for taking WebElement Template files and turning them into optimized python code.
+    
+    Provides utilities for taking Node Template files and turning them into optimized python code.
 
     Classes and methods that aid in creating python dictionaries from XML or SHPAML templates
 
@@ -22,41 +22,41 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from .Types import StyleDict
-from .MultiplePythonSupport import *
 from .All import Factory
+from .MultiplePythonSupport import *
+from .Types import StyleDict
 
 INDENT = "    "
 SCRIPT_TEMPLATE = """# WARNING: DON'T EDIT AUTO-GENERATED
 
-from WebElements.Base import WebElement, TextNode
-from WebElements.Display import CacheElement, StraightHTML
+from thedom.Base import Node, TextNode
+from thedom.Display import CacheElement, StraightHTML
 
 elementsExpanded = False
 %(cacheElements)s
 %(staticElements)s
 
 
-class Template(WebElement):
+class Template(Node):
     __slots__ = %(accessors)s
 
 
 def build(factory):
     template = Template()
-
+    
     global elementsExpanded
     if not elementsExpanded:
         products = factory.products
         %(defineElements)s
         elementsExpanded = True
     %(buildTemplate)s
-
+    
     return template"""
 
 
 class CompiledTemplate(object):
     """
-        Represents a template that has been compiled and exec'd in the current runtime, produces a new WebElement
+        Represents a template that has been compiled and exec'd in the current runtime, produces a new Node
         representation of the template every time you call you call 'build()' behaving in a similar fashion as
         templates that have been compiled and saved into python modules.
     """
@@ -64,14 +64,14 @@ class CompiledTemplate(object):
     def __init__(self, execNamespace, factory):
         self.execNamespace = execNamespace
         self.factory = factory
-
+        
     def build(self, factory=None):
         """
-            Returns a WebElement representation of the template using the specified factory.
+            Returns a Node representation of the template using the specified factory.
         """
         factory = factory or self.factory
         return self.execNamespace['build'](factory)
-
+        
     @classmethod
     def create(self, template, factory=Factory):
         """
@@ -86,7 +86,7 @@ class CompiledTemplate(object):
 def toPython(template, factory=Factory):
     """
         Takes a UITemplate.Template() and a factory, and returns python code that will generate the expected
-        WebElement structure.
+        Node structure.
     """
     return __createPythonFromTemplate(template, factory)
 
@@ -122,7 +122,7 @@ def __createPythonFromTemplate(template, factory=None, parentNode=None, instance
     create = create.replace("-", "_")
     if create in ("and", "or", "with", "if", "del", "template"):
         create = "_" + create
-
+        
     accessor = accessor or id
     if accessor:
         accessor = accessor.replace("-", "_")
@@ -153,7 +153,7 @@ def __createPythonFromTemplate(template, factory=None, parentNode=None, instance
             else:
                 propertyActions = ""
             propertyName = propertyDict.get('name', name)
-
+            
             if propertyAction == "classAttribute":
                 python += "\n%s%s%s.%s = %s" % (indented, newNode, propertyActions, propertyName, repr(value))
             elif propertyAction == "attribute":
@@ -176,7 +176,7 @@ def __createPythonFromTemplate(template, factory=None, parentNode=None, instance
                                                          repr(StyleDict.fromString(value)))
             else:
                 python += "\n%s%s%s.%s(%s)" % (indented, newNode, propertyActions, propertyAction, repr(value))
-
+            
     if accessor:
         accessorsUsed.add(accessor)
         python += "\n%stemplate.%s = %s" % (indented, accessor, newNode)
@@ -198,8 +198,8 @@ def __createPythonFromTemplate(template, factory=None, parentNode=None, instance
                 python += "\n%selse:" % indented
                 for accessor in childAccessors:
                     python += "\n%stemplate.%s = %s" % (indented + INDENT, accessor, newNode)
-
-
+                
+            
     python += "\n%s%s.addChildElement(%s, ensureUnique=False)" % (indented, parentNode, newNode)
     if parentNode == "template":
         defineElements = ""
@@ -208,14 +208,14 @@ def __createPythonFromTemplate(template, factory=None, parentNode=None, instance
             if variableName in ("and", "or", "with", "if", "del", "template"):
                 variableName = "_" + variableName
             defineElements += "globals()['%s'] = products['%s']\n%s" % (variableName, elementName, INDENT * 2)
-
+            
         cacheDefinitions = ""
         for elementName in cacheElements:
             cacheDefinitions += "%s = CacheElement()\n" % elementName
-
+        
         return SCRIPT_TEMPLATE % {'accessors':tuple(accessorsUsed), 'buildTemplate':python,
                                   'defineElements':defineElements, 'cacheElements':cacheDefinitions,
                                   'staticElements':"\n".join(staticElements)}
-
-
+        
+        
     return (python, instance)

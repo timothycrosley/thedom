@@ -236,9 +236,9 @@ class Or(Validator):
         Validator._create(self, id=id, name=name, parent=parent, **kwargs)
         self.required = True
 
-    def addChildElement(self, element):
+    def addChildElement(self, element, ensureUnique=True):
         element.control = self.control
-        return Validator.addChildElement(self, element)
+        return Validator.addChildElement(self, element, ensureUnique)
 
     class ClientSide(Validator.ClientSide):
         def validate(self):
@@ -406,7 +406,7 @@ Factory.addProduct(URLValidator)
 
 
 class TimeValidator(PatternValidator):
-    pattern = re.compile(r'^\d{1,2}:\d{2}([ap]m)$')
+    pattern = re.compile(r'^(0[1-9]|1[0-2]):([0-5][0-9])(AM|am|PM|pm)$')
     messages = {'format':'HH:MMpm'}
     __slots__ = ()
 

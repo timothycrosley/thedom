@@ -21,7 +21,7 @@
 '''
 
 from . import Base
-from .Base import TextNode, Node
+from .Base import Node, TextNode
 from .MultiplePythonSupport import *
 
 

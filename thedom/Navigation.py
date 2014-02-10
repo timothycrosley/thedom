@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Base, Buttons, ClientSide, Containers, Display, HiddenInputs, Inputs, Layout, UITemplate
+from . import Base, Buttons, ClientSide, Containers, Display, HiddenInputs, Inputs, Layout
 from .Factory import Factory
 from .IteratorUtils import iterableLength
 from .MethodUtils import CallBack
@@ -39,8 +39,8 @@ class ItemPager(Layout.Vertical):
     __slots__ = ('resultsStartAt', 'numberOfResults', 'showAllButton', 'startButton', 'backButton', 'pageLinks',
                  'nextButton', 'lastButton', 'pagesShownAtOnce', 'itemsPerPage', '_index_', '_pages_',
                  'resultsEndAt', 'updateJS')
-    signals = Base.TemplateElement.signals + ['jsIndexChanged']
-    properties = Base.TemplateElement.properties.copy()
+    signals = Layout.Vertical.signals + ['jsIndexChanged']
+    properties = Layout.Vertical.properties.copy()
     properties['itemsPerPage'] = {'action':'classAttribute', 'type':'int'}
     properties['pagesShownAtOnce'] = {'action':'classAttribute', 'type':'int'}
 

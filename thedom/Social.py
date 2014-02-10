@@ -24,7 +24,7 @@ import hashlib
 import urllib
 
 from . import ClientSide, Factory, Layout
-from .Base import TextNode, Node
+from .Base import Node, TextNode
 from .Buttons import Link
 from .Display import Image
 
@@ -226,6 +226,7 @@ class FacebookAPI(Layout.Box):
                             var js, fjs = d.getElementsByTagName(s)[0];
                             if (d.getElementById(id)) {return;}
                             js = d.createElement(s); js.id = id;
+                            js.async = true;
                             js.src = "//connect.facebook.net/en_US/all.js";
                             fjs.parentNode.insertBefore(js, fjs);
                         }(document, 'script', 'facebook-jssdk'));""")

@@ -94,7 +94,7 @@ class Node(Connectable):
     tagSelfCloses = False
     allowsChildren = True
     displayable = True
-    signals = ['hidden', 'shown', 'rendering', 'childAdded', 'editableChanged']
+    signals = ['hidden', 'shown', 'editableChanged']
     properties = {}
     properties['style'] = {'action':'setStyleFromString'}
     properties['class'] = {'action':'addClassesFromString'}
@@ -161,10 +161,16 @@ class Node(Connectable):
                 Provides quick access for performing actions against the element clientSide.
             """
             return ClientSide.doClientSide(self.get().claim())
-
+        
         def __call__(self, script):
             self.serverSide.addScript(script)
             return script
+        
+        def setAttribute(self, attributeName, value):
+            return self.get().__setattr__(attributeName, value)
+        
+        def getAttribute(self, attributeName):
+            return self.get().__getattr__(attributeName, value)
 
         def assign(self, name, var):
             """
@@ -220,6 +226,24 @@ class Node(Connectable):
                 Returns a unique sorted copy of elements.
             """
             return ClientSide.sortUnique(elements)
+
+        def directChildren(self):
+            """
+                Returns all non-empty direct children of this element.
+            """
+            return ClientSide.directChildren(self)
+        
+        def directChildrenWithClass(self, className):
+            """
+                Returns all direct children of this element that have the specified css class.
+            """
+            return ClientSide.directChildrenWithClass(self, className)
+        
+        def directChild(self, className):
+            """
+                Returns the first direct child of this element that has the specified css class or False.
+            """
+            return ClientSide.directChild(self, className)
 
         def getChildrenByTagNames(self, tagNames, unsorted=True):
             """
@@ -473,6 +497,12 @@ class Node(Connectable):
             """
             return ClientSide.contains(text, subtext, caseSensitive)
 
+        def endsWith(self, text, subtext):
+            """
+                Returns True if text ends-with subtext.
+            """
+            return ClientSide.endsWith(text, subText)
+
         def startsWith(self, text, subtext, caseSensitive=False):
             """
                 Returns True if text starts-with subtext.
@@ -538,6 +568,12 @@ class Node(Connectable):
                 Adds the class className to the element.
             """
             return ClientSide.addClass(self, className)
+        
+        def addClasses(self, classNames):
+            """
+                Adds the specified classNames to the element.
+            """
+            return ClientSide.addClasses(self, classNames)
 
         def removeFromArray(self, arrayOfItems, toRemove):
             """
@@ -640,6 +676,9 @@ class Node(Connectable):
                 Stops the specified event from occurring.
             """
             return ClientSide.stopOperation(event)
+        
+        def stopInline(self):
+            return ClientSide.stopInline()
 
         def serialize(self):
             """
@@ -659,11 +698,11 @@ class Node(Connectable):
             """
             return ClientSide.serializeAll(self)
 
-        def confirm(self, message, action):
+        def confirm(self, message, action, attach=ClientSide.THIS):
             """
                 Prompts the user to confirm message then performs the specified action.
             """
-            return ClientSide.confirm(message, action)
+            return ClientSide.confirm(message, action, attach)
 
         def callOpener(self, method):
             """
@@ -706,10 +745,16 @@ class Node(Connectable):
                 Returns a cookie based on its name client-side.
             """
             return ClientSide.getCookie(name)
+            
+        def disableChildren(self):
+            """
+                Disables all child elements of this element.
+            """
+            return ClientSide.disableChildren(self)
 
     def __init__(self, id=None, name=None, parent=None, **kwargs):
         Connectable.__init__(self)
-        self._create(id, name, parent, **kwargs)
+        self._create(id=id, name=name, parent=parent, **kwargs)
         if kwargs:
             self.setProperties(kwargs)
 
@@ -723,7 +768,7 @@ class Node(Connectable):
         self._prefix = None
 
         self.id = id
-        self.name = name or id
+        self.name = name
         self.parent = parent
 
         self._style = None
@@ -865,8 +910,7 @@ class Node(Connectable):
         children = []
         for child in self:
             children.append(child)
-            if not type(child) == TextNode:
-                children.extend(child.allChildren())
+            children.extend(child.allChildren())
 
         return children
 
@@ -980,13 +1024,11 @@ class Node(Connectable):
                 childElement.parent.removeChild(childElement)
             childElement.parent = self.addChildElementsTo
             self.addChildElementsTo.childElements.append(childElement)
-            self.addChildElementsTo.emit('childAdded', childElement)
 
-            if not type(childElement) == TextNode:
-                scriptTemp = childElement.__scriptTemp__
-                if scriptTemp:
-                    for script in scriptTemp:
-                        self.addScript(script)
+            scriptTemp = childElement.__scriptTemp__
+            if scriptTemp:
+                for script in scriptTemp:
+                    self.addScript(script)
 
             return childElement
         else:
@@ -1044,7 +1086,7 @@ class Node(Connectable):
 
             validatorDict[validatorId] = validator
 
-        for child in (child  for child in self.childElements if type(child) != TextNode):
+        for child in (child  for child in self.childElements):
             validatorDict.update(child.validators(useFullId))
 
         return validatorDict
@@ -1062,6 +1104,13 @@ class Node(Connectable):
                 className - the name of the class to add
         """
         self.classes.add(className)
+        return self
+    
+    def addClasses(self, classes):
+        """
+            Adds a list, set, or tuple of classNames to the element.
+        """
+        self.classes.update(classes)
         return self
 
     def chooseClass(self, classes, choice):
@@ -1323,26 +1372,14 @@ class Node(Connectable):
             reqDict.pop(self.name, '')
             reqDict.pop(self.fullName() , '')
 
-        for child in (child for child in self.childElements if type(child) != TextNode):
+        for child in (child for child in self.childElements):
             child.clearFromRequest(reqDict)
-
-    @staticmethod
-    def __getStyleDictFromString(styleString):
-        styleDict = StyleDict()
-
-        styleDefinitions = styleString.split(';')
-        for definition in styleDefinitions:
-            if definition:
-                name, value = definition.split(':')
-                styleDict[name.strip()] = value.strip()
-
-        return styleDict
 
     def setStyleFromString(self, string):
         """
             Updates the style dictionary based on a html style string
         """
-        self.style.update(self.__getStyleDictFromString(string))
+        self.style.update(StyleDict.fromString(string))
 
     def addClassesFromString(self, string):
         """
@@ -1409,8 +1446,9 @@ class Node(Connectable):
     def _render(self):
         """
             Performs actions that need to be preformed at rendering time
+            should be overriden by child classes
         """
-        self.emit("rendering")
+        pass
 
     def toHTML(self, formatted=False, *args, **kwargs):
         """
@@ -1514,19 +1552,18 @@ class Invalid(Node):
         return "Invalid Element"
 
 
-class TextNode(object):
+class TextNode(Node):
     """
-        Defines the most basic concept of an html node - does not have the concept of children only of producing html
-        should only be used internally or for testing objects
+        Defines the most basic concept of an html node - that is the text that lies between or within other concrete
+        nodes.
     """
-    __slots__ = ('_text', 'parent')
-    displayable = True
+    __slots__ = ('_text')
     tagName = ''
-    _tagName = ''
+    allowsChildren = False
 
     def __init__(self, text="", parent=None):
-        self.setText(text)
-        self.parent = parent
+        Node.__init__(self, parent=parent)
+        self._text = text
 
     def setText(self, text):
         """
@@ -1545,12 +1582,6 @@ class TextNode(object):
         """
         return self._text
 
-    def shown(self):
-        """
-            Text node elements are always visible
-        """
-        return True
-
     def toHTML(self, *args, **kwargs):
         """
             Returns the rendered html text node (simply a unicode version of the text).
@@ -1562,48 +1593,3 @@ class TextNode(object):
             Overrides insertVariables to do nothing when called on a text node.
         """
         pass
-
-    def __repr__(self):
-        return self.__class__.__name__ + "(" + repr(self.text()) + ")"
-
-    def replaceWith(self, replacementElement):
-        """
-            Replaces this text node with a webelement
-        """
-        if self.parent:
-            index = self.parent.childElements.index(self)
-            self.parent.childElements[index] = replacementElement
-            replacementElement.parent = self.parent
-            return replacementElement
-        else:
-            return Invalid()
-
-
-class TemplateElement(Node):
-    """
-        A template Node is a web element that uses a template for its presentation and
-        structure
-    """
-    factory = None
-    template = None
-
-    def __init__(self, id=None, name=None, parent=None, template=None, factory=None, **kwargs):
-        Node.__init__(self, id, name, parent, **kwargs)
-
-        if template:
-            self.template = template
-
-        if factory:
-            self.factory = factory
-
-        accessors = {}
-        instance = self.factory.buildFromTemplate(self.template, accessors=accessors, parent=self)
-        for accessor, element in iteritems(accessors):
-            if hasattr(self, accessor):
-                raise ValueError("The accessor name or id of the element has to be unique and can not be the "
-                                 "same as a base webelement attribute."
-                                 "Failed on adding element with id or accessor '%s'." % accessor)
-
-            self.__setattr__(accessor, element)
-
-        self.addChildElement(instance)
