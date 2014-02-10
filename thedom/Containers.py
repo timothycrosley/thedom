@@ -328,7 +328,7 @@ Factory.addProduct(Tab)
 TabLabel = Tab.TabLabel
 
 
-class TabContainer(Base.WebElement):
+class TabContainer(Base.Node):
     """
         TabContaier makes it easy to show association between several elements on a page via tabs
     """
@@ -337,7 +337,7 @@ class TabContainer(Base.WebElement):
     __tabLayoutElement__ = Layout.Horizontal
 
     def _create(self, id, name=None, parent=None, **kwargs):
-        Base.WebElement._create(self, id, name, parent, **kwargs)
+        Base.Node._create(self, id, name, parent, **kwargs)
 
         self.tabs = {}
         self.selectedTab = None
@@ -400,7 +400,7 @@ class TabContainer(Base.WebElement):
             self.__tabLabelContainer__.addChildElement(element.tabLabel)
             return self.__tabContentContainer__.addChildElement(element)
         else:
-            return Base.WebElement.addChildElement(self, element)
+            return Base.Node.addChildElement(self, element)
 
 Factory.addProduct(TabContainer)
 

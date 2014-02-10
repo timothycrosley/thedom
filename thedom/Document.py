@@ -41,7 +41,7 @@ DOCTYPE_HTML4_FRAMESET = ('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset
                           '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">')
 DOCTYPE_HTML5 = "<!DOCTYPE html>"
 
-class MetaData(Base.WebElement):
+class MetaData(Base.Node):
     """
         A webelement implementation of the meta tag
     """
@@ -49,13 +49,13 @@ class MetaData(Base.WebElement):
     tagName = "meta"
     displayable = False
 
-    properties = Base.WebElement.properties.copy()
+    properties = Base.Node.properties.copy()
     properties['value'] = {'action':'setValue'}
     properties['name'] = {'action':'setName'}
     properties['http-equiv'] = {'action':'attribute'}
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement._create(self)
+        Base.Node._create(self)
 
     def value(self):
         """
@@ -110,39 +110,39 @@ class HTTPHeader(MetaData):
 Factory.addProduct(HTTPHeader)
 
 
-class Document(Base.WebElement):
+class Document(Base.Node):
     """
-        A WebElement representation of the overall document that fills a single page
+        A Node representation of the overall document that fills a single page
     """
     __slots__ = ('head', 'body', 'title', 'contentType')
     doctype = DOCTYPE_HTML5
     tagName = "html"
-    properties = Base.WebElement.properties.copy()
+    properties = Base.Node.properties.copy()
     properties['doctype'] = {'action':'classAttribute'}
     properties['title'] = {'action':'title.setText'}
     properties['contentType'] = {'action':'contentType.setValue'}
     properties['xmlns'] = {'action':'attribute'}
 
-    class Head(Base.WebElement):
+    class Head(Base.Node):
         """
             Documents Head
         """
         tagName = "head"
 
-    class Body(Base.WebElement):
+    class Body(Base.Node):
         """
             Documents Body
         """
         tagName = "body"
 
-    class Title(Base.WebElement):
+    class Title(Base.Node):
         """
             Documents Title
         """
         tagName = "title"
 
         def _create(self, id=None, name=None, parent=None, **kwargs):
-            Base.WebElement._create(self, id=id, name=name, parent=parent)
+            Base.Node._create(self, id=id, name=name, parent=parent)
 
             self._textNode = self.addChildElement(Base.TextNode())
 
@@ -160,7 +160,7 @@ class Document(Base.WebElement):
             return self._textNode.text(text)
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement._create(self)
+        Base.Node._create(self)
         self.head = self.addChildElement(self.Head())
         self.body = self.addChildElement(self.Body())
         self.title = self.head.addChildElement(self.Title())
@@ -188,7 +188,7 @@ class Document(Base.WebElement):
         """
             Overrides toHTML to include the doctype definition before the open tag.
         """
-        return self.doctype + "\n" + Base.WebElement.toHTML(self, formatted, *args, **kwargs)
+        return self.doctype + "\n" + Base.Node.toHTML(self, formatted, *args, **kwargs)
 
     def addChildElement(self, childElement, ensureUnique=True):
         """
@@ -196,7 +196,7 @@ class Document(Base.WebElement):
             and all others in the body.
         """
         if type(childElement) in [self.Head, self.Body]:
-            return Base.WebElement.addChildElement(self, childElement, ensureUnique)
+            return Base.Node.addChildElement(self, childElement, ensureUnique)
         elif type(childElement) == ResourceFile or childElement._tagName in ['title', 'base', 'link',
                                                                              'meta', 'script', 'style']:
             return self.head.addChildElement(childElement, ensureUnique)

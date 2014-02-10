@@ -4,7 +4,7 @@
     Convenience python functions that return JavaScript code -
     including complete python bindings for thedom.js
 
-    NOTE: documentation for the binding functions is defined in WebElement.js and not as doc strings on the binding
+    NOTE: documentation for the binding functions is defined in Node.js and not as doc strings on the binding
     methods themselves.
 
     Copyright (C) 2013  Timothy Edmund Crosley

@@ -1,7 +1,7 @@
 '''
     Parser.py
 
-    Contains an object that will create a tree of WebElement objects when initialized with HTML
+    Contains an object that will create a tree of Node objects when initialized with HTML
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -21,11 +21,11 @@
 '''
 
 from . import Base
-from .Base import TextNode, WebElement
+from .Base import TextNode, Node
 from .MultiplePythonSupport import *
 
 
-class WebElementTree(Node):
+class NodeTree(Node):
     """
         Creates a tree of webelement children from plain html
     """
@@ -47,7 +47,7 @@ class WebElementTree(Node):
                           "resolving by closing '</%(tag)s>' tag.")
 
     def __init__(self, html="", tag="", parent=None):
-        WebElement.__init__(self, parent=parent)
+        Node.__init__(self, parent=parent)
         self._tagName = tag
         if not parent:
             self._html = html
@@ -60,7 +60,7 @@ class WebElementTree(Node):
             self.startChar = self.index() - len(self.startTag())
 
     def __representSelf__(self):
-        return WebElement.__representSelf__(self).replace('WebElementTree', self._tagName)
+        return Node.__representSelf__(self).replace('NodeTree', self._tagName)
 
     def html(self):
         """

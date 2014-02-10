@@ -1,7 +1,7 @@
 '''
     Types.py
 
-    Defines WebElement DataTypes, mainly overrides of built-ins with guaranteed HTML aware string representations
+    Defines Node DataTypes, mainly overrides of built-ins with guaranteed HTML aware string representations
     and safety markings.
 
     Copyright (C) 2013  Timothy Edmund Crosley

@@ -86,7 +86,7 @@ AutoAddScripts = AutoAddScripts('AutoAddScripts', (object, ), {})
 
 class Node(Connectable):
     """
-        The base WebElement which all custom thedom should extend.
+        The base Node which all custom thedom should extend.
     """
     __slots__ = ('_tagName', '_prefix', '__scriptTemp__', 'validator', '_editable',
                  '__scriptContainer__', 'id', 'name', 'parent', '_style', '_classes', '_attributes',
@@ -715,7 +715,7 @@ class Node(Connectable):
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         """
-            Sets up the WebElement instance, adding any child elements and defining any attributes.
+            Sets up the Node instance, adding any child elements and defining any attributes.
             (if no name is passed in it will default to id)
         """
         self._tagName = self.__class__.tagName
@@ -1172,7 +1172,7 @@ class Node(Connectable):
 
     def __insertTemporaryScripts(self):
         """
-            Moves scripts that were added to the WebElement but not a scriptContainer over to
+            Moves scripts that were added to the Node but not a scriptContainer over to
             the set scriptContainer
         """
         scriptTemp = self.__scriptTemp__
@@ -1300,7 +1300,7 @@ class Node(Connectable):
 
     def exportVariables(self, exportedVariables=None, flat=False):
         """
-            Export WebElement input field values as a nested key:value dictionary:
+            Export Node input field values as a nested key:value dictionary:
                 exportedVariables - the dictionary to add exported variables to
         """
         if exportedVariables is None:
@@ -1495,7 +1495,7 @@ class Node(Connectable):
 
 class Invalid(Node):
     """
-        An Invalid WebElement - used generally to show that a desired element failed to load
+        An Invalid Node - used generally to show that a desired element failed to load
     """
     __slots__ = ()
     tagName = "h2"
@@ -1581,14 +1581,14 @@ class TextNode(object):
 
 class TemplateElement(Node):
     """
-        A template WebElement is a web element that uses a template for its presentation and
+        A template Node is a web element that uses a template for its presentation and
         structure
     """
     factory = None
     template = None
 
     def __init__(self, id=None, name=None, parent=None, template=None, factory=None, **kwargs):
-        WebElement.__init__(self, id, name, parent, **kwargs)
+        Node.__init__(self, id, name, parent, **kwargs)
 
         if template:
             self.template = template

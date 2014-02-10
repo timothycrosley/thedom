@@ -33,7 +33,7 @@ Factory = Factory.Factory("Inputs")
 
 class ValueElement(DOM.Input):
     """
-        Defines a base value containing WebElement
+        Defines a base value containing Node
     """
     tagName = ""
     tagSelfCloses = False

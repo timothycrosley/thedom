@@ -1,7 +1,7 @@
 '''
     Factory.py
 
-    The WebElement Factory provides a mechanism for building any element the factory has knowledge of
+    The Node Factory provides a mechanism for building any element the factory has knowledge of
     simply by defining its name (as a string) and its main attributes, as well as providing the ability
     to combine multiple factories into one
 
@@ -35,14 +35,14 @@ class Factory(object):
 
     def addProduct(self, productClass):
         """
-            Adds a WebElement to the list of products that can be built from the factory:
-                productClass - the WebElement's class
+            Adds a Node to the list of products that can be built from the factory:
+                productClass - the Node's class
         """
         self.products[productClass.__name__.lower()] = productClass
 
     def build(self, className, id=None, name=None, parent=None):
         """
-            Builds a WebElement instance from the className:
+            Builds a Node instance from the className:
                 className - the class name of the webElement (case insensitive)
                 id - the unique id to assign to the newly built element
                 name - the non-unique identifier to asign to the newly built element
@@ -59,8 +59,8 @@ class Factory(object):
     def buildFromTemplate(self, template, variableDict=None, idPrefix=None, parent=None,
                             scriptContainer=None, accessors=None):
         """
-            Builds an WebElement or a tree of web elements from a dictionary definition:
-                template - the WebElement template node definition tree
+            Builds an Node or a tree of web elements from a dictionary definition:
+                template - the Node template node definition tree
                 variableDict - a dictionary of variables (id/name/key):value to use to populate the
                                tree of thedom
                 idPrefix - a prefix to prepend before each element id in the tree to distinguish it

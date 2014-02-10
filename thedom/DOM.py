@@ -22,7 +22,7 @@
 '''
 
 from . import DictUtils, Factory
-from .Base import Settings, WebElement
+from .Base import Settings, Node
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 
@@ -34,7 +34,7 @@ class A(Node):
     """
     __slots__ = ()
     tagName = "a"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['href'] = {'action':'attribute'}
     properties['media'] = {'action':'attribute'}
     properties['rel'] = {'action':'attribute'}
@@ -70,7 +70,7 @@ class Area(Node):
     """
     __slots__ = ()
     tagName = "area"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['alt'] = {'action':'attribute'}
     properties['coords'] = {'action':'attribute'}
     properties['href'] = {'action':'attribute'}
@@ -110,7 +110,7 @@ class Audio(Node):
     """
     __slots__ = ()
     tagName = "audio"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['autoplay'] = {'action':'attribute', 'type':'bool'}
     properties['controls'] = {'action':'attribute', 'type':'bool'}
     properties['loop'] = {'action':'attribute', 'type':'bool'}
@@ -137,7 +137,7 @@ class Base(Node):
     """
     __slots__ = ()
     tagName = "base"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['href'] = {'action':'attribute'}
     properties['target'] = {'action':'attribute'}
 
@@ -161,7 +161,7 @@ class BDO(Node):
     """
     __slots__ = ()
     tagName = "bdo"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['dir'] = {'action':'attribute'}
 
 Factory.addProduct(BDO)
@@ -173,7 +173,7 @@ class BlockQuote(Node):
     """
     __slots__ = ()
     tagName = "blockquote"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['cite'] = {'action':'attribute'}
 
 Factory.addProduct(BlockQuote)
@@ -207,7 +207,7 @@ class Button(Node):
     """
     __slots__ = ()
     tagName = "button"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['autofocus'] = {'action':'attribute', 'type':'bool'}
     properties['disabled'] = {'action':'attribute', 'type':'bool'}
     properties['form'] = {'action':'attribute'}
@@ -228,7 +228,7 @@ class Canvas(Node):
     __slots__ = ()
     tagName = "canvas"
     allowsChildren = False
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['height'] = {'action':'attribute', 'type':'int'}
     properties['width'] = {'action':'attribute', 'type':'int'}
 
@@ -271,7 +271,7 @@ class Col(Node):
     """
     __slots__ = ()
     tagName = "col"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['span'] = {'action':'attribute', 'type':'int'}
 
 Factory.addProduct(Col)
@@ -283,7 +283,7 @@ class ColGroup(Node):
     """
     __slots__ = ()
     tagName = "colgroup"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['span'] = {'action':'attribute', 'type':'int'}
 
 Factory.addProduct(ColGroup)
@@ -295,7 +295,7 @@ class Command(Node):
     """
     __slots__ = ()
     tagName = "command"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['checked'] = {'action':'attribute', 'type':'bool'}
     properties['disabled'] = {'action':'attribute', 'type':'bool'}
     properties['icon'] = {'action':'attribute'}
@@ -332,7 +332,7 @@ class Del(Node):
     """
     __slots__ = ()
     tagName = "del"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['cite'] = {'action':'attribute'}
     properties['datetime'] = {'action':'attribute'}
 
@@ -345,7 +345,7 @@ class Details(Node):
     """
     __slots__ = ()
     tagName = "details"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['open'] = {'action':'attribute'}
 
 Factory.addProduct(Details)
@@ -407,7 +407,7 @@ class Embed(Node):
     """
     __slots__ = ()
     tagName = "embed"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['height'] = {'action':'attribute'}
     properties['src'] = {'action':'attribute'}
     properties['types'] = {'action':'attribute'}
@@ -422,7 +422,7 @@ class FieldSet(Node):
     """
     __slots__ = ()
     tagName = "fieldset"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['disabled'] = {'action':'attribute', 'type':'bool'}
     properties['form'] = {'action':'attribute'}
 
@@ -465,7 +465,7 @@ class Form(Node):
     """
     __slots__ = ()
     tagName = "form"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['accept'] = {'action':'attribute'}
     properties['accept-charset'] = {'action':'attribute'}
     properties['action'] = {'action':'attribute'}
@@ -594,7 +594,7 @@ class HTML(Node):
     """
     __slots__ = ()
     tagName = "html"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['manifest'] = {'action':'attribute'}
 
 Factory.addProduct(HTML)
@@ -618,7 +618,7 @@ class IFrame(Node):
     """
     __slots__ = ()
     tagName = "iframe"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['sandbox'] = {'action':'attribute'}
     properties['seamless'] = {'action':'attribute', 'type':'bool'}
     properties['src'] = {'action':'attribute'}
@@ -637,7 +637,7 @@ class Img(Node):
     tagName = "img"
     tagSelfCloses = True
     allowsChildren = False
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['src'] = {'action':'setImage'}
     properties['alt'] = {'action':'attribute'}
     properties['crossorigin'] = {'action':'attribute'}
@@ -662,7 +662,7 @@ class Input(Node):
     tagName = "input"
     tagSelfCloses = True
     allowsChildren = False
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['accept'] = {'action':'attribute'}
     properties['alt'] = {'action':'attribute'}
     properties['autocomplete'] = {'action':'attribute', 'type':'bool'}
@@ -701,7 +701,7 @@ class Ins(Node):
     """
     __slots__ = ()
     tagName = "ins"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['cite'] = {'action':'attribute'}
     properties['datetime'] = {'action':'attribute'}
 
@@ -724,7 +724,7 @@ class KeyGen(Node):
     """
     __slots__ = ()
     tagName = "keygen"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['autofocus'] = {'action':'attribute', 'type':'bool'}
     properties['challenge'] = {'action':'attribute', 'type':'bool'}
     properties['disabled'] = {'action':'attribute', 'type':'bool'}
@@ -741,7 +741,7 @@ class Label(Node):
     """
     __slots__ = ()
     tagName = "label"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['for'] = {'action':'attribute'}
     properties['form'] = {'action':'attribute'}
 
@@ -764,7 +764,7 @@ class LI(Node):
     """
     __slots__ = ()
     tagName = "li"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['value'] = {'action':'attribute', 'type':'int'}
 
 Factory.addProduct(LI)
@@ -778,7 +778,7 @@ class Link(Node):
     tagName = "link"
     tagSelfCloses = True
     allowsChildren = False
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['charset'] = {'action':'attribute'}
     properties['src'] = {'action':'setSource'}
     properties['href'] = {'action':'setHref'}
@@ -831,7 +831,7 @@ class Meta(Node):
     tagName = "meta"
     tagSelfCloses = True
     allowsChildren = False
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['charset'] = {'action':'attribute'}
     properties['content'] = {'action':'attribute'}
     properties['http-equiv'] = {'action':'attribute'}
@@ -845,7 +845,7 @@ class Meter(Node):
     """
     __slots__ = ()
     tagName = "meter"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['form'] = {'action':'attribute'}
     properties['high'] = {'action':'attribute', 'type':'int'}
     properties['low'] = {'action':'attribute', 'type':'int'}
@@ -883,7 +883,7 @@ class Object(Node):
     """
     __slots__ = ()
     tagName = "object"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['form'] = {'action':'attribute'}
     properties['height'] = {'action':'attribute', 'type':'int'}
     properties['type'] = {'action':'attribute'}
@@ -899,7 +899,7 @@ class OL(Node):
     """
     __slots__ = ()
     tagName = "ol"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['reversed'] = {'action':'attribute', 'type':'bool'}
     properties['start'] = {'action':'attribute', 'type':'int'}
     properties['type'] = {'action':'attribute'}
@@ -913,7 +913,7 @@ class OptGroup(Node):
     """
     __slots__ = ()
     tagName = "optgroup"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['disabled'] = {'action':'attribute', 'type':'bool'}
     properties['label'] = {'action':'attribute'}
 
@@ -926,7 +926,7 @@ class Option(Node):
     """
     __slots__ = ()
     tagName = "option"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['disabled'] = {'action':'attribute', 'type':'bool'}
     properties['label'] = {'action':'attribute'}
     properties['selected'] = {'action':'attribute', 'type':'bool'}
@@ -941,7 +941,7 @@ class Output(Node):
     """
     __slots__ = ()
     tagName = "output"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['for'] = {'action':'attribute'}
     properties['form'] = {'action':'attribute'}
 
@@ -966,7 +966,7 @@ class Param(Node):
     tagName = "param"
     tagSelfCloses = True
     allowsChildren = False
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['value'] = {'action':'attribute'}
 
 Factory.addProduct(Param)
@@ -988,7 +988,7 @@ class Progress(Node):
     """
     __slots__ = ()
     tagName = "progress"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['max'] = {'action':'attribute', 'type':'int'}
     properties['value'] = {'action':'attribute', 'type':'int'}
 
@@ -1001,7 +1001,7 @@ class Q(Node):
     """
     __slots__ = ()
     tagName = "q"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['cite'] = {'action':'attribute'}
 
 Factory.addProduct(Q)
@@ -1063,7 +1063,7 @@ class Script(Node):
     """
     __slots__ = ()
     tagName = "script"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['async'] = {'action':'attribute', 'type':'bool'}
     properties['defer'] = {'action':'attribute', 'type':'bool'}
     properties['type'] = {'action':'attribute'}
@@ -1095,7 +1095,7 @@ class Select(Node):
     """
     __slots__ = ()
     tagName = "select"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['autofocus'] = {'action':'attribute', 'type':'bool'}
     properties['disabled'] = {'action':'attribute', 'type':'bool'}
     properties['form'] = {'action':'attribute'}
@@ -1123,7 +1123,7 @@ class Source(Node):
     """
     __slots__ = ()
     tagName = "source"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['media'] = {'action':'attribute'}
     properties['src'] = {'action':'attribute'}
     properties['type'] = {'action':'attribute'}
@@ -1157,7 +1157,7 @@ class Style(Node):
     """
     __slots__ = ()
     tagName = "style"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['media'] = {'action':'attribute'}
     properties['scoped'] = {'action':'attribute', 'type':'bool'}
     properties['type'] = {'action':'attribute'}
@@ -1201,7 +1201,7 @@ class Table(Node):
     """
     __slots__ = ()
     tagName = "table"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['border'] = {'action':'attribute', 'type':'bool'}
 
 Factory.addProduct(Table)
@@ -1223,7 +1223,7 @@ class TD(Node):
     """
     __slots__ = ()
     tagName = "td"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['colspan'] = {'action':'attribute', 'type':'number'}
     properties['headers'] = {'action':'attribute'}
     properties['rowspan'] = {'action':'attribute', 'type':'number'}
@@ -1237,7 +1237,7 @@ class TextArea(Node):
     """
     __slots__ = ()
     tagName = "textarea"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['autofocus'] = {'action':'attribute', 'type':'bool'}
     properties['cols'] = {'action':'attribute', 'type':'int'}
     properties['disabled'] = {'action':'attribute', 'type':'bool'}
@@ -1268,7 +1268,7 @@ class TH(Node):
     """
     __slots__ = ()
     tagName = "th"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['colspan'] = {'action':'attribute', 'type':'int'}
     properties['headers'] = {'action':'attribute'}
     properties['rowspan'] = {'action':'attribute', 'type':'int'}
@@ -1293,7 +1293,7 @@ class Time(Node):
     """
     __slots__ = ()
     tagName = "time"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['datetime'] = {'action':'attribute'}
     properties['pubdate'] = {'action':'attribute'}
 
@@ -1326,7 +1326,7 @@ class Track(Node):
     """
     __slots__ = ()
     tagName = "track"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['default'] = {'action':'attribute', 'type':'bool'}
     properties['kind'] = {'action':'attribute'}
     properties['label'] = {'action':'attribute'}
@@ -1374,7 +1374,7 @@ class Video(Node):
     """
     __slots__ = ()
     tagName = "video"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['autoplay'] = {'action':'attribute', 'type':'bool'}
     properties['controls'] = {'action':'attribute', 'type':'bool'}
     properties['height'] = {'action':'attribute', 'type':'int'}

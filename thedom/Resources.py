@@ -30,18 +30,18 @@ from .MultiplePythonSupport import *
 Factory = Factory.Factory("Resources")
 
 
-class ResourceFile(Base.WebElement):
+class ResourceFile(Base.Node):
     """
         Enables you to add resource files (javascript, css, etc..) to a page
     """
     __slots__ = ('resourceFile', 'fileName', 'resourceFile', 'resourceType')
-    properties = Base.WebElement.properties.copy()
+    properties = Base.Node.properties.copy()
     properties['file'] = {'action':'setFile'}
     properties['media'] = {'action':'attribute'}
     displayable = False
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement._create(self, id, name)
+        Base.Node._create(self, id, name)
         self.resourceFile = self.addChildElement(Base.TextNode())
         self.setFile("")
 
@@ -96,7 +96,7 @@ class ScriptContainer(DOM.Script):
     properties['script'] = {'action':'addScript'}
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement._create(self)
+        Base.Node._create(self)
         self.attributes['language'] = 'javascript'
         self.attributes['type']  = 'text/javascript'
         self._scripts = []

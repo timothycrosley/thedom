@@ -31,15 +31,15 @@ from .MultiplePythonSupport import *
 Factory = Factory("DataViews")
 
 
-class Table(Base.WebElement):
+class Table(Base.Node):
     """
         Defines a table webelement - which is designed to be used as an actual table of data (not for alignment of
         child elements), you can quickly fill it with data, and it will take care of the display for you.
     """
     __slots__ = ('alignHeaders', 'header', 'rows', '_columns', 'columnMap', 'uniformStyle')
     tagName = "table"
-    signals = Base.WebElement.signals + ['rowAdded', 'columnAdded']
-    properties = Base.WebElement.properties.copy()
+    signals = Base.Node.signals + ['rowAdded', 'columnAdded']
+    properties = Base.Node.properties.copy()
     properties['columns'] = {'action':'addColumns'}
     properties['rows'] = {'action':'addRows'}
     properties['border'] = {'action':'attribute'}
@@ -47,23 +47,23 @@ class Table(Base.WebElement):
     properties['alignHeaders'] = {'action':'classAttribute'}
     properties['uniformStyle'] = {'action':'classAttribute'}
 
-    class Header(Base.WebElement):
+    class Header(Base.Node):
         """
             Defines a table header
         """
         __slots__ = ()
         tagName = "th"
 
-    class Column(Base.WebElement):
+    class Column(Base.Node):
         """
             Defines a table column
         """
         __slots__ = ('element', '_textNode')
         tagName = "td"
-        signals = Base.WebElement.signals + ['textChanged']
+        signals = Base.Node.signals + ['textChanged']
 
         def _create(self, id=None, name=None, parent=None, **kwargs):
-            Base.WebElement._create(self, id, name, parent, **kwargs)
+            Base.Node._create(self, id, name, parent, **kwargs)
             self.addClass((id or "").replace(" ", "") + "Column")
             self.addClass("WColumn")
             self.element = self.addChildElement(Display.FreeText())
@@ -75,7 +75,7 @@ class Table(Base.WebElement):
             """
                 Ensures that the text node is the last element upon rendering
             """
-            Base.WebElement._render(self)
+            Base.Node._render(self)
             self.addChildElement(self._textNode)
 
         def setText(self, text):
@@ -92,7 +92,7 @@ class Table(Base.WebElement):
             """
             return self._textNode.text()
 
-    class Row(Base.WebElement):
+    class Row(Base.Node):
         """
             Defines a table row
         """
@@ -143,7 +143,7 @@ class Table(Base.WebElement):
             return False
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement._create(self, id, name, parent, **kwargs)
+        Base.Node._create(self, id, name, parent, **kwargs)
 
         header = self.Row('WTableHeader', parent=self)
         self.alignHeaders = ""

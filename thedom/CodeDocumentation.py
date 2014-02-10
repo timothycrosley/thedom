@@ -43,7 +43,7 @@ class CodeSnippet(DOM.Pre):
     """
     __slots__ = ('code', 'lexer', 'showLineNumbers', '_textNode')
     tagName = "pre"
-    properties = Base.WebElement.properties.copy()
+    properties = Base.Node.properties.copy()
     properties['code'] = {'action':'classAttribute'}
     properties['lexer'] = {'action':'classAttribute'}
     properties['showLineNumbers'] = {'action':'classAttribute', 'type':'bool'}

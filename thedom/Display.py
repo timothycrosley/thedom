@@ -120,7 +120,7 @@ class List(DOM.UL):
         """
         item = self.Item()
         item.addChildElement(childElement)
-        Base.WebElement.addChildElement(self, item)
+        Base.Node.addChildElement(self, item)
 
         return childElement
 
@@ -130,7 +130,7 @@ class List(DOM.UL):
         """
         item = self.Item()
         item.setText(name)
-        return Base.WebElement.addChildElement(self, item)
+        return Base.Node.addChildElement(self, item)
 
     def _render(self):
         DOM.UL._render(self)
@@ -308,7 +308,7 @@ class LabeledData(Label):
     """
     __slots__ = ('__data__', )
 
-    properties = Base.WebElement.properties.copy()
+    properties = Base.Node.properties.copy()
     properties['label'] = {'action':'setText'}
     properties['data'] = {'action':'setData'}
 
@@ -462,7 +462,7 @@ class Message(Label):
 Factory.addProduct(Message)
 
 
-class BlankRendered(Base.WebElement):
+class BlankRendered(Base.Node):
     """
         Outupts nothing but still renders child elements
     """
@@ -473,7 +473,7 @@ class BlankRendered(Base.WebElement):
         """
             Overrides toHTML to render the element server-side but not return any html.
         """
-        Base.WebElement.toHTML(self, False, *args, **kwargs)
+        Base.Node.toHTML(self, False, *args, **kwargs)
         return ""
 
     def shown(self):
@@ -485,7 +485,7 @@ class BlankRendered(Base.WebElement):
 Factory.addProduct(BlankRendered)
 
 
-class Empty(Base.WebElement):
+class Empty(Base.Node):
     """
         Outputs nothing to the page -- a useful placeholder
     """
@@ -493,7 +493,7 @@ class Empty(Base.WebElement):
     displayable = False
 
     def _create(self, name=None, id=None, parent=None):
-        Base.WebElement._create(self, None, None, parent)
+        Base.Node._create(self, None, None, parent)
 
     def toHTML(self, formatted=False, *args, **kwargs):
         """
@@ -515,7 +515,7 @@ class Copyright(Label):
         Displays a basic copyright notice, automatically appending the current date.
     """
     __slots__ = ('owner', )
-    properties = Base.WebElement.properties.copy()
+    properties = Base.Node.properties.copy()
     properties['owner'] =  {'action':'classAttribute'}
 
     def _create(self, name=None, id=None, parent=None, **kwargs):
@@ -528,16 +528,16 @@ class Copyright(Label):
 Factory.addProduct(Copyright)
 
 
-class StraightHTML(Base.WebElement):
+class StraightHTML(Base.Node):
     """
         Simply displays the html as it is given
     """
     __slots__ = ('html')
-    properties = Base.WebElement.properties.copy()
+    properties = Base.Node.properties.copy()
     properties['html'] = {'action':'classAttribute'}
 
     def _create(self, name=None, id=None, parent=None, html=""):
-        Base.WebElement._create(self, None, None, parent)
+        Base.Node._create(self, None, None, parent)
 
         self.html = html
 
@@ -581,14 +581,14 @@ class StatusIndicator(DOM.Div):
 Factory.addProduct(StatusIndicator)
 
 
-class CacheElement(Base.WebElement):
+class CacheElement(Base.Node):
     """
         Renders an element once caches the result and returns the cache every time after
     """
     __slots__ = ('__cachedHTML__')
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement._create(self, id, name, parent, **kwargs)
+        Base.Node._create(self, id, name, parent, **kwargs)
         self.__cachedHTML__ = None
 
     def toHTML(self, formatted=False, *args, **kwargs):
@@ -596,7 +596,7 @@ class CacheElement(Base.WebElement):
             Overrides toHTML to only render itself once, and return a cached copy on subsequent calls.
         """
         if self.__cachedHTML__ is None:
-            self.__cachedHTML__ = Base.WebElement.toHTML(self, formatted, *args, **kwargs)
+            self.__cachedHTML__ = Base.Node.toHTML(self, formatted, *args, **kwargs)
         return self.__cachedHTML__
 
 Factory.addProduct(CacheElement)

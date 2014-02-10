@@ -1,7 +1,7 @@
 '''
     JsonParser.py
 
-    Creates a WebElement tree from a python data structure (presumably originating from a JSON string)
+    Creates a Node tree from a python data structure (presumably originating from a JSON string)
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from .Base import TextNode, WebElement
+from .Base import TextNode, Node
 from .Layout import Flow
 from .MultiplePythonSupport import *
 
@@ -28,7 +28,7 @@ TYPE_MAP = {str:'string', unicode:'string', int:'integer'}
 
 class __Tag__(Node):
     def _create(self, tagName, parent, id=None, name=None):
-        WebElement._create(self, id, name, parent, **kwargs)
+        Node._create(self, id, name, parent, **kwargs)
         self._tagName = tagName
 
 def parse(data, formatted=False):

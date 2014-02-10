@@ -4,7 +4,7 @@
     A simple pre-processing template language that produces valid html / xml from condensed input
 
     re-release of public domain software created by Steve Howell - relicensed under GPL V2 to be compatible with
-    the rest of the WebElement stack - the original release is still available under public domain licensing here:
+    the rest of the Node stack - the original release is still available under public domain licensing here:
     http://shpaml.webfactional.com
 
     Copyright (C) 2013  Timothy Edmund Crosley

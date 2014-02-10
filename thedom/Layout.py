@@ -28,17 +28,17 @@ from .Types import Safe
 Factory = Factory.Factory("Layout")
 
 
-class Stack(Base.WebElement):
+class Stack(Base.Node):
     """
        A stack is a container for child elements where only of the contained elements can be
        displayed at a time.
     """
     __slots__ = ('index', 'stackElements')
-    properties = Base.WebElement.properties.copy()
+    properties = Base.Node.properties.copy()
     properties['index'] = {'action':'classAttribute', 'type':'int'}
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement._create(self, id, name, parent, **kwargs)
+        Base.Node._create(self, id, name, parent, **kwargs)
         self.index = 0
         self.stackElements = []
 
@@ -103,7 +103,7 @@ class Box(DOM.Div):
 Factory.addProduct(Box)
 
 
-class Flow(Base.WebElement):
+class Flow(Base.Node):
     """
         A container that does not impose a border around its childElements
        allowing them to flow freely.

@@ -105,7 +105,7 @@ class Validation(Display.Message):
                     break
 
 
-class Validator(Base.WebElement):
+class Validator(Base.Node):
     """
         The base abstract validator that should be sub-classed to define new validators
     """
@@ -115,7 +115,7 @@ class Validator(Base.WebElement):
     WARNING = "warning"
     SUCCESS = "success"
     messages = {'empty':'A value is required for this field'}
-    properties = Base.WebElement.properties.copy()
+    properties = Base.Node.properties.copy()
     properties['required'] = {'action':'classAttribute'}
 
     class ClientSide(Display.Message.ClientSide):
@@ -163,7 +163,7 @@ class Validator(Base.WebElement):
             return {'field':self.value}
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
-        Base.WebElement._create(self, id=id, name=name, parent=parent, **kwargs)
+        Base.Node._create(self, id=id, name=name, parent=parent, **kwargs)
         self.required = False
         self.control = None
 

@@ -24,7 +24,7 @@ import hashlib
 import urllib
 
 from . import ClientSide, Factory, Layout
-from .Base import TextNode, WebElement
+from .Base import TextNode, Node
 from .Buttons import Link
 from .Display import Image
 
@@ -33,11 +33,11 @@ Factory = Factory.Factory("Social")
 
 class Social(Node):
     __slots__ = ('account')
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['account'] = {'action':'classAttribute'}
 
     def _create(self, name=None, id=None, parent=None, html="", *kargs, **kwargs):
-        WebElement._create(self, None, None, parent, *kargs, **kwargs)
+        Node._create(self, None, None, parent, *kargs, **kwargs)
 
         self.account = ""
 
@@ -62,7 +62,7 @@ Factory.addProduct(TwitterBadge)
 class TwitterAPI(Node):
     __slots__ = ()
     def _create(self, name=None, id=None, parent=None, html="", *kargs, **kwargs):
-        WebElement._create(self, name, id, parent, *kargs, **kwargs)
+        Node._create(self, name, id, parent, *kargs, **kwargs)
         self.addScript('window.twttr = (function (d,s,id) {'
                        'var t, js, fjs = d.getElementsByTagName(s)[0];'
                        'if (d.getElementById(id)) return; js=d.createElement(s); js.id=id;'
@@ -114,7 +114,7 @@ Factory.addProduct(Tweet)
 class GooglePlusAPI(Node):
     __slots__ = ()
     def _create(self, name=None, id=None, parent=None, html="", *kargs, **kwargs):
-        WebElement._create(self, name, id, parent, *kargs, **kwargs)
+        Node._create(self, name, id, parent, *kargs, **kwargs)
         self.addScript("window.___gcfg = {lang:'en-US','parsetags':'explicit'};"
                        "(function() {var po = document.createElement('script');"
                        "po.type = 'text/javascript'; po.async = true;"
@@ -132,7 +132,7 @@ class GooglePlusShare(Layout.Box):
                           'info':"The Size of the of the button, 2 is large"}
     properties['url'] = {'action':'attribute', 'name':'data-href', 'info':"The url the google plus button points to"}
     def _create(self, name=None, id=None, parent=None, html="", *kargs, **kwargs):
-        WebElement._create(self, name, id, parent, *kargs, **kwargs)
+        Node._create(self, name, id, parent, *kargs, **kwargs)
         self.addClass("g-plus")
         self.attributes['data-action'] = "share"
         self.attributes['data-annotation'] = "none"
@@ -176,7 +176,7 @@ class FacebookAPI(Layout.Box):
         Adds facebook api support to your site and optionally calls the init method on it - only add once.
     """
     __slots__ = ('loginURL', 'logoutURL', 'appId', 'init')
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['appId'] = {'action':'classAttribute'}
     properties['init'] = {'action':'classAttribute', 'type':'bool'}
     properties['loginURL'] = {'action':'classAttribute'}
@@ -239,7 +239,7 @@ class FacebookLogin(Node):
     """    
     __slots__ = ('text', )
     tagName = "fb:login-button"
-    properties = WebElement.properties.copy()
+    properties = Node.properties.copy()
     properties['show-faces'] = {'action':'attribute', 'type':'bool',
                                 'info':'Specifies whether to show faces underneath the Login button.'}
     properties['width'] = {'action':'attribute', 'type':'int',
@@ -254,7 +254,7 @@ class FacebookLogin(Node):
     properties['text'] = {'action':'classAttribute', 'info':'Set a custom label for the facebook connect button.'}
     
     def _create(self, id=None, name=None, parent=None, *kargs, **kwargs):
-        WebElement._create(self, id, name, parent, *kargs, **kwargs)
+        Node._create(self, id, name, parent, *kargs, **kwargs)
         self.text = None
     
     def _render(self):
@@ -266,7 +266,7 @@ class FacebookLogin(Node):
         elif self.childElements:
             self.childElements[0].setText("")
             
-    class ClientSide(WebElement.ClientSide):
+    class ClientSide(Node.ClientSide):
         """
             Defines the client-side behavior of the facebook api.
         """
