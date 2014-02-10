@@ -32,7 +32,7 @@ import time
 
 from thedom import DictUtils, UITemplate
 from thedom.All import DOM, Factory
-from thedom.Base import TemplateElement, TextNode, WebElement
+from thedom.Base import TemplateElement, TextNode, Node
 from thedom.Layout import Box
 from thedom.MultiplePythonSupport import *
 from thedom.Resources import ScriptContainer
@@ -128,13 +128,13 @@ def getBigTableGenerationTime():
 
 def getNestedElementTime():
     startTime = time.time()
-    rootElement = WebElement('root')
+    rootElement = Node('root')
     element = rootElement
     element._tagName = "root"
     html = ""
     for x in xrange(900):
         doneSection()
-        element = element.addChildElement(WebElement("element" + str(x)))
+        element = element.addChildElement(Node("element" + str(x)))
         element._tagName = 'tag' + str(x)
         html += element.toHTML()
 

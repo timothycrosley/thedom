@@ -21,15 +21,15 @@
 '''
 
 from thedom.All import Factory
-from thedom.Base import Invalid, WebElement
+from thedom.Base import Invalid, Node
 from thedom.Factory import Composite as CompositeFactory
 from thedom.Factory import Factory as FactoryClass
 from thedom.UITemplate import Template
 
 
-class FakeWebElement(WebElement):
+class FakeNode(Node):
     def __init__(self, id=None, name=None, parent=None):
-        WebElement.__init__(self, "Id", "Name")
+        Node.__init__(self, "Id", "Name")
 
 
 class TestFactory(object):
@@ -56,11 +56,11 @@ class TestFactory(object):
 
     def test_addProduct(self):
         """test to ensure adding a new webelement to the factory works"""
-        class FakeWebElement(WebElement):
+        class FakeNode(Node):
             def __init__(self, id=None, name=None, parent=None):
-                WebElement.__init__(self, "Id", "Name")
+                Node.__init__(self, "Id", "Name")
 
-        Factory.addProduct(FakeWebElement)
+        Factory.addProduct(FakeNode)
 
         createdObject = Factory.build("fakewebelement")
         self.base.addChildElement(createdObject)
@@ -89,7 +89,7 @@ class TestFactory(object):
                                                             ('text', 'Field 3:'))),
                                                             ))
 
-        Factory.addProduct(FakeWebElement)
+        Factory.addProduct(FakeNode)
 
         accessors = {}
         testObject = Factory.buildFromTemplate(template, {'InputField1':"value"}, accessors=accessors)

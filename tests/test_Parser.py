@@ -20,9 +20,9 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from thedom.Parser import WebElementTree
+from thedom.Parser import NodeTree
 
-TREE =  WebElementTree("""<html><head><body><br><div id="myDiv"></body></html>""")
+TREE =  NodeTree("""<html><head><body><br><div id="myDiv"></body></html>""")
 EXPECTED_FORMATTED_OUTPUT = """<html>
  <head>
  </head>
@@ -35,7 +35,7 @@ EXPECTED_FORMATTED_OUTPUT = """<html>
 
 def test_tree():
     """
-        Test that WebElementTree correctly produces a parse-able tree of elements
+        Test that NodeTree correctly produces a parse-able tree of elements
     """
     TREE.toHTML()
     assert TREE[0]._tagName == "html"
@@ -53,14 +53,14 @@ def test_tree():
 
 def test_condensedOutput():
     """
-        Test that the WebElement tree correctly produces condensed html
+        Test that the Node tree correctly produces condensed html
     """
     output = TREE.toHTML()
     assert output == '<html><head></head><body><br /><div id="myDiv"></div></body></html>'
 
 def test_formattedOutput():
     """
-        Test that the WebElement tree correctly produces formatted (pretty) html
+        Test that the Node tree correctly produces formatted (pretty) html
     """
     output = TREE.toHTML(formatted=True)
     assert output == EXPECTED_FORMATTED_OUTPUT

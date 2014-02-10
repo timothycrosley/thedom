@@ -28,13 +28,13 @@ except ImportError:
 from lxml import etree
 
 from thedom.All import Factory
-from thedom.Base import Invalid, TemplateElement, WebElement
+from thedom.Base import Invalid, TemplateElement, Node
 from thedom.Resources import ScriptContainer
 from thedom.UITemplate import Template
 
 parser = etree.XMLParser()
 
-class TestWebElement(object):
+class TestNode(object):
 
     def setup_method(self, method):
         self.container = Factory.build('Box', '1')
@@ -43,12 +43,12 @@ class TestWebElement(object):
 
     def test_addChildElement(self):
         #Ensure element adds correctly if parent element allows children
-        addElement = WebElement()
+        addElement = Node()
         assert self.container.addChildElement(addElement) == addElement
         assert self.container.childElements[1] == addElement
 
         #Ensure element is not added if parent element does not allow children
-        assert not self.firstChild.addChildElement(WebElement())
+        assert not self.firstChild.addChildElement(Node())
         assert len(self.container.childElements) == 2
 
         #Ensure child element will not add twice
