@@ -62,7 +62,7 @@ class TestFactory(object):
 
         Factory.addProduct(FakeNode)
 
-        createdObject = Factory.build("fakewebelement")
+        createdObject = Factory.build("fakenode")
         self.base.addChildElement(createdObject)
 
         assert createdObject.fullId() == "myPrefix-Id"
