@@ -41,15 +41,15 @@ try:
 except (IOError, ImportError, OSError, RuntimeError):
    readme = ''
 
-setup(name='WebElements',
-      version='1.0.0-beta.2',
+setup(name='thedom',
+      version='0.0.1',
       long_description=readme,
-      description='WebElements is a collection of python objects that enable you to represent and interact with the DOM server side before generating HTML, CSS, and JavaScript for the client.',
+      description='thedom is a collection of python objects that enable you to represent and interact with the DOM server side before generating HTML, CSS, and JavaScript for the client.',
       author_email='timothy.crosley@gmail.com',
       url='https://github.com/timothycrosley/webelements',
       download_url='https://github.com/timothycrosley/webelements/archive/1.0.0-beta.2.tar.gz',
       license="MIT",
-      packages=['WebElements'],
+      packages=['thedom'],
       requires=['pies'],
       install_requires=['pies>=2.5.5'],
       cmdclass={'test': PyTest},
