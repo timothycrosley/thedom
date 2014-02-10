@@ -220,17 +220,17 @@ class JumpToLetter(Layout.Vertical):
         self.selectedLetter.connect('valueChanged', None, self, "selectLetter")
 
         self.addScript("function letterJumpHover(letterJump){"
-                       "    var letterJump = WebElements.get(letterJump);"
+                       "    var letterJump = thedom.get(letterJump);"
                        "    letterJump.paddingBottom = '4px';"
                        "    letterJump.paggingTop = '3px';"
                        "}")
         self.addScript("function letterJumpLeave(letterJump){"
-                       "    var letterJump = WebElements.get(letterJump);"
+                       "    var letterJump = thedom.get(letterJump);"
                        "    letterJump.paddingBottom = '10px';"
                        "    letterJump.paggingTop = '10px';"
                        "}")
         self.addScript("function l(letterJump, letter){"
-                       "    WebElements.get(letterJump).value = letter;"
+                       "    thedom.get(letterJump).value = letter;"
                        "}")
 
     def _render(self):
@@ -285,9 +285,9 @@ class UnrolledSelect(Display.List):
 
         self.addScript("function selectUnrolledOption(option)"
                        "{"
-                       "    var valueElement = WebElements.fellowChild(option, 'WUnrolledSelect', 'Value');"
+                       "    var valueElement = thedom.fellowChild(option, 'WUnrolledSelect', 'Value');"
                        "    valueElement.value = option.name;"
-                       "    WebElements.stealClassFromFellowChild(option, 'WUnrolledSelect', 'selected');"
+                       "    thedom.stealClassFromFellowChild(option, 'WUnrolledSelect', 'selected');"
                        "}")
 
         self._lastAdded = False

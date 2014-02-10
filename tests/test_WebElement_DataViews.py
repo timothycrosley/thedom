@@ -1,7 +1,7 @@
 '''
     test_DataViews.py
 
-    Tests the functionality of WebElements/DataViews.py
+    Tests the functionality of thedom/DataViews.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -21,8 +21,8 @@
 '''
 
 from test_WebElement_Base import ElementTester
-from WebElements.All import Factory
-from WebElements.DataViews import Table
+from thedom.All import Factory
+from thedom.DataViews import Table
 
 
 class TestTable(ElementTester):

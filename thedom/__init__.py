@@ -1,9 +1,9 @@
 """
-    WebElements/__init__.py
+    thedom/__init__.py
 
-    WebElements is a library that provides classes to represent sections of a page.
+    thedom is a library that provides classes to represent sections of a page.
     At the most basic point a WebElement is a 1:1 mapping to a DOM object, however
-    as WebElements can each contain child elements - a single WebElement from an
+    as thedom can each contain child elements - a single WebElement from an
     API usage point of view can define any concept or widget on a web page no matter
     how complex.
 

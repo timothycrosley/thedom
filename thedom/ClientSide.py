@@ -2,7 +2,7 @@
     ClientSide.py
 
     Convenience python functions that return JavaScript code -
-    including complete python bindings for WebElements.js
+    including complete python bindings for thedom.js
 
     NOTE: documentation for the binding functions is defined in WebElement.js and not as doc strings on the binding
     methods themselves.
@@ -238,369 +238,369 @@ def regexp(value):
 THIS = Script("this")
 DOCUMENT = Script("document")
 WINDOW = Script("window")
-STOP_EVENT = Script("WebElements.stopOperation")
+STOP_EVENT = Script("thedom.stopOperation")
 
-### WebElements.js bindings follow - doc strings are contained within javascript code
+### thedom.js bindings follow - doc strings are contained within javascript code
 
 def addEvent(element, eventType, handler):
-    return call("WebElements.Events.addEvent", element, eventType, handler)
+    return call("thedom.Events.addEvent", element, eventType, handler)
 
 def removeEvent(element, eventType, handler):
-    return call("WebElements.Events.removeEvent", element, eventType, handler)
+    return call("thedom.Events.removeEvent", element, eventType, handler)
 
 def get(element):
-    return call("WebElements.get", element)
+    return call("thedom.get", element)
 
 def forEach(arrayOfItems, callBack):
-    return call("WebElements.forEach", arrayOfItems, callBack)
+    return call("thedom.forEach", arrayOfItems, callBack)
 
 def onEach(arrayOfItems, callBack):
-    return call("WebElements.map", arrayOfItems, callBack)
+    return call("thedom.map", arrayOfItems, callBack)
 
 def sortElements(elements):
-    return call("WebElements.sortElements", elements)
+    return call("thedom.sortElements", elements)
 
 def sortUnique(elements):
-    return call("WebElements.sortUnique", elements)
+    return call("thedom.sortUnique", elements)
 
 def getElementsByTagNames(tagNames, parentElement=DOCUMENT, unsorted=True):
-    return call("WebElements.getElementsByTagNames", tagNames, parentElement, unsorted)
+    return call("thedom.getElementsByTagNames", tagNames, parentElement, unsorted)
 
 def getByCondition(conditional, parentNode=DOCUMENT, stopOnFirstMatch=False):
-    return call("WebElements.getByCondition", conditional, parentNode, stopOnFirstMatch)
+    return call("thedom.getByCondition", conditional, parentNode, stopOnFirstMatch)
 
 def getValue(element):
-    return call("WebElements.getValue", element)
+    return call("thedom.getValue", element)
 
 def hideClass(className, parentNode=DOCUMENT):
-    return call("WebElements.hideClass", className, parentNode)
+    return call("thedom.hideClass", className, parentNode)
 
 def showClass(className, parentNode=DOCUMENT):
-    return call("WebElements.showClass", className, parentNode)
+    return call("thedom.showClass", className, parentNode)
 
 def buildThrobber():
-    return call("WebElements.buildThrobber")
+    return call("thedom.buildThrobber")
 
 def becomeThrobber(element=THIS):
-    return call("WebElements.becomeThrobber", element)
+    return call("thedom.becomeThrobber", element)
 
 def getElementsByClassName(className, parentNode=DOCUMENT, stopOnFirstMatch=False):
-    return call("WebElements.getElementsByClassName", className, parentNode, stopOnFirstMatch)
+    return call("thedom.getElementsByClassName", className, parentNode, stopOnFirstMatch)
 
 def getElementByClassName(className, parentNode=DOCUMENT):
-    return call("WebElements.getElementByClassName", className, parentNode)
+    return call("thedom.getElementByClassName", className, parentNode)
 
 def getChildrenByAttribute(parentNode, attributeName, attributeValue):
-    return call("WebElements.getElementsByAttribute", parentNode, attributeName, attributeValue)
+    return call("thedom.getElementsByAttribute", parentNode, attributeName, attributeValue)
 
 def getChildByAttribute(parentNode, attributeName, attributeValue):
-    return call("WebElements.getChildByAttribute", parentNode, attributeName, attributeValue)
+    return call("thedom.getChildByAttribute", parentNode, attributeName, attributeValue)
 
 def getChildrenByName(parentNode, name):
-    return call("WebElements.getChildrenByName", parentNode, name)
+    return call("thedom.getChildrenByName", parentNode, name)
 
 def getChildByName(parentNode, name):
-    return call("WebElements.getChildByName", parentNode, name)
+    return call("thedom.getChildByName", parentNode, name)
 
 def populate(fieldDict):
-    return call("WebElements.populate", fieldDict)
+    return call("thedom.populate", fieldDict)
 
 def countDown(label, seconds, action):
-    return call("WebElements.countDown", label, seconds, action)
+    return call("thedom.countDown", label, seconds, action)
 
 def abortCountDown(label):
-    return call("WebElements.abortCountDown", label)
+    return call("thedom.abortCountDown", label)
 
 def pixelsToLeft(element):
-    return call("WebElements.pixelsToLeft", element)
+    return call("thedom.pixelsToLeft", element)
 
 def pixelsAbove(element):
-    return call("WebElements.pixelsAbove", element)
+    return call("thedom.pixelsAbove", element)
 
 def setAbsoluteRelativeToParent(element, pixelsDown=0, pixelsToRight=0, parentElement=None):
-    return call("WebElements.setAbsoluteRelativeToParent", element, pixelsDown, pixelsToRight, parentElement)
+    return call("thedom.setAbsoluteRelativeToParent", element, pixelsDown, pixelsToRight, parentElement)
 
 def displayDropDown(dropDown, parentElement=None):
-    return call("WebElements.displayDropDown", dropDown, parentElement)
+    return call("thedom.displayDropDown", dropDown, parentElement)
 
 def toggleDropDown(dropDown, parentElement=None):
-    return call("WebElements.toggleDropDown", dropDown, parentElement)
+    return call("thedom.toggleDropDown", dropDown, parentElement)
 
 def openAccordion(accordionName):
-    return call("WebElements.openAccordion", accordionName)
+    return call("thedom.openAccordion", accordionName)
 
 def fellowChild(element, parentClass, childClass):
-    return call("WebElements.fellowChild", element, parentClass, childClass)
+    return call("thedom.fellowChild", element, parentClass, childClass)
 
 def firstChild(element):
-    return call("WebElements.firstChild", element)
+    return call("thedom.firstChild", element)
 
 def lastChild(element):
-    return call("WebElements.lastChild", element)
+    return call("thedom.lastChild", element)
 
 def nextSibling(element):
-    return call("WebElements.next", element)
+    return call("thedom.next", element)
 
 def prevSibling(element):
-    return call("WebElements.prev", element)
+    return call("thedom.prev", element)
 
 def increment(element, max=None):
-    return call("WebElements.increment", element, max)
+    return call("thedom.increment", element, max)
 
 def defincrement(element, min=None):
-    return call("WebElements.deincrement", element, min)
+    return call("thedom.deincrement", element, min)
 
 def setPrefix(container, prefix):
-    return call("WebElements.setPrefix", container, prefix)
+    return call("thedom.setPrefix", container, prefix)
 
 def parent(element, className, giveUpAtClass=False):
-    return call("WebElements.parent", className, giveUpAtClass)
+    return call("thedom.parent", className, giveUpAtClass)
 
 def clearChildren(element, replacement=None):
-    return call("WebElements.clearChildren", element, replacement)
+    return call("thedom.clearChildren", element, replacement)
 
 def childElements(parentElement):
-    return call("WebElements.childElements", parentElement)
+    return call("thedom.childElements", parentElement)
 
 def peer(element, className):
-    return call("WebElements.peer", element, className)
+    return call("thedom.peer", element, className)
 
 def peers(element, className):
-    return call("WebElements.peers", element, className)
+    return call("thedom.peers", element, className)
 
 def stealClassFromPeer(element, className):
-    return call("WebElements.stealClassFromPeer", element, className)
+    return call("thedom.stealClassFromPeer", element, className)
 
 def stealClassFromFellowChild(element, parentClassName, className):
-    return call("WebElements.stealClassFromFellowChild", element, parentClassName, className)
+    return call("thedom.stealClassFromFellowChild", element, parentClassName, className)
 
 def stealClassFromContainer(element, container, className):
-    return call("WebElements.stealClassFromContainer", element, container, className)
+    return call("thedom.stealClassFromContainer", element, container, className)
 
 def hide(element):
-    return call("WebElements.hide", element)
+    return call("thedom.hide", element)
 
 def show(element):
-    return call("WebElements.show", element)
+    return call("thedom.show", element)
 
 def toggleVisibility(element):
-    return call("WebElements.toggleVisibility", element)
+    return call("thedom.toggleVisibility", element)
 
 def elementShown(element):
-    return call("WebElements.elementShown", element)
+    return call("thedom.elementShown", element)
 
 def replace(element, newElement):
-    return call("WebElements.replace", element, newElement)
+    return call("thedom.replace", element, newElement)
 
 def remove(element):
-    return call("WebElements.remove", element)
+    return call("thedom.remove", element)
 
 def clear(element):
-    return call("WebElements.clear", element)
+    return call("thedom.clear", element)
 
 def addOption(selectElement, optionName, optionValue=None):
-    return call("WebElements.addOption", element, optionName, optionValue)
+    return call("thedom.addOption", element, optionName, optionValue)
 
 def addOptions(selectElement, options):
-    return call("WebElements.addOptions", options)
+    return call("thedom.addOptions", options)
 
 def addHtml(element, html):
-    return call("WebElements.addHtml", element, html)
+    return call("thedom.addHtml", element, html)
 
 def move(element, to, makeTop=False):
-    return call("WebElements.move", element, to, makeTop)
+    return call("thedom.move", element, to, makeTop)
 
 def copy(element, to, incrementId=False):
-    return call("WebElements.copy", element, to, incrementId)
+    return call("thedom.copy", element, to, incrementId)
 
 def contains(text, subtext, caseSensitive=False):
-    return call("WebElements.contains", text, subtext, caseSensitive)
+    return call("thedom.contains", text, subtext, caseSensitive)
 
 def startsWith(text, subtext, caseSensitive=False):
-    return call("WebElements.startsWith", text, subtext, caseSensitive)
+    return call("thedom.startsWith", text, subtext, caseSensitive)
 
 def addPrefix(container, prefix):
-    return call("WebElements.addPrefix", container, prefix)
+    return call("thedom.addPrefix", container, prefix)
 
 def sortSelect(selectElement, sortByValue=False):
-    return call("WebElements.sortSelect", selectElement, sortByValue)
+    return call("thedom.sortSelect", selectElement, sortByValue)
 
 def removeDuplicates(array):
-    return call("WebElements.removeDuplicates", array)
+    return call("thedom.removeDuplicates", array)
 
 def selectedOptions(selectBox):
-    return call("WebElements.selectedOptions", selectBox)
+    return call("thedom.selectedOptions", selectBox)
 
 def selectAllOptions(selectBox):
-    return call("WebElements.selectAllOptions", selectBox)
+    return call("thedom.selectAllOptions", selectBox)
 
 def setOptions(selectBox, options):
-    return call("WebElements.setOptions", selectBox, options)
+    return call("thedom.setOptions", selectBox, options)
 
 def selectAllCheckboxes(container, check=True):
-    return call("WebElements.selectAllCheckboxes", container, check)
+    return call("thedom.selectAllCheckboxes", container, check)
 
 def getValues(container, checkSelected=False, tagName="option"):
-    return call("WebElements.getValues", container, checkSelected, tagName)
+    return call("thedom.getValues", container, checkSelected, tagName)
 
 def getElementByValue(element, value):
-    return call("WebElements.getElementByValue", element, value)
+    return call("thedom.getElementByValue", element, value)
 
 def getElementByInnerHTML(element, html):
-    return call("WebElements.getElementByInnerHTML", element, value)
+    return call("thedom.getElementByInnerHTML", element, value)
 
 def selectedOption(selectBox):
-    return call("WebElements.selectedOption", selectBox)
+    return call("thedom.selectedOption", selectBox)
 
 def selectOption(selectBox, option):
-    return call("WebElements.selectOption", selectBox, option)
+    return call("thedom.selectOption", selectBox, option)
 
 def replaceAll(string, toReplace, replacement):
-    return call("WebElements.replaceAll", string, toReplace, replacement)
+    return call("thedom.replaceAll", string, toReplace, replacement)
 
 def classes(element):
-    return call("WebElements.classes", element)
+    return call("thedom.classes", element)
 
 def hasClass(element, className):
-    return call("WebElements.hasClass", element, className)
+    return call("thedom.hasClass", element, className)
 
 def setClasses(element, classList):
-    return call("WebElements.setClasses", element, classList)
+    return call("thedom.setClasses", element, classList)
 
 def removeClass(element, classToRemove):
-    return call("WebElements.removeClass", element, classToRemove)
+    return call("thedom.removeClass", element, classToRemove)
 
 def addClass(element, classToAdd):
-    return call("WebElements.addClass", element, classToAdd)
+    return call("thedom.addClass", element, classToAdd)
 
 def removeFromArray(arrayOfItems, toRemove):
-    return call("WebElements.removeFromArray", arrayOfItems, toRemove)
+    return call("thedom.removeFromArray", arrayOfItems, toRemove)
 
 def chooseClass(element, classes, choice):
-    return call("WebElements.chooseClass", element, classes, choice)
+    return call("thedom.chooseClass", element, classes, choice)
 
 def redraw(element):
-    return call("WebElements.redraw", element)
+    return call("thedom.redraw", element)
 
 def strip(string):
-    return call("WebElements.strip", element)
+    return call("thedom.strip", element)
 
 def stripLeadingZeros(string):
-    return call("WebElements.stripLeadingZeros", string)
+    return call("thedom.stripLeadingZeros", string)
 
 def inList(array, value):
-    return call("WebElements.inList", array, value)
+    return call("thedom.inList", array, value)
 
 def appendOnce(array, item):
-    return call("WebElements.appendOnce", array, item)
+    return call("thedom.appendOnce", array, item)
 
 def combine(array1, array2):
-    return call("WebElements.combine", array1, array2)
+    return call("thedom.combine", array1, array2)
 
 def suppress(element, attribute):
-    return call("WebElements.suppress", element, attribute)
+    return call("thedom.suppress", element, attribute)
 
 def unsuppress(element, attribute):
-    return call("WebElements.unsuppress", element, attribute)
+    return call("thedom.unsuppress", element, attribute)
 
 def toggleMenu(button):
-    return call("WebElements.toggleMenu", button)
+    return call("thedom.toggleMenu", button)
 
 def closeMenu():
-    return call("WebElements.closeMenu")
+    return call("thedom.closeMenu")
 
 def selectText(element, start, end):
-    return call("WebElements.selectText", element, start, end)
+    return call("thedom.selectText", element, start, end)
 
 def openPopup(url, width=700, height=700, normal=False, windowTitle="_blank", options=None):
-    return call("WebElements.openPopup", windowTitle, url, width, height, normal, options)
+    return call("thedom.openPopup", windowTitle, url, width, height, normal, options)
 
 def scrolledToBottom(scroller):
-    return call("WebElements.scrolledToBottom", scroller)
+    return call("thedom.scrolledToBottom", scroller)
 
 def toggleClass(element, className):
-    return call("WebElements.toggleClass", element, className)
+    return call("thedom.toggleClass", element, className)
 
 def toggleTableRowSelect(checkbox):
-    return call("WebElements.toggleTableRowSelect", checkbox)
+    return call("thedom.toggleTableRowSelect", checkbox)
 
 def getNotificationPermission():
-    return call("WebElements.getNotificationPermission")
+    return call("thedom.getNotificationPermission")
 
 def showNotification(title, content, icon="images/info.png"):
-    return call("WebElements.showNotification", title, content, icon)
+    return call("thedom.showNotification", title, content, icon)
 
 def checkboxActsLikeRadioButton(element, pair):
-    return call("WebElements.checkboxActsLikeRadioButton", element, pair)
+    return call("thedom.checkboxActsLikeRadioButton", element, pair)
 
 def stopOperation(event):
-    return call("WebElements.stopOperation", event)
+    return call("thedom.stopOperation", event)
 
 def buildFileOpener(dropBox):
-    return call("WebElements.buildFileOpener", dropBox)
+    return call("thedom.buildFileOpener", dropBox)
 
 def clickDropDown(menu, openOnly, button, parentElement):
-    return call("WebElements.clickDropDown", menu, openOnly, button, parentElement)
+    return call("thedom.clickDropDown", menu, openOnly, button, parentElement)
 
 def serialize(field):
-    return call("WebElements.serialize", field)
+    return call("thedom.serialize", field)
 
 def serializeElements(elements):
-    return call("WebElements.serializeElements", elements)
+    return call("thedom.serializeElements", elements)
 
 def serializeAll(container=DOCUMENT):
-    return call("WebElements.serializeAll", container)
+    return call("thedom.serializeAll", container)
 
 def confirm(message, action):
-    return call("WebElements.confirm", message, inlineFunction(action))
+    return call("thedom.confirm", message, inlineFunction(action))
 
 def callOpener(method):
-    return call("WebElements.callOpener", method)
+    return call("thedom.callOpener", method)
 
 def updateParent():
-    return call("WebElements.updateParent")
+    return call("thedom.updateParent")
 
 def focus(element, selectText=False):
-    return call("WebElements.focus", element, selectText)
+    return call("thedom.focus", element, selectText)
 
 def setValue(element, value):
-    return call("WebElements.setValue", element, value)
+    return call("thedom.setValue", element, value)
 
 def redirect(to):
     return Script("window.location = %s" % var(to))
 
 def showIfSelected(option, elementToShow, element=THIS):
-    return call("WebElements.showIfSelected", element, option, elementToShow)
+    return call("thedom.showIfSelected", element, option, elementToShow)
 
 def showIfChecked(elementToShow, checkbox=THIS):
-    return call("WebElements.showIfChecked", checkbox, elementToShow)
+    return call("thedom.showIfChecked", checkbox, elementToShow)
 
 def expandTemplate(template, valueDictionary):
-    return call("WebElements.expandTemplate", template, valueDictionary)
+    return call("thedom.expandTemplate", template, valueDictionary)
 
 def createCalendar(element):
-    return call("WebElements.createCalendar",{'field':get(element)})
+    return call("thedom.createCalendar",{'field':get(element)})
 
 def onPagerChange(pager, callBack):
-    return call("WebElements.onPagerChange", pager, inlineFunction(callBack, accepts=('params', )))
+    return call("thedom.onPagerChange", pager, inlineFunction(callBack, accepts=('params', )))
 
 def timezone():
-    return call("WebElements.timezone")
+    return call("thedom.timezone")
 
 def setCookie(name, value):
-    return call("WebElements.setCookie", name, value)
+    return call("thedom.setCookie", name, value)
 
 def getCookie(name):
-    return call("WebElements.getCookie", name)
+    return call("thedom.getCookie", name)
 
 def openAccordion(content, image, value):
-    return openAccordion("WebElements.openAccordion", content, image, value)
+    return openAccordion("thedom.openAccordion", content, image, value)
 
 def closeAccordion(content, image, value):
-    return openAccordion("WebElements.closeAccordion", content, image, value)
+    return openAccordion("thedom.closeAccordion", content, image, value)
 
 def toggleAccordion(content, image, value):
-    return call("WebElements.toggleAccordion", content, image, value)
+    return call("thedom.toggleAccordion", content, image, value)
 
 def setAttribute(instance, name, value):
     return Script("%s.%s = %s" % (instance, name, var(value)))

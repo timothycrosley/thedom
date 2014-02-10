@@ -1,7 +1,7 @@
 '''
     test_WebElement_Social.py
 
-    Tests the functionality of WebElements/Social.py
+    Tests the functionality of thedom/Social.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -21,7 +21,7 @@
 '''
 
 from test_WebElement_Base import ElementTester
-from WebElements.All import Factory
+from thedom.All import Factory
 
 
 class TestTwitterBadge(ElementTester):

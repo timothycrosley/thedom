@@ -62,7 +62,7 @@ class Factory(object):
             Builds an WebElement or a tree of web elements from a dictionary definition:
                 template - the WebElement template node definition tree
                 variableDict - a dictionary of variables (id/name/key):value to use to populate the
-                               tree of WebElements
+                               tree of thedom
                 idPrefix - a prefix to prepend before each element id in the tree to distinguish it
                            from a different tree on the page
                 parent - the webElement that will encompass the tree

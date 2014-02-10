@@ -1,7 +1,7 @@
 '''
     test_Parser.py
 
-    Tests the functionality of WebElements/Parser.py
+    Tests the functionality of thedom/Parser.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from WebElements.Parser import WebElementTree
+from thedom.Parser import WebElementTree
 
 TREE =  WebElementTree("""<html><head><body><br><div id="myDiv"></body></html>""")
 EXPECTED_FORMATTED_OUTPUT = """<html>

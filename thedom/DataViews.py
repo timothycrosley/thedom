@@ -303,7 +303,7 @@ class StoredValue(Layout.Box):
         value.makeStrong()
         hiddenValue = HiddenInputs.HiddenValue(name=name)
         hiddenValue.addJavascriptEvent('onchange',
-                                       "WebElements.prev(this).innerHTML = this.value;")
+                                       "thedom.prev(this).innerHTML = this.value;")
 
         hiddenValue.connect('valueChanged', None, value, 'setText')
 

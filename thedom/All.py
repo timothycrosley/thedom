@@ -1,8 +1,8 @@
 '''
     All.py
 
-    A Factory that contains all the base WebElements, additionally can be used to import all WebElements with
-    a single import (for example: import WebElements.All as WebElements; layout = WebElements.Layout.Vertical())
+    A Factory that contains all the base thedom, additionally can be used to import all thedom with
+    a single import (for example: import thedom.All as thedom; layout = thedom.Layout.Vertical())
 
     Copyright (C) 2013  Timothy Edmund Crosley
 

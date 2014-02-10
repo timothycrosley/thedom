@@ -1,7 +1,7 @@
 '''
     test_Resources.py
 
-    Tests the functionality of WebElements/Resources.py
+    Tests the functionality of thedom/Resources.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -21,8 +21,8 @@
 '''
 
 from test_WebElement_Base import ElementTester
-from WebElements.All import Factory
-from WebElements.Resources import ScriptContainer
+from thedom.All import Factory
+from thedom.Resources import ScriptContainer
 
 
 class TestResourceFile(ElementTester):

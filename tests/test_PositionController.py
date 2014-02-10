@@ -1,7 +1,7 @@
 '''
     test_PositionController.py
 
-    Tests the functionality of WebElements/PositionController.py
+    Tests the functionality of thedom/PositionController.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from WebElements.PositionController import PositionController
+from thedom.PositionController import PositionController
 
 
 class TestPositionController(object):

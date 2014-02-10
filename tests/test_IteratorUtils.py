@@ -1,7 +1,7 @@
 '''
     test_IteratorUtils.py
 
-    Tests the functionality of WebElements/IteratorUtils.py
+    Tests the functionality of thedom/IteratorUtils.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -20,8 +20,8 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from WebElements.IteratorUtils import IterableCollection, Queryable, SortedSet
-from WebElements.MultiplePythonSupport import *
+from thedom.IteratorUtils import IterableCollection, Queryable, SortedSet
+from thedom.MultiplePythonSupport import *
 
 
 def test_iterableCollection():

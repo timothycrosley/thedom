@@ -86,7 +86,7 @@ AutoAddScripts = AutoAddScripts('AutoAddScripts', (object, ), {})
 
 class WebElement(Connectable):
     """
-        The base WebElement which all custom WebElements should extend.
+        The base WebElement which all custom thedom should extend.
     """
     __slots__ = ('_tagName', '_prefix', '__scriptTemp__', 'validator', '_editable',
                  '__scriptContainer__', 'id', 'name', 'parent', '_style', '_classes', '_attributes',
@@ -387,7 +387,7 @@ class WebElement(Connectable):
             """
                 Toggles whether or not the element can be seen.
             """
-            return WebElements.toggleVisiblity(self)
+            return thedom.toggleVisiblity(self)
 
         def hideClass(self, className):
             """

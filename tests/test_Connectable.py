@@ -1,7 +1,7 @@
 '''
     test_Connectable.py
 
-    Tests the functionality of WebElements/Connectable.py
+    Tests the functionality of thedom/Connectable.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 '''
 
-from WebElements.Connectable import Connectable
+from thedom.Connectable import Connectable
 
 
 class Value(Connectable):

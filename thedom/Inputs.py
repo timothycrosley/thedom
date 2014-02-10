@@ -131,7 +131,7 @@ class ValueElement(DOM.Input):
 
     def exportVariables(self, exportedVariables=None):
         """
-            return the used webelements variables as a dictionary
+            return the used thedom variables as a dictionary
         """
         if exportedVariables is None:
             exportedVariables = {}
@@ -189,7 +189,7 @@ class InputElement(ValueElement):
         '''
             Returns javascript to disable this input clientside
         '''
-        return 'WebElements.get(\'%s\').disabled = %s;' % (self.id, str(disabled))
+        return 'thedom.get(\'%s\').disabled = %s;' % (self.id, str(disabled))
 
 Factory.addProduct(InputElement)
 
@@ -260,7 +260,7 @@ class CheckBox(InputElement):
         '''
         Return javascript to check/uncheck the checkbox.
         '''
-        return 'WebElements.get(\'%s\').checked = %s' % (self.id, str(checked))
+        return 'thedom.get(\'%s\').checked = %s' % (self.id, str(checked))
 
     def setValueAttributeFromString(self, value):
         '''
@@ -345,7 +345,7 @@ class TextBox(InputElement):
         """
             Returns the javascript to select all the text in the textbox clientside
         """
-        return """textBox = WebElements.get('""" + (id or self.id) + """');
+        return """textBox = thedom.get('""" + (id or self.id) + """');
                   textBox.focus();
                   textBox.select();"""
 

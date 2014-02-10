@@ -46,22 +46,22 @@ class DropDownMenu(Layout.Box):
         self.openOnly = False
         self.parentElement = None
 
-    def setToggleButton(self, toggleButton, relation="WebElements.peer"):
+    def setToggleButton(self, toggleButton, relation="thedom.peer"):
         """
             Sets the button that controls the toggling of the menu
 
             toggleButton - the control button
-            relation - the relational javascript method to call to get the menu aka "WebElements.peer" or
-                      "WebElements.childElement"
+            relation - the relational javascript method to call to get the menu aka "thedom.peer" or
+                      "thedom.childElement"
         """
         self.toggle = toggleButton
         if self.id:
             self.toggle.id = self.id + "-Toggle"
 
         self.toggle.addJavascriptEvent('onclick',
-                                       "WebElements.clickDropDown(%s(this, 'WMenu'), %s, this, %s);" %
+                                       "thedom.clickDropDown(%s(this, 'WMenu'), %s, this, %s);" %
                                         (relation, ((self.openOnly and "true") or "false"),
-                                    (self.parentElement and "WebElements.get('%s')" % self.parentElement) or "null"))
+                                    (self.parentElement and "thedom.get('%s')" % self.parentElement) or "null"))
         self.toggle.addClass("WToggle")
         return toggleButton
 
@@ -77,7 +77,7 @@ class DropDownMenu(Layout.Box):
             if self.id:
                 self.menu.id = self.id + ":Content"
             self.menu.addClass("WMenu")
-            self.menu.addJavascriptEvent('onclick', 'WebElements.State.isPopupOpen = true;')
+            self.menu.addJavascriptEvent('onclick', 'thedom.State.isPopupOpen = true;')
             self.menu.hide()
             return self.menu
         else:
@@ -133,8 +133,8 @@ class CollapsedText(DropDownMenu):
         text = self.text()
         if len(text) > int(self.lengthLimit or 0):
             self.label.parent.addJavascriptEvent('onmouseover',
-                                               "WebElements.displayDropDown(WebElements.peer(this, 'WMenu'));")
-            self.label.parent.addJavascriptEvent('onmouseout', "WebElements.hide(WebElements.peer(this, 'WMenu'));")
+                                               "thedom.displayDropDown(thedom.peer(this, 'WMenu'));")
+            self.label.parent.addJavascriptEvent('onmouseout', "thedom.hide(thedom.peer(this, 'WMenu'));")
             self.label.setText(text[:int(self.lengthLimit) - 3] + "...")
             self.completeText = self.addChildElement(Display.Label())
             self.completeText.setText(text)
@@ -180,7 +180,7 @@ class Autocomplete(Layout.Box):
                             function CloseLastAutocompletePopup()
                             {
                                 if(AutoCompletePopup && !MenuClicked){
-                                    WebElements.hide(AutoCompletePopup)
+                                    thedom.hide(AutoCompletePopup)
                                 }
                                 if(prevFunction)prevFunction();
                                 MenuClicked = false;
@@ -210,15 +210,15 @@ class Autocomplete(Layout.Box):
             Returns the javascript code necessary to show the drop down menu on key up if there is text present.
         """
         return """if(event.keyCode != ENTER){
-                    var menu = WebElements.peer(this, 'WMenu');
+                    var menu = thedom.peer(this, 'WMenu');
                     if(this.value""" + (self.blockTab and " && event.keyCode != TAB)" or ")") + """
                     {
-                        WebElements.show(menu);
+                        thedom.show(menu);
                         AutoCompletePopup = menu;
                     }
                     else
                     {
-                        WebElements.hide(menu);
+                        thedom.hide(menu);
                         AutoCompletePopup = null;
                     }
                   }
@@ -266,13 +266,13 @@ class Tab(Layout.Box):
 
         @staticmethod
         def jsSelect(tab):
-            return ("WebElements.removeClass(%(tab)s, 'WUnselected');"
-                    "WebElements.addClass(%(tab)s, 'WSelected');") % {'tab':tab}
+            return ("thedom.removeClass(%(tab)s, 'WUnselected');"
+                    "thedom.addClass(%(tab)s, 'WSelected');") % {'tab':tab}
 
         @staticmethod
         def jsUnselect(tab):
-            return ("WebElements.removeClass(%(tab)s, 'WSelected');"
-                    "WebElements.addClass(%(tab)s, 'WUnselected');") % {'tab':tab}
+            return ("thedom.removeClass(%(tab)s, 'WSelected');"
+                    "thedom.addClass(%(tab)s, 'WUnselected');") % {'tab':tab}
 
     def _create(self, id, name=None, parent=None, **kwargs):
         Layout.Box._create(self, id=id, name=name, parent=parent)
@@ -364,10 +364,10 @@ class TabContainer(Base.WebElement):
         """
             Returns the javascript code to select an individual tab client side
         """
-        return (("WebElements.hide(%(tabContainer)s_selectedTab);" +
+        return (("thedom.hide(%(tabContainer)s_selectedTab);" +
                  tab.TabLabel.jsUnselect("%s_selectedTab + 'Label'" % self.fullId()) +
                  "%(tabContainer)s_selectedTab = '%(tab)s';"
-                 "WebElements.show(%(tabContainer)s_selectedTab);" +
+                 "thedom.show(%(tabContainer)s_selectedTab);" +
                  tab.TabLabel.jsSelect("'" + tab.fullId() + "Label'")) %
                     {'tab':tab.fullId(),
                      'tabContainer':self.fullId()})

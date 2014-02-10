@@ -1,7 +1,7 @@
 '''
     test_DOM.py
 
-    Tests the functionality of WebElements/DOM.py
+    Tests the functionality of thedom/DOM.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -21,7 +21,7 @@
 '''
 
 from test_WebElement_Base import ElementTester
-from WebElements.DOM import Factory
+from thedom.DOM import Factory
 
 
 class TestA(ElementTester):

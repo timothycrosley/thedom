@@ -1,7 +1,7 @@
 '''
     test_DictUtils.py
 
-    Tests the functionality of WebElements/DictUtils.py
+    Tests the functionality of thedom/DictUtils.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from WebElements import DictUtils
+from thedom import DictUtils
 
 
 class TestDictUtilsTest(object):

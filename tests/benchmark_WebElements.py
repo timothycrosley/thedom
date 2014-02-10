@@ -1,7 +1,7 @@
 '''
-    benchmark_WebElements.py
+    benchmark_thedom.py
 
-    Benchmarks the performance of the WebElements library, specifically how fast
+    Benchmarks the performance of the thedom library, specifically how fast
     it will generate complex HTML pages
 
     Copyright (C) 2013  Timothy Edmund Crosley
@@ -30,12 +30,12 @@ import gc
 import sys
 import time
 
-from WebElements import DictUtils, UITemplate
-from WebElements.All import DOM, Factory
-from WebElements.Base import TemplateElement, TextNode, WebElement
-from WebElements.Layout import Box
-from WebElements.MultiplePythonSupport import *
-from WebElements.Resources import ScriptContainer
+from thedom import DictUtils, UITemplate
+from thedom.All import DOM, Factory
+from thedom.Base import TemplateElement, TextNode, WebElement
+from thedom.Layout import Box
+from thedom.MultiplePythonSupport import *
+from thedom.Resources import ScriptContainer
 
 results = {'loopedCreate':0.0, 'loopedInit':0.0, 'loopedToHtml':0.0, 'bigTable':0.0, 'bigTableSize':0.0,
            'createAllOnce':0.0, 'longestCreationTime':0.0, 'nestedNodeCreation':0.0,
@@ -186,5 +186,5 @@ if __name__ == "__main__":
     print("    Html Size: " + str(results['bigTableSize'] / 1024.0 / 1024.0) + " MB")
     results['nestedGeneration'] = generationTime
 
-    with open(".test_WebElements_Benchmark.results", 'w') as resultFile:
+    with open(".test_thedom_Benchmark.results", 'w') as resultFile:
         resultFile.write(str(pickle.dumps(results)))

@@ -1,7 +1,7 @@
 '''
     test_Base.py
 
-    Tests the functionality of WebElements/Base.py
+    Tests the functionality of thedom/Base.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -27,10 +27,10 @@ except ImportError:
 
 from lxml import etree
 
-from WebElements.All import Factory
-from WebElements.Base import Invalid, TemplateElement, WebElement
-from WebElements.Resources import ScriptContainer
-from WebElements.UITemplate import Template
+from thedom.All import Factory
+from thedom.Base import Invalid, TemplateElement, WebElement
+from thedom.Resources import ScriptContainer
+from thedom.UITemplate import Template
 
 parser = etree.XMLParser()
 

@@ -1,7 +1,7 @@
 '''
     test_Charts.py
 
-    Tests the functionality of WebElements/Charts.py
+    Tests the functionality of thedom/Charts.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -21,7 +21,7 @@
 '''
 
 from test_WebElement_Base import ElementTester
-from WebElements.All import Factory
+from thedom.All import Factory
 
 
 class ChartTester(ElementTester):

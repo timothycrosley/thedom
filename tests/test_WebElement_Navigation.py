@@ -1,7 +1,7 @@
 '''
     test_Navigation.py
 
-    Tests the functionality of WebElements/Navigation.py
+    Tests the functionality of thedom/Navigation.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -21,8 +21,8 @@
 '''
 
 from test_WebElement_Base import ElementTester
-from WebElements.All import Factory
-from WebElements.Buttons import Link
+from thedom.All import Factory
+from thedom.Buttons import Link
 
 
 class TestItemPager(ElementTester):

@@ -1,7 +1,7 @@
 '''
     test_Benchmark.py
 
-    Tests the results of benchmark_WebElements.py against project performance metrics
+    Tests the results of benchmark_thedom.py against project performance metrics
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -30,16 +30,16 @@ import subprocess
 import sys
 
 
-class TestWebElements_Benchmark(object):
+class Testthedom_Benchmark(object):
 
     def run_benchmark(self):
-        subprocess.Popen("python benchmark_WebElements.py", shell=True).wait()
-        with open(".test_WebElements_Benchmark.results") as resultFile:
+        subprocess.Popen("python benchmark_thedom.py", shell=True).wait()
+        with open(".test_thedom_Benchmark.results") as resultFile:
             if sys.version >= "3":
                 results = pickle.loads(bytes(resultFile.read(), 'utf8'))
             else:
                 results = pickle.loads(resultFile.read())
-        os.remove(".test_WebElements_Benchmark.results")
+        os.remove(".test_thedom_Benchmark.results")
         return results
 
     def test_benchmark(self):

@@ -1,7 +1,7 @@
 '''
     test_Inputs.py
 
-    Tests the functionality of WebElements/Inputs.py
+    Tests the functionality of thedom/Inputs.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -21,8 +21,8 @@
 '''
 
 from test_WebElement_Base import ElementTester
-from WebElements.All import Factory
-from WebElements.Inputs import ValueElement
+from thedom.All import Factory
+from thedom.Inputs import ValueElement
 
 
 class TestValueElement(object):

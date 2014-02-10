@@ -1,7 +1,7 @@
 '''
     test_Factory.py
 
-    Tests the functionality of WebElements/Factory.py
+    Tests the functionality of thedom/Factory.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -20,11 +20,11 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from WebElements.All import Factory
-from WebElements.Base import Invalid, WebElement
-from WebElements.Factory import Composite as CompositeFactory
-from WebElements.Factory import Factory as FactoryClass
-from WebElements.UITemplate import Template
+from thedom.All import Factory
+from thedom.Base import Invalid, WebElement
+from thedom.Factory import Composite as CompositeFactory
+from thedom.Factory import Factory as FactoryClass
+from thedom.UITemplate import Template
 
 
 class FakeWebElement(WebElement):

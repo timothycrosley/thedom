@@ -314,7 +314,7 @@ class ToggleButton(Layout.Box):
         """
             Returns the javascript that will reverse the buttons toggle state client side
         """
-        return """if(WebElements.next(this).value == 'off'){
+        return """if(thedom.next(this).value == 'off'){
                     """ + self.jsToggleOn() + '\n'.join(self.emit('jsToggled', True)) + """
                   }
                   else{
@@ -326,9 +326,9 @@ class ToggleButton(Layout.Box):
             Returns the javascript that will turn the button off client side
         """
         return """
-                var element = WebElements.get('""" + self.button.fullId() + """');
-                WebElements.removeClass(element, 'Pushed');
-                WebElements.next(element).value = 'off';
+                var element = thedom.get('""" + self.button.fullId() + """');
+                thedom.removeClass(element, 'Pushed');
+                thedom.next(element).value = 'off';
                """
 
     def jsToggleOn(self):
@@ -336,9 +336,9 @@ class ToggleButton(Layout.Box):
             Returns the javascript that will turn the button on client side
         """
         return """
-                var element = WebElements.get('""" + self.button.fullId() + """');
-                WebElements.addClass(element, 'Pushed');
-                WebElements.next(element).value = 'on';
+                var element = thedom.get('""" + self.button.fullId() + """');
+                thedom.addClass(element, 'Pushed');
+                thedom.next(element).value = 'on';
                """
 
     def toggled(self):

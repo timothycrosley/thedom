@@ -1,7 +1,7 @@
 '''
     test_UITemplate.py
 
-    Tests the functionality of WebElements/UITemplate.py
+    Tests the functionality of thedom/UITemplate.py
 
     Copyright (C) 2013  Timothy Edmund Crosley
 
@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from WebElements import UITemplate
+from thedom import UITemplate
 
 EXPECTED_STRUCTURE = UITemplate.Template('container', properties=(("randomattribute", "Hello"),),
                                          childElements=(

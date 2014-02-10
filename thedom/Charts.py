@@ -29,7 +29,7 @@ Factory = Factory.Factory("Charts")
 
 class GoogleChart(Image):
     """
-        Provides a way for the google chart api to be used via WebElements
+        Provides a way for the google chart api to be used via thedom
     """
     __slots__ = ('__dataPoints__', '__height__', '__width__')
     chartType = None
