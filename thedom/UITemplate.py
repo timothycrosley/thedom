@@ -23,8 +23,9 @@
 from xml.dom import minidom
 
 from . import shpaml
-from .MultiplePythonSupport import *
 from .StringUtils import interpretFromString
+from .MultiplePythonSupport import *
+from .Base import Node
 
 # Supported format types
 XML = 0
@@ -35,6 +36,9 @@ class Template(object):
         A very memory efficient representation of a user interface template
     """
     __slots__ = ('create', 'accessor', 'id', 'name', 'childElements', 'properties')
+
+    class Rendered(Node):
+        pass
 
     def __init__(self, create, accessor="", id="", name="", childElements=None, properties=()):
         self.create = create
@@ -66,6 +70,23 @@ class Template(object):
 
         return True
 
+    def build(self, factory):
+        templateElement = self.Rendered()
+
+        accessors = {}
+        instance = factory.buildFromTemplate(self, accessors=accessors, parent=templateElement)
+        for accessor, element in iteritems(accessors):
+            if hasattr(templateElement, accessor):
+                raise ValueError("The accessor name or id of the element has to be unique and can not be the "
+                                 "same as a base node attribute."
+                                 "Failed on adding element with id or accessor '%s'." % accessor)
+
+            templateElement.__setattr__(accessor, element)
+
+        templateElement += instance
+        return templateElement
+
+
 def fromFile(templateFile, formatType=SHPAML):
     """
         Returns a parsable dictionary representation of the interface:
@@ -77,6 +98,7 @@ def fromFile(templateFile, formatType=SHPAML):
         with open(templateFile) as openFile:
             return fromSHPAML(openFile.read())
 
+
 def fromXML(xml):
     """
         Returns a parsable dictionary representation of the interface:
@@ -85,6 +107,7 @@ def fromXML(xml):
     xmlStructure = minidom.parseString(xml)
     return __createTemplateFromXML(xmlStructure.childNodes[0])
 
+
 def fromSHPAML(shpamlTemplate):
     """
         Returns a parsable dictionary representation of the interface:
@@ -92,6 +115,7 @@ def fromSHPAML(shpamlTemplate):
     """
     xmlStructure = minidom.parseString(shpaml.convert_text(shpamlTemplate))
     return __createTemplateFromXML(xmlStructure.childNodes[0])
+
 
 def __createTemplateFromXML(xml):
     """
@@ -124,3 +148,4 @@ def __createTemplateFromXML(xml):
         childElements = None
 
     return Template(create, accessor, id, name, childElements, properties)
+
