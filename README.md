@@ -1,23 +1,23 @@
-![webelements](https://raw.github.com/timothycrosley/webelements/develop/logo.png)
+![thedom](https://raw.github.com/timothycrosley/thedom/develop/logo.png)
 =====
 
-[![PyPI version](https://badge.fury.io/py/webelements.png)](http://badge.fury.io/py/webelements)
-[![PyPi downloads](https://pypip.in/d/webelements/badge.png)](https://crate.io/packages/webelements/)
-[![Build Status](https://travis-ci.org/timothycrosley/webelements.png?branch=master)](https://travis-ci.org/timothycrosley/webelements)
-[![License](https://pypip.in/license/webelements/badge.png)](https://pypi.python.org/pypi/webelements/)
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/timothycrosley/webelements/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![PyPI version](https://badge.fury.io/py/thedom.png)](http://badge.fury.io/py/thedom)
+[![PyPi downloads](https://pypip.in/d/thedom/badge.png)](https://crate.io/packages/thedom/)
+[![Build Status](https://travis-ci.org/timothycrosley/thedom.png?branch=master)](https://travis-ci.org/timothycrosley/thedom)
+[![License](https://pypip.in/license/thedom/badge.png)](https://pypi.python.org/pypi/thedom/)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/timothycrosley/thedom/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
-WebElements is a collection of python objects that enable developers to generate and interact with web apps server side.
+thedom is a collection of python objects that enable developers to generate and interact with web apps server side.
 It encourages object oriented website development, and code reuse by seperating each DOM element into its own object,
 and then allowing inheritance and child elements to come together to form new elements not defined in the standard DOM.
 
 write this:
 
-    from WebElements import Layout, Document, Buttons
+    from thedom import Layout, Document, Buttons
 
     page = Document.Document()
     layout = page.addChildElement(Layout.Center()).addChildElement(Layout.Horizontal())
-    layout += Buttons.Button(text="Use WebElements.", **{'class':'MainAction'})
+    layout += Buttons.Button(text="Use thedom.", **{'class':'MainAction'})
     layout += Buttons.Button(text="Enjoy writing less code.", **{'class':'DeleteAction'})
     layout += Buttons.Button(text="100% Python.")
 
@@ -38,7 +38,7 @@ get this:
                 <div class="WOuter">
                     <div class="WInner">
                         <div class="WClear">
-                            <input class="WBlock WLeft MainAction" type="button" value="Use WebElements." />
+                            <input class="WBlock WLeft MainAction" type="button" value="Use thedom." />
                             <input class="WBlock WLeft DeleteAction" type="button" value="Enjoy writing less code." />
                             <input class="WBlock WLeft" type="button" value="100% Python." />
                         </div>
@@ -48,19 +48,19 @@ get this:
         </body>
     </html>
 
-Installing WebElements
+Installing thedom
 ===================
 
-Installing WebElements is as simple as:
+Installing thedom is as simple as:
 
-    pip install webelements
+    pip install thedom
 
 or if you prefer
 
-    easy_install webelements
+    easy_install thedom
 
 --------------------------------------------
 
-Thanks and I hope you find WebElements useful!
+Thanks and I hope you find thedom useful!
 
 ~Timothy Crosley
