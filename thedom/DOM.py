@@ -28,7 +28,7 @@ from .MultiplePythonSupport import *
 
 Factory = Factory.Factory("DOM")
 
-class A(WebElement):
+class A(Node):
     """
         Defines a link that when clicked changes the currently viewed page
     """
@@ -44,7 +44,7 @@ class A(WebElement):
 Factory.addProduct(A)
 
 
-class Abr(WebElement):
+class Abr(Node):
     """
         Defines an abbreviation or an acronym
     """
@@ -54,7 +54,7 @@ class Abr(WebElement):
 Factory.addProduct(Abr)
 
 
-class Address(WebElement):
+class Address(Node):
     """
         Defines contact info for the author of a document or article
     """
@@ -64,7 +64,7 @@ class Address(WebElement):
 Factory.addProduct(Address)
 
 
-class Area(WebElement):
+class Area(Node):
     """
         Defines an area inside an image map
     """
@@ -84,7 +84,7 @@ class Area(WebElement):
 Factory.addProduct(Area)
 
 
-class Article(WebElement):
+class Article(Node):
     """
         Defines an independent, self-contained content
     """
@@ -94,7 +94,7 @@ class Article(WebElement):
 Factory.addProduct(Article)
 
 
-class Aside(WebElement):
+class Aside(Node):
     """
         Defines content as being aside from the content it is placed in
     """
@@ -104,7 +104,7 @@ class Aside(WebElement):
 Factory.addProduct(Aside)
 
 
-class Audio(WebElement):
+class Audio(Node):
     """
         Defines sound, such as music or other audio streams
     """
@@ -119,7 +119,7 @@ class Audio(WebElement):
 Factory.addProduct(Audio)
 
 
-class B(WebElement):
+class B(Node):
     """
         Defines bold text
         NOTE: avoid using this element, when possible use elements that describe the content
@@ -131,7 +131,7 @@ class B(WebElement):
 Factory.addProduct(B)
 
 
-class Base(WebElement):
+class Base(Node):
     """
         Defines the base URL for all relative URLs in a document
     """
@@ -144,7 +144,7 @@ class Base(WebElement):
 Factory.addProduct(Base)
 
 
-class BDI(WebElement):
+class BDI(Node):
     """
         Defines a part of text that should be formatted in a different direction
         from the other text outside it
@@ -155,7 +155,7 @@ class BDI(WebElement):
 Factory.addProduct(BDI)
 
 
-class BDO(WebElement):
+class BDO(Node):
     """
         Defines an override of the current text-direction
     """
@@ -167,7 +167,7 @@ class BDO(WebElement):
 Factory.addProduct(BDO)
 
 
-class BlockQuote(WebElement):
+class BlockQuote(Node):
     """
         Defines a section that is quoted from another source
     """
@@ -179,7 +179,7 @@ class BlockQuote(WebElement):
 Factory.addProduct(BlockQuote)
 
 
-class Body(WebElement):
+class Body(Node):
     """
         Defines the document's body - which contains all the visible parts of an HTML document
     """
@@ -189,7 +189,7 @@ class Body(WebElement):
 Factory.addProduct(Body)
 
 
-class Br(WebElement):
+class Br(Node):
     """
         Defines a single line break
     """
@@ -201,7 +201,7 @@ class Br(WebElement):
 Factory.addProduct(Br)
 
 
-class Button(WebElement):
+class Button(Node):
     """
         Defines a click-able button
     """
@@ -221,7 +221,7 @@ class Button(WebElement):
 Factory.addProduct(Button)
 
 
-class Canvas(WebElement):
+class Canvas(Node):
     """
         Defines an area of the screen to draw graphic on the fly
     """
@@ -235,7 +235,7 @@ class Canvas(WebElement):
 Factory.addProduct(Canvas)
 
 
-class Caption(WebElement):
+class Caption(Node):
     """
         Defines a table caption
     """
@@ -245,7 +245,7 @@ class Caption(WebElement):
 Factory.addProduct(Caption)
 
 
-class Cite(WebElement):
+class Cite(Node):
     """
         Defines the title of a work
     """
@@ -255,7 +255,7 @@ class Cite(WebElement):
 Factory.addProduct(Cite)
 
 
-class Code(WebElement):
+class Code(Node):
     """
         Defines a piece of programming code
     """
@@ -265,7 +265,7 @@ class Code(WebElement):
 Factory.addProduct(Code)
 
 
-class Col(WebElement):
+class Col(Node):
     """
         Defines a table column
     """
@@ -277,7 +277,7 @@ class Col(WebElement):
 Factory.addProduct(Col)
 
 
-class ColGroup(WebElement):
+class ColGroup(Node):
     """
         Defines a group of one or more columns in a table
     """
@@ -289,7 +289,7 @@ class ColGroup(WebElement):
 Factory.addProduct(ColGroup)
 
 
-class Command(WebElement):
+class Command(Node):
     """
         Defines a click-able command button
     """
@@ -306,7 +306,7 @@ class Command(WebElement):
 Factory.addProduct(Command)
 
 
-class DataList(WebElement):
+class DataList(Node):
     """
         Defines a list of pre-defined options for input controls
     """
@@ -316,7 +316,7 @@ class DataList(WebElement):
 Factory.addProduct(DataList)
 
 
-class DD(WebElement):
+class DD(Node):
     """
         Defines a description of an item in a definition list
     """
@@ -326,7 +326,7 @@ class DD(WebElement):
 Factory.addProduct(DD)
 
 
-class Del(WebElement):
+class Del(Node):
     """
         Defines text that has been deleted from a document
     """
@@ -339,7 +339,7 @@ class Del(WebElement):
 Factory.addProduct(Del)
 
 
-class Details(WebElement):
+class Details(Node):
     """
         Defines collapse-able details
     """
@@ -351,7 +351,7 @@ class Details(WebElement):
 Factory.addProduct(Details)
 
 
-class Dfn(WebElement):
+class Dfn(Node):
     """
         Defines a definition term
     """
@@ -361,7 +361,7 @@ class Dfn(WebElement):
 Factory.addProduct(Dfn)
 
 
-class Div(WebElement):
+class Div(Node):
     """
         Defines a section of a document
     """
@@ -371,7 +371,7 @@ class Div(WebElement):
 Factory.addProduct(Div)
 
 
-class DL(WebElement):
+class DL(Node):
     """
         Defines a definition list
     """
@@ -381,7 +381,7 @@ class DL(WebElement):
 Factory.addProduct(DL)
 
 
-class DT(WebElement):
+class DT(Node):
     """
         Defines a term (an item) in a definition list
     """
@@ -391,7 +391,7 @@ class DT(WebElement):
 Factory.addProduct(DT)
 
 
-class Em(WebElement):
+class Em(Node):
     """
         Defines emphasized text
     """
@@ -401,7 +401,7 @@ class Em(WebElement):
 Factory.addProduct(Em)
 
 
-class Embed(WebElement):
+class Embed(Node):
     """
         Defines a container for an external (non-HTML) application
     """
@@ -416,7 +416,7 @@ class Embed(WebElement):
 Factory.addProduct(Embed)
 
 
-class FieldSet(WebElement):
+class FieldSet(Node):
     """
         Defines a group of related elements in a form
     """
@@ -429,7 +429,7 @@ class FieldSet(WebElement):
 Factory.addProduct(FieldSet)
 
 
-class FigCaption(WebElement):
+class FigCaption(Node):
     """
         Defines a caption for a figure element
     """
@@ -439,7 +439,7 @@ class FigCaption(WebElement):
 Factory.addProduct(FigCaption)
 
 
-class Figure(WebElement):
+class Figure(Node):
     """
         Defines self-contained figure content
     """
@@ -449,7 +449,7 @@ class Figure(WebElement):
 Factory.addProduct(Figure)
 
 
-class Footer(WebElement):
+class Footer(Node):
     """
         Defines a footer for a document or section
     """
@@ -459,7 +459,7 @@ class Footer(WebElement):
 Factory.addProduct(Footer)
 
 
-class Form(WebElement):
+class Form(Node):
     """
         Defines a form for user input
     """
@@ -479,7 +479,7 @@ class Form(WebElement):
 Factory.addProduct(Form)
 
 
-class H(WebElement):
+class H(Node):
     """
         Defines the abstract concept of an HTML header
     """
@@ -546,7 +546,7 @@ class H6(H):
 Factory.addProduct(H6)
 
 
-class Head(WebElement):
+class Head(Node):
     """
         Defines information about the document
     """
@@ -556,7 +556,7 @@ class Head(WebElement):
 Factory.addProduct(Head)
 
 
-class Header(WebElement):
+class Header(Node):
     """
         Defines a header for a document or section
     """
@@ -566,7 +566,7 @@ class Header(WebElement):
 Factory.addProduct(Header)
 
 
-class HGroup(WebElement):
+class HGroup(Node):
     """
         Defines a grouping of multiple header elements
     """
@@ -576,7 +576,7 @@ class HGroup(WebElement):
 Factory.addProduct(HGroup)
 
 
-class HR(WebElement):
+class HR(Node):
     """
         Defines a thematic change in the content horizontally
     """
@@ -588,7 +588,7 @@ class HR(WebElement):
 Factory.addProduct(HR)
 
 
-class HTML(WebElement):
+class HTML(Node):
     """
         Defines the root of an HTML document
     """
@@ -600,7 +600,7 @@ class HTML(WebElement):
 Factory.addProduct(HTML)
 
 
-class I(WebElement):
+class I(Node):
     """
         Defines text that is in an alternate voice or mood
         NOTE: avoid using this element, when possible use elements that describe the content
@@ -612,7 +612,7 @@ class I(WebElement):
 Factory.addProduct(I)
 
 
-class IFrame(WebElement):
+class IFrame(Node):
     """
         Defines an inline frame
     """
@@ -629,7 +629,7 @@ class IFrame(WebElement):
 Factory.addProduct(IFrame)
 
 
-class Img(WebElement):
+class Img(Node):
     """
         Defines an image
     """
@@ -654,7 +654,7 @@ class Img(WebElement):
 Factory.addProduct(Img)
 
 
-class Input(WebElement):
+class Input(Node):
     """
         Defines an input control
     """
@@ -695,7 +695,7 @@ class Input(WebElement):
 Factory.addProduct(Input)
 
 
-class Ins(WebElement):
+class Ins(Node):
     """
         Defines text that has been inserted into a document
     """
@@ -708,7 +708,7 @@ class Ins(WebElement):
 Factory.addProduct(Ins)
 
 
-class Kbd(WebElement):
+class Kbd(Node):
     """
         Defines keyboard input
     """
@@ -718,7 +718,7 @@ class Kbd(WebElement):
 Factory.addProduct(Kbd)
 
 
-class KeyGen(WebElement):
+class KeyGen(Node):
     """
         Defines a key-pair generator field
     """
@@ -735,7 +735,7 @@ class KeyGen(WebElement):
 Factory.addProduct(KeyGen)
 
 
-class Label(WebElement):
+class Label(Node):
     """
         Defines a label for an input element
     """
@@ -748,7 +748,7 @@ class Label(WebElement):
 Factory.addProduct(Label)
 
 
-class Legend(WebElement):
+class Legend(Node):
     """
         Defines a caption for a fieldset, figure or details element
     """
@@ -758,7 +758,7 @@ class Legend(WebElement):
 Factory.addProduct(Legend)
 
 
-class LI(WebElement):
+class LI(Node):
     """
         Defines a list item
     """
@@ -770,7 +770,7 @@ class LI(WebElement):
 Factory.addProduct(LI)
 
 
-class Link(WebElement):
+class Link(Node):
     """
         Defines the relationship between a document an external resource
     """
@@ -803,7 +803,7 @@ class Link(WebElement):
 Factory.addProduct(Link)
 
 
-class Map(WebElement):
+class Map(Node):
     """
         Defines a client side image map
     """
@@ -813,7 +813,7 @@ class Map(WebElement):
 Factory.addProduct(Map)
 
 
-class Mark(WebElement):
+class Mark(Node):
     """
         Defines marked / highlighted text
     """
@@ -823,7 +823,7 @@ class Mark(WebElement):
 Factory.addProduct(Mark)
 
 
-class Meta(WebElement):
+class Meta(Node):
     """
         Defines metadata about an HTML document
     """
@@ -839,7 +839,7 @@ class Meta(WebElement):
 Factory.addProduct(Meta)
 
 
-class Meter(WebElement):
+class Meter(Node):
     """
         Defines a scalar measurement within a known range
     """
@@ -857,7 +857,7 @@ class Meter(WebElement):
 Factory.addProduct(Meter)
 
 
-class Nav(WebElement):
+class Nav(Node):
     """
         Defines navigation links
     """
@@ -867,7 +867,7 @@ class Nav(WebElement):
 Factory.addProduct(Nav)
 
 
-class NoScript(WebElement):
+class NoScript(Node):
     """
         Defines alternate content for users that do not support client side scripts
     """
@@ -877,7 +877,7 @@ class NoScript(WebElement):
 Factory.addProduct(NoScript)
 
 
-class Object(WebElement):
+class Object(Node):
     """
         Defines an embedded object
     """
@@ -893,7 +893,7 @@ class Object(WebElement):
 Factory.addProduct(Object)
 
 
-class OL(WebElement):
+class OL(Node):
     """
         Defines an ordered list
     """
@@ -907,7 +907,7 @@ class OL(WebElement):
 Factory.addProduct(OL)
 
 
-class OptGroup(WebElement):
+class OptGroup(Node):
     """
         Defines a group of related options in a drop-down list
     """
@@ -920,7 +920,7 @@ class OptGroup(WebElement):
 Factory.addProduct(OptGroup)
 
 
-class Option(WebElement):
+class Option(Node):
     """
         Defines an option in a drop-down list
     """
@@ -935,7 +935,7 @@ class Option(WebElement):
 Factory.addProduct(Option)
 
 
-class Output(WebElement):
+class Output(Node):
     """
         Defines the result of a calculation
     """
@@ -948,7 +948,7 @@ class Output(WebElement):
 Factory.addProduct(Output)
 
 
-class P(WebElement):
+class P(Node):
     """
         Defines a paragraph
     """
@@ -958,7 +958,7 @@ class P(WebElement):
 Factory.addProduct(P)
 
 
-class Param(WebElement):
+class Param(Node):
     """
         Defines a parameter for an object
     """
@@ -972,7 +972,7 @@ class Param(WebElement):
 Factory.addProduct(Param)
 
 
-class Pre(WebElement):
+class Pre(Node):
     """
         Defines pre formatted text
     """
@@ -982,7 +982,7 @@ class Pre(WebElement):
 Factory.addProduct(Pre)
 
 
-class Progress(WebElement):
+class Progress(Node):
     """
         Defines the progress of a task
     """
@@ -995,7 +995,7 @@ class Progress(WebElement):
 Factory.addProduct(Progress)
 
 
-class Q(WebElement):
+class Q(Node):
     """
         Defines a short quotation
     """
@@ -1007,7 +1007,7 @@ class Q(WebElement):
 Factory.addProduct(Q)
 
 
-class RP(WebElement):
+class RP(Node):
     """
         Defines what to show in browsers that do not support ruby annotations
     """
@@ -1017,7 +1017,7 @@ class RP(WebElement):
 Factory.addProduct(RP)
 
 
-class RT(WebElement):
+class RT(Node):
     """
         Defines an explanation / pronunciation of characters (for East Asian typography)
     """
@@ -1027,7 +1027,7 @@ class RT(WebElement):
 Factory.addProduct(RT)
 
 
-class Ruby(WebElement):
+class Ruby(Node):
     """
         Defines ruby annotations (for East Asian typography)
     """
@@ -1037,7 +1037,7 @@ class Ruby(WebElement):
 Factory.addProduct(Ruby)
 
 
-class S(WebElement):
+class S(Node):
     """
         Defines text that is no longer correct
     """
@@ -1047,7 +1047,7 @@ class S(WebElement):
 Factory.addProduct(S)
 
 
-class Samp(WebElement):
+class Samp(Node):
     """
         Defines sample output from a computer program
     """
@@ -1057,7 +1057,7 @@ class Samp(WebElement):
 Factory.addProduct(Samp)
 
 
-class Script(WebElement):
+class Script(Node):
     """
         Defines a client-side script
     """
@@ -1079,7 +1079,7 @@ class Script(WebElement):
 Factory.addProduct(Script)
 
 
-class Section(WebElement):
+class Section(Node):
     """
         Defines a section of the document
     """
@@ -1089,7 +1089,7 @@ class Section(WebElement):
 Factory.addProduct(Section)
 
 
-class Select(WebElement):
+class Select(Node):
     """
         Defines a drop-down list
     """
@@ -1105,7 +1105,7 @@ class Select(WebElement):
 Factory.addProduct(Select)
 
 
-class Small(WebElement):
+class Small(Node):
     """
         Defines smaller text
         NOTE: avoid using this element, when possible use elements that describe the content
@@ -1117,7 +1117,7 @@ class Small(WebElement):
 Factory.addProduct(Small)
 
 
-class Source(WebElement):
+class Source(Node):
     """
         Defines multiple media resources for media elements
     """
@@ -1131,7 +1131,7 @@ class Source(WebElement):
 Factory.addProduct(Source)
 
 
-class Span(WebElement):
+class Span(Node):
     """
         Defines a section in a document
     """
@@ -1141,7 +1141,7 @@ class Span(WebElement):
 Factory.addProduct(Span)
 
 
-class Strong(WebElement):
+class Strong(Node):
     """
         Defines important text
     """
@@ -1151,7 +1151,7 @@ class Strong(WebElement):
 Factory.addProduct(Strong)
 
 
-class Style(WebElement):
+class Style(Node):
     """
         Defines style information for a document
     """
@@ -1165,7 +1165,7 @@ class Style(WebElement):
 Factory.addProduct(Style)
 
 
-class Sub(WebElement):
+class Sub(Node):
     """
         Defines sub-scripted text
     """
@@ -1175,7 +1175,7 @@ class Sub(WebElement):
 Factory.addProduct(Sub)
 
 
-class Summary(WebElement):
+class Summary(Node):
     """
         Defines a visible heading for a details element
     """
@@ -1185,7 +1185,7 @@ class Summary(WebElement):
 Factory.addProduct(Summary)
 
 
-class Sup(WebElement):
+class Sup(Node):
     """
         Defines super-scripted text
     """
@@ -1195,7 +1195,7 @@ class Sup(WebElement):
 Factory.addProduct(Sup)
 
 
-class Table(WebElement):
+class Table(Node):
     """
         Defines a table - should be used for tables of data only (not for layout)
     """
@@ -1207,7 +1207,7 @@ class Table(WebElement):
 Factory.addProduct(Table)
 
 
-class TBody(WebElement):
+class TBody(Node):
     """
         Defines a group of content within a table
     """
@@ -1217,7 +1217,7 @@ class TBody(WebElement):
 Factory.addProduct(TBody)
 
 
-class TD(WebElement):
+class TD(Node):
     """
         Defines a table cell
     """
@@ -1231,7 +1231,7 @@ class TD(WebElement):
 Factory.addProduct(TD)
 
 
-class TextArea(WebElement):
+class TextArea(Node):
     """
         Defines multi-line text input
     """
@@ -1252,7 +1252,7 @@ class TextArea(WebElement):
 Factory.addProduct(TextArea)
 
 
-class TFoot(WebElement):
+class TFoot(Node):
     """
         Defines the footer of a table
     """
@@ -1262,7 +1262,7 @@ class TFoot(WebElement):
 Factory.addProduct(TFoot)
 
 
-class TH(WebElement):
+class TH(Node):
     """
         Defines the header cell within a table
     """
@@ -1277,7 +1277,7 @@ class TH(WebElement):
 Factory.addProduct(TH)
 
 
-class THead(WebElement):
+class THead(Node):
     """
         Defines header content within a table
     """
@@ -1287,7 +1287,7 @@ class THead(WebElement):
 Factory.addProduct(THead)
 
 
-class Time(WebElement):
+class Time(Node):
     """
         Defines a date / time
     """
@@ -1300,7 +1300,7 @@ class Time(WebElement):
 Factory.addProduct(Time)
 
 
-class Title(WebElement):
+class Title(Node):
     """
         Defines the title of a document
     """
@@ -1310,7 +1310,7 @@ class Title(WebElement):
 Factory.addProduct(Title)
 
 
-class TR(WebElement):
+class TR(Node):
     """
         Defines a table row
     """
@@ -1320,7 +1320,7 @@ class TR(WebElement):
 Factory.addProduct(TR)
 
 
-class Track(WebElement):
+class Track(Node):
     """
         Defines text tracks for media elements
     """
@@ -1336,7 +1336,7 @@ class Track(WebElement):
 Factory.addProduct(Track)
 
 
-class U(WebElement):
+class U(Node):
     """
         Defines text that should be stylistically different from normal text
         NOTE: avoid using this element, when possible use elements that describe the content
@@ -1348,7 +1348,7 @@ class U(WebElement):
 Factory.addProduct(U)
 
 
-class UL(WebElement):
+class UL(Node):
     """
         Defines an unordered list
     """
@@ -1358,7 +1358,7 @@ class UL(WebElement):
 Factory.addProduct(UL)
 
 
-class Var(WebElement):
+class Var(Node):
     """
         Defines a variable
     """
@@ -1368,7 +1368,7 @@ class Var(WebElement):
 Factory.addProduct(Var)
 
 
-class Video(WebElement):
+class Video(Node):
     """
         Defines a video or movie
     """
@@ -1388,7 +1388,7 @@ class Video(WebElement):
 Factory.addProduct(Video)
 
 
-class Wbr(WebElement):
+class Wbr(Node):
     """
         Defines a possible line-break
     """

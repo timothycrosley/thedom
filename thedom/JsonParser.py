@@ -26,7 +26,7 @@ from .MultiplePythonSupport import *
 
 TYPE_MAP = {str:'string', unicode:'string', int:'integer'}
 
-class __Tag__(WebElement):
+class __Tag__(Node):
     def _create(self, tagName, parent, id=None, name=None):
         WebElement._create(self, id, name, parent, **kwargs)
         self._tagName = tagName

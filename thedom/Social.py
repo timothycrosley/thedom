@@ -31,7 +31,7 @@ from .Display import Image
 Factory = Factory.Factory("Social")
 
 
-class Social(WebElement):
+class Social(Node):
     __slots__ = ('account')
     properties = WebElement.properties.copy()
     properties['account'] = {'action':'classAttribute'}
@@ -59,7 +59,7 @@ class TwitterBadge(Social):
 Factory.addProduct(TwitterBadge)
 
 
-class TwitterAPI(WebElement):
+class TwitterAPI(Node):
     __slots__ = ()
     def _create(self, name=None, id=None, parent=None, html="", *kargs, **kwargs):
         WebElement._create(self, name, id, parent, *kargs, **kwargs)
@@ -111,7 +111,7 @@ class Tweet(Link):
 Factory.addProduct(Tweet)
 
 
-class GooglePlusAPI(WebElement):
+class GooglePlusAPI(Node):
     __slots__ = ()
     def _create(self, name=None, id=None, parent=None, html="", *kargs, **kwargs):
         WebElement._create(self, name, id, parent, *kargs, **kwargs)
@@ -233,7 +233,7 @@ class FacebookAPI(Layout.Box):
 Factory.addProduct(FacebookAPI)
 
 
-class FacebookLogin(WebElement):
+class FacebookLogin(Node):
     """
         Adds a facebook login button to the page
     """    

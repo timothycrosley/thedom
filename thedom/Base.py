@@ -1493,7 +1493,7 @@ class Node(Connectable):
         return "\n".join(representation)
 
 
-class Invalid(WebElement):
+class Invalid(Node):
     """
         An Invalid WebElement - used generally to show that a desired element failed to load
     """
@@ -1579,7 +1579,7 @@ class TextNode(object):
             return Invalid()
 
 
-class TemplateElement(WebElement):
+class TemplateElement(Node):
     """
         A template WebElement is a web element that uses a template for its presentation and
         structure

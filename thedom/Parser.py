@@ -25,7 +25,7 @@ from .Base import TextNode, WebElement
 from .MultiplePythonSupport import *
 
 
-class WebElementTree(WebElement):
+class WebElementTree(Node):
     """
         Creates a tree of webelement children from plain html
     """
