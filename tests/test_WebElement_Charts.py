@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from test_WebElement_Base import ElementTester
+from test_Base import ElementTester
 from thedom.All import Factory
 
 
@@ -107,4 +107,4 @@ class TestLineChart(ChartTester):
 
 if __name__ == "__main__":
     import subprocess
-    subprocess.Popen("py.test test_WebElement_Charts.py", shell=True).wait()
+    subprocess.Popen("py.test test_Charts.py", shell=True).wait()

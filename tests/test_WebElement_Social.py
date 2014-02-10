@@ -1,5 +1,5 @@
 '''
-    test_WebElement_Social.py
+    test_Social.py
 
     Tests the functionality of thedom/Social.py
 
@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from test_WebElement_Base import ElementTester
+from test_Base import ElementTester
 from thedom.All import Factory
 
 
