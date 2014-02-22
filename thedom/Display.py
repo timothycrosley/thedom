@@ -22,7 +22,7 @@
 
 import datetime
 
-from . import Base, ClientSide, DictUtils, DOM, Factory
+from . import DOM, Base, ClientSide, DictUtils, Factory
 from .Inputs import ValueElement
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *

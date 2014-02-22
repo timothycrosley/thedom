@@ -29,7 +29,7 @@ try:
 except ImportError:
     hasPygments = False
 
-from . import Base, DictUtils, DOM, Factory
+from . import DOM, Base, DictUtils, Factory
 from .Inputs import ValueElement
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *

@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import Base, Display, DOM, Factory, Validators
+from . import DOM, Base, Display, Factory, Validators
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 from .Types import Safe

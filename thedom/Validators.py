@@ -24,7 +24,7 @@ import re
 import string
 
 from . import Base, ClientSide, Display, Factory
-from .ClientSide import do, regexp, Script, var
+from .ClientSide import Script, do, regexp, var
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 

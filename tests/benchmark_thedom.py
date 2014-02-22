@@ -32,7 +32,7 @@ import time
 
 from thedom import DictUtils, UITemplate
 from thedom.All import DOM, Factory
-from thedom.Base import TemplateElement, TextNode, Node
+from thedom.Base import Node, TemplateElement, TextNode
 from thedom.Layout import Box
 from thedom.MultiplePythonSupport import *
 from thedom.Resources import ScriptContainer

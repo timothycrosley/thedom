@@ -22,7 +22,7 @@
 
 import types
 
-from . import Base, ClientSide, DOM, Factory
+from . import DOM, Base, ClientSide, Factory
 from .DOM import H2, Link, Script
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *

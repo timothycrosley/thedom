@@ -20,7 +20,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
-from . import Base, ClientSide, Display, DOM, Factory, Layout
+from . import DOM, Base, ClientSide, Display, Factory, Layout
 from .HiddenInputs import HiddenValue
 from .Inputs import InputElement
 from .MethodUtils import CallBack

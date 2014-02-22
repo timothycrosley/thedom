@@ -23,7 +23,7 @@
 import types
 from datetime import datetime
 
-from . import Base, ClientSide, DictUtils, DOM, Factory
+from . import DOM, Base, ClientSide, DictUtils, Factory
 from .MethodUtils import CallBack
 from .MultiplePythonSupport import *
 from .Types import Bool

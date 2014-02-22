@@ -28,7 +28,7 @@ from types import FunctionType
 from . import ClientSide, DictUtils
 from .Connectable import Connectable
 from .IteratorUtils import Queryable
-from .MethodUtils import acceptsArguments, CallBack
+from .MethodUtils import CallBack, acceptsArguments
 from .MultiplePythonSupport import *
 from .Types import Safe, Scripts, Set, StyleDict, Unsafe, WebDataType
 

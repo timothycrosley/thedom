@@ -22,7 +22,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 '''
 
-from . import (Base, Buttons, Charts, CodeDocumentation, Containers, DataViews, Display, Document, DOM, Factory,
+from . import (DOM, Base, Buttons, Charts, CodeDocumentation, Containers, DataViews, Display, Document, Factory,
                HiddenInputs, Inputs, Layout, Navigation, Printing, Resources, Social, UITemplate, Validators)
 
 FactoryClasses = Factory

@@ -28,7 +28,7 @@ except ImportError:
 from lxml import etree
 
 from thedom.All import Factory
-from thedom.Base import Invalid, TemplateElement, Node
+from thedom.Base import Invalid, Node, TemplateElement
 from thedom.Resources import ScriptContainer
 from thedom.UITemplate import Template
 
