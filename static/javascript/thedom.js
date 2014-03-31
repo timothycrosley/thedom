@@ -52,15 +52,15 @@ var Events = Events || {}
 
 Events.addEvent = function(element, type, handler)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
 
     if(typeof(type) == typeof([]))
     {
-        return WebElements.forEach(type, function(eventType){Events.addEvent(element, eventType, handler);});
+        return thedom.forEach(type, function(eventType){Events.addEvent(element, eventType, handler);});
     }
     if(typeof(handler) == typeof([]))
     {
-        return WebElements.forEach(handler, function(eventHandler){Events.addEvent(element, type, eventHandler);});
+        return thedom.forEach(handler, function(eventHandler){Events.addEvent(element, type, eventHandler);});
     }
     if (element.addEventListener)
     {
@@ -94,15 +94,15 @@ Events.addEvent.guid = 1;
 
 Events.removeEvent = function(element, type, handler)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
 
     if(typeof(type) == typeof([]))
     {
-        return WebElements.forEach(type, function(eventType){Events.removeEvent(element, eventType, handler);});
+        return thedom.forEach(type, function(eventType){Events.removeEvent(element, eventType, handler);});
     }
     if(typeof(handler) == typeof([]))
     {
-        return WebElements.forEach(handler, function(eventHandler){Events.removeEvent(element, type, eventHandler);});
+        return thedom.forEach(handler, function(eventHandler){Events.removeEvent(element, type, eventHandler);});
     }
     if (element.removeEventListener)
     {
@@ -151,26 +151,26 @@ Events.stopPropagation = function()
 };
 
 //Create main WebElement name space - pulling in Keys and Platform name space's
-var WebElements = WebElements || {}
-WebElements.Keys = Keys;
-WebElements.Platform = Platform;
-WebElements.Events = Events;
+var thedom = thedom || {}
+thedom.Keys = Keys;
+thedom.Platform = Platform;
+thedom.Events = Events;
 
-WebElements.Settings = {}
-WebElements.Settings.throbberImage = 'images/throbber.gif';
-WebElements.Settings.showImage = 'images/show.gif';
-WebElements.Settings.hideImage = 'images/hide.gif';
-WebElements.Settings.throbberHeight = 32;
-WebElements.Settings.throbberWidth = 34;
-WebElements.Settings.Serialize = ['input', 'textarea', 'select'];
+thedom.Settings = {}
+thedom.Settings.throbberImage = 'images/throbber.gif';
+thedom.Settings.showImage = 'images/show.gif';
+thedom.Settings.hideImage = 'images/hide.gif';
+thedom.Settings.throbberHeight = 32;
+thedom.Settings.throbberWidth = 34;
+thedom.Settings.Serialize = ['input', 'textarea', 'select'];
 
-WebElements.State = {}
-WebElements.State.isPopupOpen = false;
-WebElements.State.currentDropDown = null;
-WebElements.State.currentButton = null;
+thedom.State = {}
+thedom.State.isPopupOpen = false;
+thedom.State.currentDropDown = null;
+thedom.State.currentButton = null;
 
 //Returns the element given (if it is a page element) or the result of getElementId
-WebElements.get = function (element)
+thedom.get = function (element)
 {
     //If an actual element is given (or nothing is given) just return it
     if(!element || element.innerHTML != null || element == document || element == window)
@@ -196,7 +196,7 @@ WebElements.get = function (element)
 }
 
 //Calls a callback method for each item in a list
-WebElements.forEach = function(arrayOfItems, callBack)
+thedom.forEach = function(arrayOfItems, callBack)
 {
     if(arrayOfItems.forEach)
     {
@@ -211,7 +211,7 @@ WebElements.forEach = function(arrayOfItems, callBack)
 }
 
 //Calls a callback for each item in a list and returns an array of the results
-WebElements.map = function(arrayOfItems, callBack)
+thedom.map = function(arrayOfItems, callBack)
 {
     if(arrayOfItems.map)
     {
@@ -227,7 +227,7 @@ WebElements.map = function(arrayOfItems, callBack)
 }
 
 //Returns a list of nodes sorted by placement in the dom
-WebElements.sortElements = function(elements)
+thedom.sortElements = function(elements)
 {
     firstNode = elements[0];
     if(!firstNode)
@@ -246,11 +246,11 @@ WebElements.sortElements = function(elements)
 }
 
 //Returns a list of sorted and unique elements
-WebElements.sortUnique = function(elements)
+thedom.sortUnique = function(elements)
 {
-    var elements = WebElements.sortElements(elements);
+    var elements = thedom.sortElements(elements);
     var lastAdded = null;
-    return WebElements.getByCondition(function(element)
+    return thedom.getByCondition(function(element)
                                       {
                                         if(element !== lastAdded)
                                         {
@@ -262,24 +262,24 @@ WebElements.sortUnique = function(elements)
 }
 
 //An optimized way to getElements that match against a list of tagNames
-WebElements.getElementsByTagNames = function(tagNames, parentElement, unsorted)
+thedom.getElementsByTagNames = function(tagNames, parentElement, unsorted)
 {
-    var parentElement = WebElements.get(parentElement);
+    var parentElement = thedom.get(parentElement);
     var results = [];
-    WebElements.forEach(tagNames, function(tagName){
-        WebElements.forEach(parentElement.getElementsByTagName(tagName),
+    thedom.forEach(tagNames, function(tagName){
+        thedom.forEach(parentElement.getElementsByTagName(tagName),
                             function(item){results.push(item);})});
 
     if(!unsorted)
     {
-        return WebElements.sortElements(results)
+        return thedom.sortElements(results)
     }
 
     return results;
 }
 
 //Returns elements that pass a conditional callback, optionally returning on the first match
-WebElements.getByCondition = function(conditional, parentNode, stopOnFirstMatch)
+thedom.getByCondition = function(conditional, parentNode, stopOnFirstMatch)
 {
     if(!stopOnFirstMatch){stopOnFirstMatch = false;}
     var elements_to_return = [];
@@ -290,7 +290,7 @@ WebElements.getByCondition = function(conditional, parentNode, stopOnFirstMatch)
     }
     else
     {
-        parentNode = WebElements.get(parentNode);
+        parentNode = thedom.get(parentNode);
         elements = parentNode.getElementsByTagName("*");
     }
 
@@ -311,39 +311,39 @@ WebElements.getByCondition = function(conditional, parentNode, stopOnFirstMatch)
 }
 
 //Gets an element and returns its value
-WebElements.getValue = function(element)
+thedom.getValue = function(element)
 {
-    var element = WebElements.get(element)
+    var element = thedom.get(element)
     return element && element.value || ""
 }
 
 //Hides Elements with a particular class name
-WebElements.hideClass = function(className, parentNode)
+thedom.hideClass = function(className, parentNode)
 {
-    WebElements.forEach(WebElements.getElementByClassName(className, parentNode), WebElements.hide);
+    thedom.forEach(thedom.getElementByClassName(className, parentNode), thedom.hide);
 }
 
 //Shows Elements with a particular class name
-WebElements.showClass = function(className, parentNode)
+thedom.showClass = function(className, parentNode)
 {
-    WebElements.forEach(WebElements.getElementByClassName(className, parentNode), WebElements.show);
+    thedom.forEach(thedom.getElementByClassName(className, parentNode), thedom.show);
 }
 
-//Creates a throbber on the fly, change WebElements.Settings.throbberImage to change image file
-WebElements.buildThrobber = function()
+//Creates a throbber on the fly, change thedom.Settings.throbberImage to change image file
+thedom.buildThrobber = function()
 {
     var throbber = document.createElement('img');
-    throbber.src = WebElements.Settings.throbberImage;
-    throbber.style.height = WebElements.Settings.throbberHeight + "px"
-    throbber.style.width = WebElements.Settings.throbberWidth + "px"
+    throbber.src = thedom.Settings.throbberImage;
+    throbber.style.height = thedom.Settings.throbberHeight + "px"
+    throbber.style.width = thedom.Settings.throbberWidth + "px"
     return throbber;
 }
 
 //Replaces an element with a throbberImage on the fly
-WebElements.becomeThrobber = function(element)
+thedom.becomeThrobber = function(element)
 {
-    var element = WebElements.get(element);
-    var throbber = WebElements.buildThrobber();
+    var element = thedom.get(element);
+    var throbber = thedom.buildThrobber();
     var elementHeight = element.offsetHeight;
     var elementWidth = element.offsetWidth;
 
@@ -357,18 +357,18 @@ WebElements.becomeThrobber = function(element)
     throbber.style.height = elementHeight + "px";
     throbber.style.width = elementWidth + "px";
 
-    var toReturn = WebElements.replace(element, throbber);
+    var toReturn = thedom.replace(element, throbber);
 
-    if(elementHeight > WebElements.Settings.throbberHeight)
+    if(elementHeight > thedom.Settings.throbberHeight)
     {
-        var half = String((elementHeight - WebElements.Settings.throbberHeight) / 2) + "px";
+        var half = String((elementHeight - thedom.Settings.throbberHeight) / 2) + "px";
         throbber.style.paddingTop = half;
         throbber.style.paddingBottom = half;
     }
 
-    if(elementWidth > WebElements.Settings.throbberWidth)
+    if(elementWidth > thedom.Settings.throbberWidth)
     {
-        var half = String((elementWidth - WebElements.Settings.throbberWidth) / 2) + "px";
+        var half = String((elementWidth - thedom.Settings.throbberWidth) / 2) + "px";
         throbber.style.paddingLeft = half;
         throbber.style.paddingRight = half;
     }
@@ -377,9 +377,9 @@ WebElements.becomeThrobber = function(element)
 }
 
 //Gets elements by there css class that are childern of a certain node - uses native implementation if present
-WebElements.getElementsByClassName = function(className, parentNode, stopOnFirstMatch)
+thedom.getElementsByClassName = function(className, parentNode, stopOnFirstMatch)
 {
-    parentNode = WebElements.get(parentNode);
+    parentNode = thedom.get(parentNode);
     if(document.getElementsByClassName){
         var results = null;
         if(parentNode)
@@ -401,47 +401,47 @@ WebElements.getElementsByClassName = function(className, parentNode, stopOnFirst
     }
 
     var regexp = new RegExp('\\b' + className + '\\b');
-    return WebElements.getByCondition(function(element){return regexp.test(element.className)},
+    return thedom.getByCondition(function(element){return regexp.test(element.className)},
                                       parentNode, stopOnFirstMatch);
 }
 
 //Gets the first element in parent node with a certain class name
-WebElements.getElementByClassName = function(className, parentNode)
+thedom.getElementByClassName = function(className, parentNode)
 {
-    return WebElements.getElementsByClassName(className, parentNode, true);
+    return thedom.getElementsByClassName(className, parentNode, true);
 }
 
 //Returns all children with a particular attribute value
-WebElements.getChildrenByAttribute = function(parentNode, attributeName, attributeValue)
+thedom.getChildrenByAttribute = function(parentNode, attributeName, attributeValue)
 {
-    return WebElements.getByCondition(function(element){return element[attributeName] === attributeValue;}, parentNode);
+    return thedom.getByCondition(function(element){return element[attributeName] === attributeValue;}, parentNode);
 }
 
 //Returns the first child with a particular attribute value
-WebElements.getChildByAttribute = function(parentNode, attributeName, attributeValue)
+thedom.getChildByAttribute = function(parentNode, attributeName, attributeValue)
 {
-    return WebElements.getByCondition(function(element){return element[attributeName] === attributeValue;}, parentNode,
+    return thedom.getByCondition(function(element){return element[attributeName] === attributeValue;}, parentNode,
                                       true);
 }
 
 //Returns children of an element by their name
-WebElements.getChildrenByName = function(parentNode, name)
+thedom.getChildrenByName = function(parentNode, name)
 {
-    return WebElements.getByCondition(function(element){return element.name == name}, parentNode);
+    return thedom.getByCondition(function(element){return element.name == name}, parentNode);
 }
 
 //Returns a child of an element by its name
-WebElements.getChildByName = function(parentNode, name)
+thedom.getChildByName = function(parentNode, name)
 {
-    return WebElements.getByCondition(function(element){return element.name == name}, parentNode, true);
+    return thedom.getByCondition(function(element){return element.name == name}, parentNode, true);
 }
 
 //populates a form using an id/name:value dictionary -- such as a request dictionary.
-WebElements.populate = function(fieldDict)
+thedom.populate = function(fieldDict)
 {
     for(fieldId in fieldDict)
     {
-        field = WebElements.get(fieldId);
+        field = thedom.get(fieldId);
         value = fieldDict[fieldId];
         if(field)
         {
@@ -451,34 +451,34 @@ WebElements.populate = function(fieldDict)
 }
 
 //updates a countdown label slowly deincrementing till reaches 0 than calls action
-WebElements.countDown = function(label, seconds, action)
+thedom.countDown = function(label, seconds, action)
 {
-    var label = WebElements.get(label);
+    var label = thedom.get(label);
     label.innerHTML = seconds;
     label.timeoutList = []
 
     for(var currentCount = 1; currentCount < seconds; currentCount++)
     {
-        timeout = setTimeout('WebElements.get(\'' + label.id + '\').innerHTML = ' +
+        timeout = setTimeout('thedom.get(\'' + label.id + '\').innerHTML = ' +
                   (seconds - currentCount) + ';', (currentCount * 1000));
         label.timeoutList.push(timeout);
     }
 
-    timeout = setTimeout('WebElements.get(\'' + label.id + '\').innerHTML = 0;' +
+    timeout = setTimeout('thedom.get(\'' + label.id + '\').innerHTML = 0;' +
                          action, seconds * 1000);
     label.timeoutList.push(timeout);
 }
 
 //updates a countdown label slowly deincrementing till reaches 0 than calls action
-WebElements.abortCountDown = function(label)
+thedom.abortCountDown = function(label)
 {
-    WebElements.forEach(WebElements.get(label).timeoutList, clearTimeout);
+    thedom.forEach(thedom.get(label).timeoutList, clearTimeout);
 }
 
 //Returns the number of pixels left of element
-WebElements.pixelsToLeft = function(element)
+thedom.pixelsToLeft = function(element)
 {
-    var aTag = WebElements.get(element);
+    var aTag = thedom.get(element);
 
     var pixelsToLeft = 0;
     do
@@ -501,9 +501,9 @@ WebElements.pixelsToLeft = function(element)
 }
 
 //Returns the number of pixels above an element
-WebElements.pixelsAbove = function(element)
+thedom.pixelsAbove = function(element)
 {
-    var aTag = WebElements.get(element);
+    var aTag = thedom.get(element);
 
     var pixelsAbove = 0;
     do
@@ -526,64 +526,64 @@ WebElements.pixelsAbove = function(element)
 }
 
 //Sets an element position to that of its parents + pixelsDown & pixelsToRight
-WebElements.setAbsoluteRelativeToParent = function(element, pixelsDown, pixelsToRight, parentElement)
+thedom.setAbsoluteRelativeToParent = function(element, pixelsDown, pixelsToRight, parentElement)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     if(!parentElement){parentElement = element.parentNode;}
     if(!pixelsDown){pixelsDown = 0;}
     if(!pixelsToRight){pixelsToRight = 0;}
 
-    var parentElement = WebElements.get(parentElement);
-    element.style.left = WebElements.pixelsToLeft(parentElement) + pixelsToRight;
-    element.style.top = WebElements.pixelsAbove(parentElement) + pixelsDown;
+    var parentElement = thedom.get(parentElement);
+    element.style.left = thedom.pixelsToLeft(parentElement) + pixelsToRight;
+    element.style.top = thedom.pixelsAbove(parentElement) + pixelsDown;
 }
 
 //Sets an element position to that of its parents + pixelsDown & pixelsToRight
-WebElements.displayDropDown = function(dropDown, parentElement)
+thedom.displayDropDown = function(dropDown, parentElement)
 {
-    var dropDownElement = WebElements.get(dropDown);
+    var dropDownElement = thedom.get(dropDown);
     if(!parentElement){parentElement = dropDownElement.parentNode;}
-    var parentElement = WebElements.get(parentElement);
+    var parentElement = thedom.get(parentElement);
 
-    WebElements.setAbsoluteRelativeToParent(dropDownElement, parentElement.offsetHeight -1,
+    thedom.setAbsoluteRelativeToParent(dropDownElement, parentElement.offsetHeight -1,
                                   0, parentElement);
-    WebElements.show(dropDownElement);
+    thedom.show(dropDownElement);
 }
 
 //Toggles the displayed state of a drop down menu
-WebElements.toggleDropDown = function(dropDown, parentElement)
+thedom.toggleDropDown = function(dropDown, parentElement)
 {
-    var dropDown = WebElements.get(dropDown);
-    if(WebElements.shown(dropDown))
+    var dropDown = thedom.get(dropDown);
+    if(thedom.shown(dropDown))
     {
-        WebElements.hide(dropDown);
+        thedom.hide(dropDown);
         return false;
     }
-    WebElements.displayDropDown(dropDown, parentElement);
+    thedom.displayDropDown(dropDown, parentElement);
     return true;
 }
 
-WebElements.openAccordion = function(accordionName)
+thedom.openAccordion = function(accordionName)
 {
-    WebElements.show(WebElements.getElementByClassName('AccordionContent', accordionName));
-    WebElements.get(accordionName + 'Value').value = 'True';
-    WebElements.get(accordionName + 'Image').src = 'images/hide.gif';
+    thedom.show(thedom.getElementByClassName('AccordionContent', accordionName));
+    thedom.get(accordionName + 'Value').value = 'True';
+    thedom.get(accordionName + 'Image').src = 'images/hide.gif';
 }
 
-WebElements.fellowChild = function(element, parentClass, childClass)
+thedom.fellowChild = function(element, parentClass, childClass)
 {
-    return WebElements.getElementByClassName(childClass, WebElements.parent(element, parentClass));
+    return thedom.getElementByClassName(childClass, thedom.parent(element, parentClass));
 }
 
-WebElements.fellowChildren = function(element, parentClass, childClass)
+thedom.fellowChildren = function(element, parentClass, childClass)
 {
-    return WebElements.getElementsByClassName(childClass, WebElements.parent(element, parentClass));
+    return thedom.getElementsByClassName(childClass, thedom.parent(element, parentClass));
 }
 
 //Get first child element (exluding empty elements)
-WebElements.firstChild = function(element)
+thedom.firstChild = function(element)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     if(element.firstChild)
     {
         element = element.firstChild
@@ -596,9 +596,9 @@ WebElements.firstChild = function(element)
 }
 
 //Get last child element (exluding empty elements)
-WebElements.lastChild = function(element)
+thedom.lastChild = function(element)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     if(element.lastChild)
     {
         element = element.lastChild
@@ -612,9 +612,9 @@ WebElements.lastChild = function(element)
 
 
 //Gets the next sibling (ignoring empty elements)
-WebElements.next = function(element)
+thedom.next = function(element)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     var originalElement = element;
     if(element.nextSibling)
     {
@@ -628,9 +628,9 @@ WebElements.next = function(element)
 }
 
 //Gets the previous sibling (ignoring empty elements)
-WebElements.prev = function(element)
+thedom.prev = function(element)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     if(element.previousSibling)
     {
         element = element.previousSibling;
@@ -643,9 +643,9 @@ WebElements.prev = function(element)
 }
 
 //increments the value of a hiddenField
-WebElements.increment = function(element, max)
+thedom.increment = function(element, max)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     var number = (parseInt(element.value) || 0) + 1;
     if(max != undefined && number > max){
         number = max;
@@ -655,9 +655,9 @@ WebElements.increment = function(element, max)
 }
 
 //deincrements the value of a hiddenField
-WebElements.deincrement = function(element, min)
+thedom.deincrement = function(element, min)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     var number = (parseInt(element.value) || 0) - 1;
     if(min != undefined && number < min){
         number = min;
@@ -667,21 +667,21 @@ WebElements.deincrement = function(element, min)
 }
 
 //Sets the prefix for the container and all childElements
-WebElements.setPrefix = function(container, prefix)
+thedom.setPrefix = function(container, prefix)
 {
-    var container = WebElements.get(container);
+    var container = thedom.get(container);
     container.id = prefix + container.id;
     container.name = prefix + container.name;
 
-    WebElements.forEach(WebElements.childElements(container), function(child){
+    thedom.forEach(thedom.childElements(container), function(child){
             child.id = prefix + child.id;
             child.name = prefix + child.name;});
 }
 
 //Gets a parent element based on its class name or alternatively giving up when it hits a particular class
-WebElements.parent = function(element, className, giveUpAtClass)
+thedom.parent = function(element, className, giveUpAtClass)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     var regexp = new RegExp('\\b' + className + '\\b');
     var regexpCancel = false;
     if(giveUpAtClass)
@@ -706,10 +706,10 @@ WebElements.parent = function(element, className, giveUpAtClass)
 
 
 //Removes all children
-WebElements.clearChildren = function(element, replacement)
+thedom.clearChildren = function(element, replacement)
 {
-    var element = WebElements.get(element)
-    WebElements.forEach(WebElements.childElements(element), function(element){WebElements.remove(element)});
+    var element = thedom.get(element)
+    thedom.forEach(thedom.childElements(element), function(element){thedom.remove(element)});
     if(replacement)
     {
         element.appendChild(replacement)
@@ -717,52 +717,52 @@ WebElements.clearChildren = function(element, replacement)
 }
 
 //Allows you to get a list of all non empty childElements
-WebElements.childElements = function(parentElement)
+thedom.childElements = function(parentElement)
 {
-    return WebElements.getByCondition(function(element){return element && element.innerHTML}, parentElement)
+    return thedom.getByCondition(function(element){return element && element.innerHTML}, parentElement)
 }
 
 //Allows you to get an element in the same location on the tree based on a classname
-WebElements.peer = function(element, className)
+thedom.peer = function(element, className)
 {
-    return WebElements.getElementByClassName(className, WebElements.get(element).parentNode);
+    return thedom.getElementByClassName(className, thedom.get(element).parentNode);
 }
 
 //Allows you to get elements in the same location on the tree based on a classname
-WebElements.peers = function(element, className)
+thedom.peers = function(element, className)
 {
-    return WebElements.getElementsByClassName(className, WebElements.get(element).parentNode);
+    return thedom.getElementsByClassName(className, thedom.get(element).parentNode);
 }
 
 
 //Forces this to be the only peer with class
-WebElements.stealClassFromPeer = function(element, className)
+thedom.stealClassFromPeer = function(element, className)
 {
-    WebElements.forEach(WebElements.peers(element, className),
-                                         function(element){WebElements.removeClass(element, className)});
-    WebElements.addClass(element, className);
+    thedom.forEach(thedom.peers(element, className),
+                                         function(element){thedom.removeClass(element, className)});
+    thedom.addClass(element, className);
 }
 
 //Forces this to be the only peer with class
-WebElements.stealClassFromFellowChild = function(element, parentClassName, className)
+thedom.stealClassFromFellowChild = function(element, parentClassName, className)
 {
-    WebElements.forEach(WebElements.fellowChildren(element, parentClassName, className),
-                        function(element){WebElements.removeClass(element, className);});
-    WebElements.addClass(element, className);
+    thedom.forEach(thedom.fellowChildren(element, parentClassName, className),
+                        function(element){thedom.removeClass(element, className);});
+    thedom.addClass(element, className);
 }
 
 //Removes the class from all elements in the specified container and sets it on itself
-WebElements.stealClassFromContainer = function(element, container, className)
+thedom.stealClassFromContainer = function(element, container, className)
 {
-    WebElements.forEach(WebElements.getElementsByClassName(className, container),
-                        function(element){WebElements.removeClass(element, className)});
-    WebElements.addClass(element, className);
+    thedom.forEach(thedom.getElementsByClassName(className, container),
+                        function(element){thedom.removeClass(element, className)});
+    thedom.addClass(element, className);
 }
 
 //hides an element by setting its display property to none
-WebElements.hide = function(element)
+thedom.hide = function(element)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     if(element != null)
     {
         element.style.display = "none";
@@ -772,9 +772,9 @@ WebElements.hide = function(element)
 }
 
 //shows an element by setting its display property to block
-WebElements.show = function(element)
+thedom.show = function(element)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     if(element != null)
     {
        element.style.display = "";
@@ -784,16 +784,16 @@ WebElements.show = function(element)
 }
 
 //shows the element if it is hidden - hides it if it is visable
-WebElements.toggleVisibility = function(element)
+thedom.toggleVisibility = function(element)
 {
-    var element = WebElements.get(element);
-    WebElements.shown(element) && WebElements.hide(element) || WebElements.show(element);
+    var element = thedom.get(element);
+    thedom.shown(element) && thedom.hide(element) || thedom.show(element);
 }
 
 //return if the element is visable or not
-WebElements.shown = function(element)
+thedom.shown = function(element)
 {
-    element = WebElements.get(element);
+    element = thedom.get(element);
     if(!element || element.style.display == "none")
     {
         return false;
@@ -802,22 +802,22 @@ WebElements.shown = function(element)
 }
 
 //replaces 'element' with 'newElement' (element must contain a parent element)
-WebElements.replace = function(element, newElement)
+thedom.replace = function(element, newElement)
 {
-   var element = WebElements.get(element);
+   var element = thedom.get(element);
    var elementParent = element.parentNode;
    if(!elementParent)
    {
        return false;
    }
-   elementParent.replaceChild(WebElements.get(newElement), element);
+   elementParent.replaceChild(thedom.get(newElement), element);
    return true;
 }
 
 //removes 'element' from the page (element must contain a parent element)
-WebElements.remove = function(element)
+thedom.remove = function(element)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     var elementParent = element.parentNode;
     if(!elementParent)
     {
@@ -829,59 +829,59 @@ WebElements.remove = function(element)
 }
 
 //clears the innerHTML of an element
-WebElements.clear = function(element)
+thedom.clear = function(element)
 {
-    WebElements.get(element).innerHTML = "";
+    thedom.get(element).innerHTML = "";
 }
 
 //adds an option to a selectbox with a specified name and value
-WebElements.addOption = function(selectElement, optionName, optionValue)
+thedom.addOption = function(selectElement, optionName, optionValue)
 {
     if(!optionValue){optionValue = optionName}
 
     var newOption = document.createElement('option');
     newOption.innerHTML = optionName;
     newOption.value = optionValue;
-    WebElements.get(selectElement).appendChild(newOption);
+    thedom.get(selectElement).appendChild(newOption);
 }
 
 //adds a list of options option to a selectbox with a specified name/value
-WebElements.addOptions = function(selectElement, options)
+thedom.addOptions = function(selectElement, options)
 {
-    var selectElement = WebElements.get(selectElement);
-    WebElements.forEach(options, function(option){WebElements.addOption(selectElement, option);})
+    var selectElement = thedom.get(selectElement);
+    thedom.forEach(options, function(option){thedom.addOption(selectElement, option);})
 }
 
 //adds html to element
-WebElements.addHtml = function(element, html)
+thedom.addHtml = function(element, html)
 {
     var newDiv = document.createElement('div');
     newDiv.innerHTML = html;
-    WebElements.get(element).appendChild(newDiv);
+    thedom.get(element).appendChild(newDiv);
     return newDiv
 }
 
 //moves an element to a new location
-WebElements.move = function(element, to, makeTop)
+thedom.move = function(element, to, makeTop)
 {
-    var sendTo = WebElements.get(to);
+    var sendTo = thedom.get(to);
     if(makeTop)
     {
-        var firstChild = WebElements.firstChild(sendTo);
+        var firstChild = thedom.firstChild(sendTo);
         if(firstChild)
         {
-            return sendTo.insertBefore(WebElements.get(element), firstChild);
+            return sendTo.insertBefore(thedom.get(element), firstChild);
         }
     }
-    return sendTo.appendChild(WebElements.get(element));
+    return sendTo.appendChild(thedom.get(element));
 }
 
 //makes a copy of an element into 'to' and returns the copy optionally incrementing its ID
-WebElements.copy = function(element, to, incrementId)
+thedom.copy = function(element, to, incrementId)
 {
     if(incrementId == null){incrementId = false;}
 
-    var elementCopy = WebElements.get(element).cloneNode(true);
+    var elementCopy = thedom.get(element).cloneNode(true);
     var toReplace = elementCopy.id
     if(toReplace && incrementId)
     {
@@ -901,18 +901,18 @@ WebElements.copy = function(element, to, incrementId)
         var html = elementCopy.innerHTML
 
     }
-    WebElements.get(to).appendChild(elementCopy);
+    thedom.get(to).appendChild(elementCopy);
 
     if(incrementId)
     {
-        elementCopy.innerHTML = WebElements.replaceAll(html, toReplace, replacement);
+        elementCopy.innerHTML = thedom.replaceAll(html, toReplace, replacement);
     }
 
     return elementCopy
 }
 
 //returns true if text WEContains subtext false if not
-WebElements.contains = function(text, subtext, caseSensitive)
+thedom.contains = function(text, subtext, caseSensitive)
 {
     if(!caseSensitive)
     {
@@ -924,7 +924,7 @@ WebElements.contains = function(text, subtext, caseSensitive)
 }
 
 //returns true if any words within text start with subtext
-WebElements.startsWith = function(text, subtext, caseSensitive)
+thedom.startsWith = function(text, subtext, caseSensitive)
 {
     if(!caseSensitive)
     {
@@ -932,10 +932,10 @@ WebElements.startsWith = function(text, subtext, caseSensitive)
         var subtext = subtext.toLowerCase();
     }
 
-    var text = WebElements.replaceAll(text, ">", " ");
-    text = WebElements.replaceAll(text, "<", " ");
-    text = WebElements.replaceAll(text, ",", " ");
-    text = WebElements.replaceAll(text, "|", " ");
+    var text = thedom.replaceAll(text, ">", " ");
+    text = thedom.replaceAll(text, "<", " ");
+    text = thedom.replaceAll(text, ",", " ");
+    text = thedom.replaceAll(text, "|", " ");
     text = text.split(" ")
 
     for(currentWord = 0; currentWord < text.length; currentWord++)
@@ -951,7 +951,7 @@ WebElements.startsWith = function(text, subtext, caseSensitive)
 }
 
 //Adds a prefix to all child elements
-WebElements.addPrefix = function(container, prefix)
+thedom.addPrefix = function(container, prefix)
 {
     if(!caseSensitive)
     {
@@ -967,11 +967,11 @@ WebElements.addPrefix = function(container, prefix)
 }
 
 //sorts a list alphabetically by innerHTML
-WebElements.sortSelect = function(selectElement, sortByValue)
+thedom.sortSelect = function(selectElement, sortByValue)
 {
     if(!sortByValue){sortByValue = false;}
 
-    var selectElement = WebElements.get(selectElement);
+    var selectElement = thedom.get(selectElement);
     var selectOptions = selectElement.options;
     var sorted = new Array();
     var selectElementSorted = new Array();
@@ -1008,7 +1008,7 @@ WebElements.sortSelect = function(selectElement, sortByValue)
 }
 
 //returns a list without duplicate elements
-WebElements.removeDuplicates = function(inArray)
+thedom.removeDuplicates = function(inArray)
 {
     var result = {};
 
@@ -1027,45 +1027,45 @@ WebElements.removeDuplicates = function(inArray)
 }
 
 //returns the selected options within a select box
-WebElements.selectedOptions = function(selectBox)
+thedom.selectedOptions = function(selectBox)
 {
-    return WebElements.getByCondition(function(option){return option.selected}, WebElements.get(selectBox).options);
+    return thedom.getByCondition(function(option){return option.selected}, thedom.get(selectBox).options);
 }
 
 //Selects all element of a select box
-WebElements.selectAllOptions = function(selectBox)
+thedom.selectAllOptions = function(selectBox)
 {
-    WebElements.forEach(WebElements.get(selectBox).options, function(option){option.selected = true;});
+    thedom.forEach(thedom.get(selectBox).options, function(option){option.selected = true;});
 }
 
 //sets the options available for selection within a select box
-WebElements.setOptions = function(selectBox, options)
+thedom.setOptions = function(selectBox, options)
 {
-    selectBox = WebElements.get(selectBox);
-    WebElements.forEach(selectBox.options, WebElements.remove);
-    WebElements.clear(selectBox);
-    WebElements.addOptions(selectBox, options);
+    selectBox = thedom.get(selectBox);
+    thedom.forEach(selectBox.options, thedom.remove);
+    thedom.clear(selectBox);
+    thedom.addOptions(selectBox, options);
 }
 
 //returns the selected checkboxes withing a container
-WebElements.selectedCheckboxes = function(container)
+thedom.selectedCheckboxes = function(container)
 {
-    return WebElements.getByCondition(function(element){return element.checked}, container);
+    return thedom.getByCondition(function(element){return element.checked}, container);
 }
 
-WebElements.selectAllCheckboxes = function(container, check)
+thedom.selectAllCheckboxes = function(container, check)
 {
-    WebElements.forEach(WebElements.getChildrenByAttribute(container, 'type', 'checkbox'),
+    thedom.forEach(thedom.getChildrenByAttribute(container, 'type', 'checkbox'),
                         function(child){child.checked = check;});
 }
 
 //returns all nested values within a contianer
-WebElements.getValues = function(container, checkSelected, tagName)
+thedom.getValues = function(container, checkSelected, tagName)
 {
     if(checkSelected == null){var checkSelected = false;}
     if(!tagName) {tagName = "option";}
 
-    var container = WebElements.get(container);
+    var container = thedom.get(container);
     var optionElements = container.getElementsByTagName(tagName);
 
     var values = Array();
@@ -1081,41 +1081,41 @@ WebElements.getValues = function(container, checkSelected, tagName)
 }
 
 //Get a child element of element based on value
-WebElements.getElementByValue = function(element, value)
+thedom.getElementByValue = function(element, value)
 {
-    return WebElements.getChildByAttribute(element, 'value', value);
+    return thedom.getChildByAttribute(element, 'value', value);
 }
 
 //Get a child element of element based on value
-WebElements.getElementByInnerHTML = function(element, html)
+thedom.getElementByInnerHTML = function(element, html)
 {
-    return WebElements.getChildByAttribute(element, 'innerHTML', html);
+    return thedom.getChildByAttribute(element, 'innerHTML', html);
 }
 
 //returns the first selected option within a select box
-WebElements.selectedOption = function(selectBox)
+thedom.selectedOption = function(selectBox)
 {
-    return WebElements.getByCondition(function(element){return element.selected;}, WebElements.get(selectBox).options,
+    return thedom.getByCondition(function(element){return element.selected;}, thedom.get(selectBox).options,
                                       true);
 }
 
 //selects an element based on its value
-WebElements.selectOption = function(selectBox, option)
+thedom.selectOption = function(selectBox, option)
 {
-    WebElements.selectedOption(selectBox).selected = false;
-    WebElements.getElementByValue(selectBox, option).selected = true;
+    thedom.selectedOption(selectBox).selected = false;
+    thedom.getElementByValue(selectBox, option).selected = true;
 }
 
 //replaces all instances of a string with another string
-WebElements.replaceAll = function(string, toReplace, replacement)
+thedom.replaceAll = function(string, toReplace, replacement)
 {
     return string.split(toReplace).join(replacement);
 }
 
 //returns all css classes attached to an element as a list
-WebElements.classes = function(element)
+thedom.classes = function(element)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     if(!element)
     {
         return [];
@@ -1125,9 +1125,9 @@ WebElements.classes = function(element)
 }
 
 //returns true if element contains class
-WebElements.hasClass = function(element, className)
+thedom.hasClass = function(element, className)
 {
-    var element = WebElements.get(element)
+    var element = thedom.get(element)
     var regexp = new RegExp('\\b' + className + '\\b');
     if(regexp.test(element.className))
     {
@@ -1137,23 +1137,23 @@ WebElements.hasClass = function(element, className)
 }
 
 //sets an elements classes based on the passed in list
-WebElements.setClasses = function(element, classList)
+thedom.setClasses = function(element, classList)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     element.className = classList.join(" ");
 }
 
 //removes a css class
-WebElements.removeClass = function(element, classToRemove)
+thedom.removeClass = function(element, classToRemove)
 {
-    WebElements.setClasses(element, WebElements.removeFromArray(WebElements.classes(element), classToRemove));
+    thedom.setClasses(element, thedom.removeFromArray(thedom.classes(element), classToRemove));
 }
 
 //adds a css class
-WebElements.addClass = function(element, classToAdd)
+thedom.addClass = function(element, classToAdd)
 {
-    var element = WebElements.get(element);
-    var styleClasses = WebElements.classes(element);
+    var element = thedom.get(element);
+    var styleClasses = thedom.classes(element);
 
     for(currentClass = 0; currentClass < styleClasses.length; currentClass++)
     {
@@ -1168,27 +1168,27 @@ WebElements.addClass = function(element, classToAdd)
 }
 
 //Removes all instances of an element from an array
-WebElements.removeFromArray = function(arrayOfItems, toRemove)
+thedom.removeFromArray = function(arrayOfItems, toRemove)
 {
-    return WebElements.getByCondition(function(item){return item != toRemove}, arrayOfItems);
+    return thedom.getByCondition(function(item){return item != toRemove}, arrayOfItems);
 }
 
 //lets you choose one class out of a list of class choices
-WebElements.chooseClass = function(element, classes, choice)
+thedom.chooseClass = function(element, classes, choice)
 {
-    var element = WebElements.get(element);
-    var styleClasses = WebElements.classes(element);
+    var element = thedom.get(element);
+    var styleClasses = thedom.classes(element);
     for(currentClass = 0; currentClass < classes.length; currentClass++){
-        styleClasses = WebElements.removeFromArray(styleClasses, classes[currentClass]);
+        styleClasses = thedom.removeFromArray(styleClasses, classes[currentClass]);
     }
     styleClasses.push(choice);
-    WebElements.setClasses(element, styleClasses);
+    thedom.setClasses(element, styleClasses);
 }
 
 // Forces the browser to redraw the element
-WebElements.redraw = function(element)
+thedom.redraw = function(element)
 {
-    var parentElement = WebElements.get(element).parentNode;
+    var parentElement = thedom.get(element).parentNode;
     var html = parentElement.innerHTML;
 
     parentElement.innerHTML = "";
@@ -1196,12 +1196,12 @@ WebElements.redraw = function(element)
 }
 
 //Strip spaces before and after string
-WebElements.strip = function(string)
+thedom.strip = function(string)
 {
     return string.replace(/^\s+|\s+$/g,"");
 }
 
-WebElements.stripLeadingZeros = function(someStr)
+thedom.stripLeadingZeros = function(someStr)
 {
    var someStr2 = String(someStr);
    if(someStr2 == '0')
@@ -1210,7 +1210,7 @@ WebElements.stripLeadingZeros = function(someStr)
 }
 
 //Easy way to see if a value is contained in a list
-WebElements.inList = function(list, value)
+thedom.inList = function(list, value)
 {
     for(var current = 0; current < list.length; current++)
     {
@@ -1223,63 +1223,63 @@ WebElements.inList = function(list, value)
 }
 
 //Appens to a list only if the value is not already contained in the list
-WebElements.appendOnce = function(list, listItem)
+thedom.appendOnce = function(list, listItem)
 {
-    if(!WebElements.inList(list, listItem))
+    if(!thedom.inList(list, listItem))
     {
         list.push(listItem)
     }
 }
 
 //Combines two lists into one ignoring duplicate values
-WebElements.combine = function(list, list2)
+thedom.combine = function(list, list2)
 {
     for(var currentListItem = 0; currentListItem < list2.length; currentListItem++)
     {
         listItem = list2[currentListItem];
-        WebElements.appendOnce(list, listItem);
+        thedom.appendOnce(list, listItem);
     }
 }
 
 //suppress a single elements attribute (usually an event)
-WebElements.suppress = function(element, attribute)
+thedom.suppress = function(element, attribute)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
 
     element['suppressed_' + attribute] = element[attribute];
     element[attribute] = null;
 }
 
 //unsuppress a single elements attribute
-WebElements.unsuppress = function(element, attribute)
+thedom.unsuppress = function(element, attribute)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
 
     element[attribute] = element['suppressed_' + attribute];
     element['suppressed_' + attribute] = element[attribute];
 }
 
-WebElements.toggleMenu = function(button)
+thedom.toggleMenu = function(button)
 {
-    var menu = WebElements.peer(button, 'WMenu');
-    if(WebElements.State.currentDropDown != menu){
-        WebElements.hide(WebElements.State.currentDropDown);
+    var menu = thedom.peer(button, 'WMenu');
+    if(thedom.State.currentDropDown != menu){
+        thedom.hide(thedom.State.currentDropDown);
     }
-    WebElements.State.currentDropDown = menu;
-    WebElements.toggle(WebElements.State.currentDropDown);
+    thedom.State.currentDropDown = menu;
+    thedom.toggle(thedom.State.currentDropDown);
 }
 
-WebElements.closeMenu = function()
+thedom.closeMenu = function()
 {
-    WebElements.hide(WebElements.State.currentDropDown);
-    if(WebElements.State.currentButton){
-        WebElements.removeClass(WebElements.State.currentButton, 'WSelected');
+    thedom.hide(thedom.State.currentDropDown);
+    if(thedom.State.currentButton){
+        thedom.removeClass(thedom.State.currentButton, 'WSelected');
     }
 }
 
-WebElements.selectText = function(element, start, end)
+thedom.selectText = function(element, start, end)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     if(element.setSelectionRange){
         element.setSelectionRange(parseInt(start), parseInt(end));
     }
@@ -1292,9 +1292,9 @@ WebElements.selectText = function(element, start, end)
     }
 }
 
-WebElements.openPopup = function(popupName, popupURL, width, height, normal, options)
+thedom.openPopup = function(popupName, popupURL, width, height, normal, options)
 {
-    var popupName = WebElements.replaceAll(popupName, ' ', '');
+    var popupName = thedom.replaceAll(popupName, ' ', '');
 
     params = ["focus=true,scrollbars=yes,resizable=yes"]
     if(height)
@@ -1319,9 +1319,9 @@ WebElements.openPopup = function(popupName, popupURL, width, height, normal, opt
     return false;
 }
 
-WebElements.scrolledToBottom = function(scroller)
+thedom.scrolledToBottom = function(scroller)
 {
-    var scroller = WebElements.get(scroller);
+    var scroller = thedom.get(scroller);
     var oldScrollTop = scroller.scrollTop;
     scroller.scrollTop += 10;
     if (scroller.scrollTop != oldScrollTop)
@@ -1336,20 +1336,20 @@ WebElements.scrolledToBottom = function(scroller)
 }
 
 // Toggle between Adding or Removing a class from an element.
-WebElements.toggleClass = function(element, className)
+thedom.toggleClass = function(element, className)
 {
-	if(WebElements.hasClass(element, className))
+	if(thedom.hasClass(element, className))
 	{
-		WebElements.removeClass(element, className);
+		thedom.removeClass(element, className);
 	}
 	else
 	{
-		WebElements.addClass(element, className);
+		thedom.addClass(element, className);
 	}
 }
 
 // Toggle between selecting/unselecting a row on a table.
-WebElements.toggleTableRowSelect = function(input)
+thedom.toggleTableRowSelect = function(input)
 {
 	var row = input
 	for (var levels = 3; levels > 0; levels -= 1)
@@ -1357,13 +1357,13 @@ WebElements.toggleTableRowSelect = function(input)
 		row = row.parentElement
 		if (row.parentElement.tagName == "TR")
 		{
-			WebElements.toggleClass(row.parentElement, 'selected');
+			thedom.toggleClass(row.parentElement, 'selected');
 			levels = 0;
 		}
 	}
 }
 
-WebElements.getNotificationPermission = function()
+thedom.getNotificationPermission = function()
 {
 
     if (window.webkitNotifications)
@@ -1375,7 +1375,7 @@ WebElements.getNotificationPermission = function()
     }
 }
 
-WebElements.showNotification = function(title, content, icon)
+thedom.showNotification = function(title, content, icon)
 {
     if(!icon){icon = "images/info.png";}
 
@@ -1391,10 +1391,10 @@ WebElements.showNotification = function(title, content, icon)
 }
 
 // Make two checkboxes act like radio button. element is "this" and pair is the other checkbox
-WebElements.checkboxActsLikeRadioButton = function(element, pair)
+thedom.checkboxActsLikeRadioButton = function(element, pair)
 {
-    var element = WebElements.get(element);
-    var pair = WebElements.get(pair);
+    var element = thedom.get(element);
+    var pair = thedom.get(pair);
     if(!element.checked)
     {
         return;
@@ -1403,63 +1403,63 @@ WebElements.checkboxActsLikeRadioButton = function(element, pair)
 }
 
 // Accepts an event performing no operation on it and stopping any further operations from taking place
-WebElements.stopOperation = function(evt)
+thedom.stopOperation = function(evt)
 {
   evt.stopPropagation();
   evt.preventDefault();
 }
 
-WebElements.onPagerChange = function(pager, callBack)
+thedom.onPagerChange = function(pager, callBack)
 {
-    var pager = WebElements.get(pager);
+    var pager = thedom.get(pager);
     if(!pager)
     {
         return;
     }
-    var indexElement = WebElements.get(pager.id + "Index")
-    WebElements.forEach(WebElements.getElementsByTagNames(['a', 'input'], pager),
+    var indexElement = thedom.get(pager.id + "Index")
+    thedom.forEach(thedom.getElementsByTagNames(['a', 'input'], pager),
                         function(element){
-                            WebElements.Events.addEvent(element, 'click', function(){
+                            thedom.Events.addEvent(element, 'click', function(){
                                 indexValue = '0';
                                 if(element.getAttribute('index'))
                                 {
                                     indexValue = element.getAttribute('index');
                                 }
                                 indexElement.value = indexValue;
-                                WebElements.becomeThrobber(element);
-                                callBack(WebElements.serializeAll(pager));
+                                thedom.becomeThrobber(element);
+                                callBack(thedom.serializeAll(pager));
                             })});
 }
 
-WebElements.clickDropDown = function(menu, openOnly, button, parentElement)
+thedom.clickDropDown = function(menu, openOnly, button, parentElement)
 {
-    WebElements.State.isPopupOpen = true;
-    if(WebElements.State.currentDropDown && WebElements.State.currentDropDown != menu)
+    thedom.State.isPopupOpen = true;
+    if(thedom.State.currentDropDown && thedom.State.currentDropDown != menu)
     {
-        WebElements.hide(WebElements.State.currentDropDown);
-        WebElements.removeClass(WebElements.State.currentButton, 'WSelected');
+        thedom.hide(thedom.State.currentDropDown);
+        thedom.removeClass(thedom.State.currentButton, 'WSelected');
     }
-    WebElements.State.currentDropDown = menu;
-    WebElements.State.currentButton = button;
-    if(!openOnly || !WebElements.shown(WebElements.State.currentDropDown)){
-        if(WebElements.toggleDropDown(WebElements.State.currentDropDown, parentElement)){
-            WebElements.addClass(button, 'WSelected');
+    thedom.State.currentDropDown = menu;
+    thedom.State.currentButton = button;
+    if(!openOnly || !thedom.shown(thedom.State.currentDropDown)){
+        if(thedom.toggleDropDown(thedom.State.currentDropDown, parentElement)){
+            thedom.addClass(button, 'WSelected');
         }
         else{
-            WebElements.removeClass(button, 'WSelected');
+            thedom.removeClass(button, 'WSelected');
        }
    }
 }
 
-WebElements.addPlaceholders = function(element)
+thedom.addPlaceholders = function(element)
 {
     if(Platform.HAS_PLACEHOLDERS)
     {
         return;
     }
 
-    var element = WebElements.get(element);
-    WebElements.forEach(element.getElementsByTagName('input'), function(input)
+    var element = thedom.get(element);
+    thedom.forEach(element.getElementsByTagName('input'), function(input)
     {
         if(input.getAttribute('placeholder'))
         {
@@ -1487,26 +1487,26 @@ WebElements.addPlaceholders = function(element)
 
 
 //attach on click event to body to close any open pop up menus when a random click is placed
-WebElements.Events.addEvent(window, 'load', function()
+thedom.Events.addEvent(window, 'load', function()
 {
     document.body.onclick = function closeOpenMenu()
     {
-        if(WebElements.State.isPopupOpen)
+        if(thedom.State.isPopupOpen)
         {
-            WebElements.State.isPopupOpen = false;
+            thedom.State.isPopupOpen = false;
         }
         else
         {
-            WebElements.closeMenu();
-            WebElements.State.isPopupOpen = false;
+            thedom.closeMenu();
+            thedom.State.isPopupOpen = false;
         }
     }
-    WebElements.addPlaceholders(document);
+    thedom.addPlaceholders(document);
 });
 
-WebElements.serialize = function(field)
+thedom.serialize = function(field)
 {
-    var element = WebElements.get(field);
+    var element = thedom.get(field);
     var tagName = element.tagName.toLowerCase();
     var key = encodeURIComponent(element.name);
     if(!key)
@@ -1528,31 +1528,31 @@ WebElements.serialize = function(field)
     if(tagName == "select")
     {
         var value = [];
-        WebElements.forEach(element.options, function(option){
+        thedom.forEach(element.options, function(option){
                         if(option.selected){value.push(key + "=" + encodeURIComponent(option.value))}});
         return value.join("&");
     }
 }
 
-WebElements.serializeElements = function(elements)
+thedom.serializeElements = function(elements)
 {
     var params = []
-    WebElements.forEach(elements,
-                        function(item){result = WebElements.serialize(WebElements.get(item));
+    thedom.forEach(elements,
+                        function(item){result = thedom.serialize(thedom.get(item));
                                        if(result){params.push(result);}});
     return params.join("&");
 }
 
-WebElements.serializeAll = function(container)
+thedom.serializeAll = function(container)
 {
     if(!container){container = document}
 
-    var container = WebElements.get(container);
-    return WebElements.serializeElements(WebElements.getElementsByTagNames(WebElements.Settings.Serialize, container));
+    var container = thedom.get(container);
+    return thedom.serializeElements(thedom.getElementsByTagNames(thedom.Settings.Serialize, container));
 }
 
 //Presents a confirm window to the user, before doing an action
-WebElements.confirm = function(message, action)
+thedom.confirm = function(message, action)
 {
     if(window.confirm(message))
     {
@@ -1561,7 +1561,7 @@ WebElements.confirm = function(message, action)
 }
 
 //Evaluates a method on the popup's opener
-WebElements.callOpener = function(method)
+thedom.callOpener = function(method)
 {
     if(opener && !opener.closed)
     {
@@ -1577,15 +1577,15 @@ WebElements.callOpener = function(method)
 
 
 //Tells the popup's opener that it has updated
-WebElements.updateParent = function()
+thedom.updateParent = function()
 {
-    return WebElements.callOpener("updatedFromChild()");
+    return thedom.callOpener("updatedFromChild()");
 }
 
 //Sets the focus to a specif element - optionally selecting text
-WebElements.focus = function(element, selectText)
+thedom.focus = function(element, selectText)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     element.focus();
     if(selectText)
     {
@@ -1594,46 +1594,46 @@ WebElements.focus = function(element, selectText)
 }
 
 //Sets the value of an element
-WebElements.setValue = function(element, value)
+thedom.setValue = function(element, value)
 {
-    var element = WebElements.get(element).value = value;
+    var element = thedom.get(element).value = value;
 }
 
 //Shows the defined element only if the value matches
-WebElements.showIfValue = function(element, value, elementToShow)
+thedom.showIfValue = function(element, value, elementToShow)
 {
-    var element = WebElements.get(element);
+    var element = thedom.get(element);
     if(element.value == value)
     {
-        WebElements.show(elementToShow);
+        thedom.show(elementToShow);
     }
     else
     {
-        WebElements.hide(elementToShow);
+        thedom.hide(elementToShow);
     }
 }
 
 //Shows the defined element only if the checkbox is checked
-WebElements.showIfChecked = function(checkbox, value, elementToShow)
+thedom.showIfChecked = function(checkbox, value, elementToShow)
 {
-    var checkbox = WebElements.get(checkbox);
+    var checkbox = thedom.get(checkbox);
     if(checkbox.checked)
     {
-        WebElements.show(elementToShow);
+        thedom.show(elementToShow);
     }
     else
     {
-        WebElements.hide(elementToShow);
+        thedom.hide(elementToShow);
     }
 }
 
 //Expands a template written in the form of a python template
-WebElements.expandTemplate = function(template, valueDictionary)
+thedom.expandTemplate = function(template, valueDictionary)
 {
     var result = template;
     for(key in valueDictionary)
     {
-        result = WebElements.replaceAll(template, "$" + key, valueDictionary[key]);
+        result = thedom.replaceAll(template, "$" + key, valueDictionary[key]);
     }
 
     return result
@@ -2491,7 +2491,7 @@ WebElements.expandTemplate = function(template, valueDictionary)
 
     }));
 
-    WebElements.createCalendar = function(options)
+    thedom.createCalendar = function(options)
     {
         var picker = new Pikaday(options);
         return picker;
@@ -2841,19 +2841,19 @@ WebElements.expandTemplate = function(template, valueDictionary)
   }
 })(this);
 
-    WebElements.timezone = function()
+    thedom.timezone = function()
     {
         var tz = jstz.determine();
         return tz.name();
     }
 }
 
-WebElements.setCookie = function(name, value)
+thedom.setCookie = function(name, value)
 {
     document.cookie = name + "=" + value + ";"
 }
 
-WebElements.getCookie = function(name)
+thedom.getCookie = function(name)
 {
     currentcookie = document.cookie;
     if (currentcookie.length > 0)
@@ -2873,36 +2873,361 @@ WebElements.getCookie = function(name)
     return "";
 }
 
-WebElements.openAccordion = function(content, image, value)
+thedom.openAccordion = function(content, image, value)
 {
-    var content = WebElements.get(content);
-    var image = WebElements.get(image);
-    var value = WebElements.get(value);
+    var content = thedom.get(content);
+    var image = thedom.get(image);
+    var value = thedom.get(value);
 
-    WebElements.show(content);
+    thedom.show(content);
     value.value = 'True';
-    image.src = WebElements.Settings.hideImage;
+    image.src = thedom.Settings.hideImage;
 }
 
-WebElements.closeAccordion = function(content, image, value)
+thedom.closeAccordion = function(content, image, value)
 {
-    var content = WebElements.get(content);
-    var image = WebElements.get(image);
-    var value = WebElements.get(value);
+    var content = thedom.get(content);
+    var image = thedom.get(image);
+    var value = thedom.get(value);
 
-    WebElements.hide(content);
+    thedom.hide(content);
     value.value = 'False';
-    image.src =  WebElements.Settings.showImage;
+    image.src =  thedom.Settings.showImage;
 }
 
-WebElements.toggleAccordion = function(content, image, value)
+thedom.toggleAccordion = function(content, image, value)
 {
-    if(!WebElements.shown(content))
+    if(!thedom.shown(content))
     {
-        WebElements.openAccordion(content, image, value);
+        thedom.openAccordion(content, image, value);
     }
     else
     {
-        WebElements.closeAccordion(content, image, value);
+        thedom.closeAccordion(content, image, value);
     }
+}
+
+/*
+ * Controller AJAX support
+ */
+
+var RestClient = RestClient || {}
+
+// Returns the XMLHTTPRequest supported by the users browser
+RestClient.getXMLHttp = function()
+{
+  var xmlhttp = false;
+  if (window.XMLHttpRequest)
+  {
+    xmlhttp = new XMLHttpRequest()
+  }
+  else if (window.ActiveXObject)
+  {
+    try
+    {
+      xmlhttp = new ActiveXObject("Msxml2.XMLHTTP")
+    }
+    catch (e)
+    {
+      try
+      {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP")
+      }
+      catch (E)
+      {
+        xmlhttp=false
+      }
+    }
+  }
+  if (xmlhttp.overrideMimeType)
+  {
+      xmlhttp.overrideMimeType('text/xml');
+  }
+  return xmlhttp;
+}
+
+//Makes a raw AJAX call, passing in the response to a callback function - Returns true if the request is made
+RestClient.makeRequest = function(url, method, params, callbackFunction, lostConnection)
+{
+    var xmlhttp = RestClient.getXMLHttp();
+    if(!xmlhttp) return false;
+    if(!method) method = "POST";
+
+    if(method == "GET" || method == "DELETE")
+    {
+        xmlhttp.open(method, url + "?" + params, true);
+        params = null;
+    }
+    else
+    {
+        if(url == "")
+        {
+            url += "?forceRequestToken=" + Math.random().toString(36).slice(2);
+        }
+        xmlhttp.open(method, url, true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.setRequestHeader("Content-length", params.length);
+        xmlhttp.setRequestHeader("Connection", "close");
+        csrfToken = thedom.getValue('csrfmiddlewaretoken');
+        if(csrfToken)
+        {
+            xmlhttp.setRequestHeader('X-CSRFToken', csrfToken);
+        }
+    }
+
+    xmlhttp.onreadystatechange =
+            function ()
+            {
+                if (xmlhttp && xmlhttp.readyState == 4) // something was returned from the server
+                {
+                    if(xmlhttp.status == 0)
+                    {
+                        if(lostConnection)
+                        {
+                            lostConnection();
+                        }
+                    }
+                    else
+                    {
+                        if(callbackFunction)
+                        {
+                            callbackFunction(xmlhttp);
+                        }
+                    }
+                }
+            }
+    xmlhttp.send(params);
+    return xmlhttp;
+}
+
+// Makes a GET rest call against the provided URL
+RestClient.get = function(url, params, callbackFunction)
+{
+    return RestClient.makeRequest(url, "GET", params, callbackFunction);
+}
+
+// Makes a POST rest call against the provided URL
+RestClient.post = function(url, params, callbackFunction)
+{
+    return RestClient.makeRequest(url, "POST", params, callbackFunction);
+}
+
+// Makes a PUT rest call against the provided URL
+RestClient.put = function(url, params, callbackFunction)
+{
+    return RestClient.makeRequest(url, "PUT", params, callbackFunction);
+}
+
+// Makes a DELETE rest call against the provided URL
+RestClient.DELETE = function(url, params, callbackFunction)
+{
+    return RestClient.makeRequest(url, "DELETE", params, callbackFunction);
+}
+
+
+var DynamicForm = DynamicForm || {};
+DynamicForm.RestClient = RestClient;
+DynamicForm.handlers = {};
+DynamicForm.loading = {};
+DynamicForm.baseURL = '';
+
+// Returns a serialized string representation of a single control
+DynamicForm.serializeControl = function(pageControl)
+{
+    return DynamicForm.serializeControls([pageControl])
+}
+
+// Quickly and efficiently serializes one or more controls returning a string representation
+DynamicForm.serializeControls = function(pageControls, fresh)
+{
+    var pageControls = thedom.map(pageControls, thedom.get);
+    var fields = Array();
+    var serializedHandlers = []
+
+    for(currentPageControl = 0; currentPageControl < pageControls.length; currentPageControl++)
+    {
+        var pageControl = pageControls[currentPageControl];
+        var requestHandler = pageControl.getAttribute('handler');
+
+        if(requestHandler in DynamicForm.handlers)
+        {
+            fields = fields.concat(thedom.map(DynamicForm.handlers[requestHandler].grabFields,
+                                                   thedom.get) || []);
+            thedom.map(DynamicForm.handlers[requestHandler].grabForms,
+                            function(form)
+                            {
+                                fields = fields.concat(thedom.getElementsByTagNames(thedom.Settings.Serialize,
+                                                                                        form, true));
+                            });
+        }
+
+        if(!fresh)
+        {
+            fields = fields.concat(thedom.getElementsByTagNames(thedom.Settings.Serialize, pageControl, true));
+        }
+        serializedHandlers.push("requestHandler=" + requestHandler);
+        if(pageControl.id != requestHandler)
+        {
+                serializedHandlers.push("requestID=" + pageControl.id);
+        }
+    }
+    return serializedHandlers.concat([thedom.serializeElements(thedom.sortUnique(fields))]).join("&");
+}
+
+// Stops the loading of a control
+DynamicForm.abortLoading = function(view)
+{
+    if(DynamicForm.loading.hasOwnProperty(view) && DynamicForm.loading[view] != null)
+    {
+        if(DynamicForm.loading[view].abort)
+        {
+            DynamicForm.loading[view].onreadystatechange = function(){};
+            DynamicForm.loading[view].abort();
+        }
+    }
+}
+
+// Requests one or many controls on a page
+DynamicForm._requestPageControls = function(pageControls, method, silent, params, timeout, fresh)
+{
+    if(typeof(pageControls) != typeof([]))
+    {
+        pageControls = [pageControls];
+    }
+    var pageControls = thedom.map(pageControls, thedom.get);
+    var pageControlIds = thedom.map(pageControls, function(control){return '"' + control.id + '"';}).join(",");
+    var pageControlName = thedom.map(pageControls, function(control){return control.id;}).join(",");
+
+    if(!method){method = "GET";}
+    if(!params){params = '';}
+
+    DynamicForm.abortLoading(pageControlName);
+
+    if(timeout)
+    {
+        timeoutMethod = setTimeout("DynamicForm." + method.toLowerCase() + "([" + pageControlIds + "], " + silent +
+                                   ", '" + params + "', null, " + fresh + ");", timeout);
+        DynamicForm.loading[pageControlName] = {'timeout':timeoutMethod,
+                                    'abort':function(){clearTimeout(DynamicForm.loading[pageControlName]['timeout']);}};
+        return;
+    }
+
+    var params = [DynamicForm.serializeControls(pageControls, fresh), params].join("&");
+    if(!silent)
+    {
+        for(currentPageControl = 0; currentPageControl < pageControls.length; currentPageControl++)
+        {
+            var pageControl = pageControls[currentPageControl];
+            var loader = thedom.get(pageControl.id + ":Loading");
+            var contentHeight = pageControl.offsetHeight;
+
+            thedom.hide(pageControl);
+            thedom.show(loader);
+
+            if(contentHeight > loader.offsetHeight)
+            {
+                var marginBottom = contentHeight - loader.offsetHeight;
+                if(marginBottom >= 400)
+                {
+                    loader.style.marginTop = 200 + "px"
+                    marginBottom = marginBottom - 200;
+                }
+                loader.style.marginBottom = marginBottom + "px";
+            }
+        }
+    }
+
+    DynamicForm.loading[pageControlName] = RestClient.makeRequest(DynamicForm.baseURL, method, params,
+                                           function(response){DynamicForm._applyUpdates(response, pageControls)},
+                                           function(response){DynamicForm._applyUpdates(response, pageControls, true)});
+}
+
+// Applies the servers updated HTML
+DynamicForm._applyUpdates = function(xmlhttp, pageControls, lostConnection)
+{
+    var pageControls = thedom.map(pageControls, thedom.get);
+
+    if(document.activeElement && ((document.activeElement.tagName.toLowerCase() == "input"
+                                    && document.activeElement.type.toLowerCase() != "button"
+                                    && document.activeElement.type.toLowerCase() != "submit") ||
+                                    document.activeElement.tagName.toLowerCase() == "textarea" ||
+                                    document.activeElement.tagName.toLowerCase() == "select"))
+    {
+        var lastSelectedId = document.activeElement.id;
+        if(lastSelectedId){
+            setTimeout("var element = thedom.get('" + lastSelectedId + "'); element.focus();", 10);
+        }
+        if(document.activeElement.type == "text"){
+            var selectStart = document.activeElement.selectionStart;
+            var selectEnd = document.activeElement.selectionEnd;
+            if(selectStart != selectEnd){
+                setTimeout("thedom.selectText('" + lastSelectedId + "', " + selectStart + ", " + selectEnd + ");", 11);
+            }
+        }
+    }
+
+    var responses = [];
+    if(pageControls.length == 1)
+    {
+        responses = [xmlhttp];
+    }
+    else
+    {
+        responses = eval(xmlhttp.responseText);
+    }
+
+    for(currentPageControl = 0; currentPageControl < pageControls.length; currentPageControl++)
+    {
+        var pageControl = pageControls[currentPageControl];
+        var response = responses[currentPageControl];
+
+        DynamicForm.loading[pageControl.id] = null;
+        if(lostConnection)
+        {
+            thedom.addClass(pageControl, "NoConnection");
+            pageControl.innerHTML = "";
+            thedom.show(pageControl);
+            thedom.hide(pageControl.id + ':Loading');
+            continue;
+        }
+
+        pageControl.innerHTML = response.responseText;
+        thedom.show(pageControl);
+        thedom.hide(pageControl.id + ':Loading');
+
+        thedom.forEach(pageControl.getElementsByTagName('script'), function(scr){
+                if(scr.innerHTML)
+                {
+                    scriptTag = document.createElement('script');
+                    scriptTag.type = "text/javascript"
+                    thedom.replace(scr, scriptTag);
+                    scriptTag.text = scr.innerHTML;
+                }
+            });
+        thedom.addPlaceholders(pageControl);
+    }
+}
+
+// Asks the server to provide a new version of the control
+DynamicForm.get = function(pageControl, silent, params, timeout, fresh)
+{
+    return DynamicForm._requestPageControls(pageControl, "GET", silent, params, timeout, fresh);
+}
+
+// Posts the current version of the control to the server for it to respond
+DynamicForm.post = function(pageControl, silent, params, timeout, fresh)
+{
+    return DynamicForm._requestPageControls(pageControl, "POST", silent, params, timeout, fresh);
+}
+
+// Puts the current version of the control to the server for it to respond
+DynamicForm.put = function(pageControl, silent, params, timeout, fresh)
+{
+    return DynamicForm._requestPageControls(pageControl, "PUT", silent, params, timeout, fresh);
+}
+
+// Request a delete of the current version of the control for the server to respond to
+DynamicForm.DELETE = function(pageControl, silent, params, timeout, fresh)
+{
+    return DynamicForm._requestPageControls(pageControl, "DELETE", silent, params, timeout, fresh);
 }
