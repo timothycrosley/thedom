@@ -51,7 +51,7 @@ class CodeSnippet(DOM.Pre):
     def _create(self, id=None, name=None, parent=None, **kwargs):
         DOM.Pre._create(self, id, name, parent, **kwargs)
 
-        self._textNode = self.addChildElement(Base.TextNode())
+        self._textNode = self.add(Base.TextNode())
 
         self.showLineNumbers = False
         self.lexer = "python"

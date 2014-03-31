@@ -66,7 +66,7 @@ class Table(Base.Node):
             Base.Node._create(self, id, name, parent, **kwargs)
             self.addClass((id or "").replace(" ", "") + "Column")
             self.addClass("WColumn")
-            self.element = self.addChildElement(Display.FreeText())
+            self.element = self.add(Display.FreeText())
             if self.parent and self.parent.parent and getattr(self.parent.parent, 'uniformStyle', None):
                 self.setStyleFromString(self.parent.parent.uniformStyle)
             self._textNode = Base.TextNode()
@@ -76,7 +76,7 @@ class Table(Base.Node):
                 Ensures that the text node is the last element upon rendering
             """
             Base.Node._render(self)
-            self.addChildElement(self._textNode)
+            self.add(self._textNode)
 
         def setText(self, text):
             """
@@ -147,14 +147,14 @@ class Table(Base.Node):
 
         header = self.Row('WTableHeader', parent=self)
         self.alignHeaders = ""
-        self.header = self.addChildElement(header)
+        self.header = self.add(header)
         self.rows = []
         self._columns = []
         self.columnMap = {}
         self.uniformStyle = ""
         self.addClass('GlobalTable')
 
-        self.connect('columnAdded', None, header, 'addChildElement')
+        self.connect('columnAdded', None, header, 'add')
 
     @property
     def columns(self):
@@ -182,8 +182,8 @@ class Table(Base.Node):
         """
             Adds a visual separator between the last row, and the next one with the given text
         """
-        row = self.addChildElement(self.Row())
-        column = row.addChildElement(self.Column())
+        row = self.add(self.Row())
+        column = row.add(self.Column())
         column.attributes['colspan'] = len(self._columns)
         column.addClass("WSeparator")
         column.setText(separatorName)
@@ -194,17 +194,17 @@ class Table(Base.Node):
             Adds a new row and then returns it for manipulation
         """
         rowNumber = len(self.rows)
-        row = self.addChildElement(self.Row())
+        row = self.add(self.Row())
         if rowNumber % 2:
             row.addClass('rowlight')
         else:
             row.addClass('rowdark')
 
-        self.connect('columnAdded', None, row, 'addChildElement', self.Column)
+        self.connect('columnAdded', None, row, 'add', self.Column)
         self.rows.append(row)
 
         for column in self._columns:
-            row.addChildElement(self.Column(parent=row, id=column))
+            row.add(self.Column(parent=row, id=column))
 
         self.emit('rowAdded', row)
         return row
@@ -220,7 +220,7 @@ class Table(Base.Node):
             if self.alignHeaders:
                 column.attributes['align'] = self.alignHeaders
 
-            column.addChildElement(Base.TextNode((showName and (columnName or '')) or ''))
+            column.add(Base.TextNode((showName and (columnName or '')) or ''))
             self._columns.append(columnName)
 
             self.emit('columnAdded', column)
@@ -307,8 +307,8 @@ class StoredValue(Layout.Box):
 
         hiddenValue.connect('valueChanged', None, value, 'setText')
 
-        self.label = self.addChildElement(label)
-        self.valueDisplay = self.addChildElement(value)
-        self.value = self.addChildElement(hiddenValue)
+        self.label = self.add(label)
+        self.valueDisplay = self.add(value)
+        self.value = self.add(hiddenValue)
 
 Factory.addProduct(StoredValue)

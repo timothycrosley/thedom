@@ -97,7 +97,7 @@ class List(DOM.UL):
         def _create(self, id=None, name=None, parent=None, **kwargs):
             DOM.LI._create(self, id=id, name=name, parent=parent)
 
-            self._textNode = self.addChildElement(Base.TextNode())
+            self._textNode = self.add(Base.TextNode())
 
         def setText(self, text):
             """
@@ -115,13 +115,13 @@ class List(DOM.UL):
         DOM.UL._create(self, id=id, name=name, parent=parent)
         self.ordered = False
 
-    def addChildElement(self, childElement, ensureUnique=True):
+    def add(self, childElement, ensureUnique=True):
         """
             Overrides the add childelement behavior to nest child elements in Item elements.
         """
         item = self.Item()
-        item.addChildElement(childElement, ensureUnique)
-        Base.Node.addChildElement(self, item, ensureUnique=False)
+        item.add(childElement, ensureUnique)
+        Base.Node.add(self, item, ensureUnique=False)
 
         return childElement
 
@@ -131,7 +131,7 @@ class List(DOM.UL):
         """
         item = self.Item()
         item.setText(name)
-        return Base.Node.addChildElement(self, item)
+        return Base.Node.add(self, item)
 
     def _render(self):
         DOM.UL._render(self)
@@ -166,7 +166,7 @@ def label(cls):
         def _create(self, id=None, name=None, parent=None, **kwargs):
             cls._create(self, id=id, name=name, parent=parent)
 
-            self._textNode = self.addChildElement(Base.TextNode())
+            self._textNode = self.add(Base.TextNode())
 
         def setText(self, text):
             """
@@ -196,22 +196,22 @@ def label(cls):
             if not prevText:
                 return self.setText(text)
 
-            self.addChildElement(DOM.Br())
-            self.addChildElement(Base.TextNode(text))
+            self.add(DOM.Br())
+            self.add(Base.TextNode(text))
 
         def makeStrong(self):
             """
                 wraps into a strong tag - requires parent element to be defined
             """
-            self.addChildElementsTo = self.addChildElement(DOM.Strong())
-            self.addChildElementsTo.addChildElement(self._textNode)
+            self.addsTo = self.add(DOM.Strong())
+            self.addsTo.add(self._textNode)
 
         def addEmphasis(self):
             """
                 wraps into an emphasis tag - requires parent element to be defined
             """
-            self.addChildElementsTo = self.addChildElement(DOM.Em())
-            self.addChildElementsTo.addChildElement(self._textNode)
+            self.addsTo = self.add(DOM.Em())
+            self.addsTo.add(self._textNode)
 
     Labelable.__name__ = cls.__name__
     return Labelable
@@ -316,7 +316,7 @@ class LabeledData(Label):
     def _create(self, id=None, name=None, parent=None, label=""):
         Label._create(self, id, name, parent=parent)
         self.style['vertical-align'] = "middle"
-        self.__data__ = self.addChildElement(Label)
+        self.__data__ = self.add(Label)
         self.__data__.addClass('WDataLabeled')
         self.setText(label)
         self.addClass("WLabeledData")
@@ -593,7 +593,7 @@ class CacheElement(Base.Node):
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Base.Node._create(self, id, name, parent, **kwargs)
         self._cachedHTML = None
-        scriptContainer = self.addChildElement(ScriptContainer())
+        scriptContainer = self.add(ScriptContainer())
         self.setScriptContainer(scriptContainer)
 
     def toHTML(self, formatted=False, *args, **kwargs):

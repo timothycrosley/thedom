@@ -42,7 +42,7 @@ class TestFactory(object):
     def test_build(self):
         """test to ensure using the factory to create a webelement object works"""
         createdObject = Factory.build("textbox", "myId", "myName")
-        self.base.addChildElement(createdObject)
+        self.base.add(createdObject)
 
         assert createdObject.fullId() == "myPrefix-myId"
         assert createdObject.fullName() == "myPrefix-myName"
@@ -63,7 +63,7 @@ class TestFactory(object):
         Factory.addProduct(FakeNode)
 
         createdObject = Factory.build("fakenode")
-        self.base.addChildElement(createdObject)
+        self.base.add(createdObject)
 
         assert createdObject.fullId() == "myPrefix-Id"
         assert createdObject.fullName() == "myPrefix-Name"

@@ -111,7 +111,7 @@ class NodeTree(Node):
 
             string = string.strip()
             if string:
-                self.addChildElement(TextNode(string))
+                self.add(TextNode(string))
 
             if startTag == "<":
                 (rawTagName, endedBy) = self.textTillString(self.endTags + self.whiteSpace + ['<'])
@@ -119,14 +119,14 @@ class NodeTree(Node):
                 if rawTagName.startswith('!'):#HTML Comment
                     if tagName.startswith('!--'):
                         (content, end) = self.textTillString('-->')
-                        self.addChildElement(TextNode('<' + rawTagName + ' ' + content.replace('--', '==') + end))
+                        self.add(TextNode('<' + rawTagName + ' ' + content.replace('--', '==') + end))
                         continue
                     else:
                         (content, end) = self.textTillString('>')
-                        self.addChildElement(TextNode('<' + rawTagName + ' ' + content + end))
+                        self.add(TextNode('<' + rawTagName + ' ' + content + end))
                         continue
                 elif endedBy == "<" or not tagName:
-                    self.addChildElement(TextNode("&lt;" + tagName))
+                    self.add(TextNode("&lt;" + tagName))
                     self.prev()
                     continue
 
@@ -143,7 +143,7 @@ class NodeTree(Node):
                     break
 
 
-                newTag = self.addChildElement(self.__class__(tag=tagName, parent=self))
+                newTag = self.add(self.__class__(tag=tagName, parent=self))
 
                 if endedBy in self.whiteSpace:
                     self.prev()
@@ -160,7 +160,7 @@ class NodeTree(Node):
                     (content, endTag) = self.textTillString('</' + tagName + '>')
                     content = content.strip()
                     if content:
-                        newTag.addChildElement(TextNode(content + "\n"))
+                        newTag.add(TextNode(content + "\n"))
                     continue
                 else:
                     newTag.parse()

@@ -79,9 +79,9 @@ class Stack(Base.Node):
             return self.visibleElement().toHTML(formatted=formatted, *args, **kwargs) or ""
         return ""
 
-    def addChildElement(self, childElement, ensureUnique=True):
+    def add(self, childElement, ensureUnique=True):
         """
-            Overrides addChildElement to check if the added element is the first and therefore the default
+            Overrides add to check if the added element is the first and therefore the default
             displayed item within the stack.
         """
         self.stackElements.append(childElement)
@@ -153,13 +153,13 @@ class ClientStack(DOM.Div):
             self.visibleElement().addClass("WVisible")
         return Base.Node.toHTML(self, formatted=formatted, *args, **kwargs)
 
-    def addChildElement(self, childElement, ensureUnique=True):
+    def add(self, childElement, ensureUnique=True):
         """
-            Overrides addChildElement to check if the added element is the first and therefore the default
+            Overrides add to check if the added element is the first and therefore the default
             displayed item within the stack.
         """
         childElement.addClass("WItem")
-        return DOM.Div.addChildElement(self, childElement, ensureUnique)
+        return DOM.Div.add(self, childElement, ensureUnique)
 
 Factory.addProduct(ClientStack)
 
@@ -199,8 +199,8 @@ class Horizontal(Box):
             self.childElements.append(childElement)
             return
         if not childElement._tagName:
-            container = Box.addChildElement(self, Box())
-            container.addChildElement(childElement)
+            container = Box.add(self, Box())
+            container.add(childElement)
         else:
             if not childElement.isBlockElement():
                 childElement.addClass("WBlock")
@@ -247,8 +247,8 @@ class Vertical(Box):
         else:
             container = Box()
             container.addClass("WClear")
-            container.addChildElement(childElement)
-            return Box.addChildElement(self, container)
+            container.add(childElement)
+            return Box.add(self, container)
 
     def toHTML(self, formatted=False, *args, **kwargs):
         """
@@ -283,7 +283,7 @@ class FieldSet(DOM.FieldSet):
         """
         if self.legend:
             return self.legend
-        self.legend = Box.addChildElement(self, DOM.Legend)
+        self.legend = Box.add(self, DOM.Legend)
         self.legend.text = Base.TextNode()
         return self.legend
 
@@ -314,14 +314,14 @@ class Field(Horizontal):
     def _create(self, id, name=None, parent=None, **kwargs):
         Horizontal._create(self, id, name, parent, **kwargs)
 
-        self.label = self.addChildElement(Display.Label())
+        self.label = self.add(Display.Label())
         self._image = None
         self._required = None
-        self.inputAndActions = self.addChildElement(Vertical())
+        self.inputAndActions = self.add(Vertical())
         self.userInput = None
-        self.message = self.inputAndActions.addChildElement(Display.Message())
-        self.validation = self.inputAndActions.addChildElement(Validators.Validation())
-        self.addChildElementsTo = self.inputAndActions
+        self.message = self.inputAndActions.add(Display.Message())
+        self.validation = self.inputAndActions.add(Validators.Validation())
+        self.addsTo = self.inputAndActions
         self.manualValidate = False
         self.addClass('WField')
 
@@ -331,7 +331,7 @@ class Field(Horizontal):
             Lazy loads the image - so that it is only added if a property (such as its source) is set
         """
         if not self._image:
-            self._image = self.label.addChildElement(Display.Image())
+            self._image = self.label.add(Display.Image())
 
         return self._image
 
@@ -345,7 +345,7 @@ class Field(Horizontal):
                 self._required = Display.Label()
                 self._required.addClass("WRequiredSymbol")
                 self._required.setText('*')
-                self.label.addChildElement(self._required)
+                self.label.add(self._required)
         elif self._required:
             self.removeClass("WRequired")
             self._required.remove()
@@ -361,11 +361,11 @@ class Field(Horizontal):
             self.message.id = self.userInput.fullId() + "Message"
             self.validation.id = self.userInput.fullId() + "Validation"
             self.validation.forElement = self.userInput
-        self.inputAndActions.addChildElement(self.message)
-        self.inputAndActions.addChildElement(self.validation)
+        self.inputAndActions.add(self.message)
+        self.inputAndActions.add(self.validation)
 
         if self._required:
-            self.label.addChildElement(self._required) # Ensures the symbol is farthest element right
+            self.label.add(self._required) # Ensures the symbol is farthest element right
 
         if not self.manualValidate:
             for validator in self.validation:
@@ -391,19 +391,19 @@ class Field(Horizontal):
         """
         self.label.setText(text)
 
-    def addChildElement(self, element, ensureUnique=True):
+    def add(self, element, ensureUnique=True):
         """
             Handles the addition of child elements, making the first externally added element be the input associated
             with the field
         """
-        if self.addChildElementsTo != self and not self.userInput:
+        if self.addsTo != self and not self.userInput:
             self.userInput = element
             self.message.forElement = element
             self.validation.forElement = element
         elif isinstance(element, Validators.Validator):
-            return self.validation.addChildElement(element, ensureUnique)
+            return self.validation.add(element, ensureUnique)
 
-        return Horizontal.addChildElement(self, element, ensureUnique)
+        return Horizontal.add(self, element, ensureUnique)
 
 Factory.addProduct(Field)
 
@@ -418,9 +418,9 @@ class Fields(Vertical):
         Vertical._create(self, id, name, parent, **kwargs)
         self.addClass("WFields")
 
-    def addChildElement(self, element, ensureUnique=True):
+    def add(self, element, ensureUnique=True):
         """
-            Overrides addChildElement to automatically add the appropriate classes to fields, labels, and inputs
+            Overrides add to automatically add the appropriate classes to fields, labels, and inputs
             to enable styling them with CSS.
         """
         if hasattr(element, 'label'):
@@ -430,7 +430,7 @@ class Fields(Vertical):
             if hasattr(element, 'userInput'):
                 element.userInput.addClass("WInput")
 
-        return Vertical.addChildElement(self, element, ensureUnique)
+        return Vertical.add(self, element, ensureUnique)
 
 Factory.addProduct(Fields)
 
@@ -463,7 +463,7 @@ class Grid(Box):
         columnIndex = 0
         for element in self:
             element.style.update(self.rowHeight and {'height':self.rowHeight} or {})
-            columns[columnIndex].addChildElement(element, ensureUnique=False)
+            columns[columnIndex].add(element, ensureUnique=False)
             if self.uniformStyle:
                 element.setStyleFromString(self.uniformStyle)
 
@@ -489,7 +489,7 @@ class LineBreak(Box):
 
     def _create(self, name=None, id=None, parent=None):
         Box._create(self, '', None, parent)
-        self.addChildElement(Base.TextNode(Safe("&nbsp;")))
+        self.add(Base.TextNode(Safe("&nbsp;")))
         self.style['clear'] = 'both'
         self.style['height'] = '0px'
 
@@ -528,11 +528,11 @@ class Center(Box):
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Box._create(self, id, name, parent, **kwargs)
         self.addClass("WCenter")
-        outer = self.addChildElement(Box())
+        outer = self.add(Box())
         outer.addClass("WOuter")
-        inner = outer.addChildElement(Box())
+        inner = outer.add(Box())
         inner.addClass("WInner")
-        self.addChildElementsTo = inner
+        self.addsTo = inner
 
 Factory.addProduct(Center)
 

@@ -479,7 +479,7 @@ class Option(ValueElement):
         ValueElement._create(self, id, name, parent, *args, **kwargs)
 
         self._selected = False
-        self._textNode = self.addChildElement(Base.TextNode())
+        self._textNode = self.add(Base.TextNode())
 
     def selected(self):
         """
@@ -613,7 +613,7 @@ class Select(ValueElement):
             newOption.setText(value)
 
         newOption.connect('selected', None, self, 'emit', 'selectionChanged')
-        return self.addChildElement(newOption)
+        return self.add(newOption)
 
     def options(self):
         """

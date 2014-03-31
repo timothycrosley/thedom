@@ -42,7 +42,7 @@ class ResourceFile(Base.Node):
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Base.Node._create(self, id, name)
-        self.resourceFile = self.addChildElement(Base.TextNode())
+        self.resourceFile = self.add(Base.TextNode())
         self.setFile("")
 
     def shown(self):
@@ -78,7 +78,7 @@ class ResourceFile(Base.Node):
             self.resourceType = "favicon"
         else:
             resource = H2()
-            resource.addChildElement(Base.TextNode("Invalid Resource: %s" % fileName))
+            resource.add(Base.TextNode("Invalid Resource: %s" % fileName))
             self.resourceType = None
 
         self.resourceFile = self.resourceFile.replaceWith(resource)

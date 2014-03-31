@@ -111,7 +111,7 @@ def __createPythonFromTemplate(template, factory=None, parentNode=None, instance
         if not template:
             instance -= 1
             return ("", instance)
-        python += "\n%s%s = %s.addChildElement(" % (indented, newNode, parentNode)
+        python += "\n%s%s = %s.add(" % (indented, newNode, parentNode)
         python += 'TextNode("' + template + '"), ensureUnique=False)'
         return (python, instance)
 
@@ -138,7 +138,7 @@ def __createPythonFromTemplate(template, factory=None, parentNode=None, instance
     elif create in ("static", "display-static") and parentNode != "template":
         html = CompiledTemplate.create(template, factory).build(factory).toHTML()
         staticElements.add('%s = StraightHTML(html="""%s""")' % (newNode, html))
-        python += "\n%s%s.addChildElement(%s, ensureUnique=False)" % (indented, parentNode, newNode)
+        python += "\n%s%s.add(%s, ensureUnique=False)" % (indented, parentNode, newNode)
         return (python, instance)
     else:
         python += '\n%s%s = %s(id=%s, name=%s, parent=%s)' % (indented, newNode, create.lower(), repr(id),
@@ -200,7 +200,7 @@ def __createPythonFromTemplate(template, factory=None, parentNode=None, instance
                     python += "\n%stemplate.%s = %s" % (indented + INDENT, accessor, newNode)
                 
             
-    python += "\n%s%s.addChildElement(%s, ensureUnique=False)" % (indented, parentNode, newNode)
+    python += "\n%s%s.add(%s, ensureUnique=False)" % (indented, parentNode, newNode)
     if parentNode == "template":
         defineElements = ""
         for elementName in elementsUsed:

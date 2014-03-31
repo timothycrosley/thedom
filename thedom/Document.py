@@ -144,7 +144,7 @@ class Document(Base.Node):
         def _create(self, id=None, name=None, parent=None, **kwargs):
             Base.Node._create(self, id=id, name=name, parent=parent)
 
-            self._textNode = self.addChildElement(Base.TextNode())
+            self._textNode = self.add(Base.TextNode())
 
 
         def setText(self, text):
@@ -161,16 +161,16 @@ class Document(Base.Node):
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         Base.Node._create(self)
-        self.head = self.addChildElement(self.Head())
-        self.body = self.addChildElement(self.Body())
-        self.title = self.head.addChildElement(self.Title())
+        self.head = self.add(self.Head())
+        self.body = self.add(self.Body())
+        self.title = self.head.add(self.Title())
         self.contentType = self.addHeader('Content-Type', 'text/html; charset=UTF-8')
 
     def addMetaData(self, name=None, value="", **kwargs):
         """
             Will add a meta tag based on name+value pair
         """
-        metaTag = self.head.addChildElement(MetaData(**kwargs))
+        metaTag = self.head.add(MetaData(**kwargs))
         metaTag.setName(name)
         metaTag.setValue(value)
         return metaTag
@@ -179,7 +179,7 @@ class Document(Base.Node):
         """
             Will add an HTTP header pair based on name + value pair
         """
-        header = self.head.addChildElement(HTTPHeader())
+        header = self.head.add(HTTPHeader())
         header.setName(name)
         header.setValue(value)
         return header
@@ -190,18 +190,18 @@ class Document(Base.Node):
         """
         return self.doctype + "\n" + Base.Node.toHTML(self, formatted, *args, **kwargs)
 
-    def addChildElement(self, childElement, ensureUnique=True):
+    def add(self, childElement, ensureUnique=True):
         """
-            Overrides addChildElement to place header elements and resources in the head
+            Overrides add to place header elements and resources in the head
             and all others in the body.
         """
         if type(childElement) in [self.Head, self.Body]:
-            return Base.Node.addChildElement(self, childElement, ensureUnique)
+            return Base.Node.add(self, childElement, ensureUnique)
         elif type(childElement) == ResourceFile or childElement._tagName in ['title', 'base', 'link',
                                                                              'meta', 'script', 'style']:
-            return self.head.addChildElement(childElement, ensureUnique)
+            return self.head.add(childElement, ensureUnique)
         else:
-            return self.body.addChildElement(childElement, ensureUnique)
+            return self.body.add(childElement, ensureUnique)
 
 Head = Document.Head
 Body = Document.Body

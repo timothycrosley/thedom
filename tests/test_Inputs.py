@@ -226,9 +226,9 @@ class TestSelect(ElementTester):
         self.option3 = Factory.build("Option", "Option3")
         self.option3.setValue("Value3")
         self.option3.setText("Text3")
-        self.element.addChildElement(self.option1)
-        self.element.addChildElement(self.option2)
-        self.element.addChildElement(self.option3)
+        self.element.add(self.option1)
+        self.element.add(self.option2)
+        self.element.add(self.option3)
         self.options = {"Value1":"Text1",
                         "Value2":"Text2",
                         "Value3":"Text3"}
@@ -240,7 +240,7 @@ class TestSelect(ElementTester):
         newOption = Factory.build("Option", "Option4")
         newOption.setValue("Value4")
         newOption.setText("Text4")
-        self.element.addChildElement(newOption)
+        self.element.add(newOption)
         self.options['Value4'] = "Text4"
         assert self.element.options() == self.options
 
@@ -304,9 +304,9 @@ class TestMulitSelect(ElementTester):
         self.option3 = Factory.build("Option", "Option3")
         self.option3.setValue("Value3")
         self.option3.setText("Text3")
-        self.element.addChildElement(self.option1)
-        self.element.addChildElement(self.option2)
-        self.element.addChildElement(self.option3)
+        self.element.add(self.option1)
+        self.element.add(self.option2)
+        self.element.add(self.option3)
         self.options = {"Value1":"Text1",
                         "Value2":"Text2",
                         "Value3":"Text3"}
@@ -318,7 +318,7 @@ class TestMulitSelect(ElementTester):
         newOption = Factory.build("Option", "Option4")
         newOption.setValue("Value4")
         newOption.setText("Text4")
-        self.element.addChildElement(newOption)
+        self.element.add(newOption)
         self.options['Value4'] = "Text4"
         assert self.element.options() == self.options
 

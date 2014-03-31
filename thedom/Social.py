@@ -149,7 +149,7 @@ class GooglePlusBadge(Social):
     def _create(self, name=None, id=None, parent=None, html="", *kargs, **kwargs):
         Social._create(self, None, None, parent, *kargs, **kwargs)
 
-        self.link = self.addChildElement(Link())
+        self.link = self.add(Link())
         self.link.attributes['rel'] = "publisher"
         self.link.addClass("WGooglePlusBadge")
         self.link += Image(src="https://ssl.gstatic.com/images/icons/gplus-32.png", alt="Google+")

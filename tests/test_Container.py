@@ -58,9 +58,9 @@ class TestTabContainer(ElementTester):
         self.element = Factory.build('TabContainer', 'Test')
 
     def test_tabs(self):
-        tab1 = self.element.addChildElement(Factory.build('Tab', 'Tab1'))
-        tab2 = self.element.addChildElement(Factory.build('Tab', 'Tab2'))
-        tab3 = self.element.addChildElement(Factory.build('Tab', 'Tab3'))
+        tab1 = self.element.add(Factory.build('Tab', 'Tab1'))
+        tab2 = self.element.add(Factory.build('Tab', 'Tab2'))
+        tab3 = self.element.add(Factory.build('Tab', 'Tab3'))
         assert tab1.isSelected
         assert not tab2.isSelected
         assert not tab3.isSelected
@@ -86,5 +86,5 @@ class TestFormContainer(ElementTester):
 
     def setup_class(self):
         self.element = Factory.build("FormContainer", name="Test")
-        self.element.addChildElement(Factory.build("Button", name="Button"))
-        self.element.addChildElement(Factory.build("Flow", name="Container"))
+        self.element.add(Factory.build("Button", name="Button"))
+        self.element.add(Factory.build("Flow", name="Container"))

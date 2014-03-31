@@ -90,7 +90,7 @@ class Node(Connectable):
     """
     __slots__ = ('_tagName', '_prefix', '__scriptTemp__', 'validator', '_editable',
                  '__scriptContainer__', 'id', 'name', 'parent', '_style', '_classes', '_attributes',
-                 '_childElements', 'addChildElementsTo', '_tagSelfCloses', '_clientSide')
+                 '_childElements', 'addsTo', '_tagSelfCloses', '_clientSide')
     tagSelfCloses = False
     allowsChildren = True
     displayable = True
@@ -113,6 +113,7 @@ class Node(Connectable):
     properties['itemprop'] = {'action':'attribute'}
     properties['itemscope'] = {'action':'attribute', 'type':'bool'}
     properties['itemtype'] = {'action':'attribute'}
+    properties['text'] = {'action':'setContent'}
     tagName = ""
 
     class ClientSide(AutoAddScripts):
@@ -161,14 +162,14 @@ class Node(Connectable):
                 Provides quick access for performing actions against the element clientSide.
             """
             return ClientSide.doClientSide(self.get().claim())
-        
+
         def __call__(self, script):
             self.serverSide.addScript(script)
             return script
-        
+
         def setAttribute(self, attributeName, value):
             return self.get().__setattr__(attributeName, value)
-        
+
         def getAttribute(self, attributeName):
             return self.get().__getattr__(attributeName, value)
 
@@ -232,13 +233,13 @@ class Node(Connectable):
                 Returns all non-empty direct children of this element.
             """
             return ClientSide.directChildren(self)
-        
+
         def directChildrenWithClass(self, className):
             """
                 Returns all direct children of this element that have the specified css class.
             """
             return ClientSide.directChildrenWithClass(self, className)
-        
+
         def directChild(self, className):
             """
                 Returns the first direct child of this element that has the specified css class or False.
@@ -568,7 +569,7 @@ class Node(Connectable):
                 Adds the class className to the element.
             """
             return ClientSide.addClass(self, className)
-        
+
         def addClasses(self, classNames):
             """
                 Adds the specified classNames to the element.
@@ -676,7 +677,7 @@ class Node(Connectable):
                 Stops the specified event from occurring.
             """
             return ClientSide.stopOperation(event)
-        
+
         def stopInline(self):
             return ClientSide.stopInline()
 
@@ -745,18 +746,24 @@ class Node(Connectable):
                 Returns a cookie based on its name client-side.
             """
             return ClientSide.getCookie(name)
-            
+
         def disableChildren(self):
             """
                 Disables all child elements of this element.
             """
             return ClientSide.disableChildren(self)
 
-    def __init__(self, id=None, name=None, parent=None, **kwargs):
+    def __init__(self, id=None, name=None, parent=None, add=(), **kwargs):
         Connectable.__init__(self)
         self._create(id=id, name=name, parent=parent, **kwargs)
         if kwargs:
             self.setProperties(kwargs)
+        if add:
+            if isinstance(add, (list, tuple)):
+                for child in add:
+                    self.add(child)
+            else:
+                self.add(add)
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         """
@@ -777,7 +784,7 @@ class Node(Connectable):
         self._clientSide = None
 
         self._childElements = None
-        self.addChildElementsTo = self
+        self.addsTo = self
 
         self.__scriptTemp__ = None
         self.__scriptContainer__ = None
@@ -1003,13 +1010,13 @@ class Node(Connectable):
         elementIndex = self.childElements.index(putAfterElement)
         self.childElements.insert(elementIndex, putAfterElement)
 
-    def addChildElement(self, childElement, ensureUnique=True):
+    def add(self, childElement, ensureUnique=True):
         """
            Add a child element within this element
             for example:
                 container.toHTML() ==
                     <div></div>
-                container.addChildElement(TextArea())
+                container.add(TextArea())
                 <div><textarea></textarea></div>:
 
                 childElement - the element to add
@@ -1019,11 +1026,11 @@ class Node(Connectable):
         if type(childElement) == type:
             childElement = childElement(parent=self)
 
-        if self.addChildElementsTo.allowsChildren:
+        if self.addsTo.allowsChildren:
             if(ensureUnique and childElement.parent):
                 childElement.parent.removeChild(childElement)
-            childElement.parent = self.addChildElementsTo
-            self.addChildElementsTo.childElements.append(childElement)
+            childElement.parent = self.addsTo
+            self.addsTo.childElements.append(childElement)
 
             scriptTemp = childElement.__scriptTemp__
             if scriptTemp:
@@ -1105,7 +1112,7 @@ class Node(Connectable):
         """
         self.classes.add(className)
         return self
-    
+
     def addClasses(self, classes):
         """
             Adds a list, set, or tuple of classNames to the element.
@@ -1465,6 +1472,9 @@ class Node(Connectable):
 
         return html
 
+    def setContent(self, content):
+        self.add(TextNode(content))
+
     def isBlockElement(self):
         """
             Returns true if the elements will render as an HTML block type
@@ -1502,7 +1512,7 @@ class Node(Connectable):
         return self
 
     def __iadd__(self, element):
-        self.addChildElement(element)
+        self.add(element)
         return self
 
     def __str__(self):

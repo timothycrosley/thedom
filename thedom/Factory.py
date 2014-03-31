@@ -91,12 +91,12 @@ class Factory(object):
                 accessors[ID] = elementObject
 
         if elementObject.allowsChildren:
-            addChildElement = elementObject.addChildElement
+            add = elementObject.add
             buildFromTemplate = self.buildFromTemplate
-            addChildElementsTo = elementObject.addChildElementsTo
+            addsTo = elementObject.addsTo
             for child in template.childElements or ():
-                childElement = buildFromTemplate(child, parent=addChildElementsTo, accessors=accessors)
-                addChildElement(childElement)
+                childElement = buildFromTemplate(child, parent=addsTo, accessors=accessors)
+                add(childElement)
         if variableDict:
             elementObject.insertVariables(variableDict)
 

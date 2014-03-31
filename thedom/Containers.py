@@ -65,15 +65,15 @@ class DropDownMenu(Layout.Box):
         self.toggle.addClass("WToggle")
         return toggleButton
 
-    def addChildElement(self, childElement, ensureUnique=True):
+    def add(self, childElement, ensureUnique=True):
         """
             Overrides the behavior of adding a child element, by making the first element the menu toggle
             and the second the menu contents.
         """
         if not self.toggle:
-            return self.setToggleButton(Layout.Box.addChildElement(self, childElement, ensureUnique))
+            return self.setToggleButton(Layout.Box.add(self, childElement, ensureUnique))
         elif not self.menu:
-            self.menu = Layout.Box.addChildElement(self, childElement, ensureUnique)
+            self.menu = Layout.Box.add(self, childElement, ensureUnique)
             if self.id:
                 self.menu.id = self.id + ":Content"
             self.menu.addClass("WMenu")
@@ -81,7 +81,7 @@ class DropDownMenu(Layout.Box):
             self.menu.hide()
             return self.menu
         else:
-            return Layout.Box.addChildElement(self, childElement)
+            return Layout.Box.add(self, childElement)
 
 Factory.addProduct(DropDownMenu)
 
@@ -96,10 +96,10 @@ class Help(DropDownMenu):
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         DropDownMenu._create(self, id, name, parent, **kwargs)
-        self.addChildElement(Display.Image(src="images/help.png")).addClass("Clickable")
-        layout = self.addChildElement(Layout.Vertical())
-        self.label = layout.addChildElement(Display.Label)
-        self.addChildElementsTo = layout
+        self.add(Display.Image(src="images/help.png")).addClass("Clickable")
+        layout = self.add(Layout.Vertical())
+        self.label = layout.add(Display.Label)
+        self.addsTo = layout
 
 
 Factory.addProduct(Help)
@@ -118,7 +118,7 @@ class CollapsedText(DropDownMenu):
         DropDownMenu._create(self, id, name, parent, **kwargs)
 
         self.lengthLimit = 40
-        self.label = self.addChildElement(Display.Label)
+        self.label = self.add(Display.Label)
         self.__text = ''
 
     def setText(self, text):
@@ -136,7 +136,7 @@ class CollapsedText(DropDownMenu):
                                                "thedom.displayDropDown(thedom.peer(this, 'WMenu'));")
             self.label.parent.addJavascriptEvent('onmouseout', "thedom.hide(thedom.peer(this, 'WMenu'));")
             self.label.setText(text[:int(self.lengthLimit) - 3] + "...")
-            self.completeText = self.addChildElement(Display.Label())
+            self.completeText = self.add(Display.Label())
             self.completeText.setText(text)
             self.completeText.style['width'] = 240
         else:
@@ -165,7 +165,7 @@ class Autocomplete(Layout.Box):
         self.menu = None
         self.userInput = None
 
-        self.addChildElement(Inputs.TextBox(id))
+        self.add(Inputs.TextBox(id))
         self.userInput.attributes['autocomplete'] = "off"
         self.userInput.addJavascriptEvent('onkeydown', CallBack(self, "jsShowIfActive"))
         self.userInput.addJavascriptEvent('onkeyup', CallBack(self, "jsShowIfActive"))
@@ -187,23 +187,23 @@ class Autocomplete(Layout.Box):
                             }
                           };""")
 
-    def addChildElement(self, childElement, ensureUnique=True):
+    def add(self, childElement, ensureUnique=True):
         """
-            Overrides the behavior of addChildElement making the first child element the user input
+            Overrides the behavior of add making the first child element the user input
             that will be provided auto complete support, and the second the menu contents which will contain
             the auto complete results on key-up.
         """
         if not self.userInput:
-            self.userInput = Layout.Box.addChildElement(self, childElement, ensureUnique)
+            self.userInput = Layout.Box.add(self, childElement, ensureUnique)
             return self.userInput
         if not self.menu:
-            self.menu = Layout.Box.addChildElement(self, childElement, ensureUnique)
+            self.menu = Layout.Box.add(self, childElement, ensureUnique)
             self.menu.id = self.id + ":Content"
             self.menu.addClass("WMenu")
             self.menu.hide()
             return self.menu
         else:
-            return Layout.Box.addChildElement(self, childElement, ensureUnique)
+            return Layout.Box.add(self, childElement, ensureUnique)
 
     def jsShowIfActive(self):
         """
@@ -294,7 +294,7 @@ class Tab(Layout.Box):
         Layout.Box._render(self)
 
         if self.imageName:
-            image = self.tabLabel.addChildElement(Layout.Box())
+            image = self.tabLabel.add(Layout.Box())
             image.addClass(self.imageName)
             image.style['margin'] = "auto"
             image.style['clear'] = "both"
@@ -335,12 +335,12 @@ class TabContainer(Base.Node):
         self.tabs = {}
         self.selectedTab = None
 
-        self.layout = self.addChildElement(self.__layoutElement__(id, name, parent))
+        self.layout = self.add(self.__layoutElement__(id, name, parent))
         self.layout.addClass("W" + self.__class__.__name__)
 
-        self.__tabLabelContainer__ = self.layout.addChildElement(self.__tabLayoutElement__())
+        self.__tabLabelContainer__ = self.layout.add(self.__tabLayoutElement__())
         self.__tabLabelContainer__.addClass('WTabLabels')
-        self.__tabContentContainer__ = self.layout.addChildElement(Layout.Box())
+        self.__tabContentContainer__ = self.layout.add(Layout.Box())
         self.__tabContentContainer__.addClass('WTabContents')
 
     def selectTab(self, tabName):
@@ -356,9 +356,9 @@ class TabContainer(Base.Node):
         self.selectedTab = tab
         tab.select()
 
-    def addChildElement(self, element, ensureUnique=True):
+    def add(self, element, ensureUnique=True):
         """
-            Overrides the addChildElement behavior to make the first add element the tab.
+            Overrides the add behavior to make the first add element the tab.
         """
         if isinstance(element, Tab):
             element.tabLabel.addJavascriptEvent('onclick', element.clientSide.select())
@@ -368,11 +368,11 @@ class TabContainer(Base.Node):
             if not self.selectedTab or element.isSelected:
                 element.select()
 
-            self.__tabLabelContainer__.addChildElement(element.tabLabel)
+            self.__tabLabelContainer__.add(element.tabLabel)
             element.addClass("WTab")
-            return self.__tabContentContainer__.addChildElement(element)
+            return self.__tabContentContainer__.add(element)
         else:
-            return Base.Node.addChildElement(self, element, ensureUnique)
+            return Base.Node.add(self, element, ensureUnique)
 
 Factory.addProduct(TabContainer)
 
@@ -415,15 +415,15 @@ class Accordion(Layout.Vertical):
         Layout.Vertical._create(self, id, name, parent, **kwargs)
         self.addClass("WAccordion")
 
-        self.toggle = self.addChildElement(Layout.Box())
+        self.toggle = self.add(Layout.Box())
         self.toggle.addClass('WAccordionToggle')
-        self.toggleImage = self.toggle.addChildElement(Display.Image((id or "") + "Image"))
+        self.toggleImage = self.toggle.add(Display.Image((id or "") + "Image"))
         self.toggleImage.addClass('WLeft')
-        self.toggleLabel = self.toggle.addChildElement(Display.FreeText())
-        self.isOpen = self.toggle.addChildElement(HiddenInputs.HiddenBooleanValue(id + "Value"))
-        self.contentElement = self.addChildElement(Layout.Box(id + "Content"))
+        self.toggleLabel = self.toggle.add(Display.FreeText())
+        self.isOpen = self.toggle.add(HiddenInputs.HiddenBooleanValue(id + "Value"))
+        self.contentElement = self.add(Layout.Box(id + "Content"))
         self.contentElement.addClass('WContent')
-        self.addChildElementsTo = self.contentElement
+        self.addsTo = self.contentElement
 
         self.isOpen.connect('valueChanged', True, self, 'open')
         self.isOpen.connect('valueChanged', False, self, 'close')
@@ -508,19 +508,19 @@ class ActionBox(Layout.Vertical):
         Layout.Vertical._create(self, id, name, parent, **kwargs)
         self.addClass("WActionBox")
 
-        self.header = self.addChildElement(Display.Label())
+        self.header = self.add(Display.Label())
         self.header.addClass("WActionBoxHeader")
 
-        self.actions = self.addChildElement(Display.List())
+        self.actions = self.add(Display.List())
 
-    def addChildElement(self, childElement, ensureUnique=True):
+    def add(self, childElement, ensureUnique=True):
         """
-            Overrides the addChildElement behavior to see any links passed in as actions.
+            Overrides the add behavior to see any links passed in as actions.
         """
         if type(childElement) == Buttons.Link:
-            return self.actions.addChildElement(childElement)
+            return self.actions.add(childElement)
         else:
-            return Layout.Vertical.addChildElement(self, childElement, ensureUnique=ensureUnique)
+            return Layout.Vertical.add(self, childElement, ensureUnique=ensureUnique)
 
 Factory.addProduct(ActionBox)
 
@@ -547,7 +547,7 @@ class PageControlPlacement(Layout.Box):
         self.control = id
 
     def _render(self):
-        layout = self.addChildElement(Layout.Horizontal(style='height: 50px; padding:10px;',
+        layout = self.add(Layout.Horizontal(style='height: 50px; padding:10px;',
                                                         **{'class':'WLoading'}))
         layout += Display.Image(src="images/throbber.gif")
         if self.control.lower().endswith('s'):

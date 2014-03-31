@@ -39,25 +39,25 @@ class TestNode(object):
     def setup_method(self, method):
         self.container = Factory.build('Box', '1')
 
-        self.firstChild = self.container.addChildElement(Factory.build('Textbox', '2'))
+        self.firstChild = self.container.add(Factory.build('Textbox', '2'))
 
-    def test_addChildElement(self):
+    def test_add(self):
         #Ensure element adds correctly if parent element allows children
         addElement = Node()
-        assert self.container.addChildElement(addElement) == addElement
+        assert self.container.add(addElement) == addElement
         assert self.container.childElements[1] == addElement
 
         #Ensure element is not added if parent element does not allow children
-        assert not self.firstChild.addChildElement(Node())
+        assert not self.firstChild.add(Node())
         assert len(self.container.childElements) == 2
 
         #Ensure child element will not add twice
-        self.container.addChildElement(addElement)
+        self.container.add(addElement)
         assert len(self.container.childElements) == 2
         assert self.container.childElements[1] == addElement
 
         #Ensure child element will add if ensure unique is false
-        self.container.addChildElement(addElement, ensureUnique=False)
+        self.container.add(addElement, ensureUnique=False)
         assert len(self.container.childElements) == 3
         assert self.container.childElements[1] == addElement
         assert self.container.childElements[2] == addElement
@@ -272,10 +272,10 @@ class ElementTester(object):
     def test_childAddingBehavior(self):
         link = Factory.build("a")
         if self.element.allowsChildren == True:
-            assert self.element.addChildElement(link) != False
+            assert self.element.add(link) != False
             link.remove()
         else:
-            assert self.element.addChildElement(link) == False
+            assert self.element.add(link) == False
 
     def test_pickleable(self):
         pickled = pickle.dumps(self.element, -1)

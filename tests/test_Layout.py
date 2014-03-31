@@ -28,8 +28,8 @@ class TestStack(ElementTester):
 
     def setup_class(self):
         self.element = Factory.build("Stack", name="Test")
-        self.element.addChildElement(Factory.build("Button", name="Button"))
-        self.element.addChildElement(Factory.build("box", name="box"))
+        self.element.add(Factory.build("Button", name="Button"))
+        self.element.add(Factory.build("box", name="box"))
 
 
 class TestBox(ElementTester):
@@ -42,24 +42,24 @@ class TestFlow(ElementTester):
 
     def setup_class(self):
         self.element = Factory.build("box", name="Test")
-        self.flowContainer = self.element.addChildElement(Factory.build("flow", name="flow"))
-        self.flowContainer.addChildElement(Factory.build("Button", name="Button"))
-        self.flowContainer.addChildElement(Factory.build("box", name="box"))
+        self.flowContainer = self.element.add(Factory.build("flow", name="flow"))
+        self.flowContainer.add(Factory.build("Button", name="Button"))
+        self.flowContainer.add(Factory.build("box", name="box"))
 
 class TestHorizontal(ElementTester):
 
     def setup_class(self):
         self.element = Factory.build("Horizontal", name="Test")
-        self.element.addChildElement(Factory.build("Button", name="Button"))
-        self.element.addChildElement(Factory.build("Flow", name="Container"))
+        self.element.add(Factory.build("Button", name="Button"))
+        self.element.add(Factory.build("Flow", name="Container"))
 
 
 class TestVertical(ElementTester):
 
     def setup_class(self):
         self.element = Factory.build("Vertical", name="Test")
-        self.element.addChildElement(Factory.build("Button", name="Button"))
-        self.element.addChildElement(Factory.build("Flow", name="Container"))
+        self.element.add(Factory.build("Button", name="Button"))
+        self.element.add(Factory.build("Flow", name="Container"))
 
 
 class TestFields(ElementTester):

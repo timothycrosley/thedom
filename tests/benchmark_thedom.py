@@ -73,7 +73,7 @@ def getGenerationTimeForAllElementsLooped100Times():
         doneSection()
         results['loopedCreate'] = results['loopedInit'] + results['loopedToHtml']
         for product in Factory.products.keys():
-            allProducts.addChildElement(Factory.build(product, 'Test', 'Product'))
+            allProducts.add(Factory.build(product, 'Test', 'Product'))
     instantiationTime = time.time() - startTime
     results['loopedInit'] = instantiationTime
 
@@ -95,7 +95,7 @@ def getTemplateGenerationTimes():
     startTime = time.time()
     for x in xrange(100):
         templateElement = TemplateElement(template=template, factory=Factory)
-        templateElement.setScriptContainer(templateElement.addChildElement(ScriptContainer()))
+        templateElement.setScriptContainer(templateElement.add(ScriptContainer()))
         templateElements.append(templateElement)
         doneSection()
     results['templateInit'] = time.time() - startTime
@@ -118,9 +118,9 @@ def getBigTableGenerationTime():
     startTime = time.time()
     templateElement = TemplateElement(template=template, factory=Factory)
     for rowData in table:
-        row = templateElement.bigTableTest.addChildElement(DOM.TR())
+        row = templateElement.bigTableTest.add(DOM.TR())
         for data in itervalues(rowData):
-            row.addChildElement(DOM.TD()).addChildElement(TextNode(data))
+            row.add(DOM.TD()).add(TextNode(data))
         doneSection()
     html = templateElement.toHTML()
     results['bigTable'] = time.time() - startTime
@@ -134,7 +134,7 @@ def getNestedElementTime():
     html = ""
     for x in xrange(900):
         doneSection()
-        element = element.addChildElement(Node("element" + str(x)))
+        element = element.add(Node("element" + str(x)))
         element._tagName = 'tag' + str(x)
         html += element.toHTML()
 

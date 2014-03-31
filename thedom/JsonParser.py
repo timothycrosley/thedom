@@ -42,14 +42,14 @@ def parse(data, formatted=False):
 
 def __parse__(data, parentElement):
     for key, value in iteritems(data):
-        newElement = parentElement.addChildElement(__Tag__(key, parentElement))
+        newElement = parentElement.add(__Tag__(key, parentElement))
         if type(value) == dict:
             __parse__(value, newElement)
         elif type(value) in (list, tuple):
             for item in value:
-                newElement.addChildElement(__Tag__(TYPE_MAP[type(item)], newElement)).addChildElement(TextNode(item))
+                newElement.add(__Tag__(TYPE_MAP[type(item)], newElement)).add(TextNode(item))
         elif value is None:
             newElement.tagSelfCloses = newElement.attributes['xsi:nil'] = True
         else:
-            newElement.addChildElement(TextNode(value))
+            newElement.add(TextNode(value))
     return parentElement

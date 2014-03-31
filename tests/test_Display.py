@@ -97,4 +97,4 @@ class TestEmpty(ElementTester):
 
     def setup_class(self):
         self.element = Factory.build("box")
-        self.element.addChildElement(Factory.build("empty", name="Test"))
+        self.element.add(Factory.build("empty", name="Test"))

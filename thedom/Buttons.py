@@ -44,7 +44,7 @@ class Link(DOM.A):
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         DOM.A._create(self, id, name, parent, **kwargs)
-        self._textNode = self.addChildElement(Base.TextNode())
+        self._textNode = self.add(Base.TextNode())
 
     def setDestination(self, destination):
         """
@@ -169,7 +169,7 @@ class PopupButton(PopupLink):
 
     def _create(self, id=None, name=None, parent=None, **kwargs):
         PopupLink._create(self, id, name, parent, **kwargs)
-        self.button = self.addChildElement(Button())
+        self.button = self.add(Button())
         self.addClass("PopupButton")
 
     def setText(self, text):
@@ -276,11 +276,11 @@ class ToggleButton(Layout.Box):
         button = self.__createToggle__(id)
         button.addJavascriptEvent('onClick', CallBack(self, 'jsToggle'))
         button.addClass("WToggleButton")
-        self.button = self.addChildElement(button)
+        self.button = self.add(button)
 
         toggledState = HiddenValue(id + ":Toggled")
         toggledState.setValue('off')
-        self.toggledState = self.addChildElement(toggledState)
+        self.toggledState = self.add(toggledState)
 
     def __createToggle__(self, id):
         return Button(id)

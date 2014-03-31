@@ -83,13 +83,13 @@ class Validation(Display.Message):
         """
         return self.forElement.value()
 
-    def addChildElement(self, childElement, ensureUnique=True):
+    def add(self, childElement, ensureUnique=True):
         """
             Adds the validation control to all child elements
         """
         if isinstance(childElement, Validator):
             childElement.control = self
-        return Display.Message.addChildElement(self, childElement, ensureUnique)
+        return Display.Message.add(self, childElement, ensureUnique)
 
     def validate(self):
         """
@@ -236,9 +236,9 @@ class Or(Validator):
         Validator._create(self, id=id, name=name, parent=parent, **kwargs)
         self.required = True
 
-    def addChildElement(self, element, ensureUnique=True):
+    def add(self, element, ensureUnique=True):
         element.control = self.control
-        return Validator.addChildElement(self, element, ensureUnique)
+        return Validator.add(self, element, ensureUnique)
 
     class ClientSide(Validator.ClientSide):
         def validate(self):

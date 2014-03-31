@@ -55,63 +55,63 @@ class ItemPager(Layout.Vertical):
     def _create(self, id, name=None, parent=None, **kwargs):
         Layout.Vertical._create(self, id, name, parent, **kwargs)
 
-        positionLayout = self.addChildElement(Layout.Horizontal())
+        positionLayout = self.add(Layout.Horizontal())
         positionLayout.addClass("WActions")
-        label = positionLayout.addChildElement(Display.Label())
+        label = positionLayout.add(Display.Label())
         label.setText('Showing Results')
         label.addClass('WSpaced')
 
-        self.resultsStartAt = positionLayout.addChildElement(Display.Label())
+        self.resultsStartAt = positionLayout.add(Display.Label())
         self.resultsStartAt.makeStrong()
         self.resultsStartAt.setText('1')
         self.resultsStartAt.addClass('WSpaced')
 
-        label = positionLayout.addChildElement(Display.Label())
+        label = positionLayout.add(Display.Label())
         label.setText('-')
         label.addClass('WSpaced')
 
-        self.resultsEndAt = positionLayout.addChildElement(Display.Label())
+        self.resultsEndAt = positionLayout.add(Display.Label())
         self.resultsEndAt.makeStrong()
         self.resultsEndAt.setText('25')
         self.resultsEndAt.addClass('WSpaced')
 
-        label = positionLayout.addChildElement(Display.Label())
+        label = positionLayout.add(Display.Label())
         label.setText('out of')
         label.addClass('WSpaced')
 
-        self.numberOfResults = positionLayout.addChildElement(Display.Label())
+        self.numberOfResults = positionLayout.add(Display.Label())
         self.numberOfResults.makeStrong()
         self.numberOfResults.setText('100')
         self.numberOfResults.addClass('WSpaced')
 
-        self.showAllButton = positionLayout.addChildElement(Buttons.ToggleButton('showAllButton'))
+        self.showAllButton = positionLayout.add(Buttons.ToggleButton('showAllButton'))
         self.showAllButton.setText("Show All")
 
-        buttonLayout = self.addChildElement(Layout.Horizontal())
+        buttonLayout = self.add(Layout.Horizontal())
 
-        self.startButton = buttonLayout.addChildElement(Buttons.Link())
+        self.startButton = buttonLayout.add(Buttons.Link())
         self.startButton.setText("<<")
         self.startButton.setDestination("#Link")
 
-        self.backButton = buttonLayout.addChildElement(Buttons.Link())
+        self.backButton = buttonLayout.add(Buttons.Link())
         self.backButton.setText("< Back")
         self.backButton.setDestination("#Link")
         self.backButton.addClass("WSpaced")
 
-        self.pageLinks = buttonLayout.addChildElement(Layout.Flow())
+        self.pageLinks = buttonLayout.add(Layout.Flow())
 
-        self.nextButton = buttonLayout.addChildElement(Buttons.Link())
+        self.nextButton = buttonLayout.add(Buttons.Link())
         self.nextButton.setText("Next >")
         self.nextButton.setDestination("#Link")
 
-        self.lastButton = buttonLayout.addChildElement(Buttons.Link())
+        self.lastButton = buttonLayout.add(Buttons.Link())
         self.lastButton.setText(">>")
         self.lastButton.setDestination("#Link")
         self.lastButton.addClass("WSpaced")
 
         self.pagesShownAtOnce = 15
         self.itemsPerPage = 25
-        self._index_ = self.addChildElement(HiddenInputs.HiddenIntValue(id + 'Index'))
+        self._index_ = self.add(HiddenInputs.HiddenIntValue(id + 'Index'))
         self._pages_ = None
 
         self.showAllButton.connect('toggled', True, self.showAllButton, 'setValue', 'Show in Pages')
@@ -184,9 +184,9 @@ class ItemPager(Layout.Vertical):
         if len(pageList) > 1:
             for page in self._pages_.pageList():
                 if page == self._index_.value():
-                    pageElement = self.pageLinks.addChildElement(Display.Label())
+                    pageElement = self.pageLinks.add(Display.Label())
                 else:
-                    pageElement = self.pageLinks.addChildElement(Buttons.Link())
+                    pageElement = self.pageLinks.add(Buttons.Link())
                     pageElement.setDestination('#Link')
                     pageElement.attributes['index'] = page
 
@@ -209,9 +209,9 @@ class JumpToLetter(Layout.Vertical):
         self.style['float'] = "left"
 
         self.__letterMap__ = {}
-        self.selectedLetter = self.addChildElement(HiddenInputs.HiddenValue(self.id + "SelectedLetter"))
+        self.selectedLetter = self.add(HiddenInputs.HiddenValue(self.id + "SelectedLetter"))
         for letter in self.letters:
-            link = self.addChildElement(Buttons.Link())
+            link = self.add(Buttons.Link())
             link.addClass("WLetter")
             link.setText(letter)
 
@@ -276,7 +276,7 @@ class UnrolledSelect(Display.List):
 
     def _create(self, id, name=None, parent=None, **kwargs):
         Display.List._create(self, None, None, parent)
-        self.addChildElement(Display.Label()).addClass('first')
+        self.add(Display.Label()).addClass('first')
         self.addClass('WUnrolledSelect')
         self.userInput = HiddenInputs.HiddenValue(id, parent=self)
         self.childElements.append(self.userInput)
@@ -294,7 +294,7 @@ class UnrolledSelect(Display.List):
 
     def _render(self):
         if not self._lastAdded:
-            self.addChildElement(Display.Label()).addClass('last')
+            self.add(Display.Label()).addClass('last')
             self._lastAdded = True
 
     def addOptions(self, options, displayKeys=False):
@@ -347,7 +347,7 @@ class UnrolledSelect(Display.List):
         newOption.addJavascriptEvent('onclick', 'selectUnrolledOption(this);')
 
         self.optionList.append(newOption)
-        return self.addChildElement(newOption)
+        return self.add(newOption)
 
     def options(self):
         """
