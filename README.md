@@ -13,13 +13,13 @@ and then allowing inheritance and child elements to come together to form new el
 
 write this:
 
-    from thedom import Layout, Document, Buttons
+    from thedom import layout, document, buttons
 
-    page = Document.Document()
-    layout = page.addChildElement(Layout.Center()).addChildElement(Layout.Horizontal())
-    layout += Buttons.Button(text="Use thedom.", **{'class':'MainAction'})
-    layout += Buttons.Button(text="Enjoy writing less code.", **{'class':'DeleteAction'})
-    layout += Buttons.Button(text="100% Python.")
+    page = document.Document()
+    layout = page.addChildElement(layout.Center()).addChildElement(layout.Horizontal())
+    layout += buttons.Button(text="Use thedom.", **{'class':'MainAction'})
+    layout += buttons.Button(text="Enjoy writing less code.", **{'class':'DeleteAction'})
+    layout += buttons.Button(text="100% Python.")
 
     print page.toHTML(formatted=True)
 
