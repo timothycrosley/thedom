@@ -85,9 +85,7 @@ AutoAddScripts = AutoAddScripts('AutoAddScripts', (object, ), {})
 
 
 class Node(Connectable):
-    """
-        The base Node which all custom thedom should extend.
-    """
+    '''The base node wich all custom dom elements should extend.'''
     __slots__ = ('_tagName', '_prefix', '__scriptTemp__', 'validator', '_editable',
                  '__scriptContainer__', 'id', 'name', 'parent', '_style', '_classes', '_attributes',
                  '_childElements', 'addsTo', '_tagSelfCloses', '_clientSide')
