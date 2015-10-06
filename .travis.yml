@@ -1,14 +1,8 @@
 language: python
-python:
-  - 2.6
-  - 2.7
-  - 3.2
-  - 3.3
-  - pypy
+python: 3.4
 install:
-  - python setup.py install
-script:
-  - python setup.py test
-matrix:
-  allow_failures:
-    - python: pypy
+  - pip install tox
+  - pip install python-coveralls
+script: tox
+after_success:
+  - coveralls
