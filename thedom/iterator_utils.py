@@ -4,7 +4,7 @@
     Classes/functions that provide additional iterator functionality beyond what is provided by the
     standard python library
 
-    Copyright (C) 2013  Timothy Edmund Crosley
+    Copyright (C) 2015  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License

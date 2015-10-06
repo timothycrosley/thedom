@@ -4,7 +4,7 @@
     Connectable enables child object to create dynamic connections
     (via signals/slots) at run-time. Inspired by QT's signal / slot mechanism
 
-    Copyright (C) 2013  Timothy Edmund Crosley
+    Copyright (C) 2015  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License

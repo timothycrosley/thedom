@@ -1,9 +1,9 @@
 '''
-    Base.py
+    base.py
 
-    This library defines the most basic (abstract) Web Element from which all other elements are derived
+    This library defines the most basic (abstract) dom element from which all other elements are derived
 
-    Copyright (C) 2013  Timothy Edmund Crosley
+    Copyright (C) 2015  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License

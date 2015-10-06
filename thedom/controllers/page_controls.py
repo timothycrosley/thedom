@@ -3,7 +3,7 @@
 
     Defines the most basic PageControls that can be subclassed to control sections of a page
 
-    Copyright (C) 2013  Timothy Edmund Crosley
+    Copyright (C) 2015  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License

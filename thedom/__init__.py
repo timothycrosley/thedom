@@ -7,7 +7,7 @@
     API usage point of view can define any concept or widget on a web page no matter
     how complex.
 
-    Copyright (C) 2013  Timothy Edmund Crosley
+    Copyright (C) 2015  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License

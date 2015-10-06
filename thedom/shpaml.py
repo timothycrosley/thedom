@@ -7,7 +7,7 @@
     the rest of the Node stack - the original release is still available under public domain licensing here:
     http://shpaml.webfactional.com
 
-    Copyright (C) 2013  Timothy Edmund Crosley
+    Copyright (C) 2015  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License

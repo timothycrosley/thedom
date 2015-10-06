@@ -5,7 +5,7 @@
     simply by defining its name (as a string) and its main attributes, as well as providing the ability
     to combine multiple factories into one
 
-    Copyright (C) 2013  Timothy Edmund Crosley
+    Copyright (C) 2015  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License

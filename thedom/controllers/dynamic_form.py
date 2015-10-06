@@ -4,7 +4,7 @@
     Defines the DynamicForm concept (a page made up entirely of page controls / request handlers so that
     any part of the page can be updated independently
 
-    Copyright (C) 2013  Timothy Edmund Crosley
+    Copyright (C) 2015  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License

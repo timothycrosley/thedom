@@ -3,7 +3,7 @@
 
     Utility methods and classes that provide more efficient ways of handling python dictionaries
 
-    Copyright (C) 2013  Timothy Edmund Crosley
+    Copyright (C) 2015  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License

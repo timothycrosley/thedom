@@ -7,7 +7,7 @@
     NOTE: documentation for the binding functions is defined in thedom.js and not as doc strings on the binding
     methods themselves.
 
-    Copyright (C) 2013  Timothy Edmund Crosley
+    Copyright (C) 2015  Timothy Edmund Crosley
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
